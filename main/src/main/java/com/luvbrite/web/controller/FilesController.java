@@ -32,7 +32,7 @@ import com.luvbrite.web.models.Upload;
 
 @Controller
 @RequestMapping(value = "/files")
-@PropertySource("classpath:/com/path.properties")
+@PropertySource("classpath:/env.properties")
 public class FilesController {
 
 	@Autowired
