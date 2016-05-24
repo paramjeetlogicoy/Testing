@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title th:text="${product.name}"></title>
+<meta th:include="fragments/layout::fragment-head" />
+<script th:inline="javascript" type="text/javascript">
+/*<![CDATA[*/
+    var _globalUserId = /*[[${userId}]]*/ 0;
+/*]]>*/
+</script>
+</head>
+<body ng-app="lbApp" ng-controller="productCtrlr" class="bg-greyF9">
+	<div th:replace="fragments/layout::fragment-header(extn=false)"></div>
+	<div class="container rel pad-t3">
+		<div class="clearfix marg-b3">
+			<a href="/products" class="pull-left inherit"><i
+				class="fa fa-list-alt size15" aria-hidden="true"></i> Back to Menu</a>
+		</div>
+		
+		<div class="row">
+
+			<div class="col-sm-6">
+				<div class="visible-xs-block">
+					<div class="clearfix">
+						<h1 th:text="${product.name}"
+							class="capitalize pull-left marg-t0 marg-b1">Product Name</h1>
+						<div class="pull-right marg-b1">
+							<em th:text="${product.priceRange}"></em>
+						</div>
+					</div>
+					<!-- <div class="marg-b2">grilled chicken, quinoa, black beans,
+						tomatoes</div> -->
+
+				</div>
+				<div class="prdpage-img-container">
+					<img th:src="'/files/view/' + ${product.featuredImg}" class="fit" />
+					<i class="fa fa-search-plus" aria-hidden="true"></i>
+				</div>
+
+				<div class="product-in-cart ng-cloak" ng-if="productInCart">
+					<strong>{{productInCart}} in your cart</strong>
+				</div>
+			</div>
+
+			<div class="col-sm-6">
+				<div class="prdpage-details">
+					<div class="hidden-xs">
+						<div class="clearfix">
+							<h1 th:text="${product.name}"
+								class="capitalize pull-left marg-t0 marg-b1">Product Name</h1>
+							<div class="pull-right marg-t1" th:if="${product.variation}">
+								<em th:text="${product.priceRange}"></em>
+							</div>
+						</div>
+						<!-- <div class="marg-b2">grilled chicken, quinoa, black beans,
+							tomatoes</div> -->
+
+					</div>
+
+					<div class="prdpage-prices" th:if="${product.variation}">
+						<div>
+							<small>Options:</small>
+						</div>
+						<ul class="prdpage-options ng-cloak">
+							<li ng-repeat="price in prices | orderBy : 'regPrice'"
+								ng-click="selectPrdOption()"
+								ng-class="price.stockStat=='instock' ? (price.selected ? 'selected' : '') : 'outofstock'"><span
+								ng-repeat="x in price.variation">{{x.value}}</span> <strong
+								ng-if="price.salePrice"><del>{{price.regPrice |
+										currency}}</del> {{price.salePrice | currency}}</strong> <strong
+								ng-if="!price.salePrice">{{price.regPrice | currency}}</strong></li>
+						</ul>
+						<div class="marg-b1 ng-cloak" ng-show="productSelected">
+							<strong class="orange1 size24"><span
+								ng-if="productSelected.salePrice">{{productSelected.salePrice
+									| currency}}</span> <span ng-if="!productSelected.salePrice">{{productSelected.regPrice
+									| currency}}</span></strong>
+						</div>
+
+					</div>
+
+					<div class="prdpage-prices" th:if="not ${product.variation}">
+						<div class="marg-b1">
+							<strong class="size24 orange1"><span
+								th:if="${product.salePrice}"><del class="grey7"
+										th:text="${'$' + #numbers.formatDecimal(product.price,0,2)}"></del>
+									<span 
+									th:text="${'$' + #numbers.formatDecimal(product.salePrice,0,2)}"></span></span>
+								<span th:unless="${product.salePrice}"
+								th:text="${'$' + #numbers.formatDecimal(product.price,0,2)}"></span></strong>
+						</div>
+					</div>
+
+					<div class="marg-b3 prdpage-action ng-cloak">
+
+						<!--/* Cannot use ng-if here, as it messes up the data binding for $scope.quantity */-->
+						<div ng-hide="outofstock">
+							<strong class="qty-label">Qty:</strong><input type="number"
+								step="1" min="1" ng-model="quantity"
+								class="form-control quantity-select" /> <span
+								class="adding-to-cart" ng-show="addingToCart"><i
+								class="fa fa-cog fa-spin fa-fw margin-bottom"></i> <em>adding</em></span>
+							<button ng-click="addToCart()" ng-hide="addingToCart"
+								class="btn btn-success btn-addtocart">
+								<i class="fa fa-plus" aria-hidden="true"></i> ADD TO CART
+							</button>
+						</div>
+						<div ng-show="outofstock">
+							<h4>
+								<span class="grey7">Out of Stock</span>
+							</h4>
+						</div>
+					</div>
+
+					<div ng-show="errorMsg"
+						class="alert alert-danger alert-dismissible marg-b2 ng-cloak animate"
+						role="alert">
+						<button type="button" class="close" aria-label="Close"
+							ng-click="errorMsg=''">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<strong>Oops!</strong> {{errorMsg}}
+					</div>
+
+					<div ng-show="successMsg"
+						class="alert alert-success alert-dismissible marg-b2 ng-cloak animate"
+						role="alert">
+						<button type="button" class="close" aria-label="Close"
+							ng-click="successMsg=''">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						{{successMsg}} <span class="marg-l1"><a href="/cart">Go
+								To Cart</a></span>
+					</div>
+
+					<div class="bg-white pad2">
+						<div th:utext="${product.description}"></div>
+					</div>
+					<input type="hidden" id="productId" th:value="${product._id}" /> <input
+						type="hidden" id="productStockStat"
+						th:value="${product.stockStat}" /><input type="hidden"
+						id="productName" th:value="${product.name}" /><input
+						type="hidden" id="featuredImg" th:value="${product.featuredImg}" /><input
+						type="hidden" id="variableProduct"
+						th:if="${product.variation}" value="true" />
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+	<div th:replace="fragments/layout::fragment-footer"></div>
+	<div th:replace="fragments/layout::fragment-foot(angular=true)"></div>
+	<script src="/resources/js/lib/jquery.zoom.min.js"></script>
+	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
+	<script type="text/javascript">
+	</script>
+</body>
+</html>

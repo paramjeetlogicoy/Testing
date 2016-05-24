@@ -1,0 +1,7 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+<input type="hidden" id="_lb_sec_tok" th:name="*{_csrf.parameterName}"	th:value="${_csrf.token}" />		
+</body>
+</html>

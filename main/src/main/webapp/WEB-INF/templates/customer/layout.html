@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+
+
+	<div th:fragment="fragment-subnav" class="container-fluid">
+		<ul class="nav nav-pills">
+			<li><div class="nav-user-info pad1">
+					<span class="capitalize"
+						th:if="${session.SPRING_SECURITY_CONTEXT}"
+						th:text="|Hi ${session.SPRING_SECURITY_CONTEXT.authentication.name}|"></span>
+					<form method="post" action="/logout" class="inline">
+						<input type="hidden" id="_lb_sec_tok"
+							th:name="*{_csrf.parameterName}" th:value="${_csrf.token}" /> <em>(<input
+							type="submit" class="btn btn-link nopadi" value="Logout" />)
+						</em>
+					</form>
+				</div></li>
+			<li class="nav-profile"><a href="#/profile">Profile</a></li>
+			<li class="nav-orders"><a href="#/orders">My Orders</a></li>
+		</ul>
+	</div>
+	
+	
+	<div th:fragment="fragment-profile" class="container-fluid">
+			
+		<h3>My Profile</h3>
+		
+		<div class="row">
+			<div class="col-sm-5">
+				<dl class="dl-horizontal">
+					<dt>Username</dt>
+					<dd>{{user.username}}</dd>
+					<dt>Email</dt>
+					<dd>{{user.email}}</dd>
+					<dt>Name</dt>
+					<dd>{{user.fname + ' ' + user.lname}}</dd>
+					<dt>Phone</dt>
+					<dd>{{user.phone}}</dd>
+				</dl>
+			</div>
+			
+			<div class="col-sm-5 col-sm-offset-2">
+				<h4>Billing</h4>
+				<div class="user-billing-info">
+					<div ng-show="user.billing">
+						<dl class="dl-horizontal">
+							<dt>Name</dt>
+							<dd>{{user.billing.firstName + ' ' + user.billing.lastName}}</dd>
+							<dt>Address</dt>
+							<dd>
+								{{user.billing.address1 + ' ' + user.billing.address2}}, <br />{{user.billing.city
+								+ ', ' + user.billing.state + ' ' + user.billing.zip}}
+							</dd>
+							<dt>Phone</dt>
+							<dd>
+								{{user.billing.phone}}
+							</dd>
+						</dl>
+						<button class="btn btn-lb btn-sm" ng-click="editUserAddress()">Edit</button>
+					</div>
+				</div>
+
+				<div class="marg-b1" ng-if="!user.billing">
+					<button class="btn btn-lb btn-sm" ng-click="addUserAddress()">Add Billing Address</button>
+				</div>
+				
+				<div class="user-billing-form hideme">
+					<form name="userAddress" ng-submit="saveUserAddress()">
+						<div class="row">
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label class="control-label">First Name<sup>*</sup></label> <input
+										type="text" class="form-control" required="required"
+										ng-model="user.billing.firstName"
+										ng-blur="formElemValidate()" />
+									<p class="help-block onerror">First Name is required</p>
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label class="control-label">Last Name<sup>*</sup></label> <input
+										type="text" class="form-control" required="required"
+										ng-blur="formElemValidate()"
+										ng-model="user.billing.lastName" />
+									<p class="help-block onerror">Last Name is required</p>
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label class="control-label">Phone<sup>*</sup></label> <input
+										type="text" class="form-control" ng-model="user.billing.phone"
+										required="required" ng-blur="formElemValidate()" />
+									<p class="help-block onerror">Phone number is required</p>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-8">
+								<div class="form-group">
+									<label class="control-label">Address<sup>*</sup></label> <input
+										type="text" class="form-control" required="required"
+										ng-blur="formElemValidate()"
+										ng-model="user.billing.address1" />
+									<p class="help-block onerror">Address is required</p>
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label class="control-label">Suite/Apt</label> <input
+										type="text" class="form-control"
+										ng-model="user.billing.address2" />
+								</div>
+							</div>
+						</div>
+						<div class="row marg-b3">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="control-label">City<sup>*</sup></label> <input
+										type="text" required="required" ng-blur="formElemValidate()"
+										class="form-control" ng-model="user.billing.city" />
+									<p class="help-block onerror">City is required</p>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<label class="control-label">State<sup>*</sup></label> <input
+										type="text" required="required" ng-blur="formElemValidate()"
+										class="form-control" ng-model="user.billing.state" />
+									<p class="help-block onerror">State is required</p>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<label class="control-label">Zip Code<sup>*</sup></label> <input
+										type="text" class="form-control" required="required"
+										ng-blur="formElemValidate()" ng-model="user.billing.zip" />
+									<p class="help-block onerror">Zipcode is required</p>
+								</div>
+							</div>
+						</div>
+						
+						<div class="text-center">
+							<button type="submit" class="btn btn-lb btn-sm"
+								ng-disabled="userAddress.$invalid || userAddress.$pristine">
+								<strong>Save Address</strong>
+							</button>
+						</div>
+	
+					</form>
+				
+				</div>
+			</div>
+			
+			
+		</div>
+		
+		<div class="row">
+			<div class="col-sm-4">
+				<div class="marg-b2"><a class="btn btn-warning btn-sm" href="" ng-click="changePassword()">Change Password</a></div>
+				<div class="customer-passwordchange hideme">
+					<form class="form-horizontal" name="userPassword"
+						ng-submit="savePassword()">
+						<div class="form-group form-group-sm"
+							ng-class="{ 'has-error' : pwd1Validation()}">
+							<label class="col-sm-4 control-label">New Password</label>
+							<div class="col-sm-7">
+								<input type="password" class="form-control" ng-model="password1"
+									name="password1" required="required" />
+								<p
+									ng-show="pwd1Validation()"
+									class="help-block">New Password is required.</p>
+							</div>
+						</div>
+						<div class="form-group form-group-sm"
+							ng-class="{ 'has-error' : pwd2Validation1() }">
+							<label class="col-sm-4 control-label">Confirm Password</label>
+							<div class="col-sm-7">
+								<input type="password" class="form-control" ng-model="password2"
+									name="password2" required="required" />
+								<p
+									ng-show="pwd2Validation2()"
+									class="help-block">Confirm Password is required.</p>
+								<p
+									ng-show="pwd2Validation21()"
+									class="help-block">Passwords do not match.</p>
+							</div>
+						</div>
+
+
+						<div class="form-group form-group-sm">
+							<div class="col-sm-7 col-sm-offset-4">
+								<button type="submit" class="btn btn-warning btn-sm"
+									ng-disabled="userPassword.$invalid || userPassword.$pristine || (password2 != password1)">
+									SAVE PASSWORD</button>
+								<button type="button" class="btn btn-default btn-sm marg-l2"
+									ng-click="hidePasswordForm()">CANCEL</button>
+							</div>
+						</div>
+
+
+					</form>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div th:fragment="fragment-orders" class="container-fluid">
+		<div class="row">
+			<div class="col-sm-10">
+			
+				<h3>My Orders</h3>
+
+				<div class="marg-b1">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title size15">Filters</h3>
+						</div>
+						<div class="panel-body">
+							<form class="form-horizontal" ng-submit="getOrders()">
+								<div class="col-sm-3">
+									<div class="input-group input-group-sm">
+										<input type="text" class="form-control" ng-model="orderSearch"
+											placeholder="Search by Order#, Product" /> <span
+											class="input-group-btn">
+											<button class="btn btn-default" type="submit">
+												<i class="fa fa-search"></i>
+											</button>
+										</span>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+
+				<div th:replace="fragments/layout::fragment-pagination"></div>
+
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th><a class="sortables"
+								ng-click="sortType = 'orderNumber'; sortReverse = !sortReverse; getOrders();">Order
+									<span ng-show="sortType == 'orderNumber'"><i
+										ng-show="!sortReverse" class="fa fa-caret-down"></i> <i
+										ng-show="sortReverse" class="fa fa-caret-up"></i></span> <i
+									ng-show="sortType != 'orderNumber'" class="fa fa-sort"></i>
+							</a></th>
+							<th>Date</th>
+							<th>Items</th>
+							<th class="text-right">Total</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="o in orders">
+							<td><a href="#/details/{{o.orderNumber}}">{{o.orderNumber}}</a>
+							</td>
+							<td>{{o.date | date : 'MM/dd/yyyy hh:mm a'}}</td>
+							<td>
+								<div ng-repeat="item in o.lineItems">
+									<span ng-if="item.type=='item'">{{item.name}}</span>
+								</div>
+							</td>
+							<td class="text-right">{{o.total | currency}}</td>
+							<td></td>
+						</tr>
+
+						<tr ng-if="orders.length==0">
+							<td>No orders found</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+
+				<div th:replace="fragments/layout::fragment-pagination"></div>
+
+			</div>
+		</div>
+	</div>
+
+
+	<div th:fragment="fragment-orderdetails" class="container-fluid">
+		<div class="order-details-container col-lg-8 col-md-10">
+			<h3>Order Details</h3>
+			<div class="ord-dtls-gallery-wrapper">
+				<div class="panel panel-default">
+					<div class="panel-heading clearfix">
+						<h3 class="panel-title pull-left">
+							Order Number #<span>{{o.orderNumber}}</span>
+						</h3>
+						<strong class="pull-right marg-r2"><i
+							class="fa fa-calendar" aria-hidden="true"></i> {{o.date | date :
+							'MM/dd/yyyy hh:mm a'}}</strong>
+					</div>
+					<div class="panel-body">
+
+						<div class="alert alert-danger alert-dismissible" role="alert"
+							ng-show="errorMsg">
+							<button type="button" class="close" data-dismiss="alert"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<span ng-bind-html="errorMsg"></span>
+						</div>
+
+						<form class="form-horizontal" name="orderDetails">
+							<div class="row order-details-main">
+								<div class="col-sm-5">
+									<h5>General Details</h5>
+									<dl>
+										<dt>Customer</dt>
+										<dd class="marg-b2">
+											<a href="/admin/users/#/details/{{o.customer._id}}"
+												target="_blank">{{o.customer.email}}</a>
+										</dd>
+										<dt>Order Status</dt>
+										<dd class="marg-b2">
+											<div class="row">
+												<div class="col-sm-5">{{o.status=='new'?'Order Placed':o.status}}</div>
+											</div>
+										</dd>
+										<dt>Order Total</dt>
+										<dd>
+											<strong>{{o.total | currency}}</strong>
+										</dd>
+									</dl>
+								</div>
+
+								<div class="col-sm-4">
+									<h5>Billing Details</h5>
+									<dl>
+										<dt>Address:</dt>
+										<dd>
+											{{o.billing.firstName}} {{o.billing.lastName}}<br />
+											{{o.billing.address1}} {{o.billing.address2}}<br />
+											{{o.billing.city}}, {{o.billing.state}} {{o.billing.zip}}
+
+										</dd>
+									</dl>
+									<dl ng-if="o.billing.email">
+										<dt>Email:</dt>
+										<dd>{{o.billing.email}}</dd>
+									</dl>
+									<dl ng-if="o.billing.phone">
+										<dt>Phone:</dt>
+										<dd>{{o.billing.phone}}</dd>
+									</dl>
+								</div>
+
+								<div class="col-sm-3">
+									<h5>Notes</h5>
+									<div>
+										<dl ng-if="o.notes.deliveryNotes">
+											<dt>Delivery Schedule:</dt>
+											<dd>
+												<span class="size12">{{o.notes.deliveryNotes}}</span>
+											</dd>
+										</dl>
+										<dl ng-if="o.notes.additonalNotes">
+											<dt>Additional Notes:</dt>
+											<dd>
+												<span class="size12">{{o.notes.additonalNotes}}</span>
+											</dd>
+										</dl>
+									</div>
+
+								</div>
+							</div>
+							<hr />
+
+							<h4>Order Items</h4>
+							<div class="item-details">
+								<table class="table">
+									<thead>
+										<tr>
+											<th class="col-xs-1"></th>
+											<th class="pc60">Item</th>
+											<th class="text-right">Cost</th>
+											<th class="text-right">Qty</th>
+											<th class="text-right">Price</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="item in o.lineItems" ng-if="item.type=='item'">
+											<td><img ng-src="/files/view{{item.img.replace('-150x150','').replace('.jpg','-150x150.jpg')}}" ng-if="item.img" class="fit"/></td>
+											<td>
+												<div>{{item.name}}</div>
+												<div ng-repeat="spec in item.specs">
+													<strong>{{spec.attr}}</strong>: <span>{{spec.value}}</span>
+												</div>
+											</td>
+											<td class="text-right">{{item.cost | currency}}</td>
+											<td class="text-right">{{item.qty}}</td>
+											<td class="text-right">{{item.price | currency}}</td>
+
+										</tr>
+
+									</tbody>
+								</table>
+							</div>
+
+							<div class="item-details">
+								<table class="table">
+									<thead>
+										<tr>
+											<th class="pc60">Coupons/Adjustments</th>
+											<th class="text-right" colspan="3">Amount</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="item in o.lineItems" ng-if="item.type!='item'">
+											<td>
+												<div>{{item.name + ' (' + item.type + ')' }}</div>
+											</td>
+											<td class="text-right" colspan="3">{{item.price |
+												currency}}</td>
+
+										</tr>
+
+									</tbody>
+								</table>
+							</div>
+
+							<div class="clearfix">
+								<div class="pull-right">
+									<table class="table">
+										<tbody>
+											<tr>
+												<td class="text-right">Sub Total</td>
+												<td class="text-right" colspan="3">{{o.subTotal |
+													currency}}</td>
+
+											</tr>
+											<tr>
+												<td class="text-right">Discount</td>
+												<td class="text-right" colspan="3">{{(o.total-o.subTotal)
+													| currency}}</td>
+
+											</tr>
+											<tr class="blue1">
+												<th class="text-right size16">Total</th>
+												<th class="text-right size16" colspan="3">{{o.total |
+													currency}}</th>
+
+											</tr>
+
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+	</div>
+
+</body>
+</html>

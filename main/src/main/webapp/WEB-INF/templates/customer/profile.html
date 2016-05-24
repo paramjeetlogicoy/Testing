@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Customer Profile</title>
+<meta th:include="fragments/layout::fragment-head" />
+<script th:inline="javascript" type="text/javascript">
+/*<![CDATA[*/
+    var _globalUserId = /*[[${userId}]]*/ 0;
+/*]]>*/
+</script>
+</head>
+<body ng-app="customerApp">
+
+	<div th:replace="fragments/layout::fragment-header(extn=false)"></div>
+	
+	<div class="container rel ng-cloak"
+		ng-controller="defaultRouteCtrl">
+		
+		<div th:replace="customer/layout::fragment-subnav"></div>
+		
+		<div class="page-level-alert">
+			<div class="alert alert-danger alert-dismissible" role="alert"
+				ng-show="pageLevelError">
+				<button type="button" class="close" data-dismiss="alert"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<span ng-bind-html="pageLevelError"></span>
+			</div>
+		</div>
+		
+		<div ng-view="">
+		
+		</div>
+		
+		<script type="text/ng-template" id="profilePage">
+				<div th:replace="customer/layout::fragment-profile"></div>
+    		</script>	
+		
+		<script type="text/ng-template" id="ordersPage">
+				<div th:replace="customer/layout::fragment-orders"></div>
+    		</script>	
+		
+		<script type="text/ng-template" id="ordersDetailsPage">
+				<div th:replace="customer/layout::fragment-orderdetails"></div>
+    		</script>		
+		
+	</div>
+
+	<div th:replace="fragments/layout::fragment-footer"></div>
+	<div th:replace="fragments/layout::fragment-foot(angular=true)"></div>
+		
+	<script src="/resources/js/angular-upload-service.js"></script>
+	<script src="/resources/js/angular-customer.js"></script>
+	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
+	<script type="text/javascript">
+	</script>
+</body>
+</html>

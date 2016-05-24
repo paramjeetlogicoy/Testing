@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Error</title>
+<meta th:include="fragments/layout::fragment-head" />
+</head>
+<body>
+	<div class="container-fluid">
+		<div th:replace="fragments/layout::fragment-header(extn=false)"></div>
+		<div class="container-fluid rel">
+			<div class="alert alert-danger" role="alert">
+				<div class="pad2"><strong>Error: </strong> There was some error processing your request.
+				Please <a href="/">click here</a> to go back to our home page</div>
+			</div>
+
+
+		</div>
+
+		<div th:replace="fragments/layout::fragment-footer"></div>
+	</div>
+	<script type="text/javascript">
+	</script>
+</body>
+</html>

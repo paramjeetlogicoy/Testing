@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Admin Login</title>
+<meta th:include="fragments/layout::fragment-head" />
+</head>
+<body>
+	<div class="container-fluid">
+		<div th:replace="fragments/layout::fragment-header"></div>
+		<div th:replace="fragments/layout::fragment-subnav"></div>
+		<div class="row">
+		</div>
+
+		<div th:replace="fragments/layout::fragment-footer"></div>
+		<div th:include="fragments/layout::fragment-foot(angular=false)"></div>
+	</div>
+</body>
+</html>

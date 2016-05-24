@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Luvbrite</title>
+<meta th:include="fragments/layout::fragment-head" />
+<script th:inline="javascript" type="text/javascript">
+/*<![CDATA[*/
+    var _globalUserId = /*[[${userId}]]*/ 0;
+/*]]>*/
+</script>
+</head>
+<body ng-app="lbApp" ng-controller="allProductCtrlr" class="bg-greyF9 allproductspage">
+	<div th:replace="fragments/layout::fragment-header(extn=true)"></div>
+	<div class="container rel">
+
+		<div class="row">
+			<h1 class="col-sm-9">
+				ALL PRODUCTS
+				<button ng-show="categoryFilter || productFilter"
+					class="btn btn-default btn-sm reset-cat-filter"
+					ng-click="categoryFilter='';productFilter=''">Reset Filter</button>
+			</h1>
+
+			<div class="col-sm-3 pull-right productfilter">
+				<div class="input-group">
+					<input type="text" class="form-control"
+						placeholder="Product Search" ng-model="productFilter" /> <span
+						class="input-group-btn">
+						<button class="btn btn-default" type="button">
+							<i class="fa fa-search" aria-hidden="true"></i>
+						</button>
+					</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="category-groups ng-cloak">
+
+			<div class="category-group">
+				<div class="category-header" ng-show="categoryFilter">
+					<h2 class="category-name split-lines">{{categoryFilter}}</h2>
+				</div>
+
+				<ul class="products-container row">
+					<li
+						ng-repeat="p in products | filter : {categories : categoryFilter, name : productFilter}"
+						class="col-lg-3 col-sm-4 col-xs-6" ng:if="p.status=='publish'">
+						<div class="product-item">
+							<a href="/product/{{p.url}}" class="pc-img-holder"><span>
+									<img ng-src="/files/view/{{p.featuredImg}}"
+									class="featured-img" />
+							</span> </a>
+							<div class="pc-info">
+								<h3>
+									<a href="/product/{{p.url}}">{{p.name}}</a>
+								</h3>
+								<hr />
+								<div class="clearfix">
+									<div class="pull-left pc-price-range">{{p.priceRange}}</div>
+									<div class="pull-right pc-action">
+										<button class="btn btn-lb btn-sm">
+											<i class="fa fa-plus" aria-hidden="true"></i> <span>ADD</span>
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+
+	<div th:replace="fragments/layout::fragment-footer"></div>
+	<div th:replace="fragments/layout::fragment-foot(angular=true)"></div>
+	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
+	<script type="text/javascript">
+	</script>
+</body>
+</html>

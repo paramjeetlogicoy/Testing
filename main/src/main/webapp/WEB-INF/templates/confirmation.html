@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Order Confirmation</title>
+<meta th:include="fragments/layout::fragment-head" />
+<script th:inline="javascript" type="text/javascript">
+/*<![CDATA[*/
+    var _globalUserId = /*[[${userId}]]*/ 0;
+/*]]>*/
+</script>
+</head>
+<body ng-app="lbApp" class="bg-greyF9 confirmationPage">	
+
+	<div class="container rel pad-t3" th:if="not ${order}">
+		<div class="cart-details">
+			<h3>Sorry, we were unable to find any order information.</h3>
+		</div>
+	</div>
+
+	<div class="container rel pad-t3" th:if="${order}">
+		<header>
+			<div class="row">
+				<div class="col-sm-6 text-left">
+
+					<a href="/" class="pad1"> <img class="site-logo"
+						src="/resources/imgs/luvbrite-header-logo.jpg" rel="logo"
+						alt="Luvbrite" />
+					</a>
+				</div>
+				<div class="col-sm-6 text-right">
+					<h3>Order Confirmation</h3>
+				</div>
+			</div>
+		</header>
+		<div class="confirmation-content cart-details">
+			<div class="text-center">
+				<h1>THANK YOU FOR YOUR ORDER</h1>
+			</div>
+			<hr />
+			<div class="marg-b3">
+				Dear <span th:text="${order.customer.name}"></span>, your Order
+				Number is <strong th:text="${order.orderNumber}"></strong>
+			</div>
+
+			<div class="pad5 text-center">
+				<a th:href="@{'/customer#/details/' + ${order.orderNumber}}"
+					class="btn btn-lb btn-lb-w">View Order Details</a>
+			</div>
+
+		</div>
+
+	</div>
+
+	<div th:replace="fragments/layout::fragment-footer"></div>
+	<script type="text/javascript">
+	</script>
+</body>
+</html>

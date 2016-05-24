@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>All Orders</title>
+<meta th:include="fragments/admin/layout::fragment-head" />
+</head>
+<body ng-app="orderApp">
+	<div class="container-fluid">
+		<div th:replace="fragments/admin/layout::fragment-header"></div>
+		<div th:replace="fragments/admin/layout::fragment-subnav"></div>
+		<div class="container-fluid" ng-controller="defaultRouteCtrl">
+			<div class="orders-container ng-cloak">
+
+				<div class="marg-b3">
+					<a href="" class="btn btn-warning btn-sm"><i
+						class="fa fa-plus"></i> NEW ORDER</a>
+				</div>
+
+				<div class="marg-b1">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title size15">Filters</h3>
+						</div>
+						<div class="panel-body">
+							<form class="form-horizontal" ng-submit="getOrders()">
+								<div class="col-sm-3">
+									<div class="input-group input-group-sm">
+										<input type="text" class="form-control"
+											placeholder="Order Search" ng-model="orderSearch" /> <span
+											class="input-group-btn">
+											<button class="btn btn-default" type="submit">
+												<i class="fa fa-search"></i>
+											</button>
+										</span>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+
+				<div th:replace="fragments/admin/layout::fragment-pagination"></div>
+				
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th><a class="sortables"
+								ng-click="sortType = 'orderNumber'; sortReverse = !sortReverse; getOrders();">Order
+									<span ng-show="sortType == 'orderNumber'"><i
+										ng-show="!sortReverse" class="fa fa-caret-down"></i> <i
+										ng-show="sortReverse" class="fa fa-caret-up"></i></span> <i
+									ng-show="sortType != 'orderNumber'" class="fa fa-sort"></i>
+							</a></th>
+							<th>Date</th>
+							<th>Items</th>
+							<th class="text-right">Total</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="o in orders">
+							<td><a href="" ng-click="showDetails()">{{o.orderNumber}}</a>
+								by {{o.customer.name}}<br /> <a target="_blank"
+								href="/admin/users/#/details/{{o.customer._id}}">{{o.customer.email}}</a>
+							</td>
+							<td>{{o.date | date : 'MM/dd/yyyy hh:mm a'}}</td>
+							<td>
+								<div ng-repeat="item in o.lineItems">
+									<span ng-if="item.type=='item'">{{item.name}}</span>
+								</div>
+							</td>
+							<td class="text-right">{{o.total | currency}}</td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+
+				<div th:replace="fragments/admin/layout::fragment-pagination"></div>
+				
+			</div>
+		</div>
+
+		<div th:replace="fragments/admin/layout::fragment-footer"></div>
+		<div th:include="fragments/admin/layout::fragment-foot(angular=true)"></div>
+	</div>
+	
+	<script src="/resources/js/admin/angular-orderdetails-service.js"></script>
+	<script src="/resources/js/admin/angular-order.js"></script>
+	<script type="text/javascript">
+		$('.nav-orders').addClass('active');
+	</script>
+</body>
+</html>
