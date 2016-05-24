@@ -29,7 +29,7 @@ public class MongoConfig {
 		String dbname = env.getProperty("dbname");
 		String dbuser = env.getProperty("dbuser");
 		String password = env.getProperty("password");
-		System.out.println(dbname + " - " + dbuser + " - " + password);
+		//System.out.println(dbname + " - " + dbuser + " - " + password);
 
 		String server1 = env.getProperty("server1");
 		int port1 = Utility.getInteger(env.getProperty("port1"));

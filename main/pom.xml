@@ -195,6 +195,7 @@
 							<server>ProductionServer</server>
 							<path>/</path>
 							<warName>ROOT</warName>
+							<update>true</update>
 						</configuration>
 					</plugin>
 				</plugins>
