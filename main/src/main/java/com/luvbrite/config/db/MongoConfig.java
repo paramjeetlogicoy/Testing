@@ -27,9 +27,9 @@ public class MongoConfig {
 	public Datastore morphia(){
 
 		String dbname = env.getProperty("dbname");
-		String user = env.getProperty("user");
+		String dbuser = env.getProperty("dbuser");
 		String password = env.getProperty("password");
-		System.out.println(dbname + " - " + user + " - " + password);
+		System.out.println(dbname + " - " + dbuser + " - " + password);
 
 		String server1 = env.getProperty("server1");
 		int port1 = Utility.getInteger(env.getProperty("port1"));
@@ -41,7 +41,7 @@ public class MongoConfig {
 		int port3 = Utility.getInteger(env.getProperty("port3"));
 		
 		MongoCredential credential = MongoCredential
-				.createCredential(user, dbname, password.toCharArray());
+				.createCredential(dbuser, dbname, password.toCharArray());
 		
 		MongoClient client = new MongoClient(
 								Arrays.asList(
