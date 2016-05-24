@@ -1,0 +1,114 @@
+<!doctype html>
+<html ng-app="fileUpload">
+<head>
+<!-- Bootstrap -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+	integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+	crossorigin="anonymous" />
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.2/angular.min.js"></script>
+<script src="/admin/resources/js/lib/upload/ng-file-upload.min.js"></script>
+<style type="text/css">
+.drop-box {
+    background: #F8F8F8;
+    border: 5px dashed #DDD;
+    width: 200px;
+    height: 65px;
+    text-align: center;
+    padding-top: 25px;
+    margin: 10px;
+}
+.dragover {
+    border: 5px dashed blue;
+}
+</style>
+</head>
+<body>
+	<h2>Todo</h2>
+	<div ng-controller="MyCtrl">
+		Drop File:
+		<div ngf-drop ngf-select ng-model="files" class="drop-box" 
+        ngf-drag-over-class="'dragover'" ngf-multiple="true" ngf-allow-dir="true"
+        accept="image/*,application/pdf" 
+        ngf-pattern="'image/*,application/pdf'">Drop Images or PDFs
+			files here
+			
+			
+	<div class="progress-wrapper"></div>
+			</div>
+		<div ngf-no-file-drop>File Drag/Drop is not supported for this
+			browser</div>
+	</div>
+		<script
+			src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script type="text/javascript">
+
+//inject directives and services.
+var app = angular.module('fileUpload', ['ngFileUpload']);
+
+app.controller('MyCtrl', ['$scope', 'Upload', function ($scope, Upload) {
+    $scope.$watch('files', function () {
+        $scope.upload($scope.files);
+    });
+    
+    // for multiple files:
+    $scope.upload = function (files) {
+      if (files && files.length) {
+        for (var i = 0; i < files.length; i++) {
+
+            var file = files[i];
+	        var fileInfo = {progress : false, element : null}
+	        
+	        Upload.upload({
+	            url: '/admin/upload',
+	        	file: file,
+	        	fileInfo : fileInfo
+	            
+	        }).then(
+
+	    	        function (resp) { //Success
+		    	        
+			            if(resp.config.fileInfo)
+			            	resp.config.fileInfo.element.css('width', '100%').html('100%');
+			
+			            //uploadedFiles.push(data.result.path)
+			            
+			        },
+
+
+
+	    	        function (resp) {//Error
+			            if(resp.error)
+			        		console.log('Error detected');
+			        },
+
+	
+	    	        function (evt) { //Progress
+			        	if(!evt.config.fileInfo.progress){
+				        	var f = evt.config.fileInfo;
+				        	
+			        		f.progress = true;
+			        		f.element = $('<div />').attr({'class': 'progress-bar progress-bar-success', 'role':'progressbar','style':'width:0%'});
+			        		
+			        		$('<div class="row"><div class="col-xs-4 file-name-holder">' 
+			                		+ evt.config.file.name 
+			                		+ '</div><div class="col-xs-8"><div class="progress"></div></div>')
+			                		.appendTo('.progress-wrapper')
+			                		.find('.progress')
+			                		.append(f.element);
+			        	}
+
+			            if(evt.config.fileInfo){
+			            	var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+			            	evt.config.fileInfo.element.css('width', progressPercentage+'%').html(progressPercentage+'%');
+			            }
+			        }
+			 );
+        }
+      }
+    }
+}]);
+    </script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<div class="pop-gallery-overlay" ng-controller="ordDtlsCtrlr">
+	<div class="pop-gallery ord-dtls-gallery">
+		<div class="ord-dtls-gallery-wrapper">
+			<div class="panel panel-default">
+				<div class="panel-heading clearfix">
+					<h3 class="panel-title pull-left">
+						Order Number #<span>{{o.orderNumber}}</span>
+					</h3>
+					<a href="" class="pull-right" ng-click="hideGallery()"> <i
+						class="fa fa-times size24"></i>
+					</a> <strong class="pull-right marg-r2"><i
+						class="fa fa-calendar" aria-hidden="true"></i> {{o.date | date :
+						'MM/dd/yyyy hh:mm a'}}</strong>
+				</div>
+				<div class="panel-body">
+
+					<div class="alert alert-danger alert-dismissible" role="alert"
+						ng-show="errorMsg">
+						<button type="button" class="close" data-dismiss="alert"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<span ng-bind-html="errorMsg"></span>
+					</div>
+
+					<form class="form-horizontal" name="orderDetails">
+						<div class="row order-details-main">
+							<div class="col-sm-5">
+								<h5>General Details</h5>
+								<dl>
+									<dt>Customer</dt>
+									<dd class="marg-b2">
+										<a href="/admin/users/#/details/{{o.customer._id}}"
+											target="_blank">{{o.customer.email}}</a>
+									</dd>
+									<dt>Order Status</dt>
+									<dd class="marg-b2">
+										<div class="row">
+											<div class="col-sm-5">
+												<select ng-change="statusChange()"
+													class="form-control input-sm capitalize"
+													ng-options="status for status in orderStatuses"
+													ng-model="o.status"></select>
+
+											</div>
+										</div>
+									</dd>
+									<dt>Order Total</dt>
+									<dd>
+										<strong>{{o.total | currency}}</strong>
+									</dd>
+								</dl>
+							</div>
+
+							<div class="col-sm-4">
+								<h5>Billing Details</h5>
+								<dl>
+									<dt>Address:</dt>
+									<dd>
+										{{o.billing.firstName}} {{o.billing.lastName}}<br />
+										{{o.billing.address1}} {{o.billing.address2}}<br />
+										{{o.billing.city}}, {{o.billing.state}} {{o.billing.zip}}
+
+									</dd>
+								</dl>
+								<dl ng-if="o.billing.email">
+									<dt>Email:</dt>
+									<dd>{{o.billing.email}}</dd>
+								</dl>
+								<dl ng-if="o.billing.phone">
+									<dt>Phone:</dt>
+									<dd>{{o.billing.phone}}</dd>
+								</dl>
+							</div>
+
+							<div class="col-sm-3">
+								<h5>Notes</h5>
+								<div>
+									<dl ng-if="o.notes.deliveryNotes">
+										<dt>Delivery Schedule:</dt>
+										<dd>
+											<span class="size12">{{o.notes.deliveryNotes}}</span>
+										</dd>
+									</dl>
+									<dl ng-if="o.notes.additonalNotes">
+										<dt>Additional Notes:</dt>
+										<dd>
+											<span class="size12">{{o.notes.additonalNotes}}</span>
+										</dd>
+									</dl>
+								</div>
+
+							</div>
+						</div>
+						<hr />
+
+						<h4>Order Items</h4>
+						<div class="item-details">
+							<table class="table">
+								<thead>
+									<tr>
+										<th class="col-xs-1"></th>
+										<th class="pc60">Item</th>
+										<th class="text-right">Cost</th>
+										<th class="text-right">Qty</th>
+										<th class="text-right">Price</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="item in o.lineItems" ng-if="item.type=='item'">
+										<td><img ng-src="/files/view{{item.img.replace('-150x150','').replace('.jpg','-150x150.jpg')}}" ng-if="item.img" class="fit"/></td>
+										<td>
+											<div>{{item.name}}</div>
+											<div ng-repeat="spec in item.specs">
+												<strong>{{spec.attr}}</strong>: <span>{{spec.value}}</span>
+											</div>
+										</td>
+										<td class="text-right">{{item.cost | currency}}</td>
+										<td class="text-right">{{item.qty}}</td>
+										<td class="text-right">{{item.price | currency}}</td>
+
+									</tr>
+
+								</tbody>
+							</table>
+						</div>
+
+						<div class="item-details">
+							<table class="table">
+								<thead>
+									<tr>
+										<th class="pc60">Coupons/Adjustments</th>
+										<th class="text-right" colspan="3">Amount</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="item in o.lineItems" ng-if="item.type!='item'">
+										<td>
+											<div>{{item.name + ' (' + item.type + ')' }}</div>
+										</td>
+										<td class="text-right" colspan="3">{{item.price |
+											currency}}</td>
+
+									</tr>
+
+								</tbody>
+							</table>
+						</div>
+
+						<div class="clearfix">
+							<div class="pull-right">
+								<table class="table">
+									<tbody>
+										<tr>
+											<td class="text-right">Sub Total</td>
+											<td class="text-right" colspan="3">{{o.subTotal |
+												currency}}</td>
+
+										</tr>
+										<tr>
+											<td class="text-right">Discount</td>
+											<td class="text-right" colspan="3">{{(o.total-o.subTotal)
+												| currency}}</td>
+
+										</tr>
+										<tr class="blue1">
+											<th class="text-right size16">Total</th>
+											<th class="text-right size16" colspan="3">{{o.total |
+												currency}}</th>
+
+										</tr>
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</form>
+				</div>
+
+				<div class="panel-footer text-right">
+					<!-- <button type="button" class="btn btn-success btn-sm"
+						ng-disabled="orderDetails.$pristine || orderDetails.$invalid"
+						ng-click="saveDetails()">SAVE</button> -->
+					<button type="button" class="btn btn-default btn-sm"
+						ng-click="hideGallery()">Close</button>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+</div>

@@ -1,0 +1,59 @@
+<div class="pop-gallery-overlay" ng-controller="uploadCtrlr">
+	<div class="pop-gallery file-gallery">
+		<button type="button" class="close" aria-label="Close"
+			ng-click="hideGallery()">
+			<i class="fa fa-times size24"></i>
+		</button>
+		<div class="file-gallery-wrapper">
+			<div class="fgw-header border-b marg-b2">
+				<h4>Files</h4>
+			</div>
+
+			<div class="fgw-body border-b marg-b2">
+				<div class="fgw-file-selector">
+
+					
+					<div ngf-drop ngf-select ng-model="files" class="fgw-drop-box pad1 marg-b3"
+						ngf-drag-over-class="'dragover'" ngf-multiple="true"
+						ngf-allow-dir="true" accept="image/*,application/pdf"
+						ngf-pattern="'image/*,application/pdf'">
+						<h5>Click to Select Or Drop images or PDF files here</h5>
+
+
+						<div class="progress-wrapper"></div>
+					</div>
+					<div ngf-no-file-drop>File Drag/Drop is not supported for
+						this browser</div>
+				</div>
+
+				<div class="fgw-file-list">
+					<h5>Existing Files:</h5>
+					<ul class="clearfix lb-scrollbar">
+						<li ng-repeat="file in sfiles | orderBy : file._id : reverse"
+							ng-click="selectFiles()" ng-class="file.selected?'selected':''"><div
+							ng-if="file.mime && file.mime.indexOf('image')>-1"> <img
+								ng-if="file.locType=='cdn'"
+								ng-src="{{cdnPath + file.location}}" />
+								<img ng-if="file.locType!='cdn'"
+								ng-src="/files/view/{{file.location}}" />
+						</div> <a ng-if="file.locType=='cdn'"
+							href="{{cdnPath + file.location}}"
+							target="_blank"><small>{{file.filename}}</small></a> <a
+							ng-if="file.locType!='cdn'"
+							href="/files/view/{{file.location}}" target="_blank"><small>{{file.filename}}</small></a>							
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="fgw-footer text-right">
+				<button type="button" class="btn btn-success btn-sm"
+					ng-click="useSelectedFiles()">Use Selected Files</button>
+				<button type="button" class="btn btn-default btn-sm"
+					ng-click="hideGallery()">Close</button>
+			</div>
+
+		</div>
+
+	</div>
+
+</div>

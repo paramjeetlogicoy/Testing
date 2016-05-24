@@ -1,0 +1,232 @@
+<div id="addCouponModal" class="pop-gallery-overlay">
+
+	<div class="pop-gallery">
+		<button type="button" class="close" aria-label="Close"
+			ng-click="closeModal()">
+			<i class="fa fa-times size24"></i>
+		</button>
+
+		<h4>Create Coupon</h4>
+		<form name="addCoupon" class="form-horizontal addCouponForm"
+			ng-submit="createCoupon()" ng-hide="bulkCouponMsg">
+
+			<div class="form-group form-group-sm" ng-show="mode=='new'"
+				ng-class="{ 'has-error' : addCoupon.couponCount.$invalid && !addCoupon.couponCount.$pristine }">
+				<label class="col-sm-4 control-label">Number of coupons
+					needed</label>
+				<div class="col-sm-4">
+					<input type="number" step="1" name="couponCount"
+						placeholder="Ex: 1" ng-model="couponCount" class="form-control"
+						required />
+					<p class="help-block">Number of coupons you would like to
+						generate. Usually 1.</p>
+				</div>
+
+			</div>
+
+			<div ng-show="couponCount>0">
+				<div class="form-group form-group-sm" ng-show="couponCount==1"
+					ng-class="{ 'has-error' : (addCoupon.couponCode.$invalid && !addCoupon.couponCode.$pristine) || couponExists }">
+					<label class="col-sm-4 control-label">Coupon Code*</label>
+					<div class="col-sm-4">
+						<input type="text" name="couponCode"
+							placeholder="Ex: newyearspecial20" ng-model="cp._id" ng-disabled="mode=='edit'"
+							class="form-control" required ng-change="checkCoupon()" ng-model-options="{updateOn: 'blur'}" />
+						<p
+							ng-show="addCoupon.couponCode.$invalid && !addCoupon.couponCode.$pristine"
+							class="help-block">Coupon code is required.</p>
+						<p
+							ng-show="couponExists"
+							class="help-block">Coupon with the same name exists. Please enter a new name.</p>
+					</div>
+
+				</div>
+
+				<div class="form-group form-group-sm" ng-show="couponCount>1"
+					ng-class="{ 'has-error' : addCoupon.couponPrefix.$invalid && !addCoupon.couponPrefix.$pristine }">
+					<label class="col-sm-4 control-label">Coupon prefix*</label>
+					<div class="col-sm-4">
+						<input type="text" step="1" name="couponPrefix"
+							placeholder="Ex: summers" ng-model="cp._id" required class="form-control" />
+						<p
+							ng-show="addCoupon.couponPrefix.$invalid && !addCoupon.couponPrefix.$pristine"
+							class="help-block">Coupon Prefix is required.</p>
+					</div>
+
+				</div>
+
+				<div class="form-group form-group-sm">
+					<label class="col-sm-4 control-label">Coupon Type*</label>
+					<div class="col-sm-4">
+						<select class="form-control"
+							ng-options="type for type in couponTypes" ng-model="cp.type"></select>
+						<p class="help-block">F - Fixed, R - % Rate</p>
+					</div>
+				</div>
+
+				<div class="form-group form-group-sm">
+					<label class="col-sm-4 control-label">Coupon Active*</label>
+					<div class="col-sm-4">
+						<select class="form-control"
+							ng-options="status for status in couponStatus"
+							ng-model="cp.active"></select>
+						<p class="help-block">Whether the coupon should be currently
+							active or not.</p>
+					</div>
+				</div>
+
+				<div class="form-group form-group-sm"
+					ng-class="{ 'has-error' : addCoupon.couponValue.$invalid && !addCoupon.couponValue.$pristine }">
+					<label class="col-sm-4 control-label">Coupon Value*</label>
+					<div class="col-sm-4">
+						<div class="input-group" ng-show="cp.type=='F'">
+							<span class="input-group-addon">$</span> <input type="number"
+								step="any" class="form-control" name="couponValue" required
+								ng-model="cp.couponValue" placeholder="Discount $ value" />
+						</div>
+						<div class="input-group" ng-show="cp.type=='R'">
+							<input type="number" step="any" class="form-control" required
+								name="couponPValue" ng-model="cp.couponValue"
+								placeholder="Discount %" /> <span class="input-group-addon">%</span>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="form-group form-group-sm">
+					<label class="col-sm-4 control-label">Current Usage</label>
+					<div class="col-sm-4">
+						<input type="number" step="1" class="form-control"
+							ng-model="cp.usageCount" name="usageCount" min="0" />
+						<p class="help-block">How many times the coupon have been
+							used.</p>
+					</div>
+
+				</div>
+
+				<div class="form-group form-group-sm">
+					<label class="col-sm-4 control-label">Max Usage</label>
+					<div class="col-sm-4">
+						<input type="number" step="1" class="form-control"
+							ng-model="cp.maxUsageCount" ng-required="!cp.expiry"
+							name="maxUsageCount" min="0" />
+						<p class="help-block">How many times the coupon can be used.</p>
+					</div>
+
+				</div>
+
+				<div class="form-group form-group-sm">
+					<label class="col-sm-4 control-label">Expiry Date</label>
+					<div class="col-sm-4">
+						<input type="date" ng-model="expiryDate" class="form-control"
+							name="expiry" ng-required="!cp.maxUsageCount"
+							min="{{today | date:'yyyy-MM-dd'}}" ng-change="updateExpiryDate()" />
+							
+							<input type="hidden" class="form-control"
+									ng-model="cp.expiry" name="cp.expiry" />
+							
+						<p class="help-block">Expiration date for coupon. There should
+							be a way to limit the coupon, so it should either have an expiry
+							date OR maximum usage count.</p>
+					</div>
+
+				</div>
+
+				<div class="form-group form-group-sm">
+					<label class="col-sm-4 control-label">Min Order Value</label>
+					<div class="col-sm-4">
+						<div class="input-group">
+							<span class="input-group-addon">$</span> <input type="number"
+								step="any" class="form-control" name="minAmt"
+								ng-model="cp.minAmt" placeholder="Min. order value in $" />
+						</div>
+						<p class="help-block">The minimum order value needed for
+							applying this coupon. This is a way to restrict the coupon usage.
+							If unsure, leave the value as 0.</p>
+					</div>
+
+				</div>
+
+				<div class="form-group form-group-sm">
+					<label class="col-sm-4 control-label">Max discount provided</label>
+					<div class="col-sm-4">
+						<div class="input-group">
+							<span class="input-group-addon">$</span> <input type="number"
+								step="any" class="form-control" name="maxDiscAmt"
+								ng-model="cp.maxDiscAmt" placeholder="Max discount value in $" />
+						</div>
+						<p class="help-block">Another way to limit the coupon. For %
+							discounts, you can give a cap to the discount possible. If
+							unsure, leave the value as 0.</p>
+					</div>
+				</div>
+
+				<div class="form-group form-group-sm">
+					<label class="col-sm-4 control-label">Customer</label>
+					<div class="col-sm-4">
+						<textarea class="form-control" ng-model="cp.emails" ng-list=" | "></textarea>
+						<p class="help-block">Enter email addresses separated by '|'.
+							This will limit coupon to customers with email address listed
+							above. If this coupon is for all customers, leave this field
+							blank.</p>
+					</div>
+				</div>
+
+				<div class="form-group form-group-sm">
+					<label class="col-sm-4 control-label">Products</label>
+					<div class="col-sm-4">
+						<div ng-show="!cp.pids || cp.pids.length==0">No products
+							selected</div>
+						<div class="cat-selected label-container marg-b3">
+							<span ng-repeat="pid in cp.pids"><span
+								class="label label-default">{{getProductName(pid)}} <a
+									class="fa fa-times" ng-click="removeProduct()" title="remove"
+									href=""></a>
+							</span></span>
+						</div>
+
+						<input type="text" ng-model="prodSelected"
+							uib-typeahead="product.name for product in products | filter:$viewValue | limitTo:8"
+							typeahead-on-select="addProduct($item)" class="form-control"
+							placeholder="Type product name to choose from the list" />
+						<p class="help-block">The coupon can only be applied to these
+							selected products. If the list is empty, coupon can be applied to
+							all products.</p>
+					</div>
+				</div>
+
+				<div class="form-group form-group-sm">
+					<div class="col-sm-4 col-sm-offset-4">
+						<button type="submit"
+							ng-disabled="addCoupon.$invalid || addCoupon.$pristine || couponExists"
+							class="btn btn-success">
+							<span ng-show="mode=='edit'">SAVE</span><span
+								ng-show="mode=='new'">CREATE</span>
+						</button>
+						<p class="help-block" ng-show="addCoupon.$invalid">Fill up all necessary fields</p>
+						<p class="help-block" ng-show="mode=='edit' && addCoupon.$pristine">No changes to save.</p>
+					</div>
+				</div>
+
+
+				<div class="alert alert-danger alert-dismissible" role="alert"
+					ng-show="errorMsg">
+					<button type="button" class="close" data-dismiss="alert"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<span ng-bind-html="errorMsg"></span>
+				</div>
+
+			</div>
+
+		</form>
+
+		<div ng-show="bulkCouponMsg">
+			<div class="alert alert-success" role="alert">
+				<p><strong>Following coupons created successfully:</strong></p>
+				<div ng-repeat="item in bulkCouponMsg.split(',')">{{item}}</div>
+			</div>
+		</div>
+	</div>
+</div>
