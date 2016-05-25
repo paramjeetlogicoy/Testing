@@ -45,6 +45,9 @@ public class SynchronizeCartItems {
 	private CartOrderSummary orderSummary;
 	
 	@Autowired
+	private CouponManager couponManager;
+	
+	@Autowired
 	private LogDAO logDao;
 	
 	public String sync(Product product){
@@ -80,6 +83,7 @@ public class SynchronizeCartItems {
 					List<OrderLineItemCart> lis = co.getLineItems();
 					if(lis != null){
 						boolean itemChanged = false;
+						String couponCode = "";
 						StringBuilder logDetails = new StringBuilder().append("Product changed detected. ");
 						
 						List<OrderLineItemCart> deletedLis = new ArrayList<OrderLineItemCart>();
@@ -109,7 +113,8 @@ public class SynchronizeCartItems {
 								
 								/*Product is currently variable, but in cart it's not, 
 								 *Or product is not variable, but in cart it is  
-								 *deleted the item in both scenarios */
+								 *
+								 *In both scenarios delete the item */
 								if( (variableProduct && li.getVariationId()==0) 
 										|| (!variableProduct && li.getVariationId()!=0) ){
 									deletedLis.add(li);
@@ -124,7 +129,8 @@ public class SynchronizeCartItems {
 								 **/
 								if(!variableProduct){
 									
-									/*The item is currently on sale, and prices doesn't match, update the cart to be on sale*/
+									/*The item is currently on sale, and prices doesn't match,  
+									 *update the cart to be on sale*/
 									if(product.getSalePrice()!=0){
 
 										if(li.getPrice() != product.getSalePrice()){											
@@ -151,7 +157,14 @@ public class SynchronizeCartItems {
 										}
 									}
 								}
-							}								
+							}	
+							
+							
+							
+							/*Check if there is any coupon applied to that order*/
+							if(li.getType().equals("coupon")){
+								couponCode = li.getName();
+							}
 						}
 						
 						
@@ -165,6 +178,11 @@ public class SynchronizeCartItems {
 								for(OrderLineItemCart dli : deletedLis){
 									lis.remove(dli);
 								}
+							}
+							
+							/*If there was an itemChange and couponCode was present, reapply coupon*/
+							if(!"".equals(couponCode)){
+								couponManager.reapplyCoupon(couponCode, co);
 							}
 							
 							/*Recalculate order summary*/

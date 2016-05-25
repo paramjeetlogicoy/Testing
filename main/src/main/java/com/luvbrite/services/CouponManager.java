@@ -304,6 +304,7 @@ public class CouponManager {
 				boolean matchingProductsFound = false,
 						couponApplied = false;
 				double orderTotal = 0d;
+				boolean noValidItemsFound = true;
 				
 				List<OrderLineItemCart> olics = order.getLineItems();
 				if(olics != null && olics.size() > 0){
@@ -316,7 +317,12 @@ public class CouponManager {
 							couponApplied = true;
 						}
 						
-						orderTotal+= ( olic.getPrice()*olic.getQty() );
+						orderTotal+= ( olic.getPrice()*olic.getQty() );						
+						
+						/*Check if the item is valid*/
+						if(validPromoItem(olic)){
+							noValidItemsFound = false;
+						}
 					}
 				}
 				
@@ -327,6 +333,8 @@ public class CouponManager {
 				
 				
 				if(couponApplied) return "The coupon had already been applied to this order";
+				
+				if(noValidItemsFound) return "No eligible items found in the cart.";
 				
 				
 				/*	If there matching Products or 
@@ -581,6 +589,11 @@ public class CouponManager {
 						if(removeC!=null){
 							removeC.setUsageCount(removeC.getUsageCount()-1);							
 							dao.save(removeC);
+							
+							/*If the same coupon is being applied again, update coupon obj as well*/
+							if(removeC.get_id().equals(coupon.get_id())){
+								coupon.setUsageCount(removeC.getUsageCount());
+							}
 						}
 						
 						/* Remove item from the order as well*/
@@ -665,6 +678,7 @@ public class CouponManager {
 	private boolean validPromoItem(OrderLineItemCart olic){
 		return 
 				olic.getType().equals("item")
+				&& olic.isInstock() 
 				&& (olic.getPromo() == null 
 					|| !olic.getPromo().equals("s")); //Item is not already discounted
 	}

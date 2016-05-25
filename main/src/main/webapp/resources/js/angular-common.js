@@ -308,6 +308,7 @@ cartCtrlr = function($scope, $rootScope, $http){
 	$scope.user = {};
 	$scope.addressValidated = false;
 	$scope.cartLoading = true;
+	$scope.sales = [];
 	
 	if(_globalUserId)
 		$scope.user._id = _globalUserId;
@@ -321,7 +322,10 @@ cartCtrlr = function($scope, $rootScope, $http){
 		.then(function(resp){
 			
 			$scope.cartLoading = false;
+			
 			$scope.order = resp.data.order;
+			$scope.updateSales();
+			
 			$scope.user = resp.data.user?resp.data.user:{};
 			
 			if($scope.order && $scope.order.billing){				
@@ -357,7 +361,6 @@ cartCtrlr = function($scope, $rootScope, $http){
 	
 	$scope.getCart();
 	
-	
 	$scope.addressLogic = function(){
 		
 		if($scope.user.billing && ($scope.user.billing.address1 != '' 
@@ -390,7 +393,10 @@ cartCtrlr = function($scope, $rootScope, $http){
 						if(resp.data && resp.data.success){
 					
 							$rootScope.rootCartCount = resp.data.cartCount;
+							
 							$scope.order = resp.data.order;
+							$scope.updateSales();
+							
 							_lbFns.pSuccess('Item removed.');
 						}
 					
@@ -430,6 +436,8 @@ cartCtrlr = function($scope, $rootScope, $http){
 					
 					$rootScope.rootCartCount = resp.cartCount;
 					$scope.order = resp.order;
+					$scope.updateSales();
+					
 					_lbFns.pSuccess('Order Updated.');		
 				}
 				else{
@@ -605,6 +613,30 @@ cartCtrlr = function($scope, $rootScope, $http){
 		
 	};
 	
+	/*When ever there is a change in $scope.order, this function needs to be called*/
+	$scope.updateSales = function(){
+		console.log('order changed');
+		$scope.sales = [];
+		if($scope.order.lineItems && $scope.order.lineItems.length>0){
+			$scope.order.lineItems.forEach(function(item){
+				if(item.type=='item' 
+					&& item.promo == 's'){
+					
+					var productName = item.name.length>15?item.name.substr(0,15)+'...':item.name,
+					discount = (item.cost - item.price)*item.qty;
+					
+					if(!isNaN(discount) && discount > 0){						
+						$scope.sales.push({
+							'name' : productName,
+							'price' : discount
+						});
+					}
+					
+				}
+			});
+		}
+	};
+	
 	$scope.editAddress = function(){
 		$scope.addressValidated = false;
 		$scope.cartAddress.$setDirty();
@@ -635,7 +667,7 @@ cartCtrlr = function($scope, $rootScope, $http){
 	$scope.goodToProceed = function(){
 		
 		return $scope.order 
-			&& $scope.emptyCart 
+			&& !$scope.emptyCart() 
 			&& $scope.addressValidated;
 	};
 	

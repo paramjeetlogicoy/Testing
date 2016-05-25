@@ -46,7 +46,7 @@
 						<div class="cart-details-body">
 							<ul>
 								<li class="item-li" ng-repeat="item in order.lineItems"
-									ng-if="item.type=='item'">
+									ng-if="item.type=='item'" ng-hide="!item.instock">
 									<div class="item-thumb">
 										<img ng-if="item.img" ng-src="/files/view/{{item.img}}"
 											class="fit" />
@@ -271,20 +271,26 @@
 									<td class="text-right">{{(order.subTotal - order.total) |
 										currency}}</td>
 								</tr>
-								
+
 								<tr>
 									<td colspan="2">
 
-										<div class="promotions clearfix marg-b3" ng-hide="promoApplied()">
+										<div class="promotions clearfix marg-b3"
+											ng-hide="promoApplied()">
 											<h6>Add Gift or Promo Code</h6>
-											<form ng-submit="applyCoupon()" name="promoForm" class="cart-promo-form">
-												<input type="text" class="form-control size13" ng-model="couponCode" />
-												<button class="btn btn-sm btn-lb" type="submit">Apply</button>											
+											<form ng-submit="applyCoupon()" name="promoForm"
+												class="cart-promo-form">
+												<input type="text" class="form-control size13"
+													ng-model="couponCode" />
+												<button class="btn btn-sm btn-lb" type="submit">Apply</button>
 											</form>
 										</div>
-										<div class="promotions applied-coupons marg-b3"
-											ng-if="promoApplied()">
-											<h6>Coupons Applied</h6>
+										<div class="applied-coupons marg-b3" ng-if="promoApplied()">
+											<h6>Promotions Applied</h6>
+											<div class="marg-l1" ng-repeat="item in sales">
+												<em class="green1">{{item.name}} (-{{item.price
+													| currency}})</em>
+											</div>
 											<div class="marg-l1" ng-repeat="item in order.lineItems"
 												ng-if="item.type=='coupon'">
 												<em><span class="green1">{{item.name}}

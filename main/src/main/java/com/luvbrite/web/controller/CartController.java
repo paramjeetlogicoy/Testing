@@ -352,25 +352,6 @@ public class CartController {
 			}
 		}
 		
-
-		/**  
-		 * IMPORTANT  - The below part should be after all 
-		 * logic that saves the order
-		 */
-		
-		/*Remove outofstock items*/
-		if(order!=null){
-			List<OrderLineItemCart> lis = order.getLineItems();
-			if(lis!=null){
-				Iterator<OrderLineItemCart> iter = lis.iterator();
-				while(iter.hasNext()){
-					if(!iter.next().isInstock()){
-						iter.remove();
-					}
-				}
-			}
-		}
-		
 		cr.setOrder(order);
 		
 		return cr;			
@@ -692,43 +673,38 @@ public class CartController {
 			
 			int totalItems = 0;
 			boolean itemFound = false;
-			String couponCode = "";
+			String couponCode = "";		
+
 			List<OrderLineItemCart> items = order.getLineItems();
 			if(items != null){
-				for(OrderLineItemCart item : items){
+				Iterator<OrderLineItemCart> iter = items.iterator();
+				
+				while(iter.hasNext()){
+					OrderLineItemCart item = iter.next();
 					if(item.getVariationId() == variationId){
+						iter.remove();
+							
+						/*Update Log*/
+						try {
+							
+							Log log = new Log();
+							log.setCollection("cartorders");
+							log.setDetails("Item removed - " + item.getName() 
+									+ ". Var Id - " + variationId);
+							log.setDate(Calendar.getInstance().getTime());
+							log.setKey(order.get_id());
+							log.setUser("customer");
+							
+							logDao.save(log);					
+						}
+						catch(Exception e){
+							logger.error(Exceptions.giveStackTrace(e));
+						}
 						
-						if(items.remove(item)){
-							
-							/**
-							 * Update Log
-							 * */
-							try {
-								
-								Log log = new Log();
-								log.setCollection("cartorders");
-								log.setDetails("Item removed - " + item.getName() + ". Var Id - " + variationId);
-								log.setDate(Calendar.getInstance().getTime());
-								log.setKey(order.get_id());
-								log.setUser("customer");
-								
-								logDao.save(log);					
-							}
-							catch(Exception e){
-								logger.error(Exceptions.giveStackTrace(e));
-							}
-							
-							
-							itemFound = true;
-							
-							break;
-						}	
-					}
-					
-
-					
-					if(item.getType().equals("coupon")){
-						couponCode = item.getName();
+						
+						itemFound = true;
+						
+						break;
 					}
 				}
 			}
@@ -741,6 +717,11 @@ public class CartController {
 						if(item.getType().equals("item")
 								&& item.isInstock()){
 							totalItems+= item.getQty();
+						}
+						
+						
+						if(item.getType().equals("coupon")){
+							couponCode = item.getName();
 						}
 					}
 				}
