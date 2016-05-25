@@ -16,3 +16,4 @@ settings.xml
 *.jar
 .DS_Store
 .factorypath
+.tern-project
