@@ -156,6 +156,7 @@ public class CartController {
 					
 					//Check if the same item is already in the order
 					boolean itemFound = false;
+					String couponCode = "";
 					List<OrderLineItemCart> items = order.getLineItems();
 					if(items != null){
 						for(OrderLineItemCart item : items){
@@ -176,6 +177,10 @@ public class CartController {
 							if(item.getType().equals("item")
 									&& item.isInstock()){
 								totalItems+= item.getQty();
+							}
+							
+							else if(item.getType().equals("coupon")){
+								couponCode = item.getName();
 							}
 						}
 					}
@@ -204,6 +209,12 @@ public class CartController {
 					
 					/*Update order with lineItems*/
 					order.setLineItems(items);
+					
+					
+					/* Reapply coupons if any! */
+					if(!couponCode.equals("")){
+						couponManager.reapplyCoupon(couponCode, order);
+					}
 					
 					/*Update orderTotals*/
 					orderSummary.calculateSummary(order);
@@ -547,6 +558,7 @@ public class CartController {
 			
 			int totalItems = 0;
 			boolean itemFound = false;
+			String couponCode = "";
 			List<OrderLineItemCart> items = order.getLineItems();
 			if(items != null){
 				for(OrderLineItemCart item : items){
@@ -589,11 +601,20 @@ public class CartController {
 								&& item.isInstock()){
 							totalItems+= item.getQty();
 						}
+						
+						else if(item.getType().equals("coupon")){
+							couponCode = item.getName();
+						}
 					}
 				}
 			}
 			
 			if(itemFound){
+				
+				/* Reapply coupons if any! */
+				if(!couponCode.equals("")){
+					couponManager.reapplyCoupon(couponCode, order);
+				}
 				
 				//Update orderTotals
 				orderSummary.calculateSummary(order);
@@ -619,6 +640,16 @@ public class CartController {
 		
 		
 		return cr;
+	}
+	
+	
+	
+	@RequestMapping(value = "/removecoupon/{couponCode}", method = RequestMethod.GET)
+	public @ResponseBody GenericResponse removeCoupon(
+			@PathVariable String couponCode,
+			@RequestParam(value="oid", required=false) Long orderId){
+		
+		return couponManager.removeCoupon(couponCode, orderId);
 	}
 	
 	
@@ -661,6 +692,7 @@ public class CartController {
 			
 			int totalItems = 0;
 			boolean itemFound = false;
+			String couponCode = "";
 			List<OrderLineItemCart> items = order.getLineItems();
 			if(items != null){
 				for(OrderLineItemCart item : items){
@@ -692,6 +724,12 @@ public class CartController {
 							break;
 						}	
 					}
+					
+
+					
+					if(item.getType().equals("coupon")){
+						couponCode = item.getName();
+					}
 				}
 			}
 			
@@ -705,6 +743,12 @@ public class CartController {
 							totalItems+= item.getQty();
 						}
 					}
+				}
+				
+				
+				/* Reapply coupons if any! */
+				if(!couponCode.equals("")){
+					couponManager.reapplyCoupon(couponCode, order);
 				}
 				
 				//Update orderTotals
@@ -815,7 +859,12 @@ public class CartController {
 				double cost = price.getRegPrice(),
 						salePrice = price.getSalePrice();
 				
-				if(salePrice == 0)	salePrice = cost;
+				if(salePrice == 0){
+					salePrice = cost;
+				}
+				else if(salePrice < cost){
+					newItem.setPromo("s");
+				}
 				
 				newItem.setCost(cost);
 				newItem.setPrice(salePrice);

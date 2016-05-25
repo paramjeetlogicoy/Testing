@@ -21,8 +21,7 @@ public class CartOrderSummary {
 		try {
 			
 			if(order!=null){
-				
-				double subCost = 0d;
+
 				double subTotal = 0d;
 				double total = 0d;
 				double discount = 0d;
@@ -35,25 +34,24 @@ public class CartOrderSummary {
 							
 							double itemPrice = item.getPrice();
 							if(itemPrice > 0d){
-								subCost += (item.getCost()*item.getQty());
-								subTotal += (itemPrice*item.getQty());								
+								subTotal += (item.getCost()*item.getQty());
+								total += (itemPrice*item.getQty());								
 							}
 							
 						}
 					}
 				}
 				
+				if(total < 0d) total = 0d;
 				if(subTotal < 0d) subTotal = 0d;
-				if(subCost < 0d) subCost = 0d;
 				
-				subCost = Utility.Round(subCost, 2);
 				subTotal = Utility.Round(subTotal, 2);
+				total = Utility.Round(total, 2);
 				
-				discount = subCost - subTotal;				
+				discount = subTotal - total;				
 				if(discount > subTotal)
 					discount = subTotal;
 				
-				total = subTotal - discount;
 				
 				order.setSubTotal(subTotal);
 				order.setTotal(total);	

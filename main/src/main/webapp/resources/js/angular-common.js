@@ -322,7 +322,7 @@ cartCtrlr = function($scope, $rootScope, $http){
 			
 			$scope.cartLoading = false;
 			$scope.order = resp.data.order;
-			$scope.user = resp.data.user;
+			$scope.user = resp.data.user?resp.data.user:{};
 			
 			if($scope.order && $scope.order.billing){				
 				$scope.user.billing = $scope.order.billing;
@@ -489,12 +489,53 @@ cartCtrlr = function($scope, $rootScope, $http){
 	};	
 	
 	
+	$scope.removeCoupon = function(){
+		
+		$scope.pageLevelAlert = "";
+		var couponCode = this.item.name;
+		
+		if(couponCode){
+			$http.get(_lbUrls.cart + 'removecoupon/' + couponCode,{
+				params : {
+					'hidepop' : true,
+					'oid' : $scope.order._id
+				}
+			})
+			.then(
+					function(resp){
+						if(resp.data && resp.data.success){
+							_lbFns.pSuccess('Promocode removed');
+							
+							//Update cart.
+							$scope.getCart();
+						}
+					
+						else if(resp.data && resp.data.message){
+							$scope.pageLevelAlert = resp.data.message;
+						}
+						else{
+							$scope.pageLevelAlert = $rootScope.errMsgPageRefresh;
+						}
+					},
+					
+					function(){
+						$scope.pageLevelAlert = $rootScope.errMsgPageRefresh;
+					}
+			);
+		}
+		else{
+			$scope.pageLevelAlert = "Invalid promo code";
+		}
+			
+	}
+	
+	
 	$scope.applyCoupon = function(){
 		
 		$scope.pageLevelAlert = "";
 		
 		if($scope.couponCode){
-			$http.get(_lbUrls.cart + '/applycoupon/' + $scope.couponCode,{
+			$http.get(_lbUrls.cart + 'applycoupon/' + $scope.couponCode,{
 				params : {
 					'hidepop' : true,
 					'oid' : $scope.order._id
@@ -504,6 +545,7 @@ cartCtrlr = function($scope, $rootScope, $http){
 					function(resp){
 						if(resp.data && resp.data.success){
 							_lbFns.pSuccess('Promocode applied');
+							$scope.couponCode = '';
 							
 							//Update cart.
 							$scope.getCart();
@@ -602,12 +644,31 @@ cartCtrlr = function($scope, $rootScope, $http){
 		if($scope.order.lineItems && $scope.order.lineItems.length>0){
 			for(var i=0; i<$scope.order.lineItems.length;i++){
 				if($scope.order.lineItems[i].type=='item' 
-					&& $scope.order.lineItems[i].instock)
+					&& $scope.order.lineItems[i].instock){
+					
 					empty = false;
+					break;
+				}
 			}
 		}
 		
 		return empty;
+	};
+	
+	$scope.promoApplied = function(){		
+		var applied = false;
+		if($scope.order.lineItems && $scope.order.lineItems.length>0){
+			for(var i=0; i<$scope.order.lineItems.length;i++){
+				if($scope.order.lineItems[i].type=='coupon' 
+					&& $scope.order.lineItems[i].instock){
+					
+					applied = true;
+					break;
+				}
+			}
+		}
+		
+		return applied;
 	}
 };
 
