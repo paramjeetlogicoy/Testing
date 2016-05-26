@@ -27,25 +27,53 @@ public class CartLogics {
 			
 			if(order!=null){
 
-				double subTotal = 0d;
-				double total = 0d;
-				double discount = 0d;
+				double subTotal = 0d, 
+						total = 0d, 
+						discount = 0d,
+						couponDiscount = 0d;
+				
+				int index = -1,
+						couponIndex = -1;
+				
+				boolean couponFound = false;
 				
 				List<OrderLineItemCart> items = order.getLineItems();
 				if(items != null){
+					
 					for(OrderLineItemCart item : items){
+						
+						index++;
 						
 						if(item.getType().equals("item") && item.isInstock()){
 							
 							double itemPrice = item.getPrice();
-							if(itemPrice > 0d){
+							if(itemPrice >= 0d){
 								subTotal += (item.getCost()*item.getQty());
-								total += (itemPrice*item.getQty());								
+								total += (itemPrice*item.getQty());	
+								
+								if(item.getPromo()!=null && item.getPromo().equals("p")){
+									couponFound = true;
+									couponDiscount += (subTotal - total);
+								}
 							}
 							
 						}
+						
+						
+						if(item.getType().equals("coupon")){
+							couponIndex = index;
+						}
+					}
+					
+					
+					
+					if(couponFound && couponIndex > -1){
+						
+						OrderLineItemCart item = items.get(couponIndex);
+						item.setPrice(couponDiscount);
 					}
 				}
+				
 				
 				if(total < 0d) total = 0d;
 				if(subTotal < 0d) subTotal = 0d;
@@ -76,11 +104,12 @@ public class CartLogics {
 		try {
 
 
-			double doubleDownAmt = cOps.getDoubleDown();
-			double offerAmt = cOps.getDoubleDownOfferValue();
-			double total = 0d;
+			double doubleDownAmt = cOps.getDoubleDown(),
+					offerAmt = cOps.getDoubleDownOfferValue(),
+					total = 0d;
 			
-			boolean orderChanged = false;
+			boolean orderChanged = false,
+					couponPresent = false;
 			
 			int eligibleItemIndex = -1;
 			
@@ -91,6 +120,10 @@ public class CartLogics {
 			 * Remove existing doubledown discounts. we will go through
 			 * the eligibility check again and will apply the discount
 			 * if eligible 
+			 * 
+			 * If there are items with coupons applied item.promo == 'p'
+			 * note them as well, doubleDown offers doesn't combine with
+			 * other promos.
 			 * 
 			 * We don't check if doubleDown is active during the
 			 * removal process because items with doubledown offer
@@ -112,6 +145,12 @@ public class CartLogics {
 							orderChanged = true;
 														
 						}
+						
+						if( item.getPromo() != null 
+								&& "p".equals(item.getPromo()) ){
+							
+							couponPresent = true;
+						}
 					}
 				}
 			}
@@ -122,6 +161,7 @@ public class CartLogics {
 			 * */
 			
 			if(order!=null && doubleDownAmt > 0d 
+					&& !couponPresent
 					&& pids.size() > 0 && offerAmt > 0d){
 				
 				
@@ -141,6 +181,7 @@ public class CartLogics {
 					}
 				}
 				
+				
 				/*Item is eligible for double down when order total is >= doubleDownAmt*/
 				if(total >= doubleDownAmt){
 
@@ -157,10 +198,21 @@ public class CartLogics {
 
 							double itemPrice = item.getPrice();
 							if(itemPrice > 0d){
-								eligibleTotal += (itemPrice*item.getQty());	
-								eligibleItemIndex = index;
 								
-								break;
+								
+								/*Check to see if the order qualifies for doubledown even if  
+								 *this item (1 qty) is removed */
+								if((total - itemPrice) >= doubleDownAmt){
+									/*It qualifies*/
+
+									eligibleTotal = itemPrice;	
+									eligibleItemIndex = index;
+
+									break;
+								}
+								
+								/* else keep looking for more items */	
+								
 							}
 							
 						}

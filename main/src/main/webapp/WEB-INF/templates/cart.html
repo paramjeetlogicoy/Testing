@@ -22,11 +22,11 @@
 			</h4>
 		</div>
 				
-		<div class="cart-details" ng-if="emptyCart()">
+		<div class="cart-details" ng-if="emptyCart">
 			<h4 class="text-center">Shopping cart is empty!</h4>
 		</div>
 
-		<div class="row" ng-hide="cartLoading || emptyCart()">
+		<div class="row" ng-hide="cartLoading || emptyCart">
 
 			<div class="col-sm-8">
 				<div class="cart-content">
@@ -203,7 +203,7 @@
 
 
 
-					<div class="cart-details" ng-if="goodToProceed()">
+					<div class="cart-details" ng-if="goodToProceed">
 						<h4 class="cart-steps">Step3: Confirm Your Order</h4>
 						<div class="cart-confirmation text-center">
 							<h4 class="marg-t0">
@@ -240,11 +240,11 @@
 					<div class="hidden-xs">
 						<div class="text-center">
 							<a href="" ng-click="placeOrder()" class="btn btn-lb btn-lb-w"
-								ng-disabled="!goodToProceed() || !user._id"><strong>Place
+								ng-disabled="!goodToProceed || !user._id"><strong>Place
 									Order</strong></a>
 						</div>
 						<div class="text-center marg-b2 pad2 grey7"
-							ng-if="goodToProceed()" ng-hide="!user._id">
+							ng-if="goodToProceed" ng-hide="!user._id">
 							<em>By clicking on Place Order, I agree to the terms and
 								conditions of luvbrite.</em>
 						</div>
@@ -277,7 +277,7 @@
 									<td colspan="2">
 
 										<div class="promotions clearfix marg-b3"
-											ng-hide="promoApplied()">
+											ng-hide="couponApplied">
 											<h6>Add Gift or Promo Code</h6>
 											<form ng-submit="applyCoupon()" name="promoForm"
 												class="cart-promo-form">
@@ -286,7 +286,7 @@
 												<button class="btn btn-sm btn-lb" type="submit">Apply</button>
 											</form>
 										</div>
-										<div class="applied-coupons marg-b3" ng-if="promoApplied()">
+										<div class="applied-coupons marg-b3" ng-if="offersApplied">
 											<h6>Promotions Applied</h6>
 											<div class="marg-l1" ng-repeat="item in sales">
 												<em class="green1">{{item.name}} (-{{item.price

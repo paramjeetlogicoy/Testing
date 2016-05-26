@@ -311,9 +311,46 @@ cartCtrlr = function($scope, $rootScope, $http){
 	$scope.sales = [];
 	$scope.orderMin = 9999;
 	$scope.config = {};
+
+	$scope.couponApplied = true;  //Only refers to coupons
+	$scope.offersApplied = false; //Refers to all kinds of offers
+	$scope.emptyCart = true;
+	$scope.goodToProceed = false;
 	
-	if(_globalUserId)
-		$scope.user._id = _globalUserId;
+	if(_globalUserId) $scope.user._id = _globalUserId;
+	
+	
+	$scope.cartLoadSuccess = function(resp){
+		
+		$scope.cartLoading = false;
+		
+		$scope.order = resp.data.order;
+		if($scope.order){ 
+			$scope.processOrder();
+		}
+		
+		/*If we have customer info, set it to proper scope variable*/
+		$scope.user = resp.data.user?resp.data.user:{};
+		
+		/*General Control configurations*/
+		if(resp.data.config){			
+			$scope.config = resp.data.config;
+			if($scope.config.orderMinimum && $scope.config.orderMinimum > 0){				
+				$scope.orderMin = $scope.config.orderMinimum;
+			}
+		}
+		
+		/*if there is billing info in the order, use it*/
+		if($scope.order && $scope.order.billing){				
+			$scope.user.billing = $scope.order.billing;
+			$scope.addressLogic();
+		}
+		
+		else if($scope.user && $scope.user.billing){
+			$scope.cartAddress.$setDirty();
+		}
+	};
+	
 	
 	$scope.getCart = function(){
 		$http.get(_lbUrls.getcart, {
@@ -321,60 +358,12 @@ cartCtrlr = function($scope, $rootScope, $http){
 				'hidepop' : true  //tells the config not to show the loading popup
 			}
 		})
-		.then(function(resp){
-			
-			$scope.cartLoading = false;
-			
-			$scope.order = resp.data.order;
-			$scope.processOrder();
-			
-			$scope.user = resp.data.user?resp.data.user:{};
-			
-			
-			if(resp.data.config){
-				
-				$scope.config = resp.data.config;
-				if($scope.config.orderMinimum 
-						&& $scope.config.orderMinimum > 0){
-					
-					$scope.orderMin = $scope.config.orderMinimum;
-				}
-			}
-			
-			
-			
-			if($scope.order && $scope.order.billing){				
-				$scope.user.billing = $scope.order.billing;
-				$scope.addressLogic();
-			}
-			
-			else if($scope.user && $scope.user.billing){
-				$scope.cartAddress.$setDirty();
-			}
-			
-			else {				
-				
-				if(_globalUserId && $scope.order){
-					$http.get('/customer/json/' + _globalUserId)
-					.then(
-							function(resp){
-								if(resp.data){
-									$scope.user = resp.data;
-									if($scope.user.billing){
-										$scope.cartAddress.$setDirty();
-									}
-								}
-							},
-							function(){});
-				}
-			}
-		},
-		function(){
-			$scope.cartLoading = false;
-		});
+		.then($scope.cartLoadSuccess, function(){$scope.cartLoading = false;});
 	};
 	
 	$scope.getCart();
+	
+	
 	
 	$scope.addressLogic = function(){
 		
@@ -390,6 +379,7 @@ cartCtrlr = function($scope, $rootScope, $http){
 			.attr({'src' : $scope.getAddressMapLink(), 'class':'fit'}));
 		}
 	};
+	
 	
 	$scope.itemRemove = function(){
 		
@@ -433,6 +423,10 @@ cartCtrlr = function($scope, $rootScope, $http){
 		}
 	};
 	
+	
+	
+	
+	
 	$scope.updateCart = function(){
 		
 		$scope.pageLevelAlert = '';
@@ -469,6 +463,9 @@ cartCtrlr = function($scope, $rootScope, $http){
 		}
 	};
 	
+	
+	
+	
 	$scope.saveDeliveryAddress = function(){
 		
 		if($scope.order._id && $scope.cartAddress.$valid && $scope.cartAddress.$dirty){
@@ -502,6 +499,8 @@ cartCtrlr = function($scope, $rootScope, $http){
 		
 	};
 	
+	
+	
 	$scope.saveDeliveryNotes = function(){
 		
 		if($scope.order._id && $scope.order.notes.deliveryNotes){			
@@ -510,6 +509,7 @@ cartCtrlr = function($scope, $rootScope, $http){
 		}
 		
 	};	
+	
 	
 	
 	$scope.removeCoupon = function(){
@@ -628,43 +628,75 @@ cartCtrlr = function($scope, $rootScope, $http){
 		
 	};
 	
-	/*When ever there is a change in $scope.order, this function needs to be called*/
+	
+	/* When ever there is a change in $scope.order, this function needs to be called 
+	 * most of the logic control flags are set here. */
 	$scope.processOrder = function(){
 		
-		$scope.sales = [];
+		$scope.sales = [];		
+		
+		var couponApplied = false,
+			offersApplied = false,
+			goodToProceed = false,
+			emptyCart = true;
+		
+		
 		if($scope.order.lineItems && $scope.order.lineItems.length>0){
 			$scope.order.lineItems.forEach(function(item){
-				if(item.type=='item' 
-					&& item.promo == 's'){
-					
-					var productName = item.name.length>15?item.name.substr(0,15)+'...':item.name,
-					discount = (item.cost - item.price)*item.qty;
-					
-					if(!isNaN(discount) && discount > 0){						
-						$scope.sales.push({
-							'name' : productName,
-							'price' : discount
-						});
-					}
-					
-				}
 				
-				else if(item.type=='item' 
-					&& item.promo == 'doubledownoffer'){
+				if(item.instock){
 					
-					var productName = 'Double Down Offer',
-					discount = (item.cost - item.price)*item.qty;
-					
-					if(!isNaN(discount) && discount > 0){						
-						$scope.sales.push({
-							'name' : productName,
-							'price' : discount
-						});
+					if(item.type=='item'){					
+						emptyCart = false;
 					}
 					
+					
+					if(item.type=='coupon'){					
+						couponApplied = true;
+					}
+					
+					
+					if(item.promo && item.promo != ''){					
+						offersApplied = true;
+					}
+					
+					
+					
+					if(item.type=='item' 
+						&& (item.promo == 's' || item.promo == 'doubledownoffer')){
+						
+						var productName = item.name.length>15?item.name.substr(0,15)+'...':item.name,
+						discount = (item.cost - item.price)*item.qty;
+						
+						
+						if(item.promo == 'doubledownoffer')
+							productName = 'Double Down Offer';
+							
+						
+						if(!isNaN(discount) && discount > 0){						
+							$scope.sales.push({
+								'name' : productName,
+								'price' : discount
+							});
+						}
+						
+					}
 				}
-			});
+			})
 		}
+		
+		goodToProceed = $scope.order 
+							&& ($scope.order.total > $scope.orderMin)
+							&& !emptyCart 
+							&& $scope.addressValidated;
+		
+		
+		
+		$scope.couponApplied = couponApplied;
+		$scope.offersApplied = offersApplied;
+		$scope.emptyCart = emptyCart;
+		$scope.goodToProceed = goodToProceed;
+		
 	};
 	
 	$scope.editAddress = function(){
@@ -693,46 +725,6 @@ cartCtrlr = function($scope, $rootScope, $http){
 			return $scope.user.billing.address1 + ' ' + $scope.user.billing.city + ' ' + 
 				$scope.user.billing.state + ' ' + $scope.user.billing.zip;
 	};
-	
-	$scope.goodToProceed = function(){
-		
-		return $scope.order 
-			&& ($scope.order.total > $scope.orderMin)
-			&& !$scope.emptyCart() 
-			&& $scope.addressValidated;
-	};
-	
-	$scope.emptyCart = function(){		
-		var empty = true;
-		if($scope.order.lineItems && $scope.order.lineItems.length>0){
-			for(var i=0; i<$scope.order.lineItems.length;i++){
-				if($scope.order.lineItems[i].type=='item' 
-					&& $scope.order.lineItems[i].instock){
-					
-					empty = false;
-					break;
-				}
-			}
-		}
-		
-		return empty;
-	};
-	
-	$scope.promoApplied = function(){		
-		var applied = false;
-		if($scope.order.lineItems && $scope.order.lineItems.length>0){
-			for(var i=0; i<$scope.order.lineItems.length;i++){
-				if($scope.order.lineItems[i].type=='coupon' 
-					&& $scope.order.lineItems[i].instock){
-					
-					applied = true;
-					break;
-				}
-			}
-		}
-		
-		return applied;
-	}
 };
 
 lbApp
