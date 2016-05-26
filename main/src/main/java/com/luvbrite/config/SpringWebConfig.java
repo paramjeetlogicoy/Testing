@@ -14,6 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.TemplateResolver;
 
 @EnableWebMvc
@@ -48,12 +49,26 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 
 	        return templateResolver;
 	    }    
+	    
+	    /**
+	     * THYMELEAF: Template Resolver for email templates.
+	     */
+	    private TemplateResolver emailTemplateResolver() {
+	        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+	        templateResolver.setPrefix("/resources/email-templates/");
+	        templateResolver.setSuffix(".html");
+	        templateResolver.setTemplateMode("HTML5");
+	        templateResolver.setCacheable(false);
+	        
+	        return templateResolver;
+	    }
 
 
 	    @Bean
 	    public SpringTemplateEngine templateEngine(){
 	        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-	        templateEngine.setTemplateResolver(templateResolver());
+	        templateEngine.addTemplateResolver(templateResolver());
+	        templateEngine.addTemplateResolver(emailTemplateResolver());
 	        return templateEngine;
 	    }
 

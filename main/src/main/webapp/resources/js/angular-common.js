@@ -309,6 +309,8 @@ cartCtrlr = function($scope, $rootScope, $http){
 	$scope.addressValidated = false;
 	$scope.cartLoading = true;
 	$scope.sales = [];
+	$scope.orderMin = 9999;
+	$scope.config = {};
 	
 	if(_globalUserId)
 		$scope.user._id = _globalUserId;
@@ -324,9 +326,22 @@ cartCtrlr = function($scope, $rootScope, $http){
 			$scope.cartLoading = false;
 			
 			$scope.order = resp.data.order;
-			$scope.updateSales();
+			$scope.processOrder();
 			
 			$scope.user = resp.data.user?resp.data.user:{};
+			
+			
+			if(resp.data.config){
+				
+				$scope.config = resp.data.config;
+				if($scope.config.orderMinimum 
+						&& $scope.config.orderMinimum > 0){
+					
+					$scope.orderMin = $scope.config.orderMinimum;
+				}
+			}
+			
+			
 			
 			if($scope.order && $scope.order.billing){				
 				$scope.user.billing = $scope.order.billing;
@@ -395,7 +410,7 @@ cartCtrlr = function($scope, $rootScope, $http){
 							$rootScope.rootCartCount = resp.data.cartCount;
 							
 							$scope.order = resp.data.order;
-							$scope.updateSales();
+							$scope.processOrder();
 							
 							_lbFns.pSuccess('Item removed.');
 						}
@@ -436,7 +451,7 @@ cartCtrlr = function($scope, $rootScope, $http){
 					
 					$rootScope.rootCartCount = resp.cartCount;
 					$scope.order = resp.order;
-					$scope.updateSales();
+					$scope.processOrder();
 					
 					_lbFns.pSuccess('Order Updated.');		
 				}
@@ -614,8 +629,8 @@ cartCtrlr = function($scope, $rootScope, $http){
 	};
 	
 	/*When ever there is a change in $scope.order, this function needs to be called*/
-	$scope.updateSales = function(){
-		console.log('order changed');
+	$scope.processOrder = function(){
+		
 		$scope.sales = [];
 		if($scope.order.lineItems && $scope.order.lineItems.length>0){
 			$scope.order.lineItems.forEach(function(item){
@@ -623,6 +638,21 @@ cartCtrlr = function($scope, $rootScope, $http){
 					&& item.promo == 's'){
 					
 					var productName = item.name.length>15?item.name.substr(0,15)+'...':item.name,
+					discount = (item.cost - item.price)*item.qty;
+					
+					if(!isNaN(discount) && discount > 0){						
+						$scope.sales.push({
+							'name' : productName,
+							'price' : discount
+						});
+					}
+					
+				}
+				
+				else if(item.type=='item' 
+					&& item.promo == 'doubledownoffer'){
+					
+					var productName = 'Double Down Offer',
 					discount = (item.cost - item.price)*item.qty;
 					
 					if(!isNaN(discount) && discount > 0){						
@@ -667,6 +697,7 @@ cartCtrlr = function($scope, $rootScope, $http){
 	$scope.goodToProceed = function(){
 		
 		return $scope.order 
+			&& ($scope.order.total > $scope.orderMin)
 			&& !$scope.emptyCart() 
 			&& $scope.addressValidated;
 	};

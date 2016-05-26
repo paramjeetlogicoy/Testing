@@ -255,6 +255,7 @@
 							</li>
 							<li ng-if="!addressValidated">Please save and validate the
 								address before completing your order</li>
+							<li ng-if="orderMin > order.total">Minimum order value should should be {{orderMin|currency}}</li>
 						</ul>
 					</div>
 

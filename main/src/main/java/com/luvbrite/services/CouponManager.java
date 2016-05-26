@@ -37,7 +37,7 @@ public class CouponManager {
 	private CartOrderDAO cartDao;
 	
 	@Autowired
-	private CartOrderSummary orderSummary;
+	private CartLogics cartLogics;
 	
 	@Autowired
 	private LogDAO logDao;
@@ -50,12 +50,12 @@ public class CouponManager {
 	/**
 	 * Called during cart update
 	 **/
-	public String reapplyCoupon(String couponCode, CartOrder order){
+	public String reapplyCoupon(String couponCode, CartOrder order, boolean saveOrder){
 		
 		if(couponCode == null) couponCode = "";
 		Coupon coupon = dao.get(couponCode);
 		
-		return applyDiscount(coupon, order);
+		return applyDiscount(coupon, order, saveOrder);
 	}
 	
 	
@@ -117,7 +117,7 @@ public class CouponManager {
 							if(updateOrder){
 								
 								//Update orderTotals
-								orderSummary.calculateSummary(order);
+								cartLogics.calculateSummary(order);
 								
 								cartDao.save(order);
 								
@@ -377,7 +377,7 @@ public class CouponManager {
 					 **/
 					if(resp.equals("")){
 						
-						resp = applyDiscount(coupon, order);
+						resp = applyDiscount(coupon, order, true);
 						
 					}
 					
@@ -402,7 +402,7 @@ public class CouponManager {
 		return resp;
 	}
 	
-	private String applyDiscount(Coupon coupon, CartOrder order){
+	private String applyDiscount(Coupon coupon, CartOrder order, boolean saveOrder){
 		
 		String resp = "";
 		
@@ -610,30 +610,34 @@ public class CouponManager {
 				
 				order.getLineItems().add(olic);
 				
-				
-				//Update orderTotals
-				orderSummary.calculateSummary(order);
-				
-				//Save Order				
-				cartDao.save(order);
 
-				
-				/**
-				 * Update Log
-				 * */
-				try {
+				/* Some programs handles the save themselves, so no need to do it here. */				
+				if(saveOrder){
 					
-					Log log = new Log();
-					log.setCollection("cartorders");
-					log.setDetails("Order recalculated and updated because of coupon");
-					log.setDate(Calendar.getInstance().getTime());
-					log.setKey(order.get_id());
-					log.setUser("System");
-					
-					logDao.save(log);					
-				}
-				catch(Exception e){
-					logger.error(Exceptions.giveStackTrace(e));
+					//Update orderTotals
+					cartLogics.calculateSummary(order);
+
+					//Save Order				
+					cartDao.save(order);
+
+
+					/**
+					 * Update Log
+					 * */
+					try {
+
+						Log log = new Log();
+						log.setCollection("cartorders");
+						log.setDetails("Order recalculated and updated because of coupon");
+						log.setDate(Calendar.getInstance().getTime());
+						log.setKey(order.get_id());
+						log.setUser("System");
+
+						logDao.save(log);					
+					}
+					catch(Exception e){
+						logger.error(Exceptions.giveStackTrace(e));
+					}
 				}
 				
 				
@@ -658,7 +662,6 @@ public class CouponManager {
 				catch(Exception e){
 					logger.error(Exceptions.giveStackTrace(e));
 				}
-				
 				
 			}
 			

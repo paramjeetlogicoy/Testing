@@ -24,7 +24,7 @@ import com.luvbrite.dao.LogDAO;
 import com.luvbrite.dao.PriceDAO;
 import com.luvbrite.dao.ProductDAO;
 import com.luvbrite.dao.UserDAO;
-import com.luvbrite.services.CartOrderSummary;
+import com.luvbrite.services.CartLogics;
 import com.luvbrite.services.CouponManager;
 import com.luvbrite.services.OrderFinalization;
 import com.luvbrite.utils.Exceptions;
@@ -32,6 +32,7 @@ import com.luvbrite.utils.Utility;
 import com.luvbrite.web.models.AttrValue;
 import com.luvbrite.web.models.CartOrder;
 import com.luvbrite.web.models.CartResponse;
+import com.luvbrite.web.models.ControlOptions;
 import com.luvbrite.web.models.CreateOrderResponse;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Log;
@@ -66,13 +67,16 @@ public class CartController {
 	private LogDAO logDao;
 	
 	@Autowired
-	private CartOrderSummary orderSummary;
+	private CartLogics cartLogics;
 	
 	@Autowired
 	private CouponManager couponManager;
 	
 	@Autowired
 	private OrderFinalization orderFinalization;
+	
+	@Autowired
+	private ControlOptions controlOptions;
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public String homePage(@AuthenticationPrincipal 
@@ -213,11 +217,19 @@ public class CartController {
 					
 					/* Reapply coupons if any! */
 					if(!couponCode.equals("")){
-						couponManager.reapplyCoupon(couponCode, order);
+						couponManager.reapplyCoupon(couponCode, order, false);
 					}
+
+					
+					/**
+					 * We don't run the deal check here because cart is
+					 * not shown during addToCart function. Also, we check for 
+					 * deals during every cart load, so it's not required here. 
+					 **/
+					
 					
 					/*Update orderTotals*/
-					orderSummary.calculateSummary(order);
+					cartLogics.calculateSummary(order);
 					
 					dao.save(order);
 					
@@ -326,7 +338,7 @@ public class CartController {
 	 * User details are pulled from Principal 
 	 **/
 	@RequestMapping(value = "/getcart")
-	public @ResponseBody CartResponse orderDetails(
+	public @ResponseBody CartResponse getCart(
 			@AuthenticationPrincipal UserDetailsExt user,
 			@CookieValue(value = "lbbagnumber", defaultValue = "0") String orderIdS){
 		
@@ -352,7 +364,16 @@ public class CartController {
 			}
 		}
 		
+		/**
+		 * Since we need to remove the deals if they are inactive,
+		 * we have to check for it every time the cart loads, not just
+		 * during cart updates. 
+		 **/
+		cartLogics.applyDeals(order, controlOptions, true);
+		
+		
 		cr.setOrder(order);
+		cr.setConfig(controlOptions);
 		
 		return cr;			
 	}
@@ -594,11 +615,16 @@ public class CartController {
 				
 				/* Reapply coupons if any! */
 				if(!couponCode.equals("")){
-					couponManager.reapplyCoupon(couponCode, order);
+					couponManager.reapplyCoupon(couponCode, order, false);
 				}
 				
+				
+				//Run through deal logic
+				cartLogics.applyDeals(order, controlOptions, false);
+				
+				
 				//Update orderTotals
-				orderSummary.calculateSummary(order);
+				cartLogics.calculateSummary(order);
 				
 				//Save order
 				dao.save(order);		
@@ -729,11 +755,17 @@ public class CartController {
 				
 				/* Reapply coupons if any! */
 				if(!couponCode.equals("")){
-					couponManager.reapplyCoupon(couponCode, order);
-				}
+					couponManager.reapplyCoupon(couponCode, order, false);
+				}				
+				
+				
+				//Run through deal logic
+				cartLogics.applyDeals(order, controlOptions, false);
+				
 				
 				//Update orderTotals
-				orderSummary.calculateSummary(order);
+				cartLogics.calculateSummary(order);
+				
 				
 				//Save order
 				dao.save(order);		

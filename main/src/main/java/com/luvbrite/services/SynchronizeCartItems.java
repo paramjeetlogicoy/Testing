@@ -42,7 +42,7 @@ public class SynchronizeCartItems {
 	private PriceDAO priceDao;
 	
 	@Autowired
-	private CartOrderSummary orderSummary;
+	private CartLogics cartLogics;
 	
 	@Autowired
 	private CouponManager couponManager;
@@ -182,11 +182,11 @@ public class SynchronizeCartItems {
 							
 							/*If there was an itemChange and couponCode was present, reapply coupon*/
 							if(!"".equals(couponCode)){
-								couponManager.reapplyCoupon(couponCode, co);
+								couponManager.reapplyCoupon(couponCode, co, false);
 							}
 							
 							/*Recalculate order summary*/
-							orderSummary.calculateSummary(co);							
+							cartLogics.calculateSummary(co);							
 							logDetails.append("order total recalculated.");
 							
 							
