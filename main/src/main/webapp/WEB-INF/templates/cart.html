@@ -22,7 +22,7 @@
 			</h4>
 		</div>
 				
-		<div class="cart-details" ng-if="emptyCart">
+		<div class="cart-details" ng-if="emptyCart" ng-hide="cartLoading">
 			<h4 class="text-center">Shopping cart is empty!</h4>
 		</div>
 
@@ -58,7 +58,11 @@
 											class="size12 grey7 capitalize">
 											<em>{{spec.attr}}</em>: {{spec.value}}
 										</div>
-										<div class="grey7 bold">{{item.price | currency}}</div>
+										<div class="grey7">
+											<del ng-if="item.cost>item.price">{{item.cost |
+												currency}}</del>
+											<span class="bold">{{item.price | currency}}</span>
+										</div>
 									</div>
 									<div class="item-qty">
 										Qty: <input type="number" min="1" step="1" ng-model="item.qty"

@@ -365,11 +365,14 @@ public class CartController {
 		}
 		
 		/**
-		 * Since we need to remove the deals if they are inactive,
-		 * we have to check for it every time the cart loads, not just
-		 * during cart updates. 
+		 * Some deals in the cart might expire and new deals needs to be applied
+		 * In that cases, we need to adjust the coupons and order totals in the 
+		 * cart. To keep the process simple, we run the order object through a 
+		 * post processing system, which will check for these changes everytime
+		 * the cart loads.
 		 **/
-		cartLogics.applyDeals(order, controlOptions, true);
+		
+		cartPostProcessing(order, true /*reapply coupon*/);
 		
 		
 		cr.setOrder(order);
@@ -560,7 +563,6 @@ public class CartController {
 			
 			int totalItems = 0;
 			boolean itemFound = false;
-			String couponCode = "";
 			List<OrderLineItemCart> items = order.getLineItems();
 			if(items != null){
 				for(OrderLineItemCart item : items){
@@ -603,31 +605,14 @@ public class CartController {
 								&& item.isInstock()){
 							totalItems+= item.getQty();
 						}
-						
-						else if(item.getType().equals("coupon")){
-							couponCode = item.getName();
-						}
 					}
 				}
 			}
 			
 			if(itemFound){
 				
-				/* Reapply coupons if any! */
-				if(!couponCode.equals("")){
-					couponManager.reapplyCoupon(couponCode, order, false);
-				}
-				
-				
-				//Run through deal logic
-				cartLogics.applyDeals(order, controlOptions, false);
-				
-				
-				//Update orderTotals
-				cartLogics.calculateSummary(order);
-				
-				//Save order
-				dao.save(order);		
+				/*Run through the post processing logic*/
+				cartPostProcessing(order, true /*Check and re-apply coupons*/);		
 
 				cr.setSuccess(true);
 				cr.setCartCount(totalItems);			
@@ -652,21 +637,53 @@ public class CartController {
 	
 	
 	@RequestMapping(value = "/removecoupon/{couponCode}", method = RequestMethod.GET)
-	public @ResponseBody GenericResponse removeCoupon(
+	public @ResponseBody CreateOrderResponse removeCoupon(
 			@PathVariable String couponCode,
 			@RequestParam(value="oid", required=false) Long orderId){
 		
-		return couponManager.removeCoupon(couponCode, orderId);
+		CreateOrderResponse cr = new CreateOrderResponse();
+		cr.setSuccess(false);
+		cr.setMessage("");
+		
+		GenericResponse gr = couponManager.removeCoupon(couponCode, orderId);
+		if(gr.isSuccess()){
+			cr.setSuccess(true);
+			
+			CartOrder order = dao.get(orderId);
+			if(order != null){
+				cartPostProcessing(order, false /*No need to re-apply coupon, hence false*/);
+				
+				cr.setOrder(order);
+			}
+		}
+		
+		return cr;
 	}
 	
 	
 	
 	@RequestMapping(value = "/applycoupon/{couponCode}", method = RequestMethod.GET)
-	public @ResponseBody GenericResponse applyCoupon(
+	public @ResponseBody CreateOrderResponse applyCoupon(
 			@PathVariable String couponCode,
 			@RequestParam(value="oid", required=false) Long orderId){
 		
-		return couponManager.applyCoupon(couponCode, orderId);
+		CreateOrderResponse cr = new CreateOrderResponse();
+		cr.setSuccess(false);
+		cr.setMessage("");
+		
+		GenericResponse gr = couponManager.applyCoupon(couponCode, orderId);
+		if(gr.isSuccess()){
+			cr.setSuccess(true);
+			
+			CartOrder order = dao.get(orderId);
+			if(order != null){
+				cartPostProcessing(order, false /*No need to re-apply coupon, hence false*/);
+				
+				cr.setOrder(order);
+			}
+		}
+		
+		return cr;
 	}
 	
 	
@@ -699,7 +716,6 @@ public class CartController {
 			
 			int totalItems = 0;
 			boolean itemFound = false;
-			String couponCode = "";		
 
 			List<OrderLineItemCart> items = order.getLineItems();
 			if(items != null){
@@ -744,31 +760,11 @@ public class CartController {
 								&& item.isInstock()){
 							totalItems+= item.getQty();
 						}
-						
-						
-						if(item.getType().equals("coupon")){
-							couponCode = item.getName();
-						}
 					}
 				}
 				
-				
-				/* Reapply coupons if any! */
-				if(!couponCode.equals("")){
-					couponManager.reapplyCoupon(couponCode, order, false);
-				}				
-				
-				
-				//Run through deal logic
-				cartLogics.applyDeals(order, controlOptions, false);
-				
-				
-				//Update orderTotals
-				cartLogics.calculateSummary(order);
-				
-				
-				//Save order
-				dao.save(order);		
+				/*Run through the post processing logic*/
+				cartPostProcessing(order, true /*Check and re-apply coupons*/);
 
 				cr.setSuccess(true);
 				cr.setCartCount(totalItems);			
@@ -918,5 +914,53 @@ public class CartController {
 		}
 		
 		return newItem;
+	}
+	
+	private void cartPostProcessing(CartOrder order, boolean couponReapply){
+		
+		String couponCode = "";
+		boolean itemsPresent = false;
+		
+		try {
+			
+			List<OrderLineItemCart> items = order.getLineItems();
+			
+			if(items != null){
+				for(OrderLineItemCart item : items){
+					
+					if(item.getType().equals("item") && item.isInstock()){
+						itemsPresent = true;
+					}
+					
+					else if(item.getType().equals("coupon")){
+						couponCode = item.getName();
+					}
+				}
+			}
+			
+			
+			/* Reapply coupons if any! */
+			if(!couponCode.equals("") && couponReapply){
+				couponManager.reapplyCoupon(couponCode, order, false);
+			}				
+			
+			
+			//Run through deal logic
+			if(itemsPresent) cartLogics.applyDeals(order, controlOptions, false);
+			
+			
+			//Update orderTotals
+			cartLogics.calculateSummary(order);
+			
+			
+			//Save order
+			dao.save(order);	
+
+			
+		}catch(Exception e){			
+			logger.error(Exceptions.giveStackTrace(e));			
+		}
+		
+		
 	}
 }

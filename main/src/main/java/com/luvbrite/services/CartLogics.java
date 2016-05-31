@@ -35,8 +35,6 @@ public class CartLogics {
 				int index = -1,
 						couponIndex = -1;
 				
-				boolean couponFound = false;
-				
 				List<OrderLineItemCart> items = order.getLineItems();
 				if(items != null){
 					
@@ -48,12 +46,15 @@ public class CartLogics {
 							
 							double itemPrice = item.getPrice();
 							if(itemPrice >= 0d){
-								subTotal += (item.getCost()*item.getQty());
-								total += (itemPrice*item.getQty());	
+								
+								double cost = item.getCost();
+								int qty = item.getQty();
+								
+								subTotal += (cost * qty);
+								total += (itemPrice * qty);	
 								
 								if(item.getPromo()!=null && item.getPromo().equals("p")){
-									couponFound = true;
-									couponDiscount += (subTotal - total);
+									couponDiscount += ((cost - itemPrice) * qty);
 								}
 							}
 							
@@ -67,7 +68,7 @@ public class CartLogics {
 					
 					
 					
-					if(couponFound && couponIndex > -1){
+					if(couponIndex > -1){
 						
 						OrderLineItemCart item = items.get(couponIndex);
 						item.setPrice(couponDiscount);
@@ -93,10 +94,10 @@ public class CartLogics {
 			
 		} catch (Exception e){
 			logger.error(Exceptions.giveStackTrace(e));
-		}
-		
+		}		
 		
 	}
+	
 	
 	
 	public void applyDeals(CartOrder order, ControlOptions cOps, boolean saveOrder){

@@ -323,11 +323,7 @@ cartCtrlr = function($scope, $rootScope, $http){
 	$scope.cartLoadSuccess = function(resp){
 		
 		$scope.cartLoading = false;
-		
 		$scope.order = resp.data.order;
-		if($scope.order){ 
-			$scope.processOrder();
-		}
 		
 		/*If we have customer info, set it to proper scope variable*/
 		$scope.user = resp.data.user?resp.data.user:{};
@@ -348,6 +344,11 @@ cartCtrlr = function($scope, $rootScope, $http){
 		
 		else if($scope.user && $scope.user.billing){
 			$scope.cartAddress.$setDirty();
+		}		
+
+		/*Perform this atlast*/
+		if($scope.order){ 
+			$scope.processOrder();
 		}
 	};
 	
@@ -440,17 +441,17 @@ cartCtrlr = function($scope, $rootScope, $http){
 					'qty' : this.item.qty
 				}
 			})
-			.success(function(resp){
-				if(resp.success){
+			.then(function(resp){
+				if(resp.data && resp.data.success){
 					
-					$rootScope.rootCartCount = resp.cartCount;
-					$scope.order = resp.order;
+					$rootScope.rootCartCount = resp.data.cartCount;
+					$scope.order = resp.data.order;
 					$scope.processOrder();
 					
 					_lbFns.pSuccess('Order Updated.');		
 				}
 				else{
-					$scope.pageLevelAlert = resp.message;
+					$scope.pageLevelAlert = resp.data.message;
 				}
 			});
 		}
@@ -529,8 +530,8 @@ cartCtrlr = function($scope, $rootScope, $http){
 						if(resp.data && resp.data.success){
 							_lbFns.pSuccess('Promocode removed');
 							
-							//Update cart.
-							$scope.getCart();
+							$scope.order = resp.data.order;
+							$scope.processOrder();
 						}
 					
 						else if(resp.data && resp.data.message){
@@ -570,8 +571,8 @@ cartCtrlr = function($scope, $rootScope, $http){
 							_lbFns.pSuccess('Promocode applied');
 							$scope.couponCode = '';
 							
-							//Update cart.
-							$scope.getCart();
+							$scope.order = resp.data.order;
+							$scope.processOrder();
 						}
 					
 						else if(resp.data && resp.data.message){
