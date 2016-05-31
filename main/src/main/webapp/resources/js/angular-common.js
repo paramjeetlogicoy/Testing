@@ -308,9 +308,50 @@ cartCtrlr = function($scope, $rootScope, $http){
 	$scope.user = {};
 	$scope.addressValidated = false;
 	$scope.cartLoading = true;
+	$scope.sales = [];
+	$scope.orderMin = 9999;
+	$scope.config = {};
+
+	$scope.couponApplied = true;  //Only refers to coupons
+	$scope.offersApplied = false; //Refers to all kinds of offers
+	$scope.emptyCart = true;
+	$scope.goodToProceed = false;
 	
-	if(_globalUserId)
-		$scope.user._id = _globalUserId;
+	if(_globalUserId) $scope.user._id = _globalUserId;
+	
+	
+	$scope.cartLoadSuccess = function(resp){
+		
+		$scope.cartLoading = false;
+		$scope.order = resp.data.order;
+		
+		/*If we have customer info, set it to proper scope variable*/
+		$scope.user = resp.data.user?resp.data.user:{};
+		
+		/*General Control configurations*/
+		if(resp.data.config){			
+			$scope.config = resp.data.config;
+			if($scope.config.orderMinimum && $scope.config.orderMinimum > 0){				
+				$scope.orderMin = $scope.config.orderMinimum;
+			}
+		}
+		
+		/*if there is billing info in the order, use it*/
+		if($scope.order && $scope.order.billing){				
+			$scope.user.billing = $scope.order.billing;
+			$scope.addressLogic();
+		}
+		
+		else if($scope.user && $scope.user.billing){
+			$scope.cartAddress.$setDirty();
+		}		
+
+		/*Perform this atlast*/
+		if($scope.order){ 
+			$scope.processOrder();
+		}
+	};
+	
 	
 	$scope.getCart = function(){
 		$http.get(_lbUrls.getcart, {
@@ -318,44 +359,11 @@ cartCtrlr = function($scope, $rootScope, $http){
 				'hidepop' : true  //tells the config not to show the loading popup
 			}
 		})
-		.then(function(resp){
-			
-			$scope.cartLoading = false;
-			$scope.order = resp.data.order;
-			$scope.user = resp.data.user;
-			
-			if($scope.order && $scope.order.billing){				
-				$scope.user.billing = $scope.order.billing;
-				$scope.addressLogic();
-			}
-			
-			else if($scope.user && $scope.user.billing){
-				$scope.cartAddress.$setDirty();
-			}
-			
-			else {				
-				
-				if(_globalUserId && $scope.order){
-					$http.get('/customer/json/' + _globalUserId)
-					.then(
-							function(resp){
-								if(resp.data){
-									$scope.user = resp.data;
-									if($scope.user.billing){
-										$scope.cartAddress.$setDirty();
-									}
-								}
-							},
-							function(){});
-				}
-			}
-		},
-		function(){
-			$scope.cartLoading = false;
-		});
+		.then($scope.cartLoadSuccess, function(){$scope.cartLoading = false;});
 	};
 	
 	$scope.getCart();
+	
 	
 	
 	$scope.addressLogic = function(){
@@ -372,6 +380,7 @@ cartCtrlr = function($scope, $rootScope, $http){
 			.attr({'src' : $scope.getAddressMapLink(), 'class':'fit'}));
 		}
 	};
+	
 	
 	$scope.itemRemove = function(){
 		
@@ -390,7 +399,10 @@ cartCtrlr = function($scope, $rootScope, $http){
 						if(resp.data && resp.data.success){
 					
 							$rootScope.rootCartCount = resp.data.cartCount;
+							
 							$scope.order = resp.data.order;
+							$scope.processOrder();
+							
 							_lbFns.pSuccess('Item removed.');
 						}
 					
@@ -412,6 +424,10 @@ cartCtrlr = function($scope, $rootScope, $http){
 		}
 	};
 	
+	
+	
+	
+	
 	$scope.updateCart = function(){
 		
 		$scope.pageLevelAlert = '';
@@ -425,15 +441,17 @@ cartCtrlr = function($scope, $rootScope, $http){
 					'qty' : this.item.qty
 				}
 			})
-			.success(function(resp){
-				if(resp.success){
+			.then(function(resp){
+				if(resp.data && resp.data.success){
 					
-					$rootScope.rootCartCount = resp.cartCount;
-					$scope.order = resp.order;
+					$rootScope.rootCartCount = resp.data.cartCount;
+					$scope.order = resp.data.order;
+					$scope.processOrder();
+					
 					_lbFns.pSuccess('Order Updated.');		
 				}
 				else{
-					$scope.pageLevelAlert = resp.message;
+					$scope.pageLevelAlert = resp.data.message;
 				}
 			});
 		}
@@ -445,6 +463,9 @@ cartCtrlr = function($scope, $rootScope, $http){
 			$scope.pageLevelAlert = $rootScope.errMsgPageRefresh;
 		}
 	};
+	
+	
+	
 	
 	$scope.saveDeliveryAddress = function(){
 		
@@ -479,6 +500,8 @@ cartCtrlr = function($scope, $rootScope, $http){
 		
 	};
 	
+	
+	
 	$scope.saveDeliveryNotes = function(){
 		
 		if($scope.order._id && $scope.order.notes.deliveryNotes){			
@@ -489,12 +512,54 @@ cartCtrlr = function($scope, $rootScope, $http){
 	};	
 	
 	
+	
+	$scope.removeCoupon = function(){
+		
+		$scope.pageLevelAlert = "";
+		var couponCode = this.item.name;
+		
+		if(couponCode){
+			$http.get(_lbUrls.cart + 'removecoupon/' + couponCode,{
+				params : {
+					'hidepop' : true,
+					'oid' : $scope.order._id
+				}
+			})
+			.then(
+					function(resp){
+						if(resp.data && resp.data.success){
+							_lbFns.pSuccess('Promocode removed');
+							
+							$scope.order = resp.data.order;
+							$scope.processOrder();
+						}
+					
+						else if(resp.data && resp.data.message){
+							$scope.pageLevelAlert = resp.data.message;
+						}
+						else{
+							$scope.pageLevelAlert = $rootScope.errMsgPageRefresh;
+						}
+					},
+					
+					function(){
+						$scope.pageLevelAlert = $rootScope.errMsgPageRefresh;
+					}
+			);
+		}
+		else{
+			$scope.pageLevelAlert = "Invalid promo code";
+		}
+			
+	}
+	
+	
 	$scope.applyCoupon = function(){
 		
 		$scope.pageLevelAlert = "";
 		
 		if($scope.couponCode){
-			$http.get(_lbUrls.cart + '/applycoupon/' + $scope.couponCode,{
+			$http.get(_lbUrls.cart + 'applycoupon/' + $scope.couponCode,{
 				params : {
 					'hidepop' : true,
 					'oid' : $scope.order._id
@@ -504,9 +569,10 @@ cartCtrlr = function($scope, $rootScope, $http){
 					function(resp){
 						if(resp.data && resp.data.success){
 							_lbFns.pSuccess('Promocode applied');
+							$scope.couponCode = '';
 							
-							//Update cart.
-							$scope.getCart();
+							$scope.order = resp.data.order;
+							$scope.processOrder();
 						}
 					
 						else if(resp.data && resp.data.message){
@@ -563,6 +629,77 @@ cartCtrlr = function($scope, $rootScope, $http){
 		
 	};
 	
+	
+	/* When ever there is a change in $scope.order, this function needs to be called 
+	 * most of the logic control flags are set here. */
+	$scope.processOrder = function(){
+		
+		$scope.sales = [];		
+		
+		var couponApplied = false,
+			offersApplied = false,
+			goodToProceed = false,
+			emptyCart = true;
+		
+		
+		if($scope.order.lineItems && $scope.order.lineItems.length>0){
+			$scope.order.lineItems.forEach(function(item){
+				
+				if(item.instock){
+					
+					if(item.type=='item'){					
+						emptyCart = false;
+					}
+					
+					
+					if(item.type=='coupon'){					
+						couponApplied = true;
+					}
+					
+					
+					if(item.promo && item.promo != ''){					
+						offersApplied = true;
+					}
+					
+					
+					
+					if(item.type=='item' 
+						&& (item.promo == 's' || item.promo == 'doubledownoffer')){
+						
+						var productName = item.name.length>15?item.name.substr(0,15)+'...':item.name,
+						discount = (item.cost - item.price)*item.qty;
+						
+						
+						if(item.promo == 'doubledownoffer')
+							productName = 'Double Down Offer';
+							
+						
+						if(!isNaN(discount) && discount > 0){						
+							$scope.sales.push({
+								'name' : productName,
+								'price' : discount
+							});
+						}
+						
+					}
+				}
+			})
+		}
+		
+		goodToProceed = $scope.order 
+							&& ($scope.order.total > $scope.orderMin)
+							&& !emptyCart 
+							&& $scope.addressValidated;
+		
+		
+		
+		$scope.couponApplied = couponApplied;
+		$scope.offersApplied = offersApplied;
+		$scope.emptyCart = emptyCart;
+		$scope.goodToProceed = goodToProceed;
+		
+	};
+	
 	$scope.editAddress = function(){
 		$scope.addressValidated = false;
 		$scope.cartAddress.$setDirty();
@@ -589,26 +726,6 @@ cartCtrlr = function($scope, $rootScope, $http){
 			return $scope.user.billing.address1 + ' ' + $scope.user.billing.city + ' ' + 
 				$scope.user.billing.state + ' ' + $scope.user.billing.zip;
 	};
-	
-	$scope.goodToProceed = function(){
-		
-		return $scope.order 
-			&& $scope.emptyCart 
-			&& $scope.addressValidated;
-	};
-	
-	$scope.emptyCart = function(){		
-		var empty = true;
-		if($scope.order.lineItems && $scope.order.lineItems.length>0){
-			for(var i=0; i<$scope.order.lineItems.length;i++){
-				if($scope.order.lineItems[i].type=='item' 
-					&& $scope.order.lineItems[i].instock)
-					empty = false;
-			}
-		}
-		
-		return empty;
-	}
 };
 
 lbApp

@@ -21,6 +21,7 @@ public class OrderLineItem {
 	
 	private double cost = 0d;
 	private double price = 0d;
+	private String promo; //s = for saleprice, p = promocode
 	
 	private boolean taxable = false;
 	
@@ -115,5 +116,13 @@ public class OrderLineItem {
 
 	public void setImg(String img) {
 		this.img = img;
+	}
+
+	public String getPromo() {
+		return promo;
+	}
+
+	public void setPromo(String promo) {
+		this.promo = promo;
 	}
 }

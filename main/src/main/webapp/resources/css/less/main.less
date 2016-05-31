@@ -703,7 +703,7 @@ nav#pagination-nav{
 		background-color:#f1f1f1;
 	}
 }
-.cart-disbaled-reasons {
+.cart-disbaled-reasons:extend(.marg-b2) {
 	li:extend(.size12,.marg-b1, .marg-t1, .text-center){
 		color:#a94442;
 	}
@@ -715,6 +715,15 @@ nav#pagination-nav{
 		.marg-b(.5);
 		color:#555;
 	}	
+}
+
+.applied-coupons:extend(.pad1,.marg-t2,.bg-greyF0){
+	border-radius: 2px;
+
+	h6{
+		.marg-t(0);
+		.marg-b(.5);
+	}
 }
 
 .cart-promo-form{

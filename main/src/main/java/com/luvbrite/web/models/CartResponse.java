@@ -1,9 +1,12 @@
 package com.luvbrite.web.models;
 
+import com.luvbrite.config.ControlConfig;
+
 public class CartResponse {
 	
 	private CartOrder order;
 	private User user;
+	private ControlOptions config;
 	
 	public CartOrder getOrder() {
 		return order;
@@ -16,4 +19,11 @@ public class CartResponse {
 	}
 	public void setUser(User user) {
 		this.user = user;
-	}}
+	}
+	public ControlOptions getConfig() {
+		return config;
+	}
+	public void setConfig(ControlOptions config) {
+		this.config = config;
+	}
+}

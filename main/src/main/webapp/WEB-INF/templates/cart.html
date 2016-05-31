@@ -22,11 +22,11 @@
 			</h4>
 		</div>
 				
-		<div class="cart-details" ng-if="emptyCart()">
+		<div class="cart-details" ng-if="emptyCart" ng-hide="cartLoading">
 			<h4 class="text-center">Shopping cart is empty!</h4>
 		</div>
 
-		<div class="row" ng-hide="cartLoading || emptyCart()">
+		<div class="row" ng-hide="cartLoading || emptyCart">
 
 			<div class="col-sm-8">
 				<div class="cart-content">
@@ -46,7 +46,7 @@
 						<div class="cart-details-body">
 							<ul>
 								<li class="item-li" ng-repeat="item in order.lineItems"
-									ng-if="item.type=='item'">
+									ng-if="item.type=='item'" ng-hide="!item.instock">
 									<div class="item-thumb">
 										<img ng-if="item.img" ng-src="/files/view/{{item.img}}"
 											class="fit" />
@@ -58,7 +58,11 @@
 											class="size12 grey7 capitalize">
 											<em>{{spec.attr}}</em>: {{spec.value}}
 										</div>
-										<div class="grey7 bold">{{item.price | currency}}</div>
+										<div class="grey7">
+											<del ng-if="item.cost>item.price">{{item.cost |
+												currency}}</del>
+											<span class="bold">{{item.price | currency}}</span>
+										</div>
 									</div>
 									<div class="item-qty">
 										Qty: <input type="number" min="1" step="1" ng-model="item.qty"
@@ -203,7 +207,7 @@
 
 
 
-					<div class="cart-details" ng-if="goodToProceed()">
+					<div class="cart-details" ng-if="goodToProceed">
 						<h4 class="cart-steps">Step3: Confirm Your Order</h4>
 						<div class="cart-confirmation text-center">
 							<h4 class="marg-t0">
@@ -240,11 +244,11 @@
 					<div class="hidden-xs">
 						<div class="text-center">
 							<a href="" ng-click="placeOrder()" class="btn btn-lb btn-lb-w"
-								ng-disabled="!goodToProceed() || !user._id"><strong>Place
+								ng-disabled="!goodToProceed || !user._id"><strong>Place
 									Order</strong></a>
 						</div>
 						<div class="text-center marg-b2 pad2 grey7"
-							ng-if="goodToProceed()" ng-hide="!user._id">
+							ng-if="goodToProceed" ng-hide="!user._id">
 							<em>By clicking on Place Order, I agree to the terms and
 								conditions of luvbrite.</em>
 						</div>
@@ -255,6 +259,7 @@
 							</li>
 							<li ng-if="!addressValidated">Please save and validate the
 								address before completing your order</li>
+							<li ng-if="orderMin > order.total">Minimum order value should should be {{orderMin|currency}}</li>
 						</ul>
 					</div>
 
@@ -271,16 +276,33 @@
 									<td class="text-right">{{(order.subTotal - order.total) |
 										currency}}</td>
 								</tr>
-								
+
 								<tr>
 									<td colspan="2">
 
-										<div class="promotions clearfix marg-b3">
+										<div class="promotions clearfix marg-b3"
+											ng-hide="couponApplied">
 											<h6>Add Gift or Promo Code</h6>
-											<form ng-submit="applyCoupon()" name="promoForm" class="cart-promo-form">
-												<input type="text" class="form-control size13" ng-model="couponCode" />
-												<button class="btn btn-sm btn-lb" type="submit">Apply</button>											
+											<form ng-submit="applyCoupon()" name="promoForm"
+												class="cart-promo-form">
+												<input type="text" class="form-control size13"
+													ng-model="couponCode" />
+												<button class="btn btn-sm btn-lb" type="submit">Apply</button>
 											</form>
+										</div>
+										<div class="applied-coupons marg-b3" ng-if="offersApplied">
+											<h6>Promotions Applied</h6>
+											<div class="marg-l1" ng-repeat="item in sales">
+												<em class="green1">{{item.name}} (-{{item.price
+													| currency}})</em>
+											</div>
+											<div class="marg-l1" ng-repeat="item in order.lineItems"
+												ng-if="item.type=='coupon'">
+												<em><span class="green1">{{item.name}}
+														(-{{item.price | currency}})</span> <a href="#"
+													ng-click="removeCoupon()" title="Remove Coupon"><i
+														class="fa fa-trash-o marg-l1" aria-hidden="true"></i></a></em>
+											</div>
 										</div>
 									</td>
 								</tr>

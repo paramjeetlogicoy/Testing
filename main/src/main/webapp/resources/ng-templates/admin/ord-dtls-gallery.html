@@ -115,9 +115,11 @@
 												<strong>{{spec.attr}}</strong>: <span>{{spec.value}}</span>
 											</div>
 										</td>
-										<td class="text-right">{{item.cost | currency}}</td>
+										<td class="text-right"><del class="grey7"
+												ng-if="item.cost>item.price">
+												{{item.cost | currency}}</del> {{item.price | currency}}</td>
 										<td class="text-right">{{item.qty}}</td>
-										<td class="text-right">{{item.price | currency}}</td>
+											<td class="text-right">{{(item.price * item.qty) | currency}}</td>
 
 									</tr>
 
