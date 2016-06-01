@@ -34,5 +34,11 @@ public class LoginController {
 			model.setViewName("login");
 
 			return model;	
-	}	
+	}
+	
+
+	@RequestMapping(value = "/register")
+	public String register(){
+		return "register";
+	}
 }

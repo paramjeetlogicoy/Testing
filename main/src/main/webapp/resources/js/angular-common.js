@@ -3,7 +3,8 @@ var lbApp = angular.module(
 	     'ngRoute',
 	     'ngAnimate',
          'ngSanitize',
-         'ui.bootstrap'
+         'ui.bootstrap',
+         'ngFileUpload'
      ]
 );
 
@@ -100,6 +101,196 @@ loginCtrlr = function($scope, $http){
 		
 		return false;
 	};
+},
+
+registerCtrlr = function($scope, $rootScope, $http, Upload){
+	
+	var today = new Date();
+	
+	$scope.user = {'identifications':{}, 'marketing':{}};
+	$scope.today = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+	
+	$scope.getProductPrice = function(){
+		
+		$http.get(_lbUrls.getprdprice + $scope.productId + '/price', {
+			params : { 
+				'hidepop' : true  //tells the config not to show the loading popup
+			}
+		})
+		.then(function(resp){
+			$scope.prices = resp.data;		
+			
+			
+			if($scope.prices){
+
+				//We don't want the page to load with outofstock, 
+				//hence we first set it to true and then check individual items 
+				$scope.outofstock = true;
+				
+				//Sort the data
+				$scope.prices.sort(function(a,b){return a.regPrice - b.regPrice;});
+				
+				//Set the first instock item as selected
+				for(var i=0; i<$scope.prices.length; i++){
+					if($scope.prices[i].stockStat == 'instock'){
+						$scope.prices[i].selected = true;
+						$scope.productSelected = $scope.prices[i];
+						$scope.outofstock = false;
+						break;
+					}
+
+				}
+				
+				//If its outofStock at product level, then update every option to be outofstock
+				if($scope.productStockStat=='outofstock'){
+					$scope.prices.forEach(function(e){
+						e.selected = false;
+						e.stockStat = 'outofstock';
+					});
+					
+					$scope.outofstock = true;
+				}
+			}
+
+		});	
+		
+	};
+	
+	
+	$scope.register = function(){
+		if($scope.registerForm.$valid){
+			console.log($scope.user);
+		}
+	};
+	
+	
+	$scope.removeFile = function(type){
+		
+		if(type == 'id' && $scope.idFile){			
+			$http.post('/files/delete/id/' + $scope.idFile._id);
+			$scope.idFile = null;
+		}
+		
+		else if(type == 'reco' && $scope.recoFile){
+			$http.post('/files/delete/id/' + $scope.recoFile._id);
+			$scope.recoFile = null;
+		}
+	};
+	
+	$scope.invalidFname = function(){		
+		return $scope.registerForm.firstname.$invalid 
+			&& !$scope.registerForm.firstname.$pristine;
+	};
+	
+	$scope.invalidLname = function(){		
+		return $scope.registerForm.lastname.$invalid 
+			&& !$scope.registerForm.lastname.$pristine;
+	};
+	
+	$scope.invalidEmail = function(){		
+		return $scope.registerForm.email.$invalid 
+			&& !$scope.registerForm.email.$pristine;
+	};
+	
+	$scope.invalidUname = function(){		
+		return $scope.registerForm.username.$invalid 
+			&& !$scope.registerForm.username.$pristine;
+	};
+	
+	$scope.invalidPassword = function(){		
+		return $scope.registerForm.password.$invalid 
+			&& !$scope.registerForm.password.$pristine;
+	};
+	
+	$scope.invalidCPassword = function(){		
+		return !$scope.registerForm.confirmpassword.$pristine
+			&& ($scope.user.password != $scope.confirmPassword);
+	};
+	
+	$scope.invalidPhone = function(){		
+		return $scope.registerForm.phone.$invalid 
+			&& !$scope.registerForm.phone.$pristine;
+	};
+
+	
+    $scope.$watch('idfileobj', function () {
+        new $scope.upload($scope.idfileobj, 'id');
+    });
+
+	
+    $scope.$watch('recofileobj', function () {
+        new $scope.upload($scope.recofileobj,'reco');
+    });
+    
+    
+    $scope.upload = function (file, type) {
+      if (file) {
+	        var fileInfo = {progress : false, element : null};
+	        
+	        Upload.upload({
+	            url: '/files/upload',
+	            fields : {path : '/user/'+$scope.today + "/", ctrl : 'controlled'},
+	        	file: file,
+	        	fileInfo : fileInfo
+	            
+	        }).then(
+	
+	    	        function (resp) { //Success
+		    	        
+			            if(resp.config.fileInfo)
+			            	resp.config.fileInfo.element.closest('.row').remove();
+			
+			           if(resp.data.results){
+			        	   var img = resp.data.results[0];
+			        	   
+			        	   if(img){
+				        	   if(type && type=='id'){
+				        		   $scope.user.identifications.idCard = img.location;
+				        		   $scope.idFile = img;
+				        	   }
+				        	   else if(type && type=='reco'){
+				        		   $scope.user.identifications.recomendation = img.location;
+				        		   $scope.recoFile = img;
+				        	   }
+			        	   }
+			           }
+			            
+			        },
+	
+	
+	
+	    	        function (resp) {//Error
+			            if(resp.config.fileInfo)
+			            	resp.config.fileInfo.element.html('Error uploading the file');
+			        },
+	
+	
+	    	        function (evt) { //Progress
+			        	if(!evt.config.fileInfo.progress){
+				        	var f = evt.config.fileInfo;
+				        	
+				        	var container = '.progress-wrapper ';
+				        	if(type) container = '.' + type + '-progress-wrapper';
+				        	
+			        		f.progress = true;
+			        		f.element = $('<div />').attr({'class': 'progress-bar progress-bar-success', 'role':'progressbar','style':'width:0%'});
+			        		
+			        		$('<div class="row"><div class="col-xs-4 file-name-holder">' 
+			                		+ evt.config.file.name 
+			                		+ '</div><div class="col-xs-8"><div class="progress"></div></div>')
+			                		.appendTo(container)
+			                		.find('.progress')
+			                		.append(f.element);
+			        	}
+	
+			            if(evt.config.fileInfo){
+			            	var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+			            	evt.config.fileInfo.element.css('width', progressPercentage+'%').html(progressPercentage+'%');
+			            }
+			        }
+			 );
+      }
+    }
 },
 
 productCtrlr = function($scope, $rootScope, $http){
@@ -738,4 +929,5 @@ lbApp
 .controller('allProductCtrlr', allProductCtrlr)
 .controller('productCtrlr', productCtrlr)
 .controller('loginCtrlr', loginCtrlr)
+.controller('registerCtrlr', registerCtrlr)
 .controller('cartCtrlr', cartCtrlr);
