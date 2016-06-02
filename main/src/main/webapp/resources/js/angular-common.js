@@ -313,35 +313,88 @@ registerCtrlr = function($scope, $http, Upload){
     $scope.init();
 }, 
 
-resetCtlr = function($scope, $http){
+resetCtlr = function($scope, $http, $rootScope){
 	
-	$scope.products = [];
-	$scope.categories = [];
-	$scope.categoryFilter = '';
+	$scope.successNotification = "";
 	
-	$scope.getProducts = function(){
+	$scope.invalidPassword = function(){		
+		return $scope.resetRequest.password.$invalid 
+			&& !$scope.resetRequest.password.$pristine;
+	};
+	
+	$scope.invalidCPassword = function(){		
+		return !$scope.resetRequest.cpassword.$pristine
+			&& ($scope.password != $scope.cpassword);
+	};
+	
+	$scope.requestReset = function(){
 		
-		$http.get(_lbUrls.allprds, {
-			params : { 
-				'hidepop' : true  //tells the config not to show the loading popup
+		if($scope.emailUsername != ''){
+			$http.get(_lbUrls.creset, {
+				params : { 
+					u : $scope.emailUsername
+				}
+			})
+			.then(
+					function(response){
+						var resp = response.data;
+						if(resp.success){
+							$scope.successNotification = 
+								"We have email the password reset link to your registered email";							
+						}
+						else{
+							$scope.pageLevelAlert = resp.message;
+						}
+						
+					},
+					function(){
+						$scope.pageLevelAlert = $rootScope.errMsgContactSupport;
+					}
+				);
+		}
+		else{
+			$scope.pageLevelAlert = "Please provide username or email to reset your password.";
+		}
+		
+	};
+	
+	
+	$scope.changePassword = function(){
+		
+		if($scope.password != '' && ($scope.password == $scope.cpassword)){
+			
+			$http.post(_lbUrls.rsavep, {
+				username : $('#formusername').val(),
+				email : $('#formemail').val(),
+				password : $scope.password
+			})
+			.then(
+					function(response){
+						var resp = response.data;
+						if(resp.success){
+							$scope.successNotification = 
+								"Password changed successfully";							
+						}
+						else{
+							$scope.pageLevelAlert = resp.message;
+						}
+						
+					},
+					function(){
+						$scope.pageLevelAlert = $rootScope.errMsgContactSupport;
+					}
+				);
+		}
+		else{
+			
+			if($scope.password == ''){
+				$scope.pageLevelAlert = "Please provide valid passwords";
 			}
-		})
-		.success(function(data){
-			if(data.success){
-				$scope.products = data.products;
-				$scope.categories = data.categories;
-
+			
+			else if($scope.password != $scope.cpassword){
+				$scope.pageLevelAlert = "Passwords don't match";
 			}
-			else{	
-				$scope.pageLevelError = "There was some error getting the products."
-					+" Please contact the support";
-			}
-
-		}).error(function(){
-
-			$scope.pageLevelError = "There was some error getting the products."
-				+" Please contact the support";
-		});	
+		}
 		
 	};
 },

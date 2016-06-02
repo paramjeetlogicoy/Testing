@@ -89,7 +89,9 @@ _lbUrls = {
 	'getcart' : '/cart/getcart',
 	'cart' : '/cart/',
 	'login' : '/login',
-	'register' : '/register'
+	'register' : '/register',
+	'creset' : '/createreset',
+	'rsavep' : '/reset/savep'
 };
 
 $(document).ready(function(){

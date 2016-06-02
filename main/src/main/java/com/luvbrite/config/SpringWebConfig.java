@@ -1,5 +1,8 @@
 package com.luvbrite.config;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +35,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 
 		@Bean
 		public ResourceBundleMessageSource messageSource() {
+			
 			ResourceBundleMessageSource rb = new ResourceBundleMessageSource();
 			rb.setBasenames(new String[] { "messages/messages", "messages/validation" });
 			return rb;
@@ -40,6 +44,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 
 	    @Bean
 	    public TemplateResolver templateResolver(){
+	    	
 	    	SpringResourceTemplateResolver  templateResolver = new SpringResourceTemplateResolver ();
 	        templateResolver.setApplicationContext(this.applicationContext);
 	        templateResolver.setPrefix("/WEB-INF/templates/");
@@ -53,8 +58,11 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 	    /**
 	     * THYMELEAF: Template Resolver for email templates.
 	     */
-	    private TemplateResolver emailTemplateResolver() {
-	        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+	    @Bean
+	    public TemplateResolver emailTemplateResolver() {
+	        
+	    	SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+	        templateResolver.setApplicationContext(this.applicationContext);
 	        templateResolver.setPrefix("/resources/email-templates/");
 	        templateResolver.setSuffix(".html");
 	        templateResolver.setTemplateMode("HTML5");
@@ -66,9 +74,13 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 
 	    @Bean
 	    public SpringTemplateEngine templateEngine(){
-	        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-	        templateEngine.addTemplateResolver(templateResolver());
-	        templateEngine.addTemplateResolver(emailTemplateResolver());
+	        
+	    	SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+	        final Set<TemplateResolver> templateResolvers = new HashSet<TemplateResolver>();
+	        templateResolvers.add(templateResolver());
+	        templateResolvers.add(emailTemplateResolver());
+	        templateEngine.setTemplateResolvers(templateResolvers);
+	        
 	        return templateEngine;
 	    }
 

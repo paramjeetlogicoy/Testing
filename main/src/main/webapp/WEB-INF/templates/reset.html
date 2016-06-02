@@ -30,12 +30,14 @@
 			
 			<div th:if="${msg==null}">
 			
-				<div class="row">
+				<div class="row ng-cloak">
 					<div th:if="${type}=='request'"
 						class="col-lg-8 col-lg-offset-2 col-sm-10 col-sm-offset-1">
-						
+
+						<div class="alert alert-success" ng-show="successNotification">{{successNotification}}</div>
+
 						<form class="form-horizontal" name="resetRequest"
-							ng-submit="requestReset()">
+							ng-hide="successNotification" ng-submit="requestReset()">
 							<div class="form-group">
 								<label class="control-label col-sm-4"> Email / Username
 								</label>
@@ -46,7 +48,8 @@
 							</div>
 							<div class="form-group">
 								<div class="col-sm-8 col-sm-offset-4">
-									<button type="submit" class="btn btn-lb">SUBMIT</button>
+									<button type="submit" class="btn btn-lb"
+										ng-disabled="!emailUsername">SUBMIT</button>
 								</div>
 							</div>
 
@@ -54,17 +57,20 @@
 						</form>
 
 					</div>
-					
-					
+
+
 					<div th:if="${type}=='password'"
 						class="col-lg-8 col-lg-offset-2 col-sm-10 col-sm-offset-1">
-						
+
+						<div class="alert alert-success" ng-show="successNotification">{{successNotification}}</div>
+
 						<form class="form-horizontal" name="resetRequest"
-							ng-submit="changePassword()">
+							ng-hide="successNotification" ng-submit="changePassword()">
 							<div class="form-group">
 								<label class="control-label col-sm-4">Username</label>
 								<div class="col-sm-8">
 									<p class="form-control-static" th:text="${username}"></p>
+									<input type="hidden" th:value="${username}" id="formusername" />
 								</div>
 							</div>
 
@@ -72,28 +78,38 @@
 								<label class="control-label col-sm-4">Email</label>
 								<div class="col-sm-8">
 									<p class="form-control-static" th:text="${email}"></p>
+									<input type="hidden" th:value="${email}" id="formemail" />
 								</div>
 							</div>
 
-							<div class="form-group">
+							<div class="form-group"
+								ng-class="{ 'has-error' : invalidPassword()}">
 								<label class="control-label col-sm-4">New Password </label>
 								<div class="col-sm-8">
 									<input type="password" ng-model="password" class="form-control"
-										required="required" name="password" />
+										ng-model-options="{updateOn: 'blur'}" ng-minlength="6"
+										required="required" name="password" autocomplete="off" />
+									<p class="help-block help-error">Password should be minimum
+										6 characters.</p>
 								</div>
 							</div>
 
-							<div class="form-group">
+							<div class="form-group"
+								ng-class="{ 'has-error' : invalidCPassword()}">
 								<label class="control-label col-sm-4">Confirm Password </label>
 								<div class="col-sm-8">
 									<input type="password" ng-model="cpassword"
-										class="form-control" required="required" name="cpassword" />
+										ng-model-options="{updateOn: 'blur'}" ng-minlength="6"
+										class="form-control" required="required" name="cpassword"
+										autocomplete="off" />
+									<p class="help-block help-error">Passwords dosen't match.</p>
 								</div>
 							</div>
 
 							<div class="form-group">
 								<div class="col-sm-8 col-sm-offset-4">
-									<button type="submit" class="btn btn-lb">SUBMIT</button>
+									<button type="submit" class="btn btn-lb"
+										ng-disabled="resetRequest.$pristine">SUBMIT</button>
 								</div>
 							</div>
 

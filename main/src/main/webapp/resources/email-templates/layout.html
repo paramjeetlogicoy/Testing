@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Thymeleaf Email Layout</title>
+</head>
+<body>
+	
+	<table border="0" cellspacing="0" cellpadding="0" th:fragment="spacer(width, size)"
+		style="font-family: Helvetica, Arial, sans-serif" th:width="${width}">
+		<tbody>
+			<tr>
+				<td>
+					<div th:style="'min-height:' + ${size} + 'px;font-size:' + ${size} + 'px;line-height:' + ${size} + 'px;'">
+						&nbsp;</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	
+</body>
+</html>

@@ -59,7 +59,7 @@ public class MainController {
 		r.setSuccess(true);
 		
 		Email email = new Email();
-		email.setEmailTemplate("emailtest");
+		email.setEmailTemplate("password-reset");
 		email.setFromEmail("no-reply@luvbrite.com");
 		email.setRecipientEmail("admin@codla.com");
 		email.setRecipientName("Gautam Krishna");

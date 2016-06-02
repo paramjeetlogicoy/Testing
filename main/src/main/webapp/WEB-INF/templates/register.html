@@ -50,7 +50,7 @@
 								<div class="col-sm-8">
 									<input type="text" ng-model="user.fname" class="form-control"
 										name="firstname" placeholder="Ex: John" required="required" />
-									<p ng-show="invalidFname()" class="help-block">First Name
+									<p class="help-block help-error">First Name
 										is required.</p>
 								</div>
 							</div>
@@ -62,7 +62,7 @@
 								<div class="col-sm-8">
 									<input type="text" ng-model="user.lname" class="form-control"
 										name="lastname" placeholder="Ex: Doe" required="required" />
-									<p ng-show="invalidLname()" class="help-block">Last Name is
+									<p class="help-block help-error">Last Name is
 										required.</p>
 								</div>
 							</div>
@@ -75,7 +75,7 @@
 									<input type="email" ng-model="user.email" class="form-control"
 										name="email" placeholder="Ex: user@gmail.com"
 										required="required" />
-									<p ng-show="invalidEmail()" class="help-block">Valid email
+									<p class="help-block help-error">Valid email
 										is required.</p>
 								</div>
 							</div>
@@ -88,7 +88,7 @@
 									<input type="text" ng-model="user.username" name="username"
 										class="form-control" placeholder="Ex: sayloud99"
 										required="required" autocomplete="off" />
-									<p ng-show="invalidUname()" class="help-block">Username
+									<p class="help-block help-error">Username
 										cannot be empty.</p>
 								</div>
 							</div>
@@ -102,7 +102,7 @@
 									<input type="password" ng-model="user.password" name="password"
 										ng-model-options="{updateOn: 'blur'}" ng-minlength="6"
 										class="form-control" required="required" autocomplete="off" />
-									<p ng-show="invalidPassword()" class="help-block">Password
+									<p class="help-block help-error">Password
 										should be minimum 6 characters.</p>
 								</div>
 							</div>
@@ -116,7 +116,7 @@
 										name="confirmpassword" class="form-control"
 										ng-model-options="{updateOn: 'blur'}" required="required"
 										autocomplete="off" />
-									<p ng-show="invalidCPassword()" class="help-block">Passwords
+									<p class="help-block help-error">Passwords
 										dosen't match.</p>
 								</div>
 							</div>
@@ -129,7 +129,7 @@
 									<input type="text" ng-model="user.phone" class="form-control"
 										name="phone" placeholder="Ex: 301-898-2987"
 										required="required" />
-									<p ng-show="invalidPhone()" class="help-block">Phone number
+									<p class="help-block help-error">Phone number
 										is required.</p>
 								</div>
 							</div>

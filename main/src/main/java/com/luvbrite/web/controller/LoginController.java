@@ -77,116 +77,6 @@ public class LoginController {
 	}
 	
 
-	@RequestMapping(value = "/resetrequest", method = RequestMethod.GET)
-	public String requestReset(ModelMap model){
-
-		model.addAttribute("type", "request");
-		
-		return "reset";
-	}
-	
-
-	@RequestMapping(value = "/createreset", method = RequestMethod.GET)
-	public @ResponseBody GenericResponse createResetCode(
-			@RequestParam(value="u", required=false) String username,
-			@RequestParam(value="e", required=false) String email){
-			
-		GenericResponse r = new GenericResponse();
-		r.setSuccess(false);
-		
-		if(username == null && email == null){
-			r.setMessage("Invalid username/email");
-			return r;
-		}
-		
-		ObjectId code = null;
-		
-		if(username != null && !username.trim().equals("")){
-			
-			User u = dao.createQuery().field("username")
-					.equal(username).retrievedFields(true, "username", "email")
-					.get();
-			
-			if(u!=null){
-				
-				PasswordReset pr = new PasswordReset();
-				pr.setEmail(u.getEmail());
-				pr.setUsername(u.getUsername());
-				pr.setDate(Calendar.getInstance().getTime());
-				
-				pwdresetDAO.save(pr);
-				
-				code = pr.get_id();
-				
-				System.out.println(" Code u - " + code);
-				r.setSuccess(true);
-			}
-			else{
-				
-				r.setMessage("No valid username found");
-			}
-		}
-		
-		else if(email != null && !email.trim().equals("")){
-			
-			User u = dao.createQuery().field("email")
-					.equal(email).retrievedFields(true, "username", "email")
-					.get();
-			
-			if(u!=null){
-				
-				PasswordReset pr = new PasswordReset();
-				pr.setEmail(u.getEmail());
-				pr.setUsername(u.getUsername());
-				pr.setDate(Calendar.getInstance().getTime());
-				
-				pwdresetDAO.save(pr);
-				
-				code = pr.get_id();
-				
-				System.out.println(" Code e - " + code);				
-				r.setSuccess(true);
-			}
-			else{
-				
-				r.setMessage("No valid email found");
-			}
-		}
-		
-		else{
-			
-			r.setMessage("No valid user found");
-		}
-		
-		return r;
-	}
-	
-
-	@RequestMapping(value = "/reset/{code}", method = RequestMethod.GET)
-	public String resetPassword(ModelMap model, @PathVariable ObjectId code){
-		
-		if(code == null){
-			model.addAttribute("msg", "There was some error accessing this page");
-			return "403";
-		}
-		
-		model.addAttribute("type", "password");
-		
-		PasswordReset pr = pwdresetDAO.get(code);
-		if(pr == null){
-			model.addAttribute("msg", "Not a valid reset code");
-		}
-		
-		else{
-			
-			model.addAttribute("username", pr.getUsername());
-			model.addAttribute("email", pr.getEmail());
-		}
-		
-		return "reset";
-	}
-	
-
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	public String register(){
 		return "register";
@@ -323,6 +213,170 @@ public class LoginController {
 				}
 			}
 			
+		}
+		
+		
+		return r;		
+	}
+	
+
+	@RequestMapping(value = "/resetrequest", method = RequestMethod.GET)
+	public String requestReset(ModelMap model){
+
+		model.addAttribute("type", "request");
+		
+		return "reset";
+	}
+	
+
+	@RequestMapping(value = "/createreset", method = RequestMethod.GET)
+	public @ResponseBody GenericResponse createResetCode(
+			@RequestParam(value="u", required=false) String usernameEmail){
+			
+		GenericResponse r = new GenericResponse();
+		r.setSuccess(false);
+		
+		if(usernameEmail == null){
+			r.setMessage("Invalid username/email");
+			return r;
+		}
+		
+		ObjectId code = null;
+		
+		if(usernameEmail != null && !usernameEmail.trim().equals("")){
+			
+			User u = dao.createQuery().field("username")
+					.equal(usernameEmail).retrievedFields(true, "username", "email")
+					.get();
+			
+			if(u!=null){
+				
+				PasswordReset pr = new PasswordReset();
+				pr.setEmail(u.getEmail());
+				pr.setUsername(u.getUsername());
+				pr.setDate(Calendar.getInstance().getTime());
+				
+				pwdresetDAO.save(pr);
+				
+				code = pr.get_id();
+				
+				System.out.println(" Code u - " + code);
+				r.setSuccess(true);
+				
+			}
+			else{
+
+				u = dao.createQuery().field("email")
+						.equal(usernameEmail).retrievedFields(true, "username", "email")
+						.get();
+
+				if(u!=null){
+
+					PasswordReset pr = new PasswordReset();
+					pr.setEmail(u.getEmail());
+					pr.setUsername(u.getUsername());
+					pr.setDate(Calendar.getInstance().getTime());
+
+					pwdresetDAO.save(pr);
+
+					code = pr.get_id();
+
+					System.out.println(" Code e - " + code);				
+					r.setSuccess(true);
+				}
+				else{
+
+					r.setMessage("No valid user found");
+				}
+			}
+		}
+		
+		else {
+
+			r.setMessage("No valid user found");
+		}
+		
+		return r;
+	}
+	
+
+	@RequestMapping(value = "/reset/{code}", method = RequestMethod.GET)
+	public String resetPassword(ModelMap model, @PathVariable ObjectId code){
+		
+		if(code == null){
+			model.addAttribute("msg", "There was some error accessing this page");
+			return "403";
+		}
+		
+		model.addAttribute("type", "password");
+		
+		PasswordReset pr = pwdresetDAO.get(code);
+		if(pr == null){
+			model.addAttribute("msg", "Not a valid reset code");
+		}
+		
+		else{
+			
+			model.addAttribute("username", pr.getUsername());
+			model.addAttribute("email", pr.getEmail());
+		}
+		
+		return "reset";
+	}
+
+	
+	@RequestMapping(value = "/reset/savep", method = RequestMethod.POST)
+	public @ResponseBody GenericResponse savePassword(@RequestBody User user){
+		
+		GenericResponse r = new GenericResponse();
+			
+		if(user.getPassword().trim().equals("")){
+			r.setMessage("Password is empty");			
+		}
+		else{
+			
+			User userDb = dao.findOne("email", user.getEmail());			
+			if(userDb != null && userDb.getUsername().equals(user.getUsername())){		
+				
+				//Encode the password before saving it
+				String encodedPwd = encoder.encode(user.getPassword());
+				userDb.setPassword(encodedPwd);
+				
+				/**
+				 * Here we are saving only the password.
+				 * Remaining information is same as that 
+				 * pulled from DB
+				 **/			
+				dao.save(userDb);
+				
+
+				
+				
+				/**
+				 * Update Log
+				 * */
+				try {
+					
+					Log log = new Log();
+					log.setCollection("users");
+					log.setDetails("user.password changed by reset password.");
+					log.setDate(Calendar.getInstance().getTime());
+					log.setKey(userDb.get_id());
+					log.setUser("system");
+					
+					logDao.save(log);					
+				}
+				catch(Exception e){
+					logger.error(Exceptions.giveStackTrace(e));
+				}
+				
+				
+				r.setSuccess(true);
+			}
+			
+			else {
+				r.setMessage("No user found for this email and username");
+			}
 		}
 		
 		
