@@ -6,6 +6,7 @@ import org.mongodb.morphia.annotations.Embedded;
 public class UserMarketing {
 	
 	private String hearAboutUs;
+	private boolean subscribe = false;
 
 	public String getHearAboutUs() {
 		return hearAboutUs;
@@ -13,5 +14,13 @@ public class UserMarketing {
 
 	public void setHearAboutUs(String hearAboutUs) {
 		this.hearAboutUs = hearAboutUs;
+	}
+
+	public boolean isSubscribe() {
+		return subscribe;
+	}
+
+	public void setSubscribe(boolean subscribe) {
+		this.subscribe = subscribe;
 	}
 }

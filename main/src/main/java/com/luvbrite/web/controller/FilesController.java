@@ -12,12 +12,15 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,7 +29,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.HandlerMapping;
 
 import com.luvbrite.dao.UploadDAO;
+import com.luvbrite.utils.Exceptions;
 import com.luvbrite.web.models.FileUploadResponse;
+import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Upload;
 
 
@@ -34,7 +39,9 @@ import com.luvbrite.web.models.Upload;
 @RequestMapping(value = "/files")
 @PropertySource("classpath:/env.properties")
 public class FilesController {
-
+	
+	private static Logger logger = LoggerFactory.getLogger(FilesController.class);
+	
 	@Autowired
 	private Environment env;
 
@@ -74,7 +81,51 @@ public class FilesController {
 	public void downloadFile(HttpServletRequest req, HttpServletResponse resp){
 		
 		processFile(req, resp, true);
-	}	
+	}		
+	
+	
+	@RequestMapping(value = "/delete/id/{id}", method = RequestMethod.POST)
+	public @ResponseBody GenericResponse deleteWithId(@PathVariable Long id){
+		
+		GenericResponse r = new GenericResponse();
+		r.setSuccess(false);
+		r.setMessage("");
+		
+		if(id == null || id == 0){
+			r.setMessage("Invalid file id");
+			return r;
+		}
+		
+		try {
+			
+			Upload u = dao.get(id);
+			if(u != null){
+
+				String basePath = env.getProperty("ftpEasyPath");			
+				
+				if(u.getLocType() != null && u.getLocType().equals("internal")) 
+					basePath = env.getProperty("ftpControlledPath");
+				
+				File f = new File(basePath + u.getLocation());
+				if(f.exists() && f.isFile()){
+					
+					if(f.delete()){
+						r.setSuccess(true);
+					}
+				}
+			}
+			else{
+				r.setMessage("File not found");
+			}
+			
+			
+		}catch(Exception e){
+			logger.error(Exceptions.giveStackTrace(e));
+		}	
+		
+		
+		return r;		
+	}
 	
 	
 	private void processFile(HttpServletRequest req, HttpServletResponse resp, boolean download){
@@ -118,7 +169,7 @@ public class FilesController {
 			
 			
 		}catch(Exception e){
-			e.printStackTrace();
+			logger.error(Exceptions.giveStackTrace(e));
 		}
 	}
 
@@ -136,7 +187,7 @@ public class FilesController {
 		if(!file.isEmpty()) {
 
 			String name = file.getOriginalFilename();
-			String newFileName = name;
+			String newFileName = name.replaceAll("[^A-Za-z0-9._-]","");
 			String basePath = env.getProperty("ftpEasyPath");			
 			
 			if(ctrl != null && ctrl.equals("controlled")) 
@@ -150,10 +201,10 @@ public class FilesController {
 			File dir = new File(fileLoc);
 			if(!dir.exists()) dir.mkdirs();
 			
-			String nameWithOutExtn = name.substring(0, name.lastIndexOf(".")),
-					extn = name.substring(name.lastIndexOf("."));
+			String nameWithOutExtn = newFileName.substring(0, newFileName.lastIndexOf(".")),
+					extn = newFileName.substring(newFileName.lastIndexOf("."));
 			
-			File f = new File(fileLoc + name);
+			File f = new File(fileLoc + newFileName);
 			int i = 1;
 
 			//Check if file already exists, if yes, create version numbers
@@ -205,6 +256,7 @@ public class FilesController {
 			}
 			catch (Exception e) {
 				r.setMessage("Upload failed " + name + " => " + e.getMessage());
+				logger.error(Exceptions.giveStackTrace(e));
 			}
 		}
 		else {

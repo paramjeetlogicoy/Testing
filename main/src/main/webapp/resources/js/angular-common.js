@@ -103,63 +103,61 @@ loginCtrlr = function($scope, $http){
 	};
 },
 
-registerCtrlr = function($scope, $rootScope, $http, Upload){
+registerCtrlr = function($scope, $http, Upload){
 	
 	var today = new Date();
 	
 	$scope.user = {'identifications':{}, 'marketing':{}};
 	$scope.today = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
 	
-	$scope.getProductPrice = function(){
-		
-		$http.get(_lbUrls.getprdprice + $scope.productId + '/price', {
-			params : { 
-				'hidepop' : true  //tells the config not to show the loading popup
-			}
-		})
-		.then(function(resp){
-			$scope.prices = resp.data;		
-			
-			
-			if($scope.prices){
-
-				//We don't want the page to load with outofstock, 
-				//hence we first set it to true and then check individual items 
-				$scope.outofstock = true;
-				
-				//Sort the data
-				$scope.prices.sort(function(a,b){return a.regPrice - b.regPrice;});
-				
-				//Set the first instock item as selected
-				for(var i=0; i<$scope.prices.length; i++){
-					if($scope.prices[i].stockStat == 'instock'){
-						$scope.prices[i].selected = true;
-						$scope.productSelected = $scope.prices[i];
-						$scope.outofstock = false;
-						break;
-					}
-
-				}
-				
-				//If its outofStock at product level, then update every option to be outofstock
-				if($scope.productStockStat=='outofstock'){
-					$scope.prices.forEach(function(e){
-						e.selected = false;
-						e.stockStat = 'outofstock';
-					});
-					
-					$scope.outofstock = true;
-				}
-			}
-
-		});	
-		
-	};
-	
+	$scope.hearAboutOptions = ['WeedMaps', 'Yelp', 'Facebook', 'Leafly', 'Friends & Family', 'La Weekly', 'Other'];
 	
 	$scope.register = function(){
-		if($scope.registerForm.$valid){
-			console.log($scope.user);
+		
+		$scope.pageLevelAlert = "";
+		$('.recofile-group, .idfile-group').removeClass('has-error');
+		
+		if($scope.registerForm.$valid 
+				&& $scope.recoFile 
+				&& $scope.idFile){
+			
+			$http.post(_lbUrls.register, $scope.user)
+			.then(function(response){
+				var resp = response.data;	
+				if(resp.success){
+					
+					//Remove files from localStorage
+					localStorage.removeItem('recoFile');
+					localStorage.removeItem('idFile');
+					
+					alert('Account created');
+				}
+				else{
+					$scope.pageLevelAlert = resp.message; 
+				}
+			},
+			
+			function(){
+				$scope.pageLevelAlert = "There was some error creating your account. "
+					+"Please try later. If problem persists, please call the customer care.";
+			});	
+		}
+		
+		else{
+			
+			if(!$scope.recoFile){
+				$('.recofile-group').addClass('has-error');
+			}
+			
+			if(!$scope.idFile){
+				$('.idfile-group').addClass('has-error');
+			}
+			
+			if(!$scope.registerForm.$valid){
+				$scope.pageLevelError = 'Please correct the highlighted sections'; 
+			}
+			
+			$('html,body').scrollTop($('.has-error').offset().top-120);
 		}
 	};
 	
@@ -169,11 +167,13 @@ registerCtrlr = function($scope, $rootScope, $http, Upload){
 		if(type == 'id' && $scope.idFile){			
 			$http.post('/files/delete/id/' + $scope.idFile._id);
 			$scope.idFile = null;
+			localStorage.removeItem('idFile');
 		}
 		
 		else if(type == 'reco' && $scope.recoFile){
 			$http.post('/files/delete/id/' + $scope.recoFile._id);
 			$scope.recoFile = null;
+			localStorage.removeItem('recoFile');
 		}
 	};
 	
@@ -247,10 +247,12 @@ registerCtrlr = function($scope, $rootScope, $http, Upload){
 				        	   if(type && type=='id'){
 				        		   $scope.user.identifications.idCard = img.location;
 				        		   $scope.idFile = img;
+				        		   localStorage.setItem('idFile', JSON.stringify(img));
 				        	   }
 				        	   else if(type && type=='reco'){
 				        		   $scope.user.identifications.recomendation = img.location;
 				        		   $scope.recoFile = img;
+				        		   localStorage.setItem('recoFile', JSON.stringify(img));
 				        	   }
 			        	   }
 			           }
@@ -290,7 +292,58 @@ registerCtrlr = function($scope, $rootScope, $http, Upload){
 			        }
 			 );
       }
-    }
+    };
+    
+    $scope.init = function(){
+    	
+    	try {
+    		
+        	if(localStorage.getItem('recoFile')){
+        		$scope.recoFile = JSON.parse(localStorage.getItem('recoFile')); 
+      		   	$scope.user.identifications.recomendation = $scope.recoFile.location;
+     	   	}
+        	
+        	if(localStorage.getItem('idFile')){
+        		$scope.idFile = JSON.parse(localStorage.getItem('idFile'));
+        		$scope.user.identifications.idCard = $scope.idFile.location;
+        	}
+    	}catch(e){}
+    };
+    
+    $scope.init();
+}, 
+
+resetCtlr = function($scope, $http){
+	
+	$scope.products = [];
+	$scope.categories = [];
+	$scope.categoryFilter = '';
+	
+	$scope.getProducts = function(){
+		
+		$http.get(_lbUrls.allprds, {
+			params : { 
+				'hidepop' : true  //tells the config not to show the loading popup
+			}
+		})
+		.success(function(data){
+			if(data.success){
+				$scope.products = data.products;
+				$scope.categories = data.categories;
+
+			}
+			else{	
+				$scope.pageLevelError = "There was some error getting the products."
+					+" Please contact the support";
+			}
+
+		}).error(function(){
+
+			$scope.pageLevelError = "There was some error getting the products."
+				+" Please contact the support";
+		});	
+		
+	};
 },
 
 productCtrlr = function($scope, $rootScope, $http){
@@ -930,4 +983,5 @@ lbApp
 .controller('productCtrlr', productCtrlr)
 .controller('loginCtrlr', loginCtrlr)
 .controller('registerCtrlr', registerCtrlr)
+.controller('resetCtlr', resetCtlr)
 .controller('cartCtrlr', cartCtrlr);
