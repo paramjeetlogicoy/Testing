@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Fragments</title>
+</head>
+<body>	
+
+	<table border="0" cellspacing="0" th:cellpadding="${padding}"
+		th:fragment="spacer(width, padding, size)"
+		style="font-family: Helvetica, Arial, sans-serif" th:width="${width}">
+		<tbody>
+			<tr>
+				<td>
+					<div
+						th:style="'min-height:' + ${size} + 'px;font-size:' + ${size} + 'px;line-height:' + ${size} + 'px;'">
+						&nbsp;</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+</body>
+</html>

@@ -3,8 +3,6 @@ package com.luvbrite.config;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -17,16 +15,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
-import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.TemplateResolver;
 
 @EnableWebMvc
 @Configuration
 @ComponentScan("com.luvbrite")
 public class SpringWebConfig extends WebMvcConfigurerAdapter {
-    	
-		@Autowired
-    	private ApplicationContext applicationContext;
     
 		@Override
 		public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -42,14 +36,13 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 		}
 
 
-	    @Bean
+		@Bean
 	    public TemplateResolver templateResolver(){
-	    	
-	    	SpringResourceTemplateResolver  templateResolver = new SpringResourceTemplateResolver ();
-	        templateResolver.setApplicationContext(this.applicationContext);
+	    	SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
 	        templateResolver.setPrefix("/WEB-INF/templates/");
 	        templateResolver.setSuffix(".html");
 	        templateResolver.setTemplateMode("HTML5");
+	        templateResolver.setOrder(2);
 	        templateResolver.setCacheable(false);
 
 	        return templateResolver;
@@ -59,13 +52,13 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 	     * THYMELEAF: Template Resolver for email templates.
 	     */
 	    @Bean
-	    public TemplateResolver emailTemplateResolver() {
+	    public SpringResourceTemplateResolver emailTemplateResolver() {
 	        
 	    	SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
-	        templateResolver.setApplicationContext(this.applicationContext);
-	        templateResolver.setPrefix("/resources/email-templates/");
+	        templateResolver.setPrefix("resources/email-templates/");
 	        templateResolver.setSuffix(".html");
 	        templateResolver.setTemplateMode("HTML5");
+	        templateResolver.setOrder(1);
 	        templateResolver.setCacheable(false);
 	        
 	        return templateResolver;
@@ -83,6 +76,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 	        
 	        return templateEngine;
 	    }
+	    
 
 	    @Bean
 	    public ViewResolver viewResolver(){

@@ -1,5 +1,9 @@
 package com.luvbrite.services;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
@@ -12,6 +16,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import com.luvbrite.web.models.Email;
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 @Service
 public class EmailService {
@@ -25,7 +30,7 @@ public class EmailService {
 	public void sendEmail(Email email) throws MessagingException{
 		
 		final Context ctx = new Context(LocaleContextHolder.getLocale());
-        ctx.setVariable("name", email.getRecipientName());
+        ctx.setVariable("emailObj", email);
         
         // Prepare message using a Spring helper
         final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
@@ -33,13 +38,37 @@ public class EmailService {
         message.setSubject(email.getSubject());
         message.setFrom(email.getFromEmail());
         message.setTo(email.getRecipientEmail());
+        
+        List<String> bccs = email.getBccs();
+        if(bccs ==null || bccs.size()<=0){
+        	bccs = new ArrayList<String>();
+        	bccs.add("updates@luvbrite.com");
+        }
+        else {
+        	bccs.add("updates@luvbrite.com");
+        }
+        
+    	String[] array1 = new String[bccs.size()];
+    	array1 = bccs.toArray(array1);
+    	message.setBcc(array1);
+        
+        List<String> ccs = email.getCcs();
+        if(ccs !=null && ccs.size()>0){
+        	String[] array2 = new String[ccs.size()];
+        	array2 = bccs.toArray(array2);
+        	message.setCc(array2);
+        }
 
         // Create the HTML body using Thymeleaf
-        final String emailContent = this.templateEngine.process(email.getEmailTemplate(), ctx);
+        final String emailContent = this.templateEngine.process("layout", ctx);
         message.setText(emailContent, true);
         
         // Send email
         this.mailSender.send(mimeMessage);
+        
+		
+		System.out.println("EmailService - Email Sent");
+		//System.out.println(emailContent);
 		
 	}
 

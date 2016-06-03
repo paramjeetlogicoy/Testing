@@ -1,21 +1,184 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>Thymeleaf Email Layout</title>
+<title th:text="${emailTitle}"></title>
 </head>
 <body>
-	
-	<table border="0" cellspacing="0" cellpadding="0" th:fragment="spacer(width, size)"
-		style="font-family: Helvetica, Arial, sans-serif" th:width="${width}">
-		<tbody>
-			<tr>
-				<td>
-					<div th:style="'min-height:' + ${size} + 'px;font-size:' + ${size} + 'px;line-height:' + ${size} + 'px;'">
-						&nbsp;</div>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-	
+	<div
+		style="background-color: #dfdfdf; padding: 0; margin: 0 auto; width: 100%">
+		<span
+			style="display: none !important; font-size: 1px; color: transparent; min-height: 0; width: 0"
+			th:text="${emailObj.emailInfo}"></span>
+		<table border="0" cellspacing="0" cellpadding="0"
+			style="font-family: Helvetica, Arial, sans-serif; border-collapse: collapse; width: 100% !important; font-family: Helvetica, Arial, sans-serif; margin: 0; padding: 0"
+			width="100%" bgcolor="#DFDFDF">
+			<tbody>
+				<tr>
+					<td colspan="3">
+
+						<div
+							th:replace="fragments::spacer(width=1, padding=0, size=5)"></div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table cellspacing="0" cellpadding="0" border="0" align="center"
+							width="100%" style="table-layout: fixed">
+							<tbody>
+								<tr>
+									<td align="center">
+										<table border="0" cellspacing="0" cellpadding="0"
+											style="font-family: Helvetica, Arial, sans-serif; min-width: 290px"
+											width="540">
+											<tbody>
+												<tr>
+													<td style="font-family: Helvetica, Arial, sans-serif">
+														<div
+															th:replace="fragments::spacer(width=1, padding=1, size=8)"></div>
+
+
+														<table border="0" cellspacing="0" cellpadding="0"
+															style="font-family: Helvetica, Arial, sans-serif"
+															width="100%">
+															<tbody>
+																<tr>
+																	<td align="left" valign="middle" width="95" height="21"><a
+																		style="text-decoration: none; border: none; display: block; min-height: 21px; width: 100%"
+																		href="https://www.luvbrite.com/" target="_blank"><img
+																			src="http://www.lucyjon.com/resources/imgs/luvbrite-header-logo.jpg"
+																			width="55" height="65" alt="Luvbrite Collective"
+																			style="border: none; text-decoration: none"/></a></td>
+																</tr>
+															</tbody>
+														</table>
+
+														<div
+															th:replace="fragments::spacer(width=1, padding=1, size=8)"></div>
+
+														<table border="0" cellspacing="0" cellpadding="0"
+															style="font-family: Helvetica, Arial, sans-serif; border-radius: 3px 3px 0 0 !important;"
+															width="100%" bgcolor="#557da1">
+															<tbody>
+																<tr>
+																	<td width="20">
+																		<div
+																			th:replace="fragments::spacer(width=20, padding=1, size=0)"></div>
+																	</td>
+																	<td width="100%">
+																		<div
+																			th:replace="fragments::spacer(width=500, padding=1, size=12)"></div>
+																	</td>
+																	<td width="20">
+																		<div
+																			th:replace="fragments::spacer(width=20, padding=1, size=0)"></div>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+														<table border="0" cellspacing="0" cellpadding="0"
+															style="font-family: Helvetica, Arial, sans-serif;border-radius: 3px;"
+															width="100%" bgcolor="#FFFFFF">
+															<tbody>
+																<tr>
+																	<td width="20">
+																		<div
+																			th:replace="fragments::spacer(width=20, padding=1, size=0)"></div>
+																	</td>
+																	<td
+																		style="color: #333333; font-family: Helvetica, Arial, sans-serif; font-size: 15px; line-height: 18px"
+																		align="left">
+																		<div
+																			th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+																		<div
+																			th:replace="${emailObj.emailTemplate}::main"></div>
+
+																	</td>
+																	<td width="20">
+																		<div
+																			th:replace="fragments::spacer(width=20, padding=1, size=0)"></div>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										<table border="0" cellspacing="0" cellpadding="0"
+											style="font-family: Helvetica, Arial, sans-serif" width="540">
+											<tbody>
+												<tr>
+													<td align="left">
+														<table border="0" cellspacing="0" cellpadding="0"
+															style="font-family: Helvetica, Arial, sans-serif"
+															width="100%">
+															<tbody>
+																<tr>
+																	<td>
+																		<div
+																			th:replace="fragments::spacer(width=1, padding=1, size=10)"></div>
+																	</td>
+																</tr>
+																<tr>
+																	<td align="left">
+																		<table border="0" cellspacing="0" cellpadding="0"
+																			style="font-family: Helvetica, Arial, sans-serif; font-size: 11px; font-family: Helvetica, Arial, sans-serif; color: #999999"
+																			width="100%">
+																			<tbody>
+																				<tr>
+																					<td></td>
+																				</tr>
+																				<tr>
+																					<td>This email was intended for <span
+																						th:text="${emailObj.recipientName}"></span> (<span
+																						th:text="${emailObj.recipientEmail}"></span>).
+																					</td>
+																				</tr>
+																				<tr>
+																					<td>If you need assistance or have questions,
+																						please contact <a
+																						style="color: #0077b5; text-decoration: none"
+																						href="#" target="_blank">Luvbrite Collective
+																							Support</a>.
+																					</td>
+																				</tr>
+																				<tr>
+																					<td>
+																						<div
+																							th:replace="fragments::spacer(width=1, padding=1, size=10)"></div>
+																					</td>
+																				</tr>
+																				<tr>
+																					<td>&copy; <span
+																						th:text="${#calendars.format(#calendars.createNow(), 'yyyy')}"></span>,
+																						Luvbrite Collective
+																					</td>
+																				</tr>
+																			</tbody>
+																		</table>
+																	</td>
+																</tr>
+																<tr>
+																	<td>
+																		<div
+																			th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
 </body>
 </html>

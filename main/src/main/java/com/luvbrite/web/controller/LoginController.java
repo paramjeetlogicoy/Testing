@@ -24,7 +24,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.luvbrite.dao.LogDAO;
 import com.luvbrite.dao.PasswordResetDAO;
 import com.luvbrite.dao.UserDAO;
+import com.luvbrite.services.EmailService;
 import com.luvbrite.utils.Exceptions;
+import com.luvbrite.web.models.Email;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Log;
 import com.luvbrite.web.models.PasswordReset;
@@ -47,6 +49,9 @@ public class LoginController {
 
 	@Autowired
 	private LogDAO logDao;
+	
+	@Autowired
+	private EmailService emailService;
 
 
 	@RequestMapping(value = "/login")
@@ -246,7 +251,7 @@ public class LoginController {
 		if(usernameEmail != null && !usernameEmail.trim().equals("")){
 			
 			User u = dao.createQuery().field("username")
-					.equal(usernameEmail).retrievedFields(true, "username", "email")
+					.equal(usernameEmail).retrievedFields(true, "username", "email", "fname")
 					.get();
 			
 			if(u!=null){
@@ -260,14 +265,14 @@ public class LoginController {
 				
 				code = pr.get_id();
 				
-				System.out.println(" Code u - " + code);
+				//System.out.println(" Code u - " + code);
 				r.setSuccess(true);
 				
 			}
 			else{
 
 				u = dao.createQuery().field("email")
-						.equal(usernameEmail).retrievedFields(true, "username", "email")
+						.equal(usernameEmail).retrievedFields(true, "username", "email", "fname")
 						.get();
 
 				if(u!=null){
@@ -281,13 +286,42 @@ public class LoginController {
 
 					code = pr.get_id();
 
-					System.out.println(" Code e - " + code);				
+					//System.out.println(" Code e - " + code);				
 					r.setSuccess(true);
 				}
 				else{
 
 					r.setMessage("No valid user found");
 				}
+			}
+			
+			
+			if(r.isSuccess()){
+				
+				//Sent Email
+				try {
+					
+					Email email = new Email();
+					email.setEmailTemplate("password-reset");
+					email.setFromEmail("no-reply@luvbrite.com");
+					email.setRecipientEmail(u.getEmail());
+					email.setRecipientName(u.getFname());
+					email.setSubject("Luvbrite Password Reset Request");
+					email.setEmailTitle("Password Reset Email");
+					email.setEmailInfo("Info about changing your password");
+					
+					User user = new User();
+					user.setPassword(code.toString());
+					
+					email.setEmail(user);
+					
+					emailService.sendEmail(email);
+					
+				}catch(Exception e){
+					logger.error(Exceptions.giveStackTrace(e));
+					r.setSuccess(false);
+					r.setMessage("There was some error sending the reset email.");
+				}				
 			}
 		}
 		
