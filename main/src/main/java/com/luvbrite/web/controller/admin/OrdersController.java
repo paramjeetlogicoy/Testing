@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.luvbrite.dao.LogDAO;
 import com.luvbrite.dao.OrderDAO;
 import com.luvbrite.services.EmailService;
+import com.luvbrite.services.PostOrderMeta;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.PaginationLogic;
 import com.luvbrite.web.models.Email;
@@ -41,6 +42,9 @@ public class OrdersController {
 	
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	private PostOrderMeta postOrderMeta;
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public String mainPage(ModelMap model){		
@@ -122,6 +126,42 @@ public class OrdersController {
 				}
 				catch(Exception e){
 					logger.error(Exceptions.giveStackTrace(e));
+				}
+				
+				if(order.getStatus().equals("cancelled")){
+
+					/* Post Meta if required */
+					try {							
+					
+						postOrderMeta.postOrder(order);							
+					
+					}catch(Exception e){
+						logger.error(Exceptions.giveStackTrace(e));
+					}
+					
+
+					
+					/* Send email if needed */
+					try {
+						
+						Email email = new Email();
+						email.setEmailTemplate("order-cancelled");
+						email.setFromName("Luvbrite Orders");
+						email.setFromEmail("no-reply@luvbrite.com");
+						email.setRecipientEmail(order.getCustomer().getEmail());
+						email.setRecipientName(order.getCustomer().getName());
+						
+						//email.setBccs(Arrays.asList(new String[]{"orders@luvbrite.com", "orders-notify@luvbrite.com"}));
+						
+						email.setEmailTitle("Order Cancellation Email");
+						email.setSubject("Luvbrite Order#" + order.getOrderNumber() + " has been cancelled");
+						email.setEmailInfo("cancellation confirmation.");						
+						
+						emailService.sendEmail(email);
+						
+					}catch(Exception e){
+						logger.error(Exceptions.giveStackTrace(e));
+					}
 				}
 				
 				r.setSuccess(true);

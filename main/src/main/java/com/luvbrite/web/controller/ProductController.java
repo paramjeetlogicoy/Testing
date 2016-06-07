@@ -1,5 +1,6 @@
 package com.luvbrite.web.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +81,21 @@ public class ProductController {
 		Product p = prdDao.findOne("url", productUrl);
 		model.addAttribute("url", productUrl);
 		model.addAttribute("product", p);
+		
+		/* Find related products */
+		if(p != null){
+			
+			List<Product> relatedProducts = new ArrayList<Product>();
+			
+			List<Integer> ids = p.getRps();
+			if(ids != null && ids.size()>0){			
+				relatedProducts = prdDao.createQuery()
+						.field("_id").in(ids)
+						.asList();
+				
+				model.addAttribute("rps", relatedProducts);
+			}
+		}
 		
 		return "product-page";		
 	}	

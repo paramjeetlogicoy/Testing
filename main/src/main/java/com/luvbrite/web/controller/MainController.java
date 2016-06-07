@@ -42,6 +42,13 @@ public class MainController {
 	}
 
 	
+	@RequestMapping(value = "/admin")
+	public String admin(){	
+		
+		return "redirect:/admin/orders";		
+	}
+
+	
 	@RequestMapping(value = "/check")
 	public @ResponseBody GenericResponse check(HttpServletRequest req){
 		GenericResponse r = new GenericResponse();

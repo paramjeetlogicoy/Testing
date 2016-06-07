@@ -54,7 +54,9 @@
 							<label class="col-sm-4 control-label">Product URL</label>
 							<div class="col-sm-7">
 								<input type="text" class="form-control" ng-model="p.url"
-									name="url" required ng-blur="createProductUrl()" />
+									name="url" required ng-blur="createProductUrl()" /> <a
+									target="_blank" ng-href="/product/{{p.url}}" class="small">View
+									Product</a>
 								<p
 									ng-show="productDetailsForm.url.$invalid && !productDetailsForm.url.$pristine"
 									class="help-block">URL is required.</p>
@@ -106,6 +108,17 @@
 									ng-model="p.stockStat" name="stockStat" required></select>
 							</div>
 						</div>
+
+						<div class="form-group">
+							<label class="col-sm-4 control-label">Related Products</label>
+							<div class="col-sm-4">
+								<textarea class="form-control" name="rps"
+									ng-model="p.rps" ng-list=" | "></textarea>
+									<p class="help-block small">Provide the Product IDs separated by | Maximum 4</p>
+							</div>
+						</div>
+
+
 
 						<div class="form-group">
 							<label class="col-sm-4 control-label">Categories</label>

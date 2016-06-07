@@ -35,6 +35,7 @@ public class Product {
 	private List<ProductAttr> attrs;
 	private List<AttrValue> defaultAttr;
 	private List<String> categories;
+	private List<Integer> rps; /*Related product ids*/
 	
 	
 	public long get_id() {
@@ -144,5 +145,11 @@ public class Product {
 	}
 	public void setCategories(List<String> categories) {
 		this.categories = categories;
+	}
+	public List<Integer> getRps() {
+		return rps;
+	}
+	public void setRps(List<Integer> rps) {
+		this.rps = rps;
 	}
 }

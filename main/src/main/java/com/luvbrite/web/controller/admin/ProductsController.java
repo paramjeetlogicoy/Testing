@@ -153,6 +153,7 @@ public class ProductsController {
 				productDb.setCategories(product.getCategories());
 				productDb.setVariation(product.isVariation());
 				productDb.setFeaturedImg(product.getFeaturedImg());
+				productDb.setRps(product.getRps());
 				
 				if(product.isVariation()){
 					productDb.setAttrs(product.getAttrs());

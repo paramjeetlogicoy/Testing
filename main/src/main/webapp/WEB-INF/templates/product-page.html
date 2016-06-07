@@ -27,7 +27,7 @@
 				class="fa fa-list-alt size15" aria-hidden="true"></i> Back to Menu</a>
 		</div>
 		
-		<div class="row">
+		<div class="row marg-b5">
 
 			<div class="col-sm-6">
 				<div class="visible-xs-block">
@@ -149,6 +149,44 @@
 						type="hidden" id="variableProduct"
 						th:if="${product.variation}" value="true" />
 				</div>
+			</div>
+
+		</div>
+		
+		
+		<div class="marg-b5" th:if="${rps}!=null">
+			<h4 class="split-lines">You Might Also Like</h4>
+
+			<div class="yml-container">
+				<ul class="clearfix products-container">
+					<li class="col-lg-3 col-sm-4 col-xs-6 ng-scope"
+						th:each="product : ${rps}" th:if="${product.status}=='publish'">
+						<div class="product-item">
+							<a th:href="@{'/product/' + ${product.url}}" href=""
+								class="pc-img-holder"><span> <img
+									class="featured-img"
+									th:src="'/files/view/' + ${product.featuredImg}" />
+							</span> </a>
+							<div class="pc-info">
+								<h3>
+									<a th:href="@{'/product/' + ${product.url}}"
+										th:text="${product.name}"></a>
+								</h3>
+								<hr />
+								<div class="clearfix">
+									<div class="pull-left pc-price-range"
+										th:text="${product.priceRange}">$15.00 - $50.00</div>
+									<div class="pull-right pc-action">
+										<button class="btn btn-lb btn-sm">
+											<i class="fa fa-plus" aria-hidden="true"></i> <span>ADD</span>
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+
 			</div>
 
 		</div>
