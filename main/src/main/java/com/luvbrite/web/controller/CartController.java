@@ -26,6 +26,7 @@ import com.luvbrite.dao.ProductDAO;
 import com.luvbrite.dao.UserDAO;
 import com.luvbrite.services.CartLogics;
 import com.luvbrite.services.CouponManager;
+import com.luvbrite.services.EmailService;
 import com.luvbrite.services.OrderFinalization;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.Utility;
@@ -34,8 +35,10 @@ import com.luvbrite.web.models.CartOrder;
 import com.luvbrite.web.models.CartResponse;
 import com.luvbrite.web.models.ControlOptions;
 import com.luvbrite.web.models.CreateOrderResponse;
+import com.luvbrite.web.models.Email;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Log;
+import com.luvbrite.web.models.Order;
 import com.luvbrite.web.models.OrderCustomer;
 import com.luvbrite.web.models.OrderLineItemCart;
 import com.luvbrite.web.models.OrderNotes;
@@ -78,12 +81,15 @@ public class CartController {
 	@Autowired
 	private ControlOptions controlOptions;
 	
+	@Autowired
+	private EmailService emailService;
+	
 	@RequestMapping(method = RequestMethod.GET)
 	public String homePage(@AuthenticationPrincipal 
 			UserDetailsExt user, 
 			ModelMap model){
 		
-		if(user!=null)
+		if(user!=null && user.isEnabled())
 			model.addAttribute("userId", user.getId());
 		
 		return "cart";		
@@ -350,7 +356,7 @@ public class CartController {
 		if(order !=null && user != null){
 			User userDb = userDao.get(user.getId());
 			
-			if(userDb != null){
+			if(userDb != null && userDb.isActive()){
 				
 				cr.setUser(userDb);
 				
@@ -509,6 +515,34 @@ public class CartController {
 					if("".equals(resp)){
 						gr.setSuccess(true);
 						gr.setMessage(orderFinalization.getOrderNumber()+"");
+						
+						
+						Order newOrder = orderFinalization.getOrder();
+						//Sent Confirmation Email
+						try {
+							
+							Email email = new Email();
+							email.setEmailTemplate("order-confirmation");
+							email.setFromName("Luvbrite Orders");
+							email.setFromEmail("no-reply@luvbrite.com");
+							email.setRecipientEmail(newOrder.getCustomer().getEmail());
+							email.setRecipientName(newOrder.getCustomer().getName());
+							
+							//email.setBccs(Arrays.asList(new String[]{"orders@luvbrite.com", "orders-notify@luvbrite.com"}));
+							
+							email.setEmailTitle("Order Confirmation Email");
+							email.setSubject("Luvbrite Order#" + newOrder.getOrderNumber() + " placed successfully");
+							email.setEmailInfo("Your order with Luvbrite.");
+							
+							email.setEmail(newOrder);
+							
+							emailService.sendEmail(email);
+							
+						}catch(Exception e){
+							logger.error(Exceptions.giveStackTrace(e));
+						}
+						
+						
 					}
 					else{
 						gr.setMessage(resp);
@@ -784,8 +818,7 @@ public class CartController {
 		
 		
 		return cr;
-	}
-	
+	}	
 	
 	
 	/**

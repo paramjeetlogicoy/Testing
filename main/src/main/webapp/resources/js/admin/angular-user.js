@@ -166,7 +166,7 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 				$scope.password2 = '';
 				
 				$scope.u.password = resp.message;
-				alert('Password Updated');
+				_lbFns.pSuccess('Password Updated');
 				
 				$scope.showUserForm();
 			}
@@ -180,6 +180,40 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 					+"Please contact G.";
 		});	
 	};
+	
+	
+	
+	
+	$scope.activateNemail = function(){
+		
+		$http.post('/admin/users/json/activate-n-email/' + $scope.u._id)
+		.then(function(response){
+			if(response && response.data){
+				
+				var resp = response.data;				
+				if(resp.success) {
+					$scope.u.active = true;
+					_lbFns.pSuccess('User activated and email send');
+				}
+				else{
+					alert(resp.message);
+				}
+			}
+			else{
+				$scope.errorMsg  = "There was some error activating the account. "
+						+"Please contact G.";
+			}
+				
+		},
+		
+		function(){
+			$scope.errorMsg  = "There was some error activating the account. "
+					+"Please contact G.";
+		});
+		
+	};
+	
+	
 	
 	$scope.saveUserGeneric = function(cb){	
 		
@@ -227,7 +261,7 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 			$scope.saveUserGeneric(function(resp){
 				if(resp.success){
 					$scope.user.$setPristine();
-					alert('User updated');				
+					_lbFns.pSuccess('User updated');				
 				}
 				else{
 					$scope.errorMsg = resp.message;

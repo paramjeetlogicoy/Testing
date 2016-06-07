@@ -1,22 +1,23 @@
 package com.luvbrite.web.models;
 
-import java.util.Locale;
+import java.util.List;
 
 public class Email {
 
-	private Locale locale;
 	private String recipientName;
 	private String recipientEmail;
 	private String subject;
 	private String emailTemplate;
-	private String fromEmail;
+	private String fromEmail;	
+	private String fromName;
+	private String emailTitle = "Email";
+	private String emailInfo = "Info about your Luvbrite Account";
+	
+	private List<String> ccs;
+	private List<String> bccs;
+	
+	private Object email;
 
-	public Locale getLocale() {
-		return locale;
-	}
-	public void setLocale(Locale locale) {
-		this.locale = locale;
-	}
 	public String getRecipientName() {
 		return recipientName;
 	}
@@ -46,5 +47,41 @@ public class Email {
 	}
 	public void setFromEmail(String fromEmail) {
 		this.fromEmail = fromEmail;
+	}
+	public String getFromName() {
+		return fromName;
+	}
+	public void setFromName(String fromName) {
+		this.fromName = fromName;
+	}
+	public String getEmailTitle() {
+		return emailTitle;
+	}
+	public void setEmailTitle(String emailTitle) {
+		this.emailTitle = emailTitle;
+	}
+	public String getEmailInfo() {
+		return emailInfo;
+	}
+	public void setEmailInfo(String emailInfo) {
+		this.emailInfo = emailInfo;
+	}
+	public Object getEmail() {
+		return email;
+	}
+	public void setEmail(Object email) {
+		this.email = email;
+	}
+	public List<String> getCcs() {
+		return ccs;
+	}
+	public void setCcs(List<String> ccs) {
+		this.ccs = ccs;
+	}
+	public List<String> getBccs() {
+		return bccs;
+	}
+	public void setBccs(List<String> bccs) {
+		this.bccs = bccs;
 	}
 }

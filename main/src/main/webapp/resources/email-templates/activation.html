@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Activate</title>
+</head>
+<body>
+
+	<table border="0" cellspacing="0" cellpadding="0"
+		style="font-family: Helvetica, Arial, sans-serif" width="100%"
+		bgcolor="#FFFFFF" th:fragment="main">
+		<tbody>
+			<tr>
+				<td>Hi <span th:text="${emailObj.recipientName}"></span>,
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>Congratulation, we have activated your account with
+					Luvbrite Collective.</td>
+			</tr>
+
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>To log into your account, click <a
+					style="text-decoration: none; color: #0077b5"
+					href="https://www.luvbrite.com/login" target="_blank">here</a> or
+					paste the following link into your browser: <span>https://www.luvbrite.com/login</span>.
+				</td>
+			</tr>
+
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>Please note that you need to be logged in to your account
+					in order to place order via www.luvbrite.com.</td>
+			</tr>
+
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>If you have any questions please feel free to call us or
+					email us.</td>
+			</tr>
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>Thanks for subscribing to Luvbrite!</td>
+			</tr>
+			<tr>
+				<td>Luvbrite Team</td>
+			</tr>
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+</body>
+</html>

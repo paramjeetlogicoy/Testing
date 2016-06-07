@@ -8,6 +8,10 @@ var appRunFns = function($http, $rootScope, $interval){
 	$rootScope.errMsgPageRefresh = "There was some error processing your request." 
 		+ " Please refresh the page and try again.";
 	
+	//Set generic messages
+	$rootScope.errMsgContactSupport = "There was some error processing your request." 
+		+ " Please refresh the page and try again. If problem persists, please contact support.";
+	
 	//Add X-Requested-With to headers to detect Ajax calls
 	$http.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 	

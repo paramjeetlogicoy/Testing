@@ -1,7 +1,13 @@
 html,body{.basefont;color:@grey3;font-size:@basesize; @media(min-width:768px){font-size:14px;}}
-body{font-size:1.2rem; @media(min-width:768px){font-size:1rem}}
+body{font-size:13px; @media(min-width:768px){font-size:14px}}
 /*h1,h2,h3,h4,h5,h6{.marg-t(0);}*/
 h1,h2,h3,h4,h5,h6{margin-bottom:1em;font-family:@headfont;font-weight:400;}
+h1:first-child,
+h2:first-child,
+h3:first-child,
+h4:first-child,
+h5:first-child,
+h6:first-child{margin-top:0!important;}
 strong,b,dt,th,label{.bold;}
 a:link{}
 a:visited{}
@@ -47,6 +53,12 @@ h6{font-size:1rem}
     border-radius: 2px;
     border-color: #ddd;
 }
+
+.breadcrumb{
+	.size12;
+	background: none;
+}
+
 /* Bootstrap Angular UI Styles*/
 .nav,.pagination,.carousel,.panel-title a{cursor:pointer;}
 .container {width:100%;max-width: 1230px;}

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Patient Registration</title>
+<meta th:include="fragments/layout::fragment-head" />
+</head>
+<body ng-app="lbApp" ng-controller="registerCtrlr" class="bg-greyF0">
+	<div th:replace="fragments/layout::fragment-header(extn=false)"></div>
+
+	<div class="container page-container">
+		<div class="generic-container register-container">
+			<h3>Patient Registration</h3>
+
+			<div class="row">
+				<div class="col-lg-8 col-lg-offset-2 col-sm-10 col-sm-offset-1">
+
+					<div class="marg-b5">
+						<ul class="styled">
+							<li class="marg-b1">You may become a member of our
+								collective by completing the form below. We need this
+								information to begin the necessary process of verifying your
+								doctor's recommendation.</li>
+							<li class="marg-b1">Once your California doctor's
+								recommendation is verified, you will become a qualified Patient
+								Member of the LuvBrite Collective and are entitled to receive
+								deliveries, in addition to many other membership benefits.</li>
+							<li class="marg-b1">By sending us the form, below, you agree
+								to allow a LuvBrite Collective representative to verify your
+								medical recommendation with your licensed California physician.</li>
+							<li class="marg-b1">If you don't have a rec letter yet,
+								check out <a href="https://getnugg.com/md" target="_blank">https://getnugg.com/md</a>
+								and get one in minutes!
+							</li>
+							<li>Please complete the form below and click the REGISTER
+								button at the bottom. We'll reply as soon as possible.</li>
+						</ul>
+					</div>
+
+
+					<div class="ng-cloak">
+						<form class="register-form form-horizontal" name="registerForm"
+							ng-submit="register()">
+
+							<div class="form-group"
+								ng-class="{ 'has-error' : invalidFname()}">
+								<label class="control-label col-sm-4">First Name <sup>*</sup></label>
+								<div class="col-sm-8">
+									<input type="text" ng-model="user.fname" class="form-control"
+										name="firstname" placeholder="Ex: John" required="required" />
+									<p class="help-block help-error">First Name
+										is required.</p>
+								</div>
+							</div>
+
+
+							<div class="form-group"
+								ng-class="{ 'has-error' : invalidLname()}">
+								<label class="control-label col-sm-4">Last Name <sup>*</sup></label>
+								<div class="col-sm-8">
+									<input type="text" ng-model="user.lname" class="form-control"
+										name="lastname" placeholder="Ex: Doe" required="required" />
+									<p class="help-block help-error">Last Name is
+										required.</p>
+								</div>
+							</div>
+
+
+							<div class="form-group"
+								ng-class="{ 'has-error' : invalidEmail()}">
+								<label class="control-label col-sm-4">Email <sup>*</sup></label>
+								<div class="col-sm-8">
+									<input type="email" ng-model="user.email" class="form-control"
+										name="email" placeholder="Ex: user@gmail.com"
+										required="required" />
+									<p class="help-block help-error">Valid email
+										is required.</p>
+								</div>
+							</div>
+
+
+							<div class="form-group"
+								ng-class="{ 'has-error' : invalidUname()}">
+								<label class="control-label col-sm-4">Username <sup>*</sup></label>
+								<div class="col-sm-8">
+									<input type="text" ng-model="user.username" name="username"
+										class="form-control" placeholder="Ex: sayloud99"
+										required="required" autocomplete="off" />
+									<p class="help-block help-error">Username
+										cannot be empty.</p>
+								</div>
+							</div>
+
+
+							<div class="form-group"
+								ng-class="{ 'has-error' : invalidPassword()}">
+								<label class="control-label col-sm-4">Password <sup>*</sup><br />
+									<small class="em">(Minimum 6 characters)</small></label>
+								<div class="col-sm-8">
+									<input type="password" ng-model="user.password" name="password"
+										ng-model-options="{updateOn: 'blur'}" ng-minlength="6"
+										class="form-control" required="required" autocomplete="off" />
+									<p class="help-block help-error">Password
+										should be minimum 6 characters.</p>
+								</div>
+							</div>
+
+
+							<div class="form-group"
+								ng-class="{ 'has-error' : invalidCPassword()}">
+								<label class="control-label col-sm-4">Confirm Password <sup>*</sup></label>
+								<div class="col-sm-8">
+									<input type="password" ng-model="confirmPassword"
+										name="confirmpassword" class="form-control"
+										ng-model-options="{updateOn: 'blur'}" required="required"
+										autocomplete="off" />
+									<p class="help-block help-error">Passwords
+										dosen't match.</p>
+								</div>
+							</div>
+
+
+							<div class="form-group"
+								ng-class="{ 'has-error' : invalidPhone()}">
+								<label class="control-label col-sm-4">Phone Number <sup>*</sup></label>
+								<div class="col-sm-8">
+									<input type="text" ng-model="user.phone" class="form-control"
+										name="phone" placeholder="Ex: 301-898-2987"
+										required="required" />
+									<p class="help-block help-error">Phone number
+										is required.</p>
+								</div>
+							</div>
+
+
+							<div class="form-group idfile-group">
+								<label class="control-label col-sm-4">Your
+									Identification Card / Drivers License <sup>*</sup> <br /> <small
+									class="em">(Images or PDF Only. 10MB Max)</small>
+								</label>
+								<div class="col-sm-8">
+									<div class="fgw-file-selector" ng-hide="idFile">
+
+										<div ngf-drop="ngf-drop" ngf-select="ngf-select"
+											ng-model="idfileobj" class="fgw-drop-box pad1 marg-b3"
+											ngf-drag-over-class="'dragover'" ngf-multiple="false"
+											ngf-allow-dir="true" accept="image/*,application/pdf"
+											ngf-pattern="'image/*,application/pdf'">
+											<h6>Select Or Drop files here</h6>
+
+
+											<div class="progress-wrapper id-progress-wrapper"></div>
+										</div>
+										<div ngf-no-file-drop="ngf-no-file-drop">File Drag/Drop
+											is not supported for this browser</div>
+									</div>
+									<div ng-if="idFile" class="form-control-static">
+										<a href="/files/view{{idFile.location}}" target="_blank"
+											class="small">{{idFile.filename}}</a> <a href="#"
+											ng-click="removeFile('id')"><i class="fa fa-trash"
+											aria-hidden="true"></i></a>
+									</div>
+								</div>
+							</div>
+
+
+							<div class="form-group recofile-group">
+								<label class="control-label col-sm-4">Your Doctor's
+									Medical Recommendation Letter <sup>*</sup><br /> <small
+									class="em">(Images or PDF Only. 10MB Max)</small>
+								</label>
+								<div class="col-sm-8">
+									<div class="fgw-file-selector" ng-hide="recoFile">
+
+										<div ngf-drop="ngf-drop" ngf-select="ngf-select"
+											ng-model="recofileobj" class="fgw-drop-box pad1 marg-b3"
+											ngf-drag-over-class="'dragover'" ngf-multiple="false"
+											ngf-allow-dir="true" accept="image/*,application/pdf"
+											ngf-pattern="'image/*,application/pdf'">
+											<h6>Select Or Drop files here</h6>
+
+
+											<div class="progress-wrapper reco-progress-wrapper"></div>
+										</div>
+										<div ngf-no-file-drop="ngf-no-file-drop">File Drag/Drop
+											is not supported for this browser</div>
+									</div>
+									<div ng-if="recoFile" class="form-control-static">
+										<a href="/files/view{{recoFile.location}}" target="_blank"
+											class="small">{{recoFile.filename}}</a> <a href="#"
+											ng-click="removeFile('reco')"><i class="fa fa-trash"
+											aria-hidden="true"></i></a>
+									</div>
+								</div>
+							</div>
+
+
+							<div class="form-group">
+								<label class="control-label col-sm-4">How did you hear
+									about us?</label>
+								<div class="col-sm-8">
+									<select ng-model="user.marketing.hearAboutUs"
+										ng-options="option for option in hearAboutOptions"
+										class="form-control"></select>
+								</div>
+							</div>
+
+
+							<div class="form-group marg-b5">
+								<label class="control-label col-sm-4">Additional Notes</label>
+								<div class="col-sm-8">
+									<textarea ng-model="user.notes" class="form-control"></textarea>
+								</div>
+							</div>
+
+
+							<div class="form-group">
+								<div class="col-sm-12">
+									<h5>Please read the statements below</h5>
+									<p>By clicking REGISTER I Agree. I certify under penalty of
+										perjury that the information provided is true and accurate,
+										and I am not seeking membership for any fraudulent purposes. I
+										will not distribute medicines received here to any other
+										person, nor use it for non-medical purposes. By joining, I
+										authorize LuvBrite Care Services Collective to legally produce
+										or obtain, package, and deliver my medicine to my requested
+										address.</p>
+									<p>By clicking REGISTER I Agree. Any member of law
+										enforcement must disclose the fact that he/she is a member of
+										law enforcement prior to becoming a member of the collective.
+										Unless I have disclosed the same in writing, by becoming a
+										member of LCS Collective, I promise, state and affirm under
+										penalty of perjury under the laws of the state of California
+										that I am not a member of, affiliate with, nor employed by any
+										law enforcement entity or agency.</p>
+								</div>
+							</div>
+
+							<div class="marg-b3">
+								<div class="checkbox">
+									<label><input type="checkbox"
+										ng-model="user.marketing.subscribe" checked="checked" /> <span>Yes,
+											I would like to receive emails about product updates and
+											special offers from Luvbrite.com. (We will never share your
+											email with anyone)</span></label>
+								</div>
+							</div>
+
+
+							<div class="form-group marg-b0">
+								<div class="col-sm-12 text-center">
+									<button type="submit" class="btn btn-lg btn-lb"
+										ng-disabled="registerForm.$invalid || !idFile || !recoFile">REGISTER</button>
+								</div>
+							</div>
+
+
+							<div class="pad-v1 text-center"
+								ng-if="registerForm.$invalid || !recoFile || !idFile">
+								<div class="alert alert-warning">
+									Please fill up all the mandatory fields. <span
+										ng-if="!recoFile"><br />Recommendation letter is
+										required.</span> <span ng-if="!idFile"><br />Copy of your ID
+										card is required.</span>
+								</div>
+							</div>
+						</form>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div th:replace="fragments/layout::fragment-footer"></div>
+	<div th:include="fragments/layout::fragment-foot(angular=true)"></div>
+	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
+</body>
+</html>

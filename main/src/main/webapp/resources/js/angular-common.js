@@ -3,7 +3,8 @@ var lbApp = angular.module(
 	     'ngRoute',
 	     'ngAnimate',
          'ngSanitize',
-         'ui.bootstrap'
+         'ui.bootstrap',
+         'ngFileUpload'
      ]
 );
 
@@ -53,6 +54,42 @@ allProductCtrlr = function($scope, $http){
 	$scope.getProducts();
 },
 
+
+categoryCtrlr = function($scope, $http){
+	
+	$scope.products = [];
+	$scope.categoryName = _pageCatName; /*Defined in the HTML page*/
+	
+	$scope.getProducts = function(){
+		
+		$http.get(_lbUrls.catprds + $scope.categoryName, {
+			params : { 
+				'hidepop' : true  //tells the config not to show the loading popup
+			}
+		})
+		.then(function(response){
+			var data = response ? response.data : '';
+			if(data){
+				$scope.products = data;
+			}
+			else{	
+				$scope.pageLevelError = "There was some error getting the products."
+					+" Please contact the support";
+			}
+
+		},
+		function(){
+			$scope.pageLevelError = "There was some error getting the products."
+				+" Please contact the support";
+		});	
+		
+	};
+	
+	if($scope.categoryName != ''){ 
+		$scope.getProducts();
+	}
+},
+
 loginCtrlr = function($scope, $http){
 	
 	$scope.user = {};
@@ -74,7 +111,10 @@ loginCtrlr = function($scope, $http){
 		$http(req)
 		.then(function(resp){
 			if(resp.data){
-				if(resp.data.success){
+				if(resp.data.pending){
+					location.href = resp.data.pending;
+				}
+				else if(resp.data.success){
 					if($('#redirectURL').val()!=''){
 						location.href = $('#redirectURL').val();
 					}
@@ -82,7 +122,7 @@ loginCtrlr = function($scope, $http){
 						location.href = resp.data.success;
 				}
 				else if(resp.data.authfailure){
-					$scope.pageLevelAlert = "Incorrect username password.";
+					$scope.pageLevelAlert = resp.data.authfailure;
 				}
 				else{
 					$scope.pageLevelAlert = "There was some error. Please try again later.";
@@ -99,6 +139,302 @@ loginCtrlr = function($scope, $http){
 		});	
 		
 		return false;
+	};
+},
+
+registerCtrlr = function($scope, $http, Upload){
+	
+	var today = new Date();
+	
+	$scope.user = {'identifications':{}, 'marketing':{}};
+	$scope.today = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+	
+	$scope.hearAboutOptions = ['WeedMaps', 'Yelp', 'Facebook', 'Leafly', 'Friends & Family', 'La Weekly', 'Other'];
+	
+	$scope.register = function(){
+		
+		$scope.pageLevelAlert = "";
+		$('.recofile-group, .idfile-group').removeClass('has-error');
+		
+		if($scope.registerForm.$valid 
+				&& $scope.recoFile 
+				&& $scope.idFile){
+			
+			$http.post(_lbUrls.register, $scope.user)
+			.then(function(response){
+				var resp = response.data;	
+				if(resp.success){
+					
+					//Remove files from localStorage
+					localStorage.removeItem('recoFile');
+					localStorage.removeItem('idFile');
+					
+					alert('Account created');
+				}
+				else{
+					$scope.pageLevelAlert = resp.message; 
+				}
+			},
+			
+			function(){
+				$scope.pageLevelAlert = "There was some error creating your account. "
+					+"Please try later. If problem persists, please call the customer care.";
+			});	
+		}
+		
+		else{
+			
+			if(!$scope.recoFile){
+				$('.recofile-group').addClass('has-error');
+			}
+			
+			if(!$scope.idFile){
+				$('.idfile-group').addClass('has-error');
+			}
+			
+			if(!$scope.registerForm.$valid){
+				$scope.pageLevelError = 'Please correct the highlighted sections'; 
+			}
+			
+			$('html,body').scrollTop($('.has-error').offset().top-120);
+		}
+	};
+	
+	
+	$scope.removeFile = function(type){
+		
+		if(type == 'id' && $scope.idFile){			
+			$http.post('/files/delete/id/' + $scope.idFile._id);
+			$scope.idFile = null;
+			localStorage.removeItem('idFile');
+		}
+		
+		else if(type == 'reco' && $scope.recoFile){
+			$http.post('/files/delete/id/' + $scope.recoFile._id);
+			$scope.recoFile = null;
+			localStorage.removeItem('recoFile');
+		}
+	};
+	
+	$scope.invalidFname = function(){		
+		return $scope.registerForm.firstname.$invalid 
+			&& !$scope.registerForm.firstname.$pristine;
+	};
+	
+	$scope.invalidLname = function(){		
+		return $scope.registerForm.lastname.$invalid 
+			&& !$scope.registerForm.lastname.$pristine;
+	};
+	
+	$scope.invalidEmail = function(){		
+		return $scope.registerForm.email.$invalid 
+			&& !$scope.registerForm.email.$pristine;
+	};
+	
+	$scope.invalidUname = function(){		
+		return $scope.registerForm.username.$invalid 
+			&& !$scope.registerForm.username.$pristine;
+	};
+	
+	$scope.invalidPassword = function(){		
+		return $scope.registerForm.password.$invalid 
+			&& !$scope.registerForm.password.$pristine;
+	};
+	
+	$scope.invalidCPassword = function(){		
+		return !$scope.registerForm.confirmpassword.$pristine
+			&& ($scope.user.password != $scope.confirmPassword);
+	};
+	
+	$scope.invalidPhone = function(){		
+		return $scope.registerForm.phone.$invalid 
+			&& !$scope.registerForm.phone.$pristine;
+	};
+
+	
+    $scope.$watch('idfileobj', function () {
+        new $scope.upload($scope.idfileobj, 'id');
+    });
+
+	
+    $scope.$watch('recofileobj', function () {
+        new $scope.upload($scope.recofileobj,'reco');
+    });
+    
+    
+    $scope.upload = function (file, type) {
+      if (file) {
+	        var fileInfo = {progress : false, element : null};
+	        
+	        Upload.upload({
+	            url: '/files/upload',
+	            fields : {path : '/user/'+$scope.today + "/", ctrl : 'controlled'},
+	        	file: file,
+	        	fileInfo : fileInfo
+	            
+	        }).then(
+	
+	    	        function (resp) { //Success
+		    	        
+			            if(resp.config.fileInfo)
+			            	resp.config.fileInfo.element.closest('.row').remove();
+			
+			           if(resp.data.results){
+			        	   var img = resp.data.results[0];
+			        	   
+			        	   if(img){
+				        	   if(type && type=='id'){
+				        		   $scope.user.identifications.idCard = img.location;
+				        		   $scope.idFile = img;
+				        		   localStorage.setItem('idFile', JSON.stringify(img));
+				        	   }
+				        	   else if(type && type=='reco'){
+				        		   $scope.user.identifications.recomendation = img.location;
+				        		   $scope.recoFile = img;
+				        		   localStorage.setItem('recoFile', JSON.stringify(img));
+				        	   }
+			        	   }
+			           }
+			            
+			        },
+	
+	
+	
+	    	        function (resp) {//Error
+			            if(resp.config.fileInfo)
+			            	resp.config.fileInfo.element.html('Error uploading the file');
+			        },
+	
+	
+	    	        function (evt) { //Progress
+			        	if(!evt.config.fileInfo.progress){
+				        	var f = evt.config.fileInfo;
+				        	
+				        	var container = '.progress-wrapper ';
+				        	if(type) container = '.' + type + '-progress-wrapper';
+				        	
+			        		f.progress = true;
+			        		f.element = $('<div />').attr({'class': 'progress-bar progress-bar-success', 'role':'progressbar','style':'width:0%'});
+			        		
+			        		$('<div class="row"><div class="col-xs-4 file-name-holder">' 
+			                		+ evt.config.file.name 
+			                		+ '</div><div class="col-xs-8"><div class="progress"></div></div>')
+			                		.appendTo(container)
+			                		.find('.progress')
+			                		.append(f.element);
+			        	}
+	
+			            if(evt.config.fileInfo){
+			            	var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+			            	evt.config.fileInfo.element.css('width', progressPercentage+'%').html(progressPercentage+'%');
+			            }
+			        }
+			 );
+      }
+    };
+    
+    $scope.init = function(){
+    	
+    	try {
+    		
+        	if(localStorage.getItem('recoFile')){
+        		$scope.recoFile = JSON.parse(localStorage.getItem('recoFile')); 
+      		   	$scope.user.identifications.recomendation = $scope.recoFile.location;
+     	   	}
+        	
+        	if(localStorage.getItem('idFile')){
+        		$scope.idFile = JSON.parse(localStorage.getItem('idFile'));
+        		$scope.user.identifications.idCard = $scope.idFile.location;
+        	}
+    	}catch(e){}
+    };
+    
+    $scope.init();
+}, 
+
+resetCtlr = function($scope, $http, $rootScope){
+	
+	$scope.successNotification = "";
+	
+	$scope.invalidPassword = function(){		
+		return $scope.resetRequest.password.$invalid 
+			&& !$scope.resetRequest.password.$pristine;
+	};
+	
+	$scope.invalidCPassword = function(){		
+		return !$scope.resetRequest.cpassword.$pristine
+			&& ($scope.password != $scope.cpassword);
+	};
+	
+	$scope.requestReset = function(){
+		
+		if($scope.emailUsername != ''){
+			$http.get(_lbUrls.creset, {
+				params : { 
+					u : $scope.emailUsername
+				}
+			})
+			.then(
+					function(response){
+						var resp = response.data;
+						if(resp.success){
+							$scope.successNotification = 
+								"We have email the password reset link to your registered email";							
+						}
+						else{
+							$scope.pageLevelAlert = resp.message;
+						}
+						
+					},
+					function(){
+						$scope.pageLevelAlert = $rootScope.errMsgContactSupport;
+					}
+				);
+		}
+		else{
+			$scope.pageLevelAlert = "Please provide username or email to reset your password.";
+		}
+		
+	};
+	
+	
+	$scope.changePassword = function(){
+		
+		if($scope.password != '' && ($scope.password == $scope.cpassword)){
+			
+			$http.post(_lbUrls.rsavep, {
+				username : $('#formusername').val(),
+				email : $('#formemail').val(),
+				password : $scope.password
+			})
+			.then(
+					function(response){
+						var resp = response.data;
+						if(resp.success){
+							$scope.successNotification = 
+								"Password changed successfully";							
+						}
+						else{
+							$scope.pageLevelAlert = resp.message;
+						}
+						
+					},
+					function(){
+						$scope.pageLevelAlert = $rootScope.errMsgContactSupport;
+					}
+				);
+		}
+		else{
+			
+			if($scope.password == ''){
+				$scope.pageLevelAlert = "Please provide valid passwords";
+			}
+			
+			else if($scope.password != $scope.cpassword){
+				$scope.pageLevelAlert = "Passwords don't match";
+			}
+		}
+		
 	};
 },
 
@@ -736,6 +1072,9 @@ lbApp
 
 
 .controller('allProductCtrlr', allProductCtrlr)
+.controller('categoryCtrlr', categoryCtrlr)
 .controller('productCtrlr', productCtrlr)
 .controller('loginCtrlr', loginCtrlr)
+.controller('registerCtrlr', registerCtrlr)
+.controller('resetCtlr', resetCtlr)
 .controller('cartCtrlr', cartCtrlr);

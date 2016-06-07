@@ -85,10 +85,14 @@ _lbUrls = {
 	'addtocart' : '/cart/add',	
 	'getprdprice' : '/products/json/',	
 	'allprds' : '/products/json/prod-cat',
+	'catprds' : '/category/listproducts/',
 	'getcartcount' : '/cart/getCount',
 	'getcart' : '/cart/getcart',
 	'cart' : '/cart/',
-	'login' : '/login'
+	'login' : '/login',
+	'register' : '/register',
+	'creset' : '/createreset',
+	'rsavep' : '/reset/savep'
 };
 
 $(document).ready(function(){

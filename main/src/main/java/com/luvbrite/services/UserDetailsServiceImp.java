@@ -28,15 +28,18 @@ public class UserDetailsServiceImp implements UserDetailsService {
 		String userRole = user.getRole();
 		
 		//System.out.println("UserDetailsServiceImp called");
+		boolean enabled = false;
+		if(user.isActive())
+			enabled  = true;
 		
 		UserDetails userD = null;
 		if(userRole!=null && userRole.equals("admin")){
 			SimpleGrantedAuthority sa =  new SimpleGrantedAuthority("ROLE_ADMIN");
-			userD = new UserDetailsExt(username, user.get_id(), Arrays.asList(sa));
+			userD = new UserDetailsExt(username, user.get_id(), enabled, Arrays.asList(sa));
 			
 		} else if(userRole!=null && userRole.equals("customer")){
 			SimpleGrantedAuthority sa =  new SimpleGrantedAuthority("ROLE_CUSTOMER");
-			userD = new UserDetailsExt(username, user.get_id(), Arrays.asList(sa));
+			userD = new UserDetailsExt(username, user.get_id(), enabled, Arrays.asList(sa));
 			
 		}
 		

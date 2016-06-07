@@ -14,7 +14,14 @@
 </head>
 <body ng-app="lbApp" ng-controller="productCtrlr" class="bg-greyF9">
 	<div th:replace="fragments/layout::fragment-header(extn=false)"></div>
-	<div class="container rel pad-t3">
+	<div class="container page-container rel">
+		
+		<ol class="breadcrumb">
+			<li><a href="/">Home</a></li>
+			<li><a href="/products">All Products</a></li>
+			<li class="active" th:text="${product.name}"></li>
+		</ol>
+		
 		<div class="clearfix marg-b3">
 			<a href="/products" class="pull-left inherit"><i
 				class="fa fa-list-alt size15" aria-hidden="true"></i> Back to Menu</a>
@@ -26,13 +33,11 @@
 				<div class="visible-xs-block">
 					<div class="clearfix">
 						<h1 th:text="${product.name}"
-							class="capitalize pull-left marg-t0 marg-b1">Product Name</h1>
+							class="capitalize pull-left marg-b1">Product Name</h1>
 						<div class="pull-right marg-b1">
 							<em th:text="${product.priceRange}"></em>
 						</div>
 					</div>
-					<!-- <div class="marg-b2">grilled chicken, quinoa, black beans,
-						tomatoes</div> -->
 
 				</div>
 				<div class="prdpage-img-container">
@@ -50,14 +55,11 @@
 					<div class="hidden-xs">
 						<div class="clearfix">
 							<h1 th:text="${product.name}"
-								class="capitalize pull-left marg-t0 marg-b1">Product Name</h1>
+								class="capitalize pull-left marg-b1">Product Name</h1>
 							<div class="pull-right marg-t1" th:if="${product.variation}">
 								<em th:text="${product.priceRange}"></em>
 							</div>
 						</div>
-						<!-- <div class="marg-b2">grilled chicken, quinoa, black beans,
-							tomatoes</div> -->
-
 					</div>
 
 					<div class="prdpage-prices" th:if="${product.variation}">

@@ -1,332 +1,354 @@
 <div id="user-editor" class="admin-editor abs">
 	<div class="row marg-b2">
 		<div class="col-lg-6 col-md-8 col-sm-10 col-sm-offset-1">
+
 			<div class="admin-editor-container">				
 				
 				<button type="button" class="close" aria-label="Close"
 					ng-click="closeUserDetails()">
 					<i class="fa fa-times size24"></i>
 				</button>
-				
-				<h3>
-					<span class="text-success">{{u.fname}} {{u.lname}}</span>
-				</h3>
-				
 
-				<div class="user-details-holder">
-					<div class="text-right">
-						<a href="" ng-click="showPasswordForm()" ng-show="mode=='edit'"><span
-							ng-show="u.password">Change Password</span><span
-							ng-show="!u.password">Set Password</span></a>
+			<div class="alert alert-danger text-center" ng-if="!u">User
+				details not found!</div>
+				<div ng-show="u">
+					<h3>
+						<span class="text-success">{{u.fname}} {{u.lname}}</span>
+					</h3>
+
+
+					<div class="user-details-holder">
+						<div class="text-right">
+							<a href="" ng-click="showPasswordForm()" ng-show="mode=='edit'"
+								class="btn btn-xs btn-warning"><span ng-show="u.password">Change
+									Password</span><span ng-show="!u.password">Set Password</span></a><a
+								href="" ng-if="!u.active" ng-click="activateNemail()"
+								class="btn btn-xs btn-primary marg-l1">Activate &amp; Email</a>
+						</div>
+						<form name="user" class="form-horizontal" ng-submit="saveUser()">
+
+							<div class="form-group form-group-sm">
+								<label class="col-sm-4 control-label">User ID</label>
+								<div class="col-sm-7">
+									<p ng-show="mode=='edit'" class="form-control-static">{{u._id}}</p>
+									<p ng-show="mode=='new'" class="form-control-static">
+										<em class="text-muted">Auto generated</em>
+									</p>
+									<input type="hidden" ng-model="u._id" name="_id" />
+								</div>
+							</div>
+
+							<div class="form-group form-group-sm">
+								<label class="col-sm-4 control-label">Date Registered</label>
+								<div class="col-sm-7">
+									<p ng-show="mode=='edit'" class="form-control-static">{{u.dateRegistered
+										| date:"MM/dd/yyyy h:mm a"}}</p>
+									<p ng-show="mode=='new'" class="form-control-static">
+										<em class="text-muted">Auto Generated</em>
+									</p>
+									<input type="hidden" ng-model="u.dateRegistered"
+										name="dateRegistered" />
+								</div>
+							</div>
+
+							<div class="form-group form-group-sm"
+								ng-class="{ 'has-error' : user.email.$invalid && !user.email.$pristine }">
+								<label class="col-sm-4 control-label">Email</label>
+								<div class="col-sm-7">
+									<input type="email" class="form-control" ng-model="u.email"
+										name="email" required />
+									<p ng-show="user.email.$invalid && !user.email.$pristine"
+										class="help-block">Email is required.</p>
+								</div>
+							</div>
+
+
+							<div class="form-group form-group-sm"
+								ng-class="{ 'has-error' : user.username.$invalid && !user.username.$pristine }">
+								<label class="col-sm-4 control-label">Username</label>
+								<div class="col-sm-7">
+									<input type="text" class="form-control" ng-model="u.username"
+										name="username" required />
+									<p ng-show="user.username.$invalid && !user.username.$pristine"
+										class="help-block">Username is required.</p>
+								</div>
+							</div>
+
+
+							<div class="form-group form-group-sm"
+								ng-class="{ 'has-error' : user.fname.$invalid && !user.fname.$pristine }">
+								<label class="col-sm-4 control-label">First Name</label>
+								<div class="col-sm-7">
+									<input type="text" class="form-control" ng-model="u.fname"
+										name="fname" required />
+									<p ng-show="user.fname.$invalid && !user.fname.$pristine"
+										class="help-block">First Name is required.</p>
+								</div>
+							</div>
+
+							<div class="form-group form-group-sm"
+								ng-class="{ 'has-error' : user.lname.$invalid && !user.lname.$pristine }">
+								<label class="col-sm-4 control-label">Last Name</label>
+								<div class="col-sm-7">
+									<input type="text" class="form-control" ng-model="u.lname"
+										name="lname" required />
+									<p ng-show="user.lname.$invalid && !user.lname.$pristine"
+										class="help-block">Last Name is required.</p>
+								</div>
+							</div>
+
+							<div class="form-group form-group-sm"
+								ng-class="{ 'has-error' : user.phone.$invalid && !user.phone.$pristine }">
+								<label class="col-sm-4 control-label">Phone</label>
+								<div class="col-sm-7">
+									<input type="text" class="form-control" ng-model="u.phone"
+										name="phone" required />
+									<p ng-show="user.phone.$invalid && !user.phone.$pristine"
+										class="help-block">Phone is required.</p>
+								</div>
+							</div>
+
+							<div class="form-group form-group-sm">
+								<label class="col-sm-4 control-label">Role</label>
+								<div class="col-sm-7">
+									<select class="form-control"
+										ng-options="role for role in roles" ng-model="u.role"
+										name="role"></select>
+								</div>
+							</div>
+
+							<div class="form-group form-group-sm">
+								<label class="col-sm-4 control-label">ID Card</label>
+								<div class="col-sm-7">
+									<button type="button" ng-show="!u.identifications.idCard"
+										class="btn btn-xs btn-info" ng-click="selectFile()">Set
+										File</button>
+									<button type="button" ng-show="u.identifications.idCard"
+										class="btn btn-xs btn-info" ng-click="selectFile()">Change
+										File</button>
+									<input type="hidden" name="idCard"
+										ng-model="u.identifications.idCard" />
+									<div class="thumbnail-holder" ng-if="u.identifications.idCard">
+										<a target="_blank"
+											href="{{cdnPath + u.identifications.idCard}}"><img
+											ng-src="{{cdnPath + u.identifications.idCard}}" /></a>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group form-group-sm">
+								<label class="col-sm-4 control-label">Doctors
+									Recommendation</label>
+								<div class="col-sm-7">
+									<button type="button"
+										ng-show="!u.identifications.recomendation"
+										class="btn btn-xs btn-info" ng-click="selectRecoFile()">Set
+										File</button>
+									<button type="button" ng-show="u.identifications.recomendation"
+										class="btn btn-xs btn-info" ng-click="selectRecoFile()">Change
+										File</button>
+									<input type="hidden" name="recomendation"
+										ng-model="u.identifications.recomendation" />
+									<div class="thumbnail-holder"
+										ng-if="u.identifications.recomendation">
+										<a target="_blank"
+											href="{{cdnPath + u.identifications.recomendation}}"><img
+											ng-src="{{cdnPath + u.identifications.recomendation}}" /></a>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group form-group-sm">
+								<label class="col-sm-4 control-label">Recommendation
+									Expiry</label>
+								<div class="col-sm-7">
+									<input type="date" class="form-control" ng-model="recoExpiry"
+										ng-change="updateRecoExpiry()" /> <input type="hidden"
+										class="form-control" ng-model="u.identifications.recoExpiry"
+										name="identifications.recoExpiry" />
+								</div>
+							</div>
+
+							<div class="form-group form-group-sm">
+								<label class="col-sm-4 control-label">Date of Birth</label>
+								<div class="col-sm-7">
+									<input type="date" class="form-control" ng-model="dob"
+										ng-change="updateDob()" /> <input type="hidden"
+										class="form-control" ng-model="u.dob" name="dob" />
+								</div>
+							</div>
+
+							<div class="form-group form-group-sm">
+								<label class="col-sm-4 control-label">Gender</label>
+								<div class="col-sm-7">
+									<div class="radio-inline">
+										<label class="control-label"><input type="radio"
+											name="gender" ng-model="u.gender" value="Male" /> Male</label>
+									</div>
+									<div class="radio-inline">
+										<label class="control-label"><input type="radio"
+											name="gender" ng-model="u.gender" value="Female" /> Female</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group form-group-sm">
+								<label class="col-sm-4 control-label">Active</label>
+								<div class="col-sm-7">
+									<select class="form-control"
+										ng-options="status for status in statuses" ng-model="u.active"
+										name="active" required></select> <a href=""
+										class="btn btn-xs btn-primary marg-t1" ng-click="activateNemail()"
+										ng-if="!u.active">Activate &amp; Email</a>
+								</div>
+							</div>
+
+							<h4>Billing</h4>
+							<div class="form-group form-group-sm">
+								<label class="col-sm-4 control-label">Billing First Name</label>
+								<div class="col-sm-7">
+									<input type="text" class="form-control"
+										ng-model="u.billing.firstName" name="billing.firstName" />
+								</div>
+							</div>
+							<div class="form-group form-group-sm">
+								<label class="col-sm-4 control-label">Billing Last Name</label>
+								<div class="col-sm-7">
+									<input type="text" class="form-control"
+										ng-model="u.billing.lastName" name="billing.lastName" />
+								</div>
+							</div>
+							<div class="form-group form-group-sm">
+								<label class="col-sm-4 control-label">Billing Phone</label>
+								<div class="col-sm-7">
+									<input type="text" class="form-control"
+										ng-model="u.billing.phone" name="billing.phone" />
+								</div>
+							</div>
+							<div class="form-group form-group-sm">
+								<label class="col-sm-4 control-label">Billing Address 1</label>
+								<div class="col-sm-7">
+									<input type="text" class="form-control"
+										ng-model="u.billing.address1" name="billing.address1" />
+								</div>
+							</div>
+							<div class="form-group form-group-sm">
+								<label class="col-sm-4 control-label">Billing Address 2</label>
+								<div class="col-sm-7">
+									<input type="text" class="form-control"
+										ng-model="u.billing.address2" name="billing.address2" />
+								</div>
+							</div>
+							<div class="form-group form-group-sm">
+								<label class="col-sm-4 control-label">Billing City</label>
+								<div class="col-sm-7">
+									<input type="text" class="form-control"
+										ng-model="u.billing.city" name="billing.city" />
+								</div>
+							</div>
+							<div class="form-group form-group-sm">
+								<label class="col-sm-4 control-label">Billing State</label>
+								<div class="col-sm-7">
+									<input type="text" class="form-control"
+										ng-model="u.billing.state" name="billing.state" />
+								</div>
+							</div>
+							<div class="form-group form-group-sm">
+								<label class="col-sm-4 control-label">Billing Zip</label>
+								<div class="col-sm-7">
+									<input type="text" class="form-control"
+										ng-model="u.billing.zip" name="billing.zip" />
+								</div>
+							</div>
+
+
+
+							<h4>Marketing</h4>
+							<div class="form-group form-group-sm">
+								<label class="col-sm-4 control-label">Hear about Us?</label>
+								<div class="col-sm-7">
+									<input type="text" class="form-control"
+										ng-model="u.marketing.hearAboutUs"
+										name="marketing.hearAboutUs" />
+								</div>
+							</div>
+							<div class="form-group form-group-sm">
+								<label class="col-sm-4 control-label">Subscribed to
+									Emails</label>
+								<div class="col-sm-7">
+									<p class="form-control-static">{{u.marketing.subscribe}}</p>
+								</div>
+							</div>
+
+
+							<div class="form-group form-group-sm">
+								<div class="col-sm-7 col-sm-offset-4">
+									<button type="submit" class="btn btn-success"
+										ng-disabled="user.$invalid || user.$pristine">SAVE</button>
+								</div>
+							</div>
+
+						</form>
+
+
 					</div>
-					<form name="user" class="form-horizontal" ng-submit="saveUser()">
 
-						<div class="form-group form-group-sm">
-							<label class="col-sm-4 control-label">User ID</label>
-							<div class="col-sm-7">
-								<p ng-show="mode=='edit'" class="form-control-static">{{u._id}}</p>
-								<p ng-show="mode=='new'" class="form-control-static">
-									<em class="text-muted">Auto generated</em>
-								</p>
-								<input type="hidden" ng-model="u._id" name="_id" />
-							</div>
-						</div>
-
-						<div class="form-group form-group-sm">
-							<label class="col-sm-4 control-label">Date Registered</label>
-							<div class="col-sm-7">
-								<p ng-show="mode=='edit'" class="form-control-static">{{u.dateRegistered
-									| date:"MM/dd/yyyy h:mm a"}}</p>
-								<p ng-show="mode=='new'" class="form-control-static">
-									<em class="text-muted">Auto Generated</em>
-								</p>
-								<input type="hidden" ng-model="u.dateRegistered"
-									name="dateRegistered" />
-							</div>
-						</div>
-
-						<div class="form-group form-group-sm"
-							ng-class="{ 'has-error' : user.email.$invalid && !user.email.$pristine }">
-							<label class="col-sm-4 control-label">Email</label>
-							<div class="col-sm-7">
-								<input type="email" class="form-control" ng-model="u.email"
-									name="email" required />
-								<p ng-show="user.email.$invalid && !user.email.$pristine"
-									class="help-block">Email is required.</p>
-							</div>
-						</div>
-
-
-						<div class="form-group form-group-sm"
-							ng-class="{ 'has-error' : user.username.$invalid && !user.username.$pristine }">
-							<label class="col-sm-4 control-label">Username</label>
-							<div class="col-sm-7">
-								<input type="text" class="form-control" ng-model="u.username"
-									name="username" required />
-								<p ng-show="user.username.$invalid && !user.username.$pristine"
-									class="help-block">Username is required.</p>
-							</div>
-						</div>
-
-
-						<div class="form-group form-group-sm"
-							ng-class="{ 'has-error' : user.fname.$invalid && !user.fname.$pristine }">
-							<label class="col-sm-4 control-label">First Name</label>
-							<div class="col-sm-7">
-								<input type="text" class="form-control" ng-model="u.fname"
-									name="fname" required />
-								<p ng-show="user.fname.$invalid && !user.fname.$pristine"
-									class="help-block">First Name is required.</p>
-							</div>
-						</div>
-
-						<div class="form-group form-group-sm"
-							ng-class="{ 'has-error' : user.lname.$invalid && !user.lname.$pristine }">
-							<label class="col-sm-4 control-label">Last Name</label>
-							<div class="col-sm-7">
-								<input type="text" class="form-control" ng-model="u.lname"
-									name="lname" required />
-								<p ng-show="user.lname.$invalid && !user.lname.$pristine"
-									class="help-block">Last Name is required.</p>
-							</div>
-						</div>
-
-						<div class="form-group form-group-sm"
-							ng-class="{ 'has-error' : user.phone.$invalid && !user.phone.$pristine }">
-							<label class="col-sm-4 control-label">Phone</label>
-							<div class="col-sm-7">
-								<input type="text" class="form-control" ng-model="u.phone"
-									name="phone" required />
-								<p ng-show="user.phone.$invalid && !user.phone.$pristine"
-									class="help-block">Phone is required.</p>
-							</div>
-						</div>
-
-						<div class="form-group form-group-sm">
-							<label class="col-sm-4 control-label">Role</label>
-							<div class="col-sm-7">
-								<select class="form-control"
-									ng-options="role for role in roles" ng-model="u.role"
-									name="role"></select>
-							</div>
-						</div>
-
-						<div class="form-group form-group-sm">
-							<label class="col-sm-4 control-label">ID Card</label>
-							<div class="col-sm-7">
-								<button type="button" ng-show="!u.identifications.idCard"
-									class="btn btn-xs btn-info" ng-click="selectFile()">Set
-									File</button>
-								<button type="button" ng-show="u.identifications.idCard"
-									class="btn btn-xs btn-info" ng-click="selectFile()">Change
-									File</button>
-								<input type="hidden" name="idCard"
-									ng-model="u.identifications.idCard" />
-								<div class="thumbnail-holder" ng-if="u.identifications.idCard">
-									<a target="_blank"
-										href="{{cdnPath + u.identifications.idCard}}"><img
-										ng-src="{{cdnPath + u.identifications.idCard}}" /></a>
+					<div class="user-password-update hideme">
+						<h4>Change Password</h4>
+						<form class="form-horizontal" name="userPassword"
+							ng-submit="savePassword()">
+							<div class="form-group form-group-sm"
+								ng-class="{ 'has-error' : userPassword.password1.$invalid && !userPassword.password1.$pristine }">
+								<label class="col-sm-4 control-label">New Password</label>
+								<div class="col-sm-7">
+									<input type="password" class="form-control"
+										ng-model="password1" name="password1" required />
+									<p
+										ng-show="userPassword.password1.$invalid && !userPassword.password1.$pristine"
+										class="help-block">New Password is required.</p>
 								</div>
 							</div>
-						</div>
-
-						<div class="form-group form-group-sm">
-							<label class="col-sm-4 control-label">Doctors
-								Recommendation</label>
-							<div class="col-sm-7">
-								<button type="button" ng-show="!u.identifications.recomendation"
-									class="btn btn-xs btn-info" ng-click="selectRecoFile()">Set
-									File</button>
-								<button type="button" ng-show="u.identifications.recomendation"
-									class="btn btn-xs btn-info" ng-click="selectRecoFile()">Change
-									File</button>
-								<input type="hidden" name="recomendation"
-									ng-model="u.identifications.recomendation" />
-								<div class="thumbnail-holder"
-									ng-if="u.identifications.recomendation">
-									<a target="_blank"
-										href="{{cdnPath + u.identifications.recomendation}}"><img
-										ng-src="{{cdnPath + u.identifications.recomendation}}" /></a>
+							<div class="form-group form-group-sm"
+								ng-class="{ 'has-error' : (userPassword.password2.$invalid || (password2 != password1)) && !userPassword.password2.$pristine }">
+								<label class="col-sm-4 control-label">Confirm Password</label>
+								<div class="col-sm-7">
+									<input type="password" class="form-control"
+										ng-model="password2" name="password2" required />
+									<p
+										ng-show="userPassword.password2.$invalid && !userPassword.password2.$pristine"
+										class="help-block">Confirm Password is required.</p>
+									<p
+										ng-show="(password2 != password1) && userPassword.password2.$valid && !userPassword.password2.$pristine"
+										class="help-block">Passwords do not match.</p>
 								</div>
 							</div>
-						</div>
-						
-						<div class="form-group form-group-sm">
-							<label class="col-sm-4 control-label">Recommendation Expiry</label>
-							<div class="col-sm-7">
-								<input type="date" class="form-control"
-									ng-model="recoExpiry" ng-change="updateRecoExpiry()" />
-								<input type="hidden" class="form-control"
-									ng-model="u.identifications.recoExpiry" name="identifications.recoExpiry" />
-							</div>
-						</div>
-						
-						<div class="form-group form-group-sm">
-							<label class="col-sm-4 control-label">Date of Birth</label>
-							<div class="col-sm-7">
-								<input type="date" class="form-control"
-									ng-model="dob" ng-change="updateDob()" />
-								<input type="hidden" class="form-control"
-									ng-model="u.dob" name="dob" />
-							</div>
-						</div>
-						
-						<div class="form-group form-group-sm">
-							<label class="col-sm-4 control-label">Gender</label>
-							<div class="col-sm-7">
-								<div class="radio-inline">
-									<label class="control-label"><input type="radio" name="gender" ng-model="u.gender" value="Male" /> Male</label>
-								</div>
-								<div class="radio-inline">
-									<label class="control-label"><input type="radio" name="gender" ng-model="u.gender" value="Female" /> Female</label>
+
+
+							<div class="form-group form-group-sm">
+								<div class="col-sm-7 col-sm-offset-4">
+									<button type="submit" class="btn btn-warning"
+										ng-disabled="userPassword.$invalid || userPassword.$pristine || (password2 != password1)">
+										SAVE PASSWORD</button>
+									<button type="button" class="btn btn-default marg-l2"
+										ng-click="showUserForm()">CANCEL</button>
 								</div>
 							</div>
-						</div>
 
-						<div class="form-group form-group-sm">
-							<label class="col-sm-4 control-label">Active</label>
-							<div class="col-sm-7">
-								<select class="form-control"
-									ng-options="status for status in statuses" ng-model="u.active"
-									name="active" required></select>
-							</div>
-						</div>
-						
-						<h4>Billing</h4>
-						<div class="form-group form-group-sm">
-							<label class="col-sm-4 control-label">Billing First Name</label>
-							<div class="col-sm-7">
-								<input type="text" class="form-control"
-									ng-model="u.billing.firstName" name="billing.firstName" />
-							</div>
-						</div>
-						<div class="form-group form-group-sm">
-							<label class="col-sm-4 control-label">Billing Last Name</label>
-							<div class="col-sm-7">
-								<input type="text" class="form-control"
-									ng-model="u.billing.lastName" name="billing.lastName" />
-							</div>
-						</div>
-						<div class="form-group form-group-sm">
-							<label class="col-sm-4 control-label">Billing Phone</label>
-							<div class="col-sm-7">
-								<input type="text" class="form-control"
-									ng-model="u.billing.phone" name="billing.phone" />
-							</div>
-						</div>
-						<div class="form-group form-group-sm">
-							<label class="col-sm-4 control-label">Billing Address 1</label>
-							<div class="col-sm-7">
-								<input type="text" class="form-control"
-									ng-model="u.billing.address1" name="billing.address1" />
-							</div>
-						</div>
-						<div class="form-group form-group-sm">
-							<label class="col-sm-4 control-label">Billing Address 2</label>
-							<div class="col-sm-7">
-								<input type="text" class="form-control"
-									ng-model="u.billing.address2" name="billing.address2" />
-							</div>
-						</div>
-						<div class="form-group form-group-sm">
-							<label class="col-sm-4 control-label">Billing City</label>
-							<div class="col-sm-7">
-								<input type="text" class="form-control"
-									ng-model="u.billing.city" name="billing.city" />
-							</div>
-						</div>
-						<div class="form-group form-group-sm">
-							<label class="col-sm-4 control-label">Billing State</label>
-							<div class="col-sm-7">
-								<input type="text" class="form-control"
-									ng-model="u.billing.state" name="billing.state" />
-							</div>
-						</div>
-						<div class="form-group form-group-sm">
-							<label class="col-sm-4 control-label">Billing Zip</label>
-							<div class="col-sm-7">
-								<input type="text" class="form-control" ng-model="u.billing.zip"
-									name="billing.zip" />
-							</div>
-						</div>
+
+						</form>
+
+					</div>
 
 
 
-						<h4>Marketing</h4>
-						<div class="form-group form-group-sm">
-							<label class="col-sm-4 control-label">Hear about Us?</label>
-							<div class="col-sm-7">
-								<input type="text" class="form-control"
-									ng-model="u.marketing.hearAboutUs" name="marketing.hearAboutUs" />
-							</div>
-						</div>
-
-
-						<div class="form-group form-group-sm">
-							<div class="col-sm-7 col-sm-offset-4">
-								<button type="submit" class="btn btn-success"
-									ng-disabled="user.$invalid || user.$pristine">SAVE</button>
-							</div>
-						</div>
-
-					</form>
-
-
-				</div>
-
-				<div class="user-password-update hideme">
-					<h4>Change Password</h4>
-					<form class="form-horizontal" name="userPassword" ng-submit="savePassword()">
-						<div class="form-group form-group-sm"
-							ng-class="{ 'has-error' : userPassword.password1.$invalid && !userPassword.password1.$pristine }">
-							<label class="col-sm-4 control-label">New Password</label>
-							<div class="col-sm-7">
-								<input type="password" class="form-control" ng-model="password1"
-									name="password1" required />
-								<p
-									ng-show="userPassword.password1.$invalid && !userPassword.password1.$pristine"
-									class="help-block">New Password is required.</p>
-							</div>
-						</div>
-						<div class="form-group form-group-sm"
-							ng-class="{ 'has-error' : (userPassword.password2.$invalid || (password2 != password1)) && !userPassword.password2.$pristine }">
-							<label class="col-sm-4 control-label">Confirm Password</label>
-							<div class="col-sm-7">
-								<input type="password" class="form-control" ng-model="password2"
-									name="password2" required />
-								<p
-									ng-show="userPassword.password2.$invalid && !userPassword.password2.$pristine"
-									class="help-block">Confirm Password is required.</p>
-								<p
-									ng-show="(password2 != password1) && userPassword.password2.$valid && !userPassword.password2.$pristine"
-									class="help-block">Passwords do not match.</p>
-							</div>
-						</div>
-
-
-						<div class="form-group form-group-sm">
-							<div class="col-sm-7 col-sm-offset-4">
-								<button type="submit" class="btn btn-warning"
-									ng-disabled="userPassword.$invalid || userPassword.$pristine || (password2 != password1)">
-									SAVE PASSWORD</button>
-								<button type="button" class="btn btn-default marg-l2" ng-click="showUserForm()">CANCEL</button>
-							</div>
-						</div>
-
-
-					</form>
-
-				</div>
-				
-				
-
-				<div class="alert alert-danger alert-dismissible" role="alert"
-					ng-show="errorMsg">
-					<button type="button" class="close" data-dismiss="alert"
-						aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-					<span ng-bind-html="errorMsg"></span>
+					<div class="alert alert-danger alert-dismissible" role="alert"
+						ng-show="errorMsg">
+						<button type="button" class="close" data-dismiss="alert"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<span ng-bind-html="errorMsg"></span>
+					</div>
 				</div>
 			</div>
 		</div>

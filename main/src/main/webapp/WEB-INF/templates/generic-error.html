@@ -7,20 +7,24 @@
 <title>Error</title>
 <meta th:include="fragments/layout::fragment-head" />
 </head>
-<body>
-	<div class="container-fluid">
-		<div th:replace="fragments/layout::fragment-header(extn=false)"></div>
-		<div class="container-fluid rel">
+<body class="bg-greyF9">
+
+	<div th:replace="fragments/layout::fragment-header(extn=false)"></div>
+
+	<div class="container page-container">
+		<div class="generic-container">
 			<div class="alert alert-danger" role="alert">
-				<div class="pad2"><strong>Error: </strong> There was some error processing your request.
-				Please <a href="/">click here</a> to go back to our home page</div>
+				<div class="pad2">
+					<strong>Error: </strong> There was some error processing your
+					request. Please <a href="/">click here</a> to go back to our home
+					page
+				</div>
 			</div>
-
-
 		</div>
-
-		<div th:replace="fragments/layout::fragment-footer"></div>
 	</div>
+	
+	<div th:replace="fragments/layout::fragment-footer"></div>
+	
 	<script type="text/javascript">
 	</script>
 </body>

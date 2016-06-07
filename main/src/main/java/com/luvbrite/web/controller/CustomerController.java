@@ -3,7 +3,6 @@ package com.luvbrite.web.controller;
 import java.util.Calendar;
 import java.util.List;
 
-import org.mongodb.morphia.Datastore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +42,6 @@ public class CustomerController {
 	
 	@Autowired
 	private OrderDAO orderDao;
-	
-	@Autowired
-	private Datastore datastore;
 
 	@Autowired
 	PasswordEncoder encoder;
@@ -60,6 +56,7 @@ public class CustomerController {
 			ModelMap model){
 		
 		if(user==null) return "redirect:login";
+		if(!user.isEnabled()) return "redirect:pending-registration";
 		
 		model.addAttribute("userId", user.getId());
 		return "customer/profile";		

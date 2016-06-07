@@ -4,25 +4,17 @@
 <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Error Reported</title>
+<title>404 - Page not found</title>
 <meta th:include="fragments/layout::fragment-head" />
 </head>
 <body class="bg-greyF9">
-	<div th:replace="fragments/layout::#fragment-header"></div>
+	<div th:replace="fragments/layout::#fragment-header(extn=false)"></div>
 	<div class="container page-container">
 		<div class="generic-container pad3">
-			<h1>
-				Hi <span class="capitalize" th:text="${userName}"></span>
-			</h1>
 			<div class="alert alert-warning" th:text="${msg}">
-				There was some error accessing this page. Please try logging back in
-				to the system by clicking <a href="/login">here</a>
+				The page you were looking was not found. Please <a href="/">click
+					here</a> to go back to the home page.
 			</div>
-			<form id="form-1" method="post" action="/logout">
-				<input type="hidden" id="_lb_sec_tok"
-					th:name="*{_csrf.parameterName}" th:value="${_csrf.token}" />
-				<button class="btn btn-info" type="submit">Logout</button>
-			</form>
 		</div>
 	</div>
 	<div th:replace="fragments/layout::#fragment-footer"></div>

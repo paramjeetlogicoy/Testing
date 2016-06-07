@@ -19,13 +19,18 @@ public class UserValidator implements Validator {
 	@Override
 	public void validate(Object obj, Errors e) {
 		
+		User u = (User) obj;
+		
 		ValidationUtils.rejectIfEmptyOrWhitespace(e, "phone", "", "Phone is required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(e, "password", "", "Password cannot be empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(e, "fname", "", "First name is required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(e, "lname", "", "Last name required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(e, "email", "","Email is required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(e, "username", "","Username is required");
-		
+
+		if(u.getPassword().length() < 6){
+			e.rejectValue("Password", "", "Password should be atleast 6 characters");
+		}
 	}
 
 

@@ -2,9 +2,6 @@ package com.luvbrite.security;
 
 import java.util.Arrays;
 
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.query.Query;
-import org.mongodb.morphia.query.UpdateOperations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.luvbrite.dao.UserDAO;
 import com.luvbrite.utils.OldHashEncoder;
 import com.luvbrite.web.models.User;
 import com.luvbrite.web.models.UserDetailsExt;
@@ -23,7 +21,7 @@ import com.luvbrite.web.models.UserDetailsExt;
 public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 
 	@Autowired
-	Datastore datastore;
+	private UserDAO dao;
 	
 	@Autowired
 	PasswordEncoder encoder;
@@ -39,14 +37,8 @@ public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 		 try {
 				
 			 //System.out.println("UserDetails - " + username + ":" + authentication.getCredentials());
-				
-			 Query<User> query = 
-					 datastore.createQuery(User.class)
-					 .field("username")
-					 .equal(username)
-					 .retrievedFields(true, "username", "password", "role");
 			 
-			 dbUser = query.get();
+			 dbUser = dao.findOne("username", username);
 			 
 			 if(dbUser != null){					
 					
@@ -54,20 +46,19 @@ public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 					String encodedPwd = dbUser.getPassword();
 					
 					if(encodedPwd.indexOf("$P$B")==0){
+						
 						OldHashEncoder ohe = new OldHashEncoder();
-						if(ohe.isValid(username, rawPassword)){
-							
-							UpdateOperations<User> ops = 
-									datastore.createUpdateOperations(User.class)
-									.set("password", encoder.encode(rawPassword));
-							
-							datastore.update(query, ops);
+						if(ohe.isValid(username, rawPassword)){							
+							dbUser.setPassword(encoder.encode(rawPassword));
+							dao.save(dbUser);
 							
 						} else {
+							
 				            throw new 
 				            InternalAuthenticationServiceException("Invalid username and/or password");							
 						}						
 					}
+					
 					else if(!encoder.matches(rawPassword, encodedPwd)){
 			            
 						throw new 
@@ -75,20 +66,23 @@ public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 						
 						//password reset
 					}
+					
+					
 
-					String userRole = dbUser.getRole();
-					if(userRole!=null && userRole.equals("admin")){
-						SimpleGrantedAuthority sa =  new SimpleGrantedAuthority("ROLE_ADMIN");
-						currUser = new UserDetailsExt(username, dbUser.get_id(), Arrays.asList(sa));
+					boolean enabled = false;
+					if(dbUser.isActive()) enabled = true;
+					
+					String userRole = dbUser.getRole();					
+					SimpleGrantedAuthority sa =  new SimpleGrantedAuthority("ROLE_NONE");
+					if(userRole!=null && enabled){
+						if(userRole.equals("admin"))
+							sa =  new SimpleGrantedAuthority("ROLE_ADMIN");
 						
-					} else if(userRole!=null && userRole.equals("customer")){
-						SimpleGrantedAuthority sa =  new SimpleGrantedAuthority("ROLE_CUSTOMER");
-						currUser = new UserDetailsExt(username, dbUser.get_id(), Arrays.asList(sa));
+						else if(userRole.equals("customer"))
+							sa =  new SimpleGrantedAuthority("ROLE_CUSTOMER");
 						
-					} else {
-			            throw new 
-			            InternalAuthenticationServiceException("Not Authorized");							
 					}
+					currUser = new UserDetailsExt(username, dbUser.get_id(), enabled, Arrays.asList(sa));
 					
 				}
 

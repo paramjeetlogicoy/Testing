@@ -33,7 +33,13 @@ public class LBAuthFailureHandler implements AuthenticationFailureHandler  {
 			throws IOException, ServletException {
 		
 		if(RequestUtil.isAjaxRequest(req)) {	
-			RequestUtil.sendJsonResponse(res, "authfailure", "true");
+			if(exception.getMessage().equals("User is disabled")){
+				RequestUtil.sendJsonResponse(res, "pending", "/pending-registration");
+			}
+			else{
+				RequestUtil.sendJsonResponse(res, "authfailure", exception.getMessage());
+			}
+			
 		}
 		else{
 			redirectStrategy.sendRedirect(req, res, "/login?error");

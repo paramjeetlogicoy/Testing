@@ -15,15 +15,13 @@ import com.luvbrite.dao.CategoryDAO;
 import com.luvbrite.dao.PriceDAO;
 import com.luvbrite.dao.ProductDAO;
 import com.luvbrite.web.models.Category;
-import com.luvbrite.web.models.Price;
-import com.luvbrite.web.models.ProdCatResponse;
 import com.luvbrite.web.models.Product;
 import com.luvbrite.web.models.UserDetailsExt;
 
 
 @Controller
-@RequestMapping(value = {"/products", "/product"})
-public class ProductController {
+@RequestMapping(value = {"/category"})
+public class CategoryController {
 	
 	@Autowired
 	private ProductDAO prdDao;
@@ -43,7 +41,9 @@ public class ProductController {
 		if(user!=null && user.isEnabled())
 			model.addAttribute("userId", user.getId());
 		
-		return "products";				
+		model.addAttribute("categories", catDao.find());
+		
+		return "category";				
 	}
 	
 	
@@ -55,38 +55,31 @@ public class ProductController {
 	}	
 	
 	
-	@RequestMapping(value = "/json/prod-cat")
-	public @ResponseBody ProdCatResponse ListProductsCategories() {		
-		ProdCatResponse pcr = new ProdCatResponse();
-		
-		List<Product> products = prdDao.find().asList();
-		List<Category> categories = catDao.find().asList();
-		
-		pcr.setSuccess(true);
-		pcr.setProducts(products);
-		pcr.setCategories(categories);
-		
-		return pcr;		
-	}
-	
-	
-	@RequestMapping(value = "/{productUrl}")
-	public String product(@AuthenticationPrincipal 
-			UserDetailsExt user,ModelMap model, @PathVariable String productUrl) {		
+	@RequestMapping(value = "/{categoryUrl}")
+	public String category(@AuthenticationPrincipal 
+			UserDetailsExt user, 
+			ModelMap model, 
+			@PathVariable String categoryUrl) {		
 
 		if(user!=null && user.isEnabled())
 			model.addAttribute("userId", user.getId());
 		
-		Product p = prdDao.findOne("url", productUrl);
-		model.addAttribute("url", productUrl);
-		model.addAttribute("product", p);
-		
-		return "product-page";		
+		Category c = catDao.findOne("url", categoryUrl);		
+		if(c != null){
+			model.addAttribute("category", c);
+			return "category-page";
+		}		
+		else{
+			return "404";
+		}
 	}	
 	
 
-	@RequestMapping(value = "/json/{productId}/price")
-	public @ResponseBody List<Price> price(@PathVariable long productId){			
-		return priceDao.findPriceByProduct(productId);		
+	@RequestMapping(value = "/listproducts/{categoryName}")
+	public @ResponseBody List<Product> price(@PathVariable String categoryName){
+		
+		return prdDao.createQuery()
+				.field("categories").equal(categoryName)
+				.asList();		
 	}
 }
