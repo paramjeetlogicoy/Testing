@@ -209,9 +209,11 @@ body{
 	.pad-b(3.4);
 }
 
-.generic-container:extend(.bg-white){
-	.marg-t(3);
+.page-container:extend(.pad-t3){
 
+}
+
+.generic-container:extend(.bg-white){
 	border-radius: 2px;
 }
 
@@ -468,6 +470,8 @@ nav#pagination-nav{
 		border:1px solid #eee;
 		
 		.pc-img-holder{
+			.marg-b2;
+
 			display: block;
 		}
 
@@ -525,10 +529,6 @@ nav#pagination-nav{
 .allproductspage{
 	.productfilter{
 		.marg-b3;
-
-		@media(min-width:768px){
-			.marg-t2;
-		}
 	}
 }
 
@@ -717,7 +717,7 @@ nav#pagination-nav{
 
 .promotions{
 	h6{
-		.marg-t(3);
+		.marg-t(3) !important;
 		.marg-b(.5);
 		color:#555;
 	}	
@@ -757,8 +757,4 @@ nav#pagination-nav{
 
 /*Registration Page*/
 .register-container:extend(.pad3){
-	h3:first-child{
-		margin-top:0;
-	}
-
 }

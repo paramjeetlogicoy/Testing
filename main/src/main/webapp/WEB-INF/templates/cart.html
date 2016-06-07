@@ -14,7 +14,7 @@
 </head>
 <body ng-app="lbApp" ng-controller="cartCtrlr" class="bg-greyF9 cartPage">
 	<div th:replace="fragments/layout::fragment-header(extn=false)"></div>
-	<div class="container rel pad-t3 ng-cloak">
+	<div class="container page-container rel ng-cloak">
 		
 		<div class="cart-details" ng-if="cartLoading">
 			<h4 class="text-center">
@@ -172,7 +172,7 @@
 									<div class="delivery-address"></div>
 								</div>
 								<div class="col-sm-7">
-									<h6 class="marg-t0">Address</h6>
+									<h6>Address</h6>
 									<div class="cart-address-holder">
 										<div class="row">
 											<div class="col-xs-8">
@@ -210,7 +210,7 @@
 					<div class="cart-details" ng-if="goodToProceed">
 						<h4 class="cart-steps">Step3: Confirm Your Order</h4>
 						<div class="cart-confirmation text-center">
-							<h4 class="marg-t0">
+							<h4>
 								<span class="green1">Your order total is {{order.total |
 									currency}} and the donation is due on product delivery.</span>
 							</h4>

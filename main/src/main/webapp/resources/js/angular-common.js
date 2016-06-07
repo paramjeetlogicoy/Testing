@@ -54,6 +54,42 @@ allProductCtrlr = function($scope, $http){
 	$scope.getProducts();
 },
 
+
+categoryCtrlr = function($scope, $http){
+	
+	$scope.products = [];
+	$scope.categoryName = _pageCatName; /*Defined in the HTML page*/
+	
+	$scope.getProducts = function(){
+		
+		$http.get(_lbUrls.catprds + $scope.categoryName, {
+			params : { 
+				'hidepop' : true  //tells the config not to show the loading popup
+			}
+		})
+		.then(function(response){
+			var data = response ? response.data : '';
+			if(data){
+				$scope.products = data;
+			}
+			else{	
+				$scope.pageLevelError = "There was some error getting the products."
+					+" Please contact the support";
+			}
+
+		},
+		function(){
+			$scope.pageLevelError = "There was some error getting the products."
+				+" Please contact the support";
+		});	
+		
+	};
+	
+	if($scope.categoryName != ''){ 
+		$scope.getProducts();
+	}
+},
+
 loginCtrlr = function($scope, $http){
 	
 	$scope.user = {};
@@ -1036,6 +1072,7 @@ lbApp
 
 
 .controller('allProductCtrlr', allProductCtrlr)
+.controller('categoryCtrlr', categoryCtrlr)
 .controller('productCtrlr', productCtrlr)
 .controller('loginCtrlr', loginCtrlr)
 .controller('registerCtrlr', registerCtrlr)

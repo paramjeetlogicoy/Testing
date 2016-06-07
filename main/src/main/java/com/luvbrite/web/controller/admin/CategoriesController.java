@@ -84,6 +84,10 @@ public class CategoriesController {
 		
 		else {
 			
+			String url = category.getName()
+					.toLowerCase().replace(" ", "-");
+			category.setUrl(url);
+			
 			dao.save(category);
 			
 			

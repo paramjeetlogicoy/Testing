@@ -11,6 +11,7 @@ public class Category {
 	private long _id;
 	
 	private String name;
+	private String url;
 	
 	@Property("desc")
 	private String description;
@@ -28,6 +29,12 @@ public class Category {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
 	}
 	public String getDescription() {
 		return description;

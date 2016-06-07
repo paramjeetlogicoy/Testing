@@ -43,7 +43,7 @@ public class ProductController {
 		if(user!=null && user.isEnabled())
 			model.addAttribute("userId", user.getId());
 		
-		return "products-angular";				
+		return "products";				
 	}
 	
 	
