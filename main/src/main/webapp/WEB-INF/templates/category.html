@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Luvbrite</title>
+<meta th:include="fragments/layout::fragment-head" />
+<script th:inline="javascript" type="text/javascript">
+/*<![CDATA[*/
+    var _globalUserId = /*[[${userId}]]*/ 0;
+/*]]>*/
+</script>
+</head>
+<body ng-app="lbApp">
+	<div th:replace="fragments/layout::fragment-header(extn=false)"></div>
+	<div class="container page-container rel">
+		
+		<ol class="breadcrumb">
+			<li><a href="/">Home</a></li>
+			<li class="active">All Categories</li>
+		</ol>
+
+		<h1>ALL CATEGORIES</h1>
+
+		<div class="category-groups">
+			<ul class="category-group">
+
+				<li th:each="cat : ${categories}" class="col-lg-3 col-sm-4 col-xs-6">
+					<div class="product-item">
+						<h3>
+							<a th:href="@{'/category/' + ${cat.url}}" href=""
+								th:text="${cat.name}"></a>
+						</h3>
+						<div class="marg-b2">
+							<div th:text="${cat.description}"></div>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+
+	</div>
+
+	<div th:replace="fragments/layout::fragment-footer"></div>
+	<div th:replace="fragments/layout::fragment-foot(angular=true)"></div>
+	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
+	<script type="text/javascript">
+	</script>
+</body>
+</html>
