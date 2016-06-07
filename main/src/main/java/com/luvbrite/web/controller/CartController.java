@@ -28,6 +28,7 @@ import com.luvbrite.services.CartLogics;
 import com.luvbrite.services.CouponManager;
 import com.luvbrite.services.EmailService;
 import com.luvbrite.services.OrderFinalization;
+import com.luvbrite.services.PostOrderMeta;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.Utility;
 import com.luvbrite.web.models.AttrValue;
@@ -83,6 +84,9 @@ public class CartController {
 	
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	private PostOrderMeta postOrderMeta;
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public String homePage(@AuthenticationPrincipal 
@@ -542,6 +546,13 @@ public class CartController {
 							logger.error(Exceptions.giveStackTrace(e));
 						}
 						
+						
+						//Sent Order Meta to Inventory
+						try {							
+							postOrderMeta.postOrder(newOrder);							
+						}catch(Exception e){
+							logger.error(Exceptions.giveStackTrace(e));
+						}
 						
 					}
 					else{

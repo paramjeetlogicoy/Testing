@@ -30,6 +30,9 @@ public class GenericConnection {
 			
 			if(url.toString().indexOf("/xml") > -1)
 				connection.setRequestProperty("Content-Type", "text/xml; charset=utf-8");
+			
+			else if(url.toString().indexOf("json") > -1)
+				connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
 
 
 			outputStream = connection.getOutputStream();		
