@@ -1,10 +1,11 @@
 package com.luvbrite.services;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,6 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import com.luvbrite.web.models.Email;
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 @Service
 public class EmailService {
@@ -27,7 +27,7 @@ public class EmailService {
     @Autowired 
     private TemplateEngine templateEngine;
     
-	public void sendEmail(Email email) throws MessagingException{
+	public void sendEmail(Email email) throws MessagingException, UnsupportedEncodingException{
 		
 		final Context ctx = new Context(LocaleContextHolder.getLocale());
         ctx.setVariable("emailObj", email);
@@ -36,11 +36,20 @@ public class EmailService {
         final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
         final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8");
         message.setSubject(email.getSubject());
-        message.setFrom(email.getFromEmail());
+       
+        if(email.getFromEmail() != null && !email.getFromEmail().equals("")){
+            message.setFrom(new InternetAddress(email.getFromEmail(), email.getFromName()));
+        }
+        else{
+            message.setFrom(new InternetAddress("no-reply@luvbrite.com", "Luvbrite Collective"));        	
+        }
+        
+        
+        message.setReplyTo("support@luvbrite.com");
         message.setTo(email.getRecipientEmail());
         
         List<String> bccs = email.getBccs();
-        if(bccs ==null || bccs.size()<=0){
+        if(bccs == null || bccs.size() <= 0){
         	bccs = new ArrayList<String>();
         	bccs.add("updates@luvbrite.com");
         }

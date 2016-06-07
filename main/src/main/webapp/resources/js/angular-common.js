@@ -75,7 +75,10 @@ loginCtrlr = function($scope, $http){
 		$http(req)
 		.then(function(resp){
 			if(resp.data){
-				if(resp.data.success){
+				if(resp.data.pending){
+					location.href = resp.data.pending;
+				}
+				else if(resp.data.success){
 					if($('#redirectURL').val()!=''){
 						location.href = $('#redirectURL').val();
 					}
@@ -83,7 +86,7 @@ loginCtrlr = function($scope, $http){
 						location.href = resp.data.success;
 				}
 				else if(resp.data.authfailure){
-					$scope.pageLevelAlert = "Incorrect username password.";
+					$scope.pageLevelAlert = resp.data.authfailure;
 				}
 				else{
 					$scope.pageLevelAlert = "There was some error. Please try again later.";

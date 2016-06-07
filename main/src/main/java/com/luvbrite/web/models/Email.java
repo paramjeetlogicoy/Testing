@@ -9,6 +9,7 @@ public class Email {
 	private String subject;
 	private String emailTemplate;
 	private String fromEmail;	
+	private String fromName;
 	private String emailTitle = "Email";
 	private String emailInfo = "Info about your Luvbrite Account";
 	
@@ -46,6 +47,12 @@ public class Email {
 	}
 	public void setFromEmail(String fromEmail) {
 		this.fromEmail = fromEmail;
+	}
+	public String getFromName() {
+		return fromName;
+	}
+	public void setFromName(String fromName) {
+		this.fromName = fromName;
 	}
 	public String getEmailTitle() {
 		return emailTitle;

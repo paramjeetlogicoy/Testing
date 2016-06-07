@@ -19,9 +19,11 @@
 
 					<div class="user-details-holder">
 						<div class="text-right">
-							<a href="" ng-click="showPasswordForm()" ng-show="mode=='edit'"><span
-								ng-show="u.password">Change Password</span><span
-								ng-show="!u.password">Set Password</span></a>
+							<a href="" ng-click="showPasswordForm()" ng-show="mode=='edit'"
+								class="btn btn-xs btn-warning"><span ng-show="u.password">Change
+									Password</span><span ng-show="!u.password">Set Password</span></a><a
+								href="" ng-if="!u.active" ng-click="activateNemail()"
+								class="btn btn-xs btn-primary marg-l1">Activate &amp; Email</a>
 						</div>
 						<form name="user" class="form-horizontal" ng-submit="saveUser()">
 
@@ -195,7 +197,9 @@
 								<div class="col-sm-7">
 									<select class="form-control"
 										ng-options="status for status in statuses" ng-model="u.active"
-										name="active" required></select>
+										name="active" required></select> <a href=""
+										class="btn btn-xs btn-primary marg-t1" ng-click="activateNemail()"
+										ng-if="!u.active">Activate &amp; Email</a>
 								</div>
 							</div>
 
@@ -269,7 +273,8 @@
 								</div>
 							</div>
 							<div class="form-group form-group-sm">
-								<label class="col-sm-4 control-label">Subscribed to Emails</label>
+								<label class="col-sm-4 control-label">Subscribed to
+									Emails</label>
 								<div class="col-sm-7">
 									<p class="form-control-static">{{u.marketing.subscribe}}</p>
 								</div>

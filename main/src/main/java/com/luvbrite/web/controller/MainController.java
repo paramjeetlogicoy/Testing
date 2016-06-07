@@ -1,6 +1,7 @@
 package com.luvbrite.web.controller;
 
-import javax.mail.MessagingException;
+import java.util.Calendar;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.luvbrite.services.EmailService;
 import com.luvbrite.web.models.Email;
 import com.luvbrite.web.models.GenericResponse;
+import com.luvbrite.web.models.Order;
 import com.luvbrite.web.models.User;
 import com.luvbrite.web.models.UserDetailsExt;
 
@@ -78,14 +80,28 @@ public class MainController {
 			
 			emailService.sendEmail(email);
 			
-		} catch (MessagingException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 		return r;	
 	}	
 	
-
+	
+	
+	@RequestMapping(value = "/pending-registration")
+	public String pendingRegistration(@AuthenticationPrincipal 
+			UserDetailsExt user, ModelMap model){	
+		
+		if(user!=null){
+			model.addAttribute("user", user.getUsername());
+		}
+		
+		return "pending-registration";		
+	}
+	
+	
+	
 	@RequestMapping(value = "/403")
 	public String accessDenied(@AuthenticationPrincipal 
 			UserDetailsExt user, ModelMap model){	
@@ -118,10 +134,22 @@ public class MainController {
 					email.setEmailTitle(template + " Email");
 					email.setEmailInfo("Test Info");
 					
-					User user = new User();
-					user.setPassword("876472364876234");
 					
-					email.setEmail(user);
+					if(templateName.indexOf("password") > -1){
+						User user = new User();
+						user.setPassword("876472364876234");
+
+						email.setEmail(user);
+					}
+					
+					else if(templateName.indexOf("order-confirmation") > -1){
+						Order order = new Order();
+						order.setOrderNumber(5117);
+						order.setDate(Calendar.getInstance().getTime());
+						order.setTotal(180d);
+
+						email.setEmail(order);
+					}
 
 					model.addAttribute("emailObj", email);		
 

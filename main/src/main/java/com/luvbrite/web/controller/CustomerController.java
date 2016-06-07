@@ -56,6 +56,7 @@ public class CustomerController {
 			ModelMap model){
 		
 		if(user==null) return "redirect:login";
+		if(!user.isEnabled()) return "redirect:pending-registration";
 		
 		model.addAttribute("userId", user.getId());
 		return "customer/profile";		

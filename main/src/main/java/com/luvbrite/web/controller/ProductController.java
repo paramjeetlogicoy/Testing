@@ -40,7 +40,7 @@ public class ProductController {
 			UserDetailsExt user, 
 			ModelMap model){
 		
-		if(user!=null)
+		if(user!=null && user.isEnabled())
 			model.addAttribute("userId", user.getId());
 		
 		return "products-angular";				
@@ -74,7 +74,7 @@ public class ProductController {
 	public String product(@AuthenticationPrincipal 
 			UserDetailsExt user,ModelMap model, @PathVariable String productUrl) {		
 
-		if(user!=null)
+		if(user!=null && user.isEnabled())
 			model.addAttribute("userId", user.getId());
 		
 		Product p = prdDao.findOne("url", productUrl);

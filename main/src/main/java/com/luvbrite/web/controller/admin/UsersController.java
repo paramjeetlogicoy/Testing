@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -23,12 +24,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.luvbrite.dao.LogDAO;
 import com.luvbrite.dao.UserDAO;
+import com.luvbrite.services.EmailService;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.PaginationLogic;
+import com.luvbrite.web.models.Email;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Log;
 import com.luvbrite.web.models.ResponseWithPg;
 import com.luvbrite.web.models.User;
+import com.luvbrite.web.models.UserDetailsExt;
 import com.luvbrite.web.validator.UserValidator;
 
 
@@ -52,6 +56,9 @@ public class UsersController {
 	
 	@Autowired
 	PasswordEncoder encoder;
+	
+	@Autowired
+	private EmailService emailService;
 	
 	
 	@InitBinder("user")
@@ -255,6 +262,86 @@ public class UsersController {
 			
 			else {
 				r.setMessage("Invalid User ID");
+			}
+		}
+		
+		
+		return r;		
+	}
+
+	
+	@RequestMapping(value = "json/activate-n-email/{userId}", method = RequestMethod.POST)
+	public @ResponseBody GenericResponse activateNemail(
+			@PathVariable Long userId, 
+			@AuthenticationPrincipal UserDetailsExt user){
+		
+		GenericResponse r = new GenericResponse();
+		r.setSuccess(false);
+		r.setMessage("");
+			
+		if(userId == null){
+			r.setMessage("Invalid user ID");			
+		}
+		else{
+			
+			User userDb = dao.get(userId);			
+			if(userDb!=null){		
+				
+				userDb.setActive(true);
+				
+				/**
+				 * Here we are only changing the status to active.
+				 * Remaining information is same as that 
+				 * pulled from DB
+				 **/			
+				dao.save(userDb);
+				
+
+				
+				
+				/* Update Log */
+				try {
+					
+					Log log = new Log();
+					log.setCollection("users");
+					log.setDetails("user activated.");
+					log.setDate(Calendar.getInstance().getTime());
+					log.setKey(userDb.get_id());
+					log.setUser(user.getUsername());
+					
+					logDao.save(log);					
+				}
+				catch(Exception e){
+					logger.error(Exceptions.giveStackTrace(e));
+				}
+				
+				
+				
+				/* Email */
+				try {
+					
+					Email email = new Email();
+					email.setEmailTemplate("activation");
+					email.setFromName("Luvbrite Security");
+					email.setFromEmail("no-reply@luvbrite.com");
+					email.setRecipientEmail(userDb.getEmail());
+					email.setRecipientName(userDb.getFname());					
+					email.setSubject("Luvbrite Account Activation Details");
+					email.setEmailTitle("Acount Activation Email");
+					email.setEmailInfo("your www.luvbrite.com account activated");	
+					
+					emailService.sendEmail(email);
+				}
+				catch(Exception e){
+					logger.error(Exceptions.giveStackTrace(e));
+				}
+				
+				
+				r.setSuccess(true);
+			}
+			
+			else {
+				r.setMessage("No valid user found with ID - " + userId);
 			}
 		}
 		

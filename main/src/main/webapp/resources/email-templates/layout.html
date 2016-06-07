@@ -34,7 +34,7 @@
 												<tr>
 													<td style="font-family: Helvetica, Arial, sans-serif">
 														<div
-															th:replace="fragments::spacer(width=1, padding=1, size=8)"></div>
+															th:replace="fragments::spacer(width=1, padding=1, size=12)"></div>
 
 
 														<table border="0" cellspacing="0" cellpadding="0"
@@ -42,21 +42,28 @@
 															width="100%">
 															<tbody>
 																<tr>
-																	<td align="left" valign="middle" width="95" height="21"><a
+																	<!--/*<td align="left" valign="middle" width="95" height="21"><a
 																		style="text-decoration: none; border: none; display: block; min-height: 21px; width: 100%"
 																		href="https://www.luvbrite.com/" target="_blank"><img
 																			src="http://www.lucyjon.com/resources/imgs/luvbrite-header-logo.jpg"
 																			width="55" height="65" alt="Luvbrite Collective"
-																			style="border: none; text-decoration: none"/></a></td>
+																			style="border: none; text-decoration: none"/></a></td>*/-->
+																	<td align="left" valign="middle" width="100%">
+																		<div style="padding-left: 5px;">
+																			<em
+																				style="font-style: italic; font-family: Georgia; font-size: 18px; color: #000;">Luvbrite
+																				Collective</em>
+																		</div>
+																	</td>
 																</tr>
 															</tbody>
 														</table>
 
 														<div
-															th:replace="fragments::spacer(width=1, padding=1, size=8)"></div>
+															th:replace="fragments::spacer(width=1, padding=1, size=12)"></div>
 
 														<table border="0" cellspacing="0" cellpadding="0"
-															style="font-family: Helvetica, Arial, sans-serif; border-radius: 3px 3px 0 0 !important;"
+															style="font-family: Helvetica, Arial, sans-serif;"
 															width="100%" bgcolor="#557da1">
 															<tbody>
 																<tr>
@@ -65,8 +72,18 @@
 																			th:replace="fragments::spacer(width=20, padding=1, size=0)"></div>
 																	</td>
 																	<td width="100%">
-																		<div
-																			th:replace="fragments::spacer(width=500, padding=1, size=12)"></div>
+																		<table width="500" cellspacing="0" cellpadding="1"
+																			border="0" style="table-layout: fixed">
+																			<tbody>
+																				<tr>
+																					<td width="500">
+																						<div
+																							style="min-height: 12px; font-size: 12px; line-height: 12px; width: 500px">
+																							&nbsp;</div>
+																					</td>
+																				</tr>
+																			</tbody>
+																		</table>
 																	</td>
 																	<td width="20">
 																		<div
@@ -76,7 +93,7 @@
 															</tbody>
 														</table>
 														<table border="0" cellspacing="0" cellpadding="0"
-															style="font-family: Helvetica, Arial, sans-serif;border-radius: 3px;"
+															style="font-family: Helvetica, Arial, sans-serif;"
 															width="100%" bgcolor="#FFFFFF">
 															<tbody>
 																<tr>
@@ -129,18 +146,20 @@
 																					<td></td>
 																				</tr>
 																				<tr>
-																					<td>This email was intended for <span
-																						th:text="${emailObj.recipientName}"></span> (<span
-																						th:text="${emailObj.recipientEmail}"></span>).
-																					</td>
+																					<td><div style="padding-left: 5px;">
+																							This email was intended for <span
+																								th:text="${emailObj.recipientName}"></span> (<span
+																								th:text="${emailObj.recipientEmail}"></span>).
+																						</div></td>
 																				</tr>
 																				<tr>
-																					<td>If you need assistance or have questions,
-																						please contact <a
-																						style="color: #0077b5; text-decoration: none"
-																						href="#" target="_blank">Luvbrite Collective
-																							Support</a>.
-																					</td>
+																					<td><div style="padding-left: 5px;">
+																							If you need assistance or have questions, please
+																							contact <a
+																								style="color: #0077b5; text-decoration: none"
+																								href="#" target="_blank">Luvbrite Collective
+																								Support</a>.
+																						</div></td>
 																				</tr>
 																				<tr>
 																					<td>
@@ -149,10 +168,11 @@
 																					</td>
 																				</tr>
 																				<tr>
-																					<td>&copy; <span
-																						th:text="${#calendars.format(#calendars.createNow(), 'yyyy')}"></span>,
-																						Luvbrite Collective
-																					</td>
+																					<td><div style="padding-left: 5px;">
+																							&copy; <span
+																								th:text="${#calendars.format(#calendars.createNow(), 'yyyy')}"></span>,
+																							Luvbrite Collective
+																						</div></td>
 																				</tr>
 																			</tbody>
 																		</table>

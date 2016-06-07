@@ -171,9 +171,7 @@ public class LoginController {
 					dao.save(user);
 					
 					
-					/**
-					 * Update Log
-					 * */
+					/* Update Log */
 					try {
 						
 						Log log = new Log();
@@ -183,6 +181,30 @@ public class LoginController {
 						log.setKey(userId);
 						
 						logDao.save(log);						
+					}
+					catch(Exception e){
+						logger.error(Exceptions.giveStackTrace(e));
+					}
+					
+					
+					
+					/* Email */
+					try {
+						
+						Email email = new Email();
+						email.setEmailTemplate("registration");
+						email.setFromName("Luvbrite Security");
+						email.setFromEmail("no-reply@luvbrite.com");
+						email.setRecipientEmail(user.getEmail());
+						email.setRecipientName(user.getFname());
+						
+						//email.setBccs(Arrays.asList(new String[]{"new-users@luvbrite.com"}));
+						
+						email.setSubject("Luvbrite Registration Details");
+						email.setEmailTitle("Registration Email");
+						email.setEmailInfo("Info about your recent registration at www.luvbrite.com");	
+						
+						emailService.sendEmail(email);
 					}
 					catch(Exception e){
 						logger.error(Exceptions.giveStackTrace(e));
@@ -303,6 +325,7 @@ public class LoginController {
 					
 					Email email = new Email();
 					email.setEmailTemplate("password-reset");
+					email.setFromName("Luvbrite Security");
 					email.setFromEmail("no-reply@luvbrite.com");
 					email.setRecipientEmail(u.getEmail());
 					email.setRecipientName(u.getFname());
@@ -405,6 +428,31 @@ public class LoginController {
 				}
 				
 				
+				
+				//Sent Email
+				try {
+					
+					Email email = new Email();
+					email.setEmailTemplate("password-changed");
+					email.setFromName("Luvbrite Security");
+					email.setFromEmail("no-reply@luvbrite.com");
+					email.setRecipientEmail(userDb.getEmail());
+					email.setRecipientName(userDb.getFname());
+					email.setSubject(userDb.getFname() + ", your password was successfully changed");
+					email.setEmailTitle("Your password was successfully changed");
+					email.setEmailInfo("Your password was changed");
+					
+					
+					emailService.sendEmail(email);
+					
+				}catch(Exception e){
+					logger.error(Exceptions.giveStackTrace(e));
+					r.setSuccess(false);
+					r.setMessage("There was some error sending the reset email.");
+				}
+				
+				
+					
 				r.setSuccess(true);
 			}
 			

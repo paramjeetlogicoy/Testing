@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.luvbrite.dao.LogDAO;
 import com.luvbrite.dao.OrderDAO;
+import com.luvbrite.services.EmailService;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.PaginationLogic;
+import com.luvbrite.web.models.Email;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Log;
 import com.luvbrite.web.models.Order;
@@ -36,6 +38,9 @@ public class OrdersController {
 	
 	@Autowired
 	private LogDAO logDao;
+	
+	@Autowired
+	private EmailService emailService;
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public String mainPage(ModelMap model){		
@@ -135,5 +140,57 @@ public class OrdersController {
 		model.addAttribute("orderNumber", orderNumber);
 		
 		return "admin/order/details";		
+	}
+	
+
+	@RequestMapping(value = "/email-confirmation/{orderNumber}")
+	public @ResponseBody GenericResponse emailConfirmation(@PathVariable Long orderNumber){	
+		
+		GenericResponse gr = new GenericResponse();
+		gr.setSuccess(false);
+		gr.setMessage("");
+		
+		if(orderNumber != null){
+			
+			Order order = dao.findOne("orderNumber", orderNumber);
+			if(order !=null){
+				
+				//Sent Confirmation Email
+				try {
+					
+					Email email = new Email();
+					email.setEmailTemplate("order-confirmation");
+					email.setFromName("Luvbrite Orders");
+					email.setFromEmail("no-reply@luvbrite.com");
+					email.setRecipientEmail(order.getCustomer().getEmail());
+					email.setRecipientName(order.getCustomer().getName());
+					email.setEmailTitle("Order Confirmation Email");
+					email.setSubject("Luvbrite Order#" + order.getOrderNumber() + " placed successfully");
+					email.setEmailInfo("Your order with Luvbrite.");
+					
+					email.setEmail(order);
+					
+					emailService.sendEmail(email);
+					
+					gr.setSuccess(true);
+					
+				}catch(Exception e){
+					logger.error(Exceptions.giveStackTrace(e));
+					gr.setMessage(e.getMessage());
+				}
+			}
+			else{
+
+				gr.setMessage("No order found.");
+			}
+		}
+		
+		else{
+
+			gr.setMessage("Invalid Order Number.");
+		}
+		
+		
+		return gr;		
 	}
 }

@@ -24,8 +24,7 @@
 							<form class="login-form marg-b2" ng-submit="login()">
 								<input type="hidden" th:name="*{_csrf.parameterName}"
 									th:value="${_csrf.token}" /> <input type="hidden"
-									id="redirectURL" th:name="redirectURL"
-									th:value="${ret}" />
+									id="redirectURL" th:name="redirectURL" th:value="${ret}" />
 
 								<div class="input-group marg-b2">
 									<span class="input-group-addon"><i class="fa fa-user"></i></span>
@@ -46,11 +45,15 @@
 								</div>
 								<button type="submit" class="btn btn-primary">Sign In</button>
 							</form>
-							<div class="marg-b1 text-right">
-								Forgot your password? <a href="/resetrequest">Reset your password here.</a>
-							</div>
-							<div class="marg-b2 text-right">
-								New User? <a href="/register">Register here.</a>
+
+							<div class="size13 text-right marg-b2">
+								<div class="marg-b1">
+									Forgot your password? <a href="/resetrequest">Reset your
+										password here.</a>
+								</div>
+								<div>
+									New User? <a href="/register">Register here.</a>
+								</div>
 							</div>
 						</div>
 

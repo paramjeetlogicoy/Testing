@@ -26,6 +26,11 @@ public class OrderFinalization {
 	public long getOrderNumber() {
 		return orderNumber;
 	}
+	
+	private Order order;
+	public Order getOrder(){
+		return order;
+	}
 
 	@Autowired
 	private OrderDAO dao;
@@ -46,7 +51,7 @@ public class OrderFinalization {
 					&& cartOrder.getLineItems().size() > 0){
 				
 				//Create new Order
-				Order order = new Order();
+				order = new Order();
 				
 				//Copy info from cartOrder to Order
 				copyCartOrder(cartOrder, order);

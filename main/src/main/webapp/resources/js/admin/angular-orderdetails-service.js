@@ -75,6 +75,29 @@ var ordDtlsCtrlr = function ($scope, $http, $sanitize, ordDtlService) {
 			$scope.errorMsg  = "There was some error saving the status. "
 					+"Please contact G.";
 		});	
+	};
+	
+	$scope.emailConfirmation = function(){
+		
+		$http.post('/admin/order/email-confirmation/' + $scope.orderNumber)
+		.then(function(resp){
+			if(resp && resp.data){
+				if(resp.data.success) {
+					_lbFns.pSuccess('Email sent.');
+				}
+				else{
+					$scope.errorMsg  = resp.data.message;
+				}	
+			}
+			else{
+				$scope.errorMsg  = "There was some error sending the email. "
+						+"Please contact G.";
+			}
+			
+		}, function(){
+			$scope.errorMsg  = "There was some error sending the email. "
+					+"Please contact G.";
+		});	
 	}
 
 };

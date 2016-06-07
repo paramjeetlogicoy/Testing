@@ -27,7 +27,7 @@ public class LBAuthSuccessHandler implements AuthenticationSuccessHandler  {
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest req,
 			HttpServletResponse res, Authentication auth) throws IOException,
-			ServletException {		
+			ServletException {	
 		
 		HttpSession sess = req.getSession();
 		sess.setAttribute("currentUser", auth.getName());		
@@ -57,13 +57,19 @@ public class LBAuthSuccessHandler implements AuthenticationSuccessHandler  {
         	else
         		return "/admin/orders";
         	
-        } else {
+        
+        } else if (authorities.contains("ROLE_CUSTOMER")){
         	
         	if(!originalURL.equals(""))
         		return originalURL;
         	
         	else
         		return "/customer";
+        	
+        
+        } else {
+        		
+        	return "/pending-registration";
         }
     }
 
