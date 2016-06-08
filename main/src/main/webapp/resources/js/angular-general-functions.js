@@ -25,6 +25,10 @@ var appRunFns = function($http, $rootScope, $interval){
     });
     
     
+    //Set the CDN path
+    $rootScope.lbGlobalCDNPath = _lbGlobalCDNPath; /*Global var defined in <head />*/
+    
+    
     //Correct the csrf param periodically.
     var rootPrevValue = $('#_lb_sec_tok').val();
     csrfCorrection = $interval(function(){

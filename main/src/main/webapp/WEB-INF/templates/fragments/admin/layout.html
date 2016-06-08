@@ -31,6 +31,13 @@
 <!-- Less Sheet and Compiler **$$** Remove for Production-->
 <link rel="stylesheet/less" type="text/css" href="/resources/css/less/admin.less" />
 <script src="/resources/js/lib/less.min.2.5.3.js"></script>
+
+<script th:inline="javascript" type="text/javascript">
+/*<![CDATA[*/
+    
+    var _lbGlobalCDNPath = /*[[${_lbGlobalCDNPath}]]*/ '';
+/*]]>*/
+</script>
 </head>
 <body>
 	<header th:fragment="fragment-header">

@@ -19,7 +19,7 @@ var uploadServiceFn = function($templateRequest, $compile){
 	
 	service.selectedFiles = [];
 	
-	service.cdnPath = _lbGlobalCDNPath; //defined in admin.js
+	service.cdnPath = _lbGlobalCDNPath; //defined in <head />
 	
 	service.config = {
 			"cb" : null, 	//callback fn

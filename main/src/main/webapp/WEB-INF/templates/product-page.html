@@ -6,11 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title th:text="${product.name}"></title>
 <meta th:include="fragments/layout::fragment-head" />
-<script th:inline="javascript" type="text/javascript">
-/*<![CDATA[*/
-    var _globalUserId = /*[[${userId}]]*/ 0;
-/*]]>*/
-</script>
 </head>
 <body ng-app="lbApp" ng-controller="productCtrlr" class="bg-greyF9">
 	<div th:replace="fragments/layout::fragment-header(extn=false)"></div>
@@ -41,7 +36,7 @@
 
 				</div>
 				<div class="prdpage-img-container">
-					<img th:src="'/files/view/' + ${product.featuredImg}" class="fit" />
+					<img th:src="${_lbGlobalCDNPath} + ${product.featuredImg}" class="fit" />
 					<i class="fa fa-search-plus" aria-hidden="true"></i>
 				</div>
 
@@ -165,7 +160,7 @@
 							<a th:href="@{'/product/' + ${product.url}}" href=""
 								class="pc-img-holder"><span> <img
 									class="featured-img"
-									th:src="'/files/view/' + ${product.featuredImg}" />
+									th:src="${_lbGlobalCDNPath} + ${product.featuredImg}" />
 							</span> </a>
 							<div class="pc-info">
 								<h3>

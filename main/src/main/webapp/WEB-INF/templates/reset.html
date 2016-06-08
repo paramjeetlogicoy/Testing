@@ -7,11 +7,7 @@
 <title th:if="${type}=='request'">Request Password Reset</title>
 <title th:if="${type}=='password'">Reset Your Password</title>
 <meta th:include="fragments/layout::fragment-head" />
-<script th:inline="javascript" type="text/javascript">
-/*<![CDATA[*/
-    var _globalUserId = /*[[${userId}]]*/ 0;
-/*]]>*/
-</script>
+
 </head>
 <body ng-app="lbApp" ng-controller="resetCtlr" class="bg-greyF9">
 
