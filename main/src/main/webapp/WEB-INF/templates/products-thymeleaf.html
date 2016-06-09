@@ -27,7 +27,7 @@
 						<div class="product-item">
 							<a th:href="@{'/product/' + ${product.url}}" href=""
 								class="pc-img-holder"><span> <img
-									th:src="'/files/view/' + ${product.featuredImg}"
+									th:src="${lbGlobalCDNPath} + ${product.featuredImg}"
 									class="featured-img" />
 							</span> </a>
 							<div class="pc-info">

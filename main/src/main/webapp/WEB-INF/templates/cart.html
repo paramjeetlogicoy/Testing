@@ -44,7 +44,7 @@
 								<li class="item-li" ng-repeat="item in order.lineItems"
 									ng-if="item.type=='item'" ng-hide="!item.instock">
 									<div class="item-thumb">
-										<img ng-if="item.img" ng-src="/files/view/{{item.img}}"
+										<img ng-if="item.img" ng-src="{{lbGlobalCDNPath + item.img}}"
 											class="fit" />
 									</div>
 
