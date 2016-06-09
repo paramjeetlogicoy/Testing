@@ -36,7 +36,7 @@
 					ng:if="p.status=='publish'">
 					<div class="product-item">
 						<a href="/product/{{p.url}}" class="pc-img-holder"><span>
-								<img ng-src="/files/view/{{p.featuredImg}}" class="featured-img" />
+								<img ng-src="{{lbGlobalCDNPath + p.featuredImg}}" class="featured-img" />
 						</span> </a>
 						<div class="pc-info">
 							<h3>

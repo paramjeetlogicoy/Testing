@@ -108,7 +108,7 @@
 								</thead>
 								<tbody>
 									<tr ng-repeat="item in o.lineItems" ng-if="item.type=='item'">
-										<td><img ng-src="/files/view{{item.img.replace('-150x150','').replace('.jpg','-150x150.jpg')}}" ng-if="item.img" class="fit"/></td>
+										<td><img ng-src="{{lbGlobalCDNPath + item.img.replace('-150x150','').replace('.jpg','-150x150.jpg')}}" ng-if="item.img" class="fit"/></td>
 										<td>
 											<div>{{item.name}}</div>
 											<div ng-repeat="spec in item.specs">
