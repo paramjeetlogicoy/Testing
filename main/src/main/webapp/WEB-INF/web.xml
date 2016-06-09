@@ -8,7 +8,7 @@
 
 	<error-page>
 		<exception-type>java.lang.Throwable</exception-type>
-		<location>/WEB-INF/templates/generic-error.html</location>
+		<location>/generic-error</location>
 	</error-page>
 
 </web-app>

@@ -8,10 +8,14 @@ import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.coobird.thumbnailator.Thumbnails;
+
+import org.mongodb.morphia.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,19 +56,29 @@ public class FilesController {
 	@RequestMapping(value = "/list/", method = RequestMethod.GET)
 	public @ResponseBody List<Upload> listFiles(
 			@RequestParam(value="c", required=false) Integer offset,
-			@RequestParam(value="l", required=false) Integer limit){
+			@RequestParam(value="l", required=false) Integer limit,
+			@RequestParam(value="q", required=false) String search){
 		
 		if(limit==null) limit = 50;
 		if(offset==null) offset = 0;
 		
-		return dao.find(
-				dao.getDs()
-					.createQuery(dao.getEntityClass())
-					//.field("_id").greaterThan(6887) //Comment this line in production
-					.order("-_id")
-					.limit(limit)
-					.offset(offset)
-				).asList();	
+		Query<Upload> query = dao.createQuery();
+		if(search!=null && !search.equals("")){
+			Pattern regExp = Pattern.compile(search, Pattern.CASE_INSENSITIVE);
+			query.or(
+					query.criteria("filename").equal(regExp),
+					query.criteria("location").equal(regExp)
+				);
+			
+			/*When there is a query, then offset is removed*/
+			offset = 0;
+		}
+		
+		return query
+				.order("-_id")
+				.limit(limit)
+				.offset(offset)
+				.asList();	
 
 	}
 	
@@ -201,15 +215,18 @@ public class FilesController {
 			File dir = new File(fileLoc);
 			if(!dir.exists()) dir.mkdirs();
 			
-			String nameWithOutExtn = newFileName.substring(0, newFileName.lastIndexOf(".")),
-					extn = newFileName.substring(newFileName.lastIndexOf("."));
+			String nameWithOutExtn  = newFileName.substring(0, newFileName.lastIndexOf(".")),
+					extn = newFileName.substring(newFileName.lastIndexOf(".")),
+					finalNameWithoutExtn = nameWithOutExtn;
 			
 			File f = new File(fileLoc + newFileName);
 			int i = 1;
 
 			//Check if file already exists, if yes, create version numbers
 			while(f.exists()){
-				newFileName = nameWithOutExtn + "-" + (i++) + extn;
+				
+				finalNameWithoutExtn = nameWithOutExtn + "-" + (i++);
+				newFileName = finalNameWithoutExtn + extn;
 				f = new File(fileLoc + newFileName);
 				
 				//Safety 
@@ -252,6 +269,32 @@ public class FilesController {
 				dao.save(upload);
 				
 				r.setResults(Arrays.asList(upload));
+				
+				if(mimeType.indexOf("image")>-1){					
+					
+					try{
+						
+						Thumbnails.of(f)
+						.size(150, 150).outputFormat("jpg")
+						.toFile(new File(fileLoc + finalNameWithoutExtn + "-150x150.jpg"));
+						
+						
+						/*If its a product image, create the product sizes too*/
+						if(fileLoc.indexOf("/products/")>-1){
+							
+							Thumbnails.of(f)
+							.size(300, 266).outputFormat("jpg")
+							.toFile(new File(fileLoc + finalNameWithoutExtn + "-300x266.jpg"));
+							
+							Thumbnails.of(f)
+							.size(600, 600).outputFormat("jpg")
+							.toFile(new File(fileLoc + finalNameWithoutExtn + "-600x600.jpg"));
+						}
+
+					}catch(Exception e){
+						logger.error("Thumnail creatin failed." + Exceptions.giveStackTrace(e));
+					}
+				}
 				
 			}
 			catch (Exception e) {

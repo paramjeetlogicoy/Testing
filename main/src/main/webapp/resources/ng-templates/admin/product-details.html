@@ -74,7 +74,7 @@
 									Image</button>
 								<input type="hidden" name="featuredImg" ng-model="p.featuredImg" />
 								<div class="thumbnail-holder" ng-if="p.featuredImg">
-									<img ng-src="{{cdnPath + p.featuredImg}}" />
+									<img ng-src="{{cdnPath + p.featuredImg.replace('.jpg','-150x150.jpg')}}" />
 								</div>
 							</div>
 						</div>

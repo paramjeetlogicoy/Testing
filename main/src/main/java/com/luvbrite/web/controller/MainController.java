@@ -109,6 +109,13 @@ public class MainController {
 	
 	
 	
+	@RequestMapping(value = "/generic-error")
+	public String genericError(){			
+		return "generic-error";		
+	}
+	
+	
+	
 	@RequestMapping(value = "/403")
 	public String accessDenied(@AuthenticationPrincipal 
 			UserDetailsExt user, ModelMap model){	

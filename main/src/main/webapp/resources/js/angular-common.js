@@ -54,7 +54,6 @@ allProductCtrlr = function($scope, $http){
 	$scope.getProducts();
 },
 
-
 categoryCtrlr = function($scope, $http){
 	
 	$scope.products = [];
@@ -620,14 +619,20 @@ productCtrlr = function($scope, $rootScope, $http){
 	}
 	
 	/*Activate Image Zoom*/
-	var $img = $('.prdpage-img-container');
+	var $img = $('.prdpage-img');
 	$scope.zoomFn = {
 			activate : function(){
-				$img.zoom({
-					callback: function(){
-						$(this).parent().addClass('loaded');
-					}
-				});
+				
+				var url = $img.find('img').attr('data-zoom');
+				if(url && url !=''){
+					
+					$img.zoom({
+						url : url,
+						callback: function(){
+							$(this).parent().addClass('loaded');
+						}
+					});					
+				}
 			},
 			
 			destroy : function(){

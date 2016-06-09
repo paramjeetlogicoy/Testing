@@ -47,7 +47,7 @@ public class OrderDAO extends BasicDAO<Order, Long> {
 		
 		if(!search.equals("")) {
 
-			Query<Order> query = getDs().createQuery(getEntityClass());
+			Query<Order> query = createQuery();
 			
 			if(search.trim().equals(Utility.getLong(search)+"")){//If the search is for a number.
 				query.field("orderNumber").equal(Utility.getLong(search));
@@ -68,7 +68,7 @@ public class OrderDAO extends BasicDAO<Order, Long> {
 		
 		else if(customerId != 0){
 			
-			Query<Order> query = getDs().createQuery(getEntityClass());
+			Query<Order> query = createQuery();
 			query.field("customer._id").equal(customerId);
 			return count(query);	
 		}
@@ -80,7 +80,7 @@ public class OrderDAO extends BasicDAO<Order, Long> {
 	
 	public List<Order> find(String orderBy, int limit, int offset, String search, long customerId){
 		
-		final Query<Order> query = getDs().createQuery(getEntityClass()).order(orderBy);		
+		final Query<Order> query = createQuery().order(orderBy);		
 
 		//Apply search criteria
 		if(!search.equals("")){

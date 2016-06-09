@@ -27,20 +27,31 @@
 				</div>
 
 				<div class="fgw-file-list">
-					<h5>Existing Files:</h5>
+					<div class="row marg-b2">
+						<h5 class="col-sm-6">Existing Files:</h5>
+						<form class="col-sm-3 pull-right" ng-submit="loadFiles()">
+							<div class="input-group">
+								<input type="text" class="form-control" placeholder="Search..."
+									ng-model="search" ng-model-options="{updateOn: 'blur'}" /> <span class="input-group-btn">
+									<button class="btn btn-default" type="submit">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
+						</form>
+					</div>
 					<ul class="clearfix lb-scrollbar">
-						<li ng-repeat="file in sfiles | orderBy : file._id : reverse"
+						<li ng-repeat="file in sfiles | orderBy : file._id : reverse | filter:search"
 							ng-click="selectFiles()" ng-class="file.selected?'selected':''"><div
-							ng-if="file.mime && file.mime.indexOf('image')>-1"> <img
-								ng-if="file.locType=='cdn'"
-								ng-src="{{cdnPath + file.location}}" />
-								<img ng-if="file.locType!='cdn'"
-								ng-src="/files/view/{{file.location}}" />
-						</div> <a ng-if="file.locType=='cdn'"
-							href="{{cdnPath + file.location}}"
-							target="_blank"><small>{{file.filename}}</small></a> <a
-							ng-if="file.locType!='cdn'"
-							href="/files/view/{{file.location}}" target="_blank"><small>{{file.filename}}</small></a>							
+								ng-if="file.mime && file.mime.indexOf('image')>-1">
+								<img ng-if="file.locType=='cdn'"
+									ng-src="{{cdnPath + file.location.replace('.jpg','-150x150.jpg')}}" /> <img
+									ng-if="file.locType!='cdn'"
+									ng-src="/files/view/{{file.location.replace('.jpg','-150x150.jpg')}}" />
+							</div> <a ng-if="file.locType=='cdn'"
+							href="{{cdnPath + file.location}}" target="_blank"><small>{{file.filename}}</small></a>
+							<a ng-if="file.locType!='cdn'"
+							href="/files/view/{{file.location}}" target="_blank"><small>{{file.filename}}</small></a>
 						</li>
 					</ul>
 				</div>

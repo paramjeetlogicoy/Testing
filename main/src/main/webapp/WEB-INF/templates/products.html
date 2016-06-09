@@ -51,7 +51,7 @@
 						class="col-lg-3 col-sm-4 col-xs-6" ng:if="p.status=='publish'">
 						<div class="product-item">
 							<a href="/product/{{p.url}}" class="pc-img-holder"><span>
-									<img ng-src="{{lbGlobalCDNPath + p.featuredImg}}"
+									<img ng-src="{{lbGlobalCDNPath + p.featuredImg.replace('.jpg','-300x266.jpg')}}"
 									class="featured-img" />
 							</span> </a>
 							<div class="pc-info">
