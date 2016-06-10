@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title th:text="${a.title}"></title>
+<meta th:include="fragments/layout::fragment-head" />
+</head>
+<body ng-app="lbApp" class="bg-greyF0">
+	<div th:replace="fragments/layout::fragment-header(extn=false)"></div>
+
+	<div class="container page-container">
+
+		<div class="generic-container article-container" th:if="${a==null}">
+			<div class="alert alert-warning">Sorry, the page you are
+				looking for was not found.</div>
+		</div>
+
+		<div class="generic-container article-container" th:if="${a!=null}">
+			<h1 th:text="${a.title}" contenteditable="true"></h1>
+			<h3 th:if="${a.subTitle!=null and a.subTitle!=''}"
+				contenteditable="true">
+				<em th:text="${a.subTitle}"></em>
+			</h3>
+
+			<div class="mx800">
+				<div class="marg-b3 p25" th:utext="${a.body}"
+					th:contenteditable="${adminEditable==true}?'true':'false'"></div>
+
+				<div class="label-container marg-b3"
+					th:if="${a.tags !=null and a.tags.size() > 0}">
+					<strong class="marg-r1">Tags:</strong><span
+						th:each="tag : ${a.tags}" class="label label-default"
+						th:text="${tag}">Top Shelf</span>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div th:replace="fragments/layout::fragment-footer"></div>
+	<div th:include="fragments/layout::fragment-foot(angular=true)"></div>
+	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
+	<script th:if="${adminEditable}==true"
+		src="//cdn.ckeditor.com/4.5.9/standard/ckeditor.js"></script>
+</body>
+</html>

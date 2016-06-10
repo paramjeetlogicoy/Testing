@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Contact Us</title>
+<meta th:include="fragments/layout::fragment-head" />
+</head>
+<body ng-app="lbApp" class="bg-greyF0">
+	<div th:replace="fragments/layout::fragment-header(extn=false)"></div>
+
+	<div class="container page-container">
+		<div class="generic-container pad2">
+			<h1 class="text-center">Contact Us</h1>
+			<div class="mx700">
+				<div class="text-center p25">
+					<h4>Have questions? We're here to help!</h4>
+					<p>Finding the right medicine is as important to us as it is to
+						you. Contact us with any questions or concerns you may have
+						regarding our medicines, and we'd be happy to assist.</p>
+					<p>Operating Hours: 11am-11pm PST 7 days a week, 365 days a
+						year</p>
+
+					<div class="text-center">
+						<span class="text-left inlineb"> <span
+							class="blue1 marg-r1"><i class="fa fa-phone-square"
+								aria-hidden="true"></i></span> 310-697-2611<br /> <span
+							class="blue1 marg-r1"><i class="fa fa-envelope"
+								aria-hidden="true"></i></span> info@luvbrite.com
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div th:replace="fragments/layout::fragment-footer"></div>
+	<div th:include="fragments/layout::fragment-foot(angular=true)"></div>
+	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
+</body>
+</html>

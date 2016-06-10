@@ -1,6 +1,7 @@
 package com.luvbrite.security;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -72,17 +73,25 @@ public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 					boolean enabled = false;
 					if(dbUser.isActive()) enabled = true;
 					
-					String userRole = dbUser.getRole();					
-					SimpleGrantedAuthority sa =  new SimpleGrantedAuthority("ROLE_NONE");
+					String userRole = dbUser.getRole();		
+					List<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
+					
 					if(userRole!=null && enabled){
-						if(userRole.equals("admin"))
-							sa =  new SimpleGrantedAuthority("ROLE_ADMIN");
-						
+						if(userRole.equals("admin")){
+							authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+							authorities.add(new SimpleGrantedAuthority("ROLE_EDIT"));
+						}
 						else if(userRole.equals("customer"))
-							sa =  new SimpleGrantedAuthority("ROLE_CUSTOMER");
+							authorities.add(new SimpleGrantedAuthority("ROLE_CUSTOMER"));
+						
+						else
+							authorities.add(new SimpleGrantedAuthority("ROLE_NONE"));							
 						
 					}
-					currUser = new UserDetailsExt(username, dbUser.get_id(), enabled, Arrays.asList(sa));
+					else
+						authorities.add(new SimpleGrantedAuthority("ROLE_NONE"));
+					
+					currUser = new UserDetailsExt(username, dbUser.get_id(), enabled, authorities);
 					
 				}
 

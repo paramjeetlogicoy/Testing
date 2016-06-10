@@ -22,13 +22,17 @@ allProductCtrlr = function($scope, $http){
 	
 	$scope.getProducts = function(){
 		
-		$http.get(_lbUrls.allprds, {
+		$http.get(_lbUrls.allprds + '/published', {
 			params : { 
 				'hidepop' : true  //tells the config not to show the loading popup
 			}
 		})
 		.success(function(data){
 			if(data.success){
+				
+				//Remove the products loaded by thymeleaf
+				angular.element('#thymelead-loader').remove();
+				
 				$scope.products = data.products;
 				$scope.categories = data.categories;
 

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Learning Center</title>
+<meta th:include="fragments/layout::fragment-head" />
+</head>
+<body ng-app="lbApp" class="bg-greyF0">
+	<div th:replace="fragments/layout::fragment-header(extn=false)"></div>
+
+	<div class="container page-container">
+		<div class="generic-container pad3">
+			<h1 class="text-center marg-b1">Learning Center</h1>
+			<h4 class="text-center marg-b4">
+				<em>Information at your fingertips</em>
+			</h4>
+			<div class="mx700">
+				<div class="text-left">
+					<ul class="learning-sections">
+						<li><h4>
+								<a href="/article/indica-vs-sativa" class="inherit">Indica
+									Vs Sativa</a>
+							</h4>
+							<div>
+								Cannabis is one of the oldest crops known to mankind, with
+								records of its cultivation dating back thousands of years. The
+								original classification of Cannabis was made by French biologist
+								Jean-Baptiste Lamarck in 1785. Lamarck observed that certain
+								marijuana plants from India were intoxicating and could be made
+								into hashish. But traditional hemp crops, which were more common
+								in Europe, had no euphoric effects. He came up with the name
+								Cannabis indica to distinguish Indian Cannabis from European
+								hemp, which was known at the time as Cannabis sativa. Likewise,
+								Cannabis indica was specifically recognized as a therapeutic in
+								Western medicine during the 1800s. <a
+									href="/article/indica-vs-sativa">read more...</a>
+							</div></li>
+						<li><h4>
+								<a href="/article/alternative-ways-of-consuming-cannabis"
+									class="inherit">Cannabis Consumption</a>
+							</h4>
+							<div>
+								Not everyone enjoys smoking, and those with compromised lung
+								health may not even have the option. The stigma associated with
+								smoking might be the only thing stopping some people from
+								obtaining the benefits of the Cannabis plant. Accordingly, a
+								variety of alternative consumption methods do exist. So, if your
+								looking for an alternate route for consuming Cannabis, please
+								see below. <a
+									href="/article/alternative-ways-of-consuming-cannabis">read
+									more...</a>
+							</div></li>
+						<li><h4>
+								<a href="/article/vaporizers" class="inherit">Vaporizers</a>
+							</h4>
+							<div>
+								Many organic herbs contain sought-after components that can be
+								attained by smoking them. Smoking cannabis, in particular, has
+								proven to have some positive benefits such as providing nausea
+								and pain relief. However, there are always risks associated with
+								inhaling burnt plant matter. Although we are ingesting some of
+								the beneficial cannabinoids we seek, potential carcinogens and
+								other toxins such as carbon monoxide &amp; dioxide, ammonia and
+								other irritants are present in the smoke we inhale as well. <a
+									href="/article/vaporizers">read more...</a>
+							</div></li>
+						<li><h4>
+								<a href="/article/medicinal-treatment-guide" class="inherit">Medicinal
+									Treatment Guide</a>
+							</h4>
+							<div>
+								Cannabis is one of the oldest crops known to mankind, with
+								records of its cultivation dating back thousands of years. It
+								contains over 70 cannabinoids that interect with receptors
+								throughout your body. Some bind selectively to certain receptors
+								making them candidates for specific medical uses. <a
+									href="/article/medicinal-treatment-guide">read more...</a>
+							</div></li>
+						<li><h4>
+								<a href="/article/publications" class="inherit">Publications</a>
+							</h4>
+							<div>
+								Read about different publications that talks about how cannabis
+								can be used for treatment of different diseases. <a
+									href="/article/publications">read more...</a>
+							</div></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div th:replace="fragments/layout::fragment-footer"></div>
+	<div th:include="fragments/layout::fragment-foot(angular=true)"></div>
+	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
+</body>
+</html>

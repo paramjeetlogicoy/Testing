@@ -1,0 +1,101 @@
+<div id="addArticleModal" class="pop-gallery-overlay">
+
+	<div class="pop-gallery">
+		<button type="button" class="close" aria-label="Close"
+			ng-click="closeModal()">
+			<i class="fa fa-times size24"></i>
+		</button>
+
+		<h4>Create Article</h4>
+		<form name="addArticle" class="form-horizontal addArticleForm"
+			ng-submit="createArticle()">
+
+			<div class="form-group form-group-sm">
+				<label class="col-sm-4 control-label">Article ID</label>
+				<div class="col-sm-7">
+					<p ng-show="mode=='edit'" class="form-control-static">{{at._id}}</p>
+					<p ng-show="mode=='new'" class="form-control-static">
+						<em class="text-muted">Auto generated</em>
+					</p>
+					<input type="hidden" ng-model="at._id" name="_id" />
+				</div>
+
+			</div>
+
+			<div class="form-group"
+				ng-class="{ 'has-error' : addArticleForm.title.$invalid && !addArticleForm.title.$pristine }">
+				<label class="col-sm-4 control-label">Article Title<sup>*</sup></label>
+				<div class="col-sm-7">
+					<input type="text" class="form-control" ng-model="at.title"
+						name="title" required ng-blur="createPermaLink()" />
+					<p
+						ng-show="addArticleForm.title.$invalid && !addArticleForm.title.$pristine"
+						class="help-block">Article title is required.</p>
+				</div>
+			</div>
+
+			<div class="form-group"
+				ng-class="{ 'has-error' : addArticleForm.permalink.$invalid && !addArticleForm.permalink.$pristine }">
+				<label class="col-sm-4 control-label">Article URL <sup>*</sup></label>
+				<div class="col-sm-7">
+					<input type="text" class="form-control" ng-model="at.permalink"
+						name="permalink" required ng-blur="createPermaLink()" /> <a
+						target="_blank" ng-href="/article/{{at.permalink}}" class="small"
+						ng-show="mode=='edit'">View Article</a>
+					<p
+						ng-show="addArticleForm.permalink.$invalid && !addArticleForm.permalink.$pristine"
+						class="help-block">Article URL required.</p>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-4 control-label">Article Sub Title</label>
+				<div class="col-sm-7">
+					<input type="text" class="form-control" ng-model="at.subTitle"
+						name="subTitle" />
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-4 control-label">Status <sup>*</sup></label>
+				<div class="col-sm-7">
+					<select class="form-control"
+						ng-options="status for status in statuses" ng-model="at.status"
+						name="status" required></select>
+				</div>
+			</div>
+
+			<div class="form-group"
+				ng-class="{ 'has-error' : addArticleForm.body.$invalid && !addArticleForm.body.$pristine }">
+				<label class="col-sm-4 control-label">Article Body</label>
+				<div class="col-sm-7">
+					<textarea class="form-control" ng-model="at.body" name="body"
+						required></textarea>
+					<p
+						ng-show="addArticleForm.body.$invalid && !addArticleForm.body.$pristine"
+						class="help-block">Body is required.</p>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-4 control-label">Article Tags</label>
+				<div class="col-sm-4">
+					<textarea class="form-control" name="tags" ng-model="at.tags"
+						ng-list=" | "></textarea>
+					<p class="help-block small">Provide the Tags separated by |</p>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="col-sm-7 col-sm-offset-4">
+					<button type="submit" class="btn"
+						ng-disabled="addArticleForm.$invalid"
+						ng-class="addArticleForm.$dirty ? 'btn-success' : 'btn-info'">
+						<span ng-show="mode=='edit'">SAVE</span><span
+							ng-show="mode=='new'">CREATE</span>
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

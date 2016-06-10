@@ -40,7 +40,7 @@ header{
 	}
 	
 	.navbar-collapse{
-		background: #eee;
+		border-top: 1px solid #eee;
 	}
 
 	.nav{
@@ -228,6 +228,12 @@ footer{
     box-shadow: 0 0 11px -4px rgba(0,0,0,.5);
     width: 100%;
     left: 0;
+}
+
+.footer-links{
+	a+a{
+		.marg-l1;
+	}
 }
 
 .to-top {
@@ -773,4 +779,28 @@ nav#pagination-nav{
 
 /*Registration Page*/
 .register-container:extend(.pad3){
+}
+
+/*Learning Center*/
+.learning-sections{
+	>li:extend(.marg-b3){
+	}
+}
+
+/*Articles*/
+.article-container:extend(.pad3){
+	
+	text-align: justify;
+	
+	h1:first-child{
+		.marg-t2 !important;
+		.text-center;
+		.marg-b4;
+	}
+
+	h1+h3{
+		.text-center;
+		.marg-t(-3);
+		.size20;
+	}
 }

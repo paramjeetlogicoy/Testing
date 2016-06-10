@@ -55,7 +55,7 @@
 							<div class="col-sm-7">
 								<input type="text" class="form-control" ng-model="p.url"
 									name="url" required ng-blur="createProductUrl()" /> <a
-									target="_blank" ng-href="/product/{{p.url}}" class="small">View
+									target="_blank" ng-href="/product/{{p.url}}" class="small" ng-show="mode=='edit'">View
 									Product</a>
 								<p
 									ng-show="productDetailsForm.url.$invalid && !productDetailsForm.url.$pristine"

@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.coobird.thumbnailator.Thumbnails;
+import net.coobird.thumbnailator.geometry.Positions;
 
 import org.mongodb.morphia.query.Query;
 import org.slf4j.Logger;
@@ -275,7 +276,7 @@ public class FilesController {
 					try{
 						
 						Thumbnails.of(f)
-						.size(150, 150).outputFormat("jpg")
+						.size(150, 150).crop(Positions.CENTER).outputFormat("jpg")
 						.toFile(new File(fileLoc + finalNameWithoutExtn + "-150x150.jpg"));
 						
 						
@@ -283,11 +284,12 @@ public class FilesController {
 						if(fileLoc.indexOf("/products/")>-1){
 							
 							Thumbnails.of(f)
-							.size(300, 266).outputFormat("jpg")
+							.size(300, 266).crop(Positions.CENTER).outputFormat("jpg")
 							.toFile(new File(fileLoc + finalNameWithoutExtn + "-300x266.jpg"));
 							
+							
 							Thumbnails.of(f)
-							.size(600, 600).outputFormat("jpg")
+							.size(600, 600).crop(Positions.CENTER).outputFormat("jpg")
 							.toFile(new File(fileLoc + finalNameWithoutExtn + "-600x600.jpg"));
 						}
 
