@@ -7,8 +7,13 @@
 	<display-name>Luvbrite</display-name>
 
 	<error-page>
+		<error-code>404</error-code>
+		<location>/not-found</location>
+	</error-page>
+
+	<error-page>
 		<exception-type>java.lang.Throwable</exception-type>
-		<location>/WEB-INF/templates/generic-error.html</location>
+		<location>/generic-error</location>
 	</error-page>
 
 </web-app>

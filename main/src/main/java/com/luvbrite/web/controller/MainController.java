@@ -64,6 +64,18 @@ public class MainController {
 	}
 
 	
+	@RequestMapping(value = "/learning-center")
+	public String learningCenter(
+			@AuthenticationPrincipal UserDetailsExt user, 
+			ModelMap model) {
+		
+		if(user!=null && user.isEnabled())
+			model.addAttribute("userId", user.getId());
+		
+		return "learning-center";		
+	}
+	
+	
 	@RequestMapping(value = "/testemail")
 	public @ResponseBody GenericResponse testemail(){
 		GenericResponse r = new GenericResponse();
@@ -100,11 +112,29 @@ public class MainController {
 	public String pendingRegistration(@AuthenticationPrincipal 
 			UserDetailsExt user, ModelMap model){	
 		
-		if(user!=null){
-			model.addAttribute("user", user.getUsername());
-		}
+		if(user!=null && user.isEnabled())
+			model.addAttribute("userId", user.getId());
 		
 		return "pending-registration";		
+	}	
+	
+	
+	
+	@RequestMapping(value = "/contact-us")
+	public String contact(@AuthenticationPrincipal 
+			UserDetailsExt user, ModelMap model){	
+		
+		if(user!=null && user.isEnabled())
+			model.addAttribute("userId", user.getId());
+		
+		return "contact-us";		
+	}
+	
+	
+	
+	@RequestMapping(value = "/generic-error")
+	public String genericError(){			
+		return "generic-error";		
 	}
 	
 	
@@ -113,13 +143,20 @@ public class MainController {
 	public String accessDenied(@AuthenticationPrincipal 
 			UserDetailsExt user, ModelMap model){	
 		
-		try {
-			model.addAttribute("userName", user.getUsername());
-		}catch(Exception e){}
+		if(user!=null && user.isEnabled())
+			model.addAttribute("userId", user.getId());
 		
 		model.addAttribute("msg", "There was some error accessing this page");
 		
 		return "403";		
+	}
+	
+	
+	
+	@RequestMapping(value = "/not-found")
+	public String accessDenied(){
+		
+		return "404";		
 	}
 	
 

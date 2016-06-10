@@ -98,6 +98,11 @@
   font-size:@value
 }
 
+.maxWidth(@width:100px){
+  .automarg;
+  max-width: @width;
+}
+
 /** Styles Starts **/
 .black{color:black!important}
 .white{color:white!important}
@@ -157,7 +162,7 @@ img.fit{max-width:100%;max-height:100%}
 .pad-r0{padding-right: 0!important}
 
 
-.automarg:extend(.show){margin-left:auto; margin-right:auto;}
+.automarg{.show; margin-left:auto; margin-right:auto;}
 .nomarg{.marg(0)}
 .nomargi{.marg(0)!important}
 .marg-t0{.marg-t(0)!important}
@@ -254,6 +259,14 @@ img.fit{max-width:100%;max-height:100%}
 .pc60{width:60%}
 .pc100{width:100%}
 
+//Maximum widths
+.mx200{.maxWidth(200px);}
+.mx400{.maxWidth(400px);}
+.mx600{.maxWidth(600px);}
+.mx650{.maxWidth(650px);}
+.mx700{.maxWidth(700px);}
+.mx750{.maxWidth(750px);}
+.mx800{.maxWidth(800px);}
 
 label>sup{
 	top:-5px;

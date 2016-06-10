@@ -43,6 +43,14 @@ public class ProductController {
 		
 		if(user!=null && user.isEnabled())
 			model.addAttribute("userId", user.getId());
+
+		List<Product> products = prdDao.createQuery()
+				.filter("status", "publish")
+				.limit(10)
+				.order("-_id")
+				.asList();
+		
+		model.addAttribute("products", products);
 		
 		return "products";				
 	}
@@ -53,14 +61,14 @@ public class ProductController {
 			UserDetailsExt user, 
 			ModelMap model) {		
 		return home(user, model);		
-	}	
+	}		
 	
 	
-	@RequestMapping(value = "/json/prod-cat")
-	public @ResponseBody ProdCatResponse ListProductsCategories() {		
+	@RequestMapping(value = "/json/prod-cat/published")
+	public @ResponseBody ProdCatResponse ListPublishedProductsCategories() {		
 		ProdCatResponse pcr = new ProdCatResponse();
 		
-		List<Product> products = prdDao.find().asList();
+		List<Product> products = prdDao.createQuery().filter("status", "publish").asList();
 		List<Category> categories = catDao.find().asList();
 		
 		pcr.setSuccess(true);

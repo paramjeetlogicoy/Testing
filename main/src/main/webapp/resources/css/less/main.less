@@ -40,7 +40,7 @@ header{
 	}
 	
 	.navbar-collapse{
-		background: #eee;
+		border-top: 1px solid #eee;
 	}
 
 	.nav{
@@ -228,6 +228,12 @@ footer{
     box-shadow: 0 0 11px -4px rgba(0,0,0,.5);
     width: 100%;
     left: 0;
+}
+
+.footer-links{
+	a+a{
+		.marg-l1;
+	}
 }
 
 .to-top {
@@ -483,15 +489,15 @@ nav#pagination-nav{
 		
 		.pc-img-holder{
 			.marg-b2;
+			.automarg;
 
-			display: block;
+			max-width: 300px;
 		}
 
-		.featured-img{
+		.featured-img{			
+			.automarg;
+
 			max-width: 100%;
-			display:block;
-			margin-left: auto;
-			margin-right: auto;
 			box-shadow: 0 0 5px rgba(0,0,0,.2);		
 		}
 	}
@@ -544,14 +550,12 @@ nav#pagination-nav{
 	}
 }
 
-.product-in-cart:extend(.text-center, .white, .marg-b2) {
-	.pad(.8);
-
-    background-color: rgba(5, 169, 5, 0.64);
-    margin-top: -20px;
+.prdpage-img-container:extend(.marg-b2,.automarg){
+	max-width:600px;
 }
 
-.prdpage-img-container:extend(.marg-b2,.rel,.border1){
+.prdpage-img:extend(.rel,.automarg,.border1){
+
 	.fa-search-plus {
 		display: none;
 		position: absolute;
@@ -566,6 +570,12 @@ nav#pagination-nav{
 			display: block;
 		}
 	}
+}
+
+.product-in-cart:extend(.text-center,.white) {
+	.pad(.8);
+
+    background-color: rgba(5, 169, 5, 0.64);
 }
 
 .prdpage-options:extend(.marg-b2){
@@ -769,4 +779,28 @@ nav#pagination-nav{
 
 /*Registration Page*/
 .register-container:extend(.pad3){
+}
+
+/*Learning Center*/
+.learning-sections{
+	>li:extend(.marg-b3){
+	}
+}
+
+/*Articles*/
+.article-container:extend(.pad3){
+	
+	text-align: justify;
+	
+	h1:first-child{
+		.marg-t2 !important;
+		.text-center;
+		.marg-b4;
+	}
+
+	h1+h3{
+		.text-center;
+		.marg-t(-3);
+		.size20;
+	}
 }

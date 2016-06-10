@@ -49,7 +49,6 @@
 					<div class="col-sm-5 col-xs-4">
 						<ul class="nav navbar-nav hidden-xs">
 							<li><a href="/products">Medicinal Products</a></li>
-							<li><a href="/service-area">Service Area</a></li>
 						</ul>
 						<button class="navbar-toggle pad2" type="button"
 							data-toggle="collapse" data-target="#xs-navbar"
@@ -91,7 +90,6 @@
 				<div class="navbar-collapse collapse" id="xs-navbar">
 					<ul class="nav navbar-nav visible-xs-block">
 						<li><a href="/products">Medicinal Products</a></li>
-						<li><a href="/service-area">Service Area</a></li>
 						<li><a href="/login" th:if="not ${userId}">Login / Sign Up</a><a
 							href="/customer" th:if="${userId}">My Account</a></li>
 					</ul>
@@ -162,7 +160,10 @@
 		&copy; <span
 			th:text="${#calendars.format(#calendars.createNow(), 'yyyy')}">2016</span>
 		Luvbrite 
-		
+		<div class="pull-right marg-r1 footer-links size13">
+			<a href="/learning-center">Learning Center</a>
+			<a href="/contact-us">Contact Us</a>
+		</div>
 		<a href="#"
 			class="to-top fix text-center bg-white hideme"><i class="fa fa-caret-up"></i></a>
 	</footer>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" ng-app="articlesApps">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>All Articles</title>
+<meta th:include="fragments/admin/layout::fragment-head" />
+</head>
+<body ng-controller="defaultRouteCtrl">
+	<div class="container-fluid">
+		<div th:replace="fragments/admin/layout::fragment-header"></div>
+		<div th:replace="fragments/admin/layout::fragment-subnav"></div>
+		<div class="container-fluid">
+			<div class="articles-container col-lg-10 ng-cloak">
+
+				<div class="marg-b3">
+					<a href="" ng-click="newArticle()" class="btn btn-warning btn-sm"><i
+						class="fa fa-plus"></i> NEW ARTICLE</a>
+				</div>
+
+				<div class="marg-b1">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title size15">Filters</h3>
+						</div>
+						<div class="panel-body">
+							<form class="form-horizontal" ng-submit="getArticles()">
+								<div class="col-sm-3">
+									<div class="input-group input-group-sm">
+										<input type="text" class="form-control"
+											placeholder="Article Search" ng-model="articleSearch" /> <span
+											class="input-group-btn">
+											<button class="btn btn-default" type="submit">
+												<i class="fa fa-search"></i>
+											</button>
+										</span>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+
+				<div th:replace="fragments/admin/layout::fragment-pagination"></div>
+
+				<table class="table coupons-list-table article-list-table">
+					<thead>
+						<tr>
+							<th><a class="sortables"
+								ng-click="sortType = '_id'; sortReverse = !sortReverse; getArticles();">Article
+									<span ng-show="sortType == '_id'"><i
+										ng-show="!sortReverse" class="fa fa-caret-down"></i> <i
+										ng-show="sortReverse" class="fa fa-caret-up"></i></span> <i
+									ng-show="sortType != '_id'" class="fa fa-sort"></i>
+							</a></th>
+							<th><a class="sortables"
+								ng-click="sortType = 'title'; sortReverse = !sortReverse; getArticles();">Title
+									<span ng-show="sortType == 'title'"><i
+										ng-show="!sortReverse" class="fa fa-caret-down"></i> <i
+										ng-show="sortReverse" class="fa fa-caret-up"></i></span> <i
+									ng-show="sortType != 'title'" class="fa fa-sort"></i>
+							</a></th>
+							<th>Permalink</th>
+							<th>Date Created</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<tr ng-repeat="a in articles" ng:class="c.active ? '' : 'inactive'">
+							<td>{{a._id}}&nbsp;<a ng-click="editArticle()" href=""><i
+									class="fa fa-pencil" aria-hidden="true"></i></a></td>
+							<td>{{a.title}}</td>
+							<td>{{a.permalink}}</td>
+							<td>{{a.date | date : 'MM/dd/yyyy hh:mm a'}}</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<div th:replace="fragments/admin/layout::fragment-pagination"></div>
+				
+			</div>
+		</div>
+
+		<div th:replace="fragments/admin/layout::fragment-footer"></div>
+		<div th:include="fragments/admin/layout::fragment-foot(angular=true)"></div>
+	</div>
+	<script src="/resources/js/admin/angular-article.js"></script>
+	<script type="text/javascript">
+		$('.nav-articles').addClass('active');
+	</script>
+</body>
+</html>

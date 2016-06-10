@@ -39,6 +39,7 @@ uploadModule.factory('uploadService', ['$templateRequest', '$compile', uploadSer
 var uploadCtrlr = function ($scope, $http, Upload, uploadService) {
 	
 	$scope.sfiles = [];
+	$scope.search = '';
 	$scope.cdnPath = uploadService.cdnPath;
 	
     $scope.$watch('files', function () {
@@ -53,7 +54,8 @@ var uploadCtrlr = function ($scope, $http, Upload, uploadService) {
 	$scope.loadFiles = function(){
 		$http.get('/files/list/',{params :{
 			'c' : $scope.sfiles.length,
-			'l' : 15 
+			'l' : 15 ,
+			'q' : $scope.search
 		}})
 		.success(function(data){
 			if(!data || data.length == 0){

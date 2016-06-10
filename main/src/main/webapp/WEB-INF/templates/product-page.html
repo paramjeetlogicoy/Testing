@@ -27,21 +27,25 @@
 			<div class="col-sm-6">
 				<div class="visible-xs-block">
 					<div class="clearfix">
-						<h1 th:text="${product.name}"
-							class="capitalize pull-left marg-b1">Product Name</h1>
+						<h1 th:text="${product.name}" class="capitalize pull-left marg-b1">Product
+							Name</h1>
 						<div class="pull-right marg-b1">
 							<em th:text="${product.priceRange}"></em>
 						</div>
 					</div>
 
 				</div>
+				
 				<div class="prdpage-img-container">
-					<img th:src="${_lbGlobalCDNPath} + ${product.featuredImg}" class="fit" />
-					<i class="fa fa-search-plus" aria-hidden="true"></i>
-				</div>
+					<div class="prdpage-img">
+						<img th:attr="data-zoom=${_lbGlobalCDNPath + product.featuredImg}" 
+							th:src="${_lbGlobalCDNPath} + ${#strings.replace(product.featuredImg,'.jpg','-600x600.jpg')}"
+							class="fit" /> <i class="fa fa-search-plus" aria-hidden="true"></i>
+					</div>
 
-				<div class="product-in-cart ng-cloak" ng-if="productInCart">
-					<strong>{{productInCart}} in your cart</strong>
+					<div class="product-in-cart ng-cloak" ng-if="productInCart">
+						<strong>{{productInCart}} in your cart</strong>
+					</div>
 				</div>
 			</div>
 

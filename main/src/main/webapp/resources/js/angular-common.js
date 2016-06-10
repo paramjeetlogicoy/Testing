@@ -22,13 +22,17 @@ allProductCtrlr = function($scope, $http){
 	
 	$scope.getProducts = function(){
 		
-		$http.get(_lbUrls.allprds, {
+		$http.get(_lbUrls.allprds + '/published', {
 			params : { 
 				'hidepop' : true  //tells the config not to show the loading popup
 			}
 		})
 		.success(function(data){
 			if(data.success){
+				
+				//Remove the products loaded by thymeleaf
+				angular.element('#thymelead-loader').remove();
+				
 				$scope.products = data.products;
 				$scope.categories = data.categories;
 
@@ -53,7 +57,6 @@ allProductCtrlr = function($scope, $http){
 	
 	$scope.getProducts();
 },
-
 
 categoryCtrlr = function($scope, $http){
 	
@@ -620,14 +623,20 @@ productCtrlr = function($scope, $rootScope, $http){
 	}
 	
 	/*Activate Image Zoom*/
-	var $img = $('.prdpage-img-container');
+	var $img = $('.prdpage-img');
 	$scope.zoomFn = {
 			activate : function(){
-				$img.zoom({
-					callback: function(){
-						$(this).parent().addClass('loaded');
-					}
-				});
+				
+				var url = $img.find('img').attr('data-zoom');
+				if(url && url !=''){
+					
+					$img.zoom({
+						url : url,
+						callback: function(){
+							$(this).parent().addClass('loaded');
+						}
+					});					
+				}
 			},
 			
 			destroy : function(){
