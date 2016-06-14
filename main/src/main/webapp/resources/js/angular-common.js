@@ -305,7 +305,9 @@ registerCtrlr = function($scope, $http, Upload){
 	
 	    	        function (resp) {//Error
 			            if(resp.config.fileInfo)
-			            	resp.config.fileInfo.element.html('Error uploading the file');
+			            	resp.config.fileInfo.element.parent().html('<div class="progress-bar progress-bar-danger"style="width: 100%">Error Uploading File</div>');
+			            
+			            console.log('Error uploading the file');
 			        },
 	
 	

@@ -31,7 +31,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.luvbrite.dao.UploadDAO;
 import com.luvbrite.utils.Exceptions;
@@ -43,7 +45,7 @@ import com.luvbrite.web.models.Upload;
 @Controller
 @RequestMapping(value = "/files")
 @PropertySource("classpath:/env.properties")
-public class FilesController {
+public class FilesController implements HandlerExceptionResolver {
 	
 	private static Logger logger = LoggerFactory.getLogger(FilesController.class);
 	
@@ -309,5 +311,13 @@ public class FilesController {
 		}
 
 		return r;
+	}
+
+
+	@Override
+	public ModelAndView resolveException(HttpServletRequest arg0,
+			HttpServletResponse arg1, Object arg2, Exception arg3) {
+
+		return new ModelAndView("generic-error");
 	}
 }

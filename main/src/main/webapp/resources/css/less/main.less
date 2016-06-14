@@ -804,3 +804,24 @@ nav#pagination-nav{
 		.size20;
 	}
 }
+
+/*File Upload Generic*/
+.max-size-error,.invalid-pattern-error{
+	.marg-t(-1);
+	.size12;
+
+	display: none;
+	color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+.fgw-drop-box.ng-invalid-max-size{
+	.max-size-error{
+		display:block;
+	}
+}
+.fgw-drop-box.ng-invalid-pattern{
+	.invalid-pattern-error{
+		display:block;
+	}
+}

@@ -145,10 +145,14 @@
 
 										<div ngf-drop="ngf-drop" ngf-select="ngf-select"
 											ng-model="idfileobj" class="fgw-drop-box pad1 marg-b3"
-											ngf-drag-over-class="'dragover'" ngf-multiple="false"
-											ngf-allow-dir="true" accept="image/*,application/pdf"
+											ngf-max-size="'10MB'" ngf-drag-over-class="'dragover'"
+											ngf-multiple="false" ngf-allow-dir="true"
+											accept="image/*,application/pdf"
 											ngf-pattern="'image/*,application/pdf'">
 											<h6>Select Or Drop files here</h6>
+											<div class="max-size-error">Max size for upload is 10MB</div>
+											<div class="invalid-pattern-error">Only images and PDFs
+												are accepted</div>
 
 
 											<div class="progress-wrapper id-progress-wrapper"></div>
@@ -176,10 +180,14 @@
 
 										<div ngf-drop="ngf-drop" ngf-select="ngf-select"
 											ng-model="recofileobj" class="fgw-drop-box pad1 marg-b3"
-											ngf-drag-over-class="'dragover'" ngf-multiple="false"
-											ngf-allow-dir="true" accept="image/*,application/pdf"
+											ngf-max-size="'10MB'" ngf-drag-over-class="'dragover'"
+											ngf-multiple="false" ngf-allow-dir="true"
+											accept="image/*,application/pdf"
 											ngf-pattern="'image/*,application/pdf'">
 											<h6>Select Or Drop files here</h6>
+											<div class="max-size-error">Max size for upload is 10MB</div>
+											<div class="invalid-pattern-error">Only images and PDFs
+												are accepted</div>
 
 
 											<div class="progress-wrapper reco-progress-wrapper"></div>
