@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -13,6 +13,11 @@
 </head>
 <body>
 	<div class="container">
+		<div style="padding: 30px;" th:if="${errorMgs}">
+			<div class="well">
+				<div th:text="${errorMgs}"></div>
+			</div>
+		</div>
 		<div style="padding: 30px;">
 			<div class="alert alert-danger" role="alert">
 				<div>
