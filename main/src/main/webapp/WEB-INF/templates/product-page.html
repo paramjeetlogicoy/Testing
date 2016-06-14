@@ -26,10 +26,10 @@
 
 			<div class="col-sm-6">
 				<div class="visible-xs-block">
-					<div class="clearfix">
-						<h1 th:text="${product.name}" class="capitalize pull-left marg-b1">Product
+					<div>
+						<h1 th:text="${product.name}" class="capitalize marg-b0">Product
 							Name</h1>
-						<div class="pull-right marg-b1">
+						<div class="marg-t05 marg-b15">
 							<em th:text="${product.priceRange}"></em>
 						</div>
 					</div>
@@ -52,10 +52,10 @@
 			<div class="col-sm-6">
 				<div class="prdpage-details">
 					<div class="hidden-xs">
-						<div class="clearfix">
+						<div>
 							<h1 th:text="${product.name}"
-								class="capitalize pull-left marg-b1">Product Name</h1>
-							<div class="pull-right marg-t1" th:if="${product.variation}">
+								class="capitalize marg-b0">Product Name</h1>
+							<div class="marg-t05 marg-b15" th:if="${product.variation}">
 								<em th:text="${product.priceRange}"></em>
 							</div>
 						</div>
