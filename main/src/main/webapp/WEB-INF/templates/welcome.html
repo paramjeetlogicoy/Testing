@@ -8,16 +8,17 @@
 <meta th:include="fragments/layout::fragment-head" />
 
 </head>
-<body>
+<body ng-app="lbApp">
 	<div th:replace="fragments/layout::fragment-header(extn=false)"></div>
 	<div class="container page-container">
-		<div class="generic-container pad3">	
-			<h1>Luvbrite Home Page</h1>	
-			
+		<div class="generic-container pad3">
+			<h1>Luvbrite Home Page</h1>
+
 		</div>
 
 		<div th:replace="fragments/layout::fragment-footer"></div>
 		<div th:replace="fragments/layout::fragment-foot(angular=true)"></div>
+		<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
 	</div>
 	<script type="text/javascript">
 	</script>

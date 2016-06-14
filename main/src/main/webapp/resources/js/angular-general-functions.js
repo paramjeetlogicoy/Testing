@@ -29,6 +29,17 @@ var appRunFns = function($http, $rootScope, $interval){
     $rootScope.lbGlobalCDNPath = _lbGlobalCDNPath; /*Global var defined in <head />*/
     
     
+    //Disclaimer
+    var cookieVal = $.cookie('above21');
+    if(!cookieVal){
+    	$('.lb-disclaimer-sm').modal();
+    }
+    $rootScope.saveDisclaimerSession = function(){
+    	$.cookie('above21','accepted',{expires:30, path:'/'});
+    	$('.lb-disclaimer-sm').modal('hide');
+    }
+    
+    
     //Correct the csrf param periodically.
     var rootPrevValue = $('#_lb_sec_tok').val();
     csrfCorrection = $interval(function(){

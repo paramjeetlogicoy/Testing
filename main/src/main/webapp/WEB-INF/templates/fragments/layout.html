@@ -216,6 +216,22 @@
 			</button>
 			<span ng-bind-html="pageLevelAlert"></span>
 		</div>
+
+		<div class="modal fade lb-disclaimer-sm" tabindex="-1" role="dialog"
+			data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-body">Dear Visitor, you need be of age 21 or
+						above and should have a physicians recommendation letter to get
+						medical marijuana. Please confirm whether you are 21 or above.</div>
+					<div class="modal-footer text-right">
+						<a href="https://www.google.com/" class="btn btn-xs btn-warning">No,
+							I am under 21</a> <a href="" ng-click="saveDisclaimerSession()"
+							class="btn btn-xs btn-success">Yes, I am 21 or above</a>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 
 </body>
