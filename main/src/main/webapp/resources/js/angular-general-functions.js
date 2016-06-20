@@ -31,7 +31,7 @@ var appRunFns = function($http, $rootScope, $interval){
     
     //Disclaimer
     var cookieVal = $.cookie('above21');
-    if(!cookieVal){
+    if(!cookieVal && $('#noLbDisclaimer').size()==0){
     	$('.lb-disclaimer-sm').modal();
     }
     $rootScope.saveDisclaimerSession = function(){
