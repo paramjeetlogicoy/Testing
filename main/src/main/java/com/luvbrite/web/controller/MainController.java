@@ -29,7 +29,12 @@ public class MainController {
 	private EmailService emailService;
 	
 	@RequestMapping(value = "/")
-	public String homePage() {
+	public String homePage(
+			@AuthenticationPrincipal UserDetailsExt user, 
+			ModelMap model) {
+		
+		if(user!=null && user.isEnabled())
+			model.addAttribute("userId", user.getId());
 		
 		return "welcome";		
 	}	

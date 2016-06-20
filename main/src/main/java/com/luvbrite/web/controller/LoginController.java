@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.luvbrite.dao.LogDAO;
 import com.luvbrite.dao.PasswordResetDAO;
@@ -31,6 +32,7 @@ import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Log;
 import com.luvbrite.web.models.PasswordReset;
 import com.luvbrite.web.models.User;
+import com.luvbrite.web.models.UserDetailsExt;
 
 
 @Controller
@@ -55,30 +57,33 @@ public class LoginController {
 
 
 	@RequestMapping(value = "/login")
-	public ModelAndView login(
-			
+	public String login(
+			ModelMap model,
+			@AuthenticationPrincipal UserDetailsExt user,
 			@RequestParam(value = "error", required = false) String error,
 			@RequestParam(value = "ret", required = false) String returnURL,
-			@RequestParam(value = "logout", required = false) String logout) {
+			@RequestParam(value = "logout", required = false) String logout,
+		    RedirectAttributes ra) {
 
-			ModelAndView model = new ModelAndView();
-			
-			if (error != null) {
-				model.addObject("error", "Invalid username and password!");
-			}
+		if(user!=null){
+			return "redirect:customer";
+		}
 
-			if (logout != null) {
-				model.addObject("msg", "You've been logged out successfully.");
-			}
+		if (error != null) {
+			model.addAttribute("error", "Invalid username and password!");
+		}
+
+		if (logout != null) {
+			model.addAttribute("msg", "You've been logged out successfully.");
+		}
 
 
-			if (returnURL != null) {
-				model.addObject("ret", returnURL);
-			}
-			
-			model.setViewName("login");
+		if (returnURL != null) {
+			model.addAttribute("ret", returnURL);
+		}
 
-			return model;	
+
+		return "login";	
 	}
 	
 

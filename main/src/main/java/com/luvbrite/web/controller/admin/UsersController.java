@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.luvbrite.dao.LogDAO;
+import com.luvbrite.dao.OrderDAO;
 import com.luvbrite.dao.UserDAO;
 import com.luvbrite.services.EmailService;
 import com.luvbrite.utils.Exceptions;
@@ -30,6 +31,8 @@ import com.luvbrite.utils.PaginationLogic;
 import com.luvbrite.web.models.Email;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Log;
+import com.luvbrite.web.models.Order;
+import com.luvbrite.web.models.OrderCustomer;
 import com.luvbrite.web.models.ResponseWithPg;
 import com.luvbrite.web.models.User;
 import com.luvbrite.web.models.UserDetailsExt;
@@ -48,6 +51,10 @@ public class UsersController {
 	
 	@Autowired
 	private LogDAO logDao;
+	
+
+	@Autowired
+	private OrderDAO orderDao;
 	
 	
 	@Autowired
@@ -387,7 +394,8 @@ public class UsersController {
 				 **/
 				
 				boolean usernameUnique = false,
-						emailUnique = false;
+						emailUnique = false,
+						updateOrder = false;
 				
 				if(userDb.getEmail().equals(user.getEmail())){ //Email haven't changed
 					emailUnique = true;
@@ -409,9 +417,55 @@ public class UsersController {
 				}
 				
 				if(emailUnique && usernameUnique){
-					dao.save(user);
 					
 
+					/* Check if the name or email has changed. If yes, update corresponding Orders */
+					if(    ( userDb.getFname() != null && !userDb.getFname().equals(user.getFname()) )
+						|| ( userDb.getLname() != null && !userDb.getLname().equals(user.getLname()) )
+						|| ( userDb.getEmail() != null && !userDb.getEmail().equals(user.getEmail()) )
+							){
+						
+						updateOrder = true;
+					}
+					
+					
+					/* Save User */
+					dao.save(user);
+					
+					
+					/* Update Order */
+					if(updateOrder){
+						
+						List<Order> orders = orderDao.createQuery()
+								.filter("customer._id", userDb.get_id())
+								.asList();
+						if(orders != null){
+							for(Order order : orders){
+								
+								OrderCustomer oc = order.getCustomer();
+								oc.setEmail(user.getEmail());
+								oc.setName(user.getFname() + " " + user.getLname());
+								
+								orderDao.save(order);
+								
+								
+								/* Update Log */
+								try {
+									
+									Log log = new Log();
+									log.setCollection("orders");
+									log.setDetails("order.customer changed during user collection update");
+									log.setDate(Calendar.getInstance().getTime());
+									log.setKey(order.get_id());
+									
+									logDao.save(log);					
+								}
+								catch(Exception e){
+									logger.error(Exceptions.giveStackTrace(e));
+								}
+							}
+						}
+					}
 					
 					/**
 					 * Update Log
