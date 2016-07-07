@@ -34,4 +34,22 @@ public class ControlOptions {
 			List<Integer> doubleDownEligibleProducts) {
 		this.doubleDownEligibleProducts = doubleDownEligibleProducts;
 	}
+	
+	
+	
+	private List<Integer> localZipcodes;
+	private List<Integer> shippingZipcodes;
+
+	public List<Integer> getLocalZipcodes() {
+		return localZipcodes;
+	}
+	public void setLocalZipcodes(List<Integer> localZipcodes) {
+		this.localZipcodes = localZipcodes;
+	}
+	public List<Integer> getShippingZipcodes() {
+		return shippingZipcodes;
+	}
+	public void setShippingZipcodes(List<Integer> shippingZipcodes) {
+		this.shippingZipcodes = shippingZipcodes;
+	}
 }

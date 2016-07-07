@@ -459,28 +459,28 @@ nav#pagination-nav{
 
  /*Product Page*/
 .products-container{
-
-	.yml-container &{
-		text-align: center;
-	}
-
+		
+	text-align: center;
 	
 	>li{
-
 		.marg-b3();
 
-		padding:0 15px;
+		padding:0 13.5px;
+		text-align: left;
+		display: inline-block;
+		width: 362px;
+    	height: 392px;
 
-		@media (min-width: 735px){
-			float:left;
+		@media (min-width: 1245px){
+			width: 307.5px;
+    		height: 343px;		
+    		float:left;
+
+    		.yml-container &{
+    			float: none;
+				width: 304px;
+    		}
 		}
-
-		.yml-container &{
-			display: inline-block;
-		    float: none;
-		    text-align: left;
-		}
-
 	}
 
 	h3:extend(.size18){
@@ -489,7 +489,6 @@ nav#pagination-nav{
     	text-overflow: ellipsis;
     	overflow: hidden;
 	}
-
 }
 
 
@@ -511,15 +510,10 @@ nav#pagination-nav{
 	}
 }
 
-.product-item-container:extend(.rel, .automarg, .marg-b2){
-	width: 328px;
-	height: 377px;
+.product-item-container:extend(.rel){
+	width: 100%;
+	height: 100%;
 	perspective: 800px;
-
-	@media (min-width: 1245px){
-		width: 277px;
-		height: 344px;			
-	}
 }
 
 .pc-info{
@@ -547,20 +541,27 @@ nav#pagination-nav{
 .product-item-card:extend(.abs){
 	width: 100%;
 	height: 100%;
-	transform-style: preserve-3d;
-	transition: transform 1s;
+
+	.preserve3d &{
+		transform-style: preserve-3d;
+		transition: transform 1s;
+	}
 
 	.cards:extend(.abs){
 		margin: 0;
 		display: block;
 		width: 100%;
 		height: 100%;
-		backface-visibility: hidden;
-		
+		transform-style: inherit;
+		backface-visibility: hidden;		
 	}
 
 	&.flipped{
 		transform: rotateY( 180deg );
+
+		.no-preserve3d &{
+			transform:rotateY( 0deg );;
+		}
 	}
 
 	.tocart{
@@ -580,9 +581,14 @@ nav#pagination-nav{
 	border: 1px solid #5cb85c;
 	transform: rotateY( 180deg );
 
+	.no-preserve3d .flipped &{
+		transform: rotateY(0deg );
+		z-index:10;
+	}
+
 	ul{
 		max-height: 245px;
-    	overflow-y: scroll;
+    	overflow-y: auto;
     	overflow-x: hidden;
 
 
@@ -643,6 +649,7 @@ nav#pagination-nav{
     		position: relative;
 		    top: -18px;
 		    right: 3px;
+		    font-size: 16px;
     	}
 	}
 

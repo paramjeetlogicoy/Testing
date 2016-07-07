@@ -26,11 +26,11 @@ allProductCtrlr = function($scope, $rootScope, $http, $templateRequest, $compile
 	$scope.itemsOutofStock = false;
 	$scope.prices = [];
 	$scope.productPrices = {};
-	$scope.flipBack = function(){
+	$scope.flipBack = function(event){
 		angular.element(event.target).closest('li').find('.product-item-card').removeClass('flipped');
 	};
 	
-	$scope.showOptions = function(){
+	$scope.showOptions = function(event){
 		
 		//Unflip all flipped elements
 		angular.element('.product-item-card.flipped').removeClass('flipped');
@@ -38,48 +38,88 @@ allProductCtrlr = function($scope, $rootScope, $http, $templateRequest, $compile
 		var $angularElement = angular.element(event.target).closest('li');
 		$angularElement.find('.product-item-card').addClass('flipped');
 		
-		var pid = $angularElement.attr('data-pid');
+		var pid = $angularElement.data('pid')
+			variation = $angularElement.data('var'),
+			price = parseFloat($angularElement.data('p')),
+			salePrice = parseFloat($angularElement.data('sp'));
+		
 		if(pid != 0){	
 			
 			$scope.prices = [];
 			
 			if(!$scope.productPrices[pid]){
 				
-				$http.get(_lbUrls.getprdprice + pid + '/price', {
-					params : { 
-						'hidepop' : true  //tells the config not to show the loading popup
-					}
-				})
-				.then(function(resp){
-					$scope.prices = resp.data;		
-					
-					
-					if($scope.prices){
-						
-						//Sort the data
-						$scope.prices.sort(function(a,b){return a.regPrice - b.regPrice;});
-						
-						var itemsOutofStock = true;
-						//Check stock status and Set the quantity as zero;
-						for(var i=0; i<$scope.prices.length; i++){
-							$scope.prices[i].qty = 0;
-							
-							if($scope.prices[i].stockStat=='instock')
-								itemsOutofStock =false;
-						}
-						$scope.itemsOutofStock = itemsOutofStock;
 
-						//save price for future uses.
-						$scope.productPrices[pid] = $scope.prices;
+				
+				if(variation){
+					
+					//Variable product, get prices					
+					$http.get(_lbUrls.getprdprice + pid + '/price', {
+						params : { 
+							'hidepop' : true  //tells the config not to show the loading popup
+						}
+					})
+					.then(function(resp){
+						$scope.prices = resp.data;		
 						
-						//calculate new total
-						$scope.calculateItemTotal();
 						
-						$scope.loadTemplate($angularElement);
-					}
-				});	
-			}
-			else{
+						if($scope.prices){
+							
+							//Sort the data
+							$scope.prices.sort(function(a,b){return a.regPrice - b.regPrice;});
+							
+							var itemsOutofStock = true;
+							//Check stock status and Set the quantity as zero;
+							for(var i=0; i<$scope.prices.length; i++){
+								$scope.prices[i].qty = 0;
+								
+								if($scope.prices[i].stockStat=='instock')
+									itemsOutofStock =false;
+							}
+							$scope.itemsOutofStock = itemsOutofStock;
+	
+							//save price for future uses.
+							$scope.productPrices[pid] = $scope.prices;
+							
+							//calculate new total
+							$scope.calculateItemTotal();
+							
+							$scope.loadTemplate($angularElement);
+						}
+					});	
+				}
+				
+				else{
+					
+					//Simple product, build prices from the available info					
+					$scope.prices = [{
+						"_id":0,
+						"variationId":0,
+						"productId":pid,
+						"variation":[],
+						"stockCount":0,
+						"regPrice":price,
+						"salePrice":salePrice,
+						"stockStat":"instock",
+						"img":null,
+						qty:0
+					}];
+
+					$scope.itemsOutofStock = false;
+
+					//save price for future uses.
+					$scope.productPrices[pid] = $scope.prices;
+
+					//calculate new total
+					$scope.calculateItemTotal();
+
+					$scope.loadTemplate($angularElement);
+					
+				}
+				
+				
+				
+			} else {
 				
 				//load stored prices
 				$scope.prices = $scope.productPrices[pid];
@@ -135,16 +175,16 @@ allProductCtrlr = function($scope, $rootScope, $http, $templateRequest, $compile
 	
 	$scope.itemError = '';
 	$scope.itemSuccess = '';
-	$scope.quickAddToCart = function(){
+	$scope.quickAddToCart = function(event){
 		
 		$scope.itemError = '';
 		$scope.itemSuccess = '';
 		
 		var $angularElement = angular.element(event.target).closest('li'),
 		
-		productName = $angularElement.find('.inputProductName').val(),
-		productId = $angularElement.find('.inputProductId').val(),
-		featuredImg = $angularElement.find('.inputFeaturedImg').val(),
+		productName = $angularElement.data('pname'),
+		productId = $angularElement.data('pid'),
+		featuredImg = $angularElement.data('img'),
 		
 		lineItems = [];		
 		

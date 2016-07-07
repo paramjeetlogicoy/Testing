@@ -101,6 +101,44 @@ public class ControlConfig {
 					}
 					
 					
+					
+					
+					else if(cr.get_id().equals("local_delivery_zipcodes")){
+						
+						List<Integer> localZipcodes = new ArrayList<Integer>();
+						List<AttrValue> params = cr.getParams();
+						if(params !=null && params.get(0) != null){
+							
+							AttrValue param = params.get(0);
+							String[] zips = param.getValue().split(",");
+							for(int i=0; i<zips.length; i++){
+								localZipcodes.add(Utility.getInteger(zips[i].trim()));
+							}
+						}
+						
+						cOps.setLocalZipcodes(localZipcodes);						
+					}
+					
+					
+					
+					
+					else if(cr.get_id().equals("shipping_zipcodes")){
+						
+						List<Integer> shippingZipcodes = new ArrayList<Integer>();
+						List<AttrValue> params = cr.getParams();
+						if(params !=null && params.get(0) != null){
+							
+							AttrValue param = params.get(0);
+							String[] zips = param.getValue().split(",");
+							for(int i=0; i<zips.length; i++){
+								shippingZipcodes.add(Utility.getInteger(zips[i].trim()));
+							}
+						}
+						
+						cOps.setLocalZipcodes(shippingZipcodes);						
+					}
+					
+					
 				}
 		}
 		

@@ -22,12 +22,20 @@
 
 			<ul class="products-container row">
 				<li th:each="product : ${products}"
-					th:attr="data-pid=${product._id}">
+					th:attr="data-pid=${product._id},
+					data-stockstat=${product.stockStat},
+					data-pname=${product.name},
+					data-img=${product.featuredImg},
+					data-var=${product.variation},
+					data-p=${product.price},
+					data-sp=${product.salePrice}">
+
+
 					<div class="product-item-container">
 						<div class="product-item-card">
 							<div class="cards product-item">
 								<div>
-									<a th:href="@{'/product/' + ${product.url}}" href=""
+									<a th:if="${product.featuredImg}!=null" th:href="@{'/product/' + ${product.url}}" href=""
 										class="pc-img-holder"> <img
 										th:src="${_lbGlobalCDNPath} + ${#strings.replace(product.featuredImg,'.jpg','-300x266.jpg')}"
 										class="featured-img" /></a>
@@ -42,7 +50,7 @@
 										<div class="pull-left pc-price-range"
 											th:text="${product.priceRange}"></div>
 										<div class="pull-right pc-action">
-											<button class="btn btn-lb btn-sm" ng-click="showOptions()">
+											<button class="btn btn-lb btn-sm" ng-click="showOptions($event)">
 												<i class="fa fa-plus" aria-hidden="true"></i>
 											</button>
 										</div>
@@ -51,7 +59,7 @@
 							</div>
 
 							<div class="cards pi-card-back">
-								<a href="#" ng-click="flipBack()" class="pi-card-undo"><i
+								<a href="#" ng-click="flipBack($event)" class="pi-card-undo"><i
 									class="fa fa-undo white" aria-hidden="true"></i></a>
 								<h3>
 									<a th:href="@{'/product/' + ${product.url}}"
@@ -69,14 +77,6 @@
 							</div>
 						</div>
 					</div>
-					
-					<input type="hidden" class="inputProductId" th:value="${product._id}" /> <input
-						type="hidden" class="inputProductStockStat"
-						th:value="${product.stockStat}" /><input type="hidden"
-						class="inputProductName" th:value="${product.name}" /><input
-						type="hidden" class="inputFeaturedImg" th:value="${product.featuredImg}" /><input
-						type="hidden" class="inputVariableProduct"
-						th:if="${product.variation}" value="true" />
 				</li>
 			</ul>
 		</div>
