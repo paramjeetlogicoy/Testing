@@ -259,6 +259,172 @@ public class CartController {
 		return r;	
 	}
 	
+	
+	@RequestMapping(value = "/add/multi/", method = RequestMethod.POST)
+	public @ResponseBody CreateOrderResponse addToCartMulti(
+			@CookieValue(value = "lbbagnumber", defaultValue = "0") String orderIdS, 
+			@RequestBody List<OrderLineItemCart> lineItems){
+
+		CreateOrderResponse r = new CreateOrderResponse();
+		r.setSuccess(false);
+		
+		//System.out.println("orderIdS:" + orderIdS + ";");
+		
+		try {
+			
+			if(lineItems == null 
+					|| lineItems.size() == 0){
+				
+				r.setMessage("Invalid items.");
+			}
+			
+			else {
+				/**
+				 * Check if there is an existing order.
+				 * If yes, add item to that order, else
+				 * create an order
+				 **/
+				
+				boolean createOrder = false,
+						proceed = true;
+				CartOrder order = new CartOrder();
+				
+				long orderId = Utility.getLong(orderIdS);
+				if(orderId == 0l){
+					createOrder = true;
+				}				
+				else {					
+					order = dao.get(orderId);
+					if(order == null || !order.getStatus().equals("incart")){
+						createOrder = true;
+					}
+				}
+				
+				if(createOrder){
+					
+					orderId = dao.getNextSeq();
+					if(orderId != 0l){
+
+						order = new CartOrder();
+						order.set_id(orderId);
+						order.setOrderNumber(0);
+						order.setDate(Calendar.getInstance().getTime());
+						order.setStatus("incart");
+						order.setSource("checkout");
+					}
+					else{
+						proceed = false;
+						r.setMessage("There was some error creating the order, please try later.");
+					}
+				}
+				
+				
+				
+				if(proceed){
+					
+					int totalItems = 0,
+							productItems = 0;
+
+					List<OrderLineItemCart> items = order.getLineItems();
+					String couponCode = "";
+					
+					for(OrderLineItemCart requestitem : lineItems){
+
+						long pid = requestitem.getProductId(),
+								vid = requestitem.getVariationId();
+						
+						//Check if the same item is already in the order
+						boolean itemFound = false;
+						
+						if(items != null){
+							for(OrderLineItemCart item : items){
+								
+								if(item.getProductId() == pid &&
+										item.getVariationId() == vid ){
+									
+									int currQty = item.getQty();
+									int newQty = currQty + requestitem.getQty();
+									
+									item.setQty(newQty);
+									productItems+= newQty;
+									
+									itemFound = true;						
+								}
+								
+								/*totalItems refers to the cart count*/
+								if(item.getType().equals("item")
+										&& item.isInstock()){
+									totalItems+= item.getQty();
+								}
+								
+								else if(item.getType().equals("coupon")){
+									couponCode = item.getName();
+								}
+							}
+						}	
+						
+						
+						/**
+						 * If item doesn't exist in the cart already,
+						 * we build the item and add it to CartOrder.lineItems
+						 **/					
+						if(!itemFound){
+							if(items == null)
+								items = new ArrayList<OrderLineItemCart>();
+
+							OrderLineItemCart newItem = buildNewItem(requestitem, pid, vid);
+							if(newItem != null){
+								
+								items.add(newItem);
+								
+								/*totalItems refers to the cart count*/
+								totalItems+= newItem.getQty();
+								
+								productItems+= newItem.getQty();
+							}
+						}					
+						
+					}
+					
+					
+					/*Update order with lineItems*/
+					order.setLineItems(items);
+					
+					
+					/* Reapply coupons if any! */
+					if(!couponCode.equals("")){
+						couponManager.reapplyCoupon(couponCode, order, false);
+					}
+
+					
+					/**
+					 * We don't run the deal check here because cart is
+					 * not shown during addToCart function. Also, we check for 
+					 * deals during every cart load, so it's not required here. 
+					 **/
+					
+					
+					/*Update orderTotals*/
+					cartLogics.calculateSummary(order);
+					
+					dao.save(order);
+					
+					r.setSuccess(true);
+					r.setCartCount(totalItems);
+					r.setProductCount(productItems);
+					r.setOrderId(orderId);					
+				}
+			}
+			
+		}catch(Exception e){
+			
+			r.setMessage("There was some error creating the order, please try later.");
+			logger.error(Exceptions.giveStackTrace(e));
+		}
+		
+		return r;	
+	}
+	
 	@SuppressWarnings("unused")
 	private boolean specsMatch(List<AttrValue> specs1, List<AttrValue> specs2){
 		

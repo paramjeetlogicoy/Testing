@@ -211,7 +211,7 @@
 						<artifactId>tomcat7-maven-plugin</artifactId>
 						<version>2.2</version>
 						<configuration>
-							<url>http://localhost.com/manager/text</url>
+							<url>http://localhost/manager/text</url>
 							<server>ProductionServer</server>
 							<path>/</path>
 							<warName>ROOT</warName>

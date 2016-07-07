@@ -234,5 +234,71 @@
 		</div>
 	</div>
 
+
+	<div th:fragment="fragment-product-option">
+		<div class="lb-success response-msgs abs text-center pad-v2"
+			ng-show="itemSuccess">
+			<button type="button" class="close" ng-click="itemSuccess=''">
+				<i class="fa fa-times" aria-hidden="true"></i>
+			</button>
+			{{itemSuccess}} <a href="/cart" class="inherit u">Go to Cart</a>
+		</div>
+		<div class="lb-error response-msgs abs text-center pad-v2"
+			ng-show="itemError">
+			<button type="button" class="close" ng-click="itemError=''">
+				<i class="fa fa-times" aria-hidden="true"></i>
+			</button>
+			{{itemError}}
+		</div>
+
+		<div class="pad-h2">
+
+			<div class="marg-b1">
+				<strong>Product Options</strong>
+			</div>
+
+			<ul class="lb-scrollbar">
+				<li class="row" ng-repeat="price in prices | orderBy : 'regPrice'"
+					ng-if="price.stockStat=='instock'"><div class="col-xs-4">
+						<span ng-repeat="x in price.variation">{{x.value}}</span>
+					</div>
+					<div class="col-xs-5 text-right">
+						Qty: <input type="number" class="form-control" step="1" min="0"
+							max="20" ng-model="price.qty" ng-change="calculateItemTotal()" />
+					</div>
+					<div class="col-xs-3 text-right">
+						<strong ng-if="price.salePrice">{{price.salePrice |
+							currency}}</strong> <strong ng-if="!price.salePrice">{{price.regPrice
+							| currency}}</strong>
+					</div></li>
+
+				<li ng-if="itemsOutofStock">
+					<div class="pad2 text-center marg-t5 size18">
+						<i class="fa fa-meh-o fa-3x marg-r1" aria-hidden="true"></i> Out
+						of Stock
+					</div>
+				</li>
+			</ul>
+		</div>
+
+		<div class="tocart">
+			<div class="row">
+				<div class="col-xs-8 text-left marg-t1">
+					<em class="marg-r1">Item total:</em><strong
+						class="orange1 size20">{{itemTotal | currency}}</strong>
+				</div>
+				<div class="col-xs-4 text-right">
+					<button ng-hide="addingToCart" ng-click="quickAddToCart()"
+						class="btn btn-success" type="button" ng-disabled="itemTotal==0"
+						title="ADD TO CART">
+						<i class="fa fa-cart-plus size24" aria-hidden="true"></i>
+					</button>
+					<span class="adding-to-cart size20 rel" ng-show="addingToCart"><i
+						class="fa fa-cog fa-spin fa-fw"></i></span>
+				</div>
+			</div>
+		</div>
+	</div>
+
 </body>
 </html>

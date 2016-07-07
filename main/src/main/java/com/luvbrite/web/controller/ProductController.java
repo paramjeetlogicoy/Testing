@@ -46,7 +46,7 @@ public class ProductController {
 
 		List<Product> products = prdDao.createQuery()
 				.filter("status", "publish")
-				.limit(10)
+				.filter("stockStat", "instock")
 				.order("-_id")
 				.asList();
 		

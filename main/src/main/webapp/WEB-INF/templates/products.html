@@ -6,7 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Luvbrite</title>
 <meta th:include="fragments/layout::fragment-head" />
-
 </head>
 <body ng-app="lbApp" ng-controller="allProductCtrlr" class="bg-greyF9 allproductspage">
 	<div th:replace="fragments/layout::fragment-header(extn=false)"></div>
@@ -17,102 +16,78 @@
 			<li class="active">All Products</li>
 		</ol>
 
-		<div class="row">
-			<h1 class="col-sm-9">
-				ALL PRODUCTS
-				<button ng-show="categoryFilter || productFilter"
-					class="btn btn-default btn-sm reset-cat-filter"
-					ng-click="categoryFilter='';productFilter=''">Reset Filter</button>
-			</h1>
+		<h1>ALL PRODUCTS</h1>
 
-			<div class="col-sm-3 pull-right productfilter">
-				<div class="input-group">
-					<input type="text" class="form-control"
-						placeholder="Product Search" ng-model="productFilter" /> <span
-						class="input-group-btn">
-						<button class="btn btn-default" type="button">
-							<i class="fa fa-search" aria-hidden="true"></i>
-						</button>
-					</span>
-				</div>
-			</div>
-		</div>
-		
+		<div class="products-listing">
 
-		<div class="category-groups ng-cloak">
-
-			<div class="category-group">
-				<div class="category-header" ng-show="categoryFilter">
-					<h2 class="category-name split-lines">{{categoryFilter}}</h2>
-				</div>
-
-				<ul class="products-container row">
-					<li
-						ng-repeat="p in products | filter : {categories : categoryFilter, name : productFilter}"
-						class="col-lg-3 col-sm-4 col-xs-6">
-						<div class="product-item">
-							<a href="/product/{{p.url}}" class="pc-img-holder"><span>
-									<img ng-src="{{lbGlobalCDNPath + p.featuredImg.replace('.jpg','-300x266.jpg')}}"
-									class="featured-img" />
-							</span> </a>
-							<div class="pc-info">
-								<h3>
-									<a href="/product/{{p.url}}">{{p.name}}</a>
-								</h3>
-								<hr />
-								<div class="clearfix">
-									<div class="pull-left pc-price-range">{{p.priceRange}}</div>
-									<div class="pull-right pc-action">
-										<button class="btn btn-lb btn-sm">
-											<i class="fa fa-plus" aria-hidden="true"></i> <span>ADD</span>
-										</button>
+			<ul class="products-container row">
+				<li th:each="product : ${products}"
+					th:attr="data-pid=${product._id}">
+					<div class="product-item-container">
+						<div class="product-item-card">
+							<div class="cards product-item">
+								<div>
+									<a th:href="@{'/product/' + ${product.url}}" href=""
+										class="pc-img-holder"> <img
+										th:src="${_lbGlobalCDNPath} + ${#strings.replace(product.featuredImg,'.jpg','-300x266.jpg')}"
+										class="featured-img" /></a>
+								</div>
+								<div class="pc-info">
+									<h3>
+										<a th:href="@{'/product/' + ${product.url}}"
+											th:title="${product.name}" th:text="${product.name}"></a>
+									</h3>
+									<hr />
+									<div class="clearfix">
+										<div class="pull-left pc-price-range"
+											th:text="${product.priceRange}"></div>
+										<div class="pull-right pc-action">
+											<button class="btn btn-lb btn-sm" ng-click="showOptions()">
+												<i class="fa fa-plus" aria-hidden="true"></i>
+											</button>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-					</li>
-				</ul>
-			</div>
-		</div>
-		
-		<!--/* #thymelead-loader will be removed once angular kicks in. The initial load is just for SEO purpose! */-->
-		<div id="thymelead-loader">
-			<ul class="products-container row">
-				<li th:each="product : ${products}"
-					class="col-lg-3 col-sm-4 col-xs-6">
-					<div class="product-item">
-						<a th:href="@{'/product/' + ${product.url}}" href=""
-							class="pc-img-holder"><span> <img
-								th:src="${_lbGlobalCDNPath} + ${#strings.replace(product.featuredImg,'.jpg','-300x266.jpg')}"
-								class="featured-img" />
-						</span> </a>
-						<div class="pc-info">
-							<h3>
-								<a th:href="@{'/product/' + ${product.url}}"
-									th:text="${product.name}"></a>
-							</h3>
-							<hr />
-							<div class="clearfix">
-								<div class="pull-left pc-price-range"
-									th:text="${product.priceRange}"></div>
-								<div class="pull-right pc-action">
-									<button class="btn btn-lb btn-sm">
-										<i class="fa fa-plus" aria-hidden="true"></i> <span>ADD</span>
-									</button>
-								</div>
-							</div>
 
+							<div class="cards pi-card-back">
+								<a href="#" ng-click="flipBack()" class="pi-card-undo"><i
+									class="fa fa-undo white" aria-hidden="true"></i></a>
+								<h3>
+									<a th:href="@{'/product/' + ${product.url}}"
+										th:title="${product.name}" th:text="${product.name}"></a>
+								</h3>
+
+								<div class="product-options empty">
+									<table>
+										<tr>
+											<td><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></td>
+										</tr>
+									</table>
+								</div>
+
+							</div>
 						</div>
 					</div>
+					
+					<input type="hidden" class="inputProductId" th:value="${product._id}" /> <input
+						type="hidden" class="inputProductStockStat"
+						th:value="${product.stockStat}" /><input type="hidden"
+						class="inputProductName" th:value="${product.name}" /><input
+						type="hidden" class="inputFeaturedImg" th:value="${product.featuredImg}" /><input
+						type="hidden" class="inputVariableProduct"
+						th:if="${product.variation}" value="true" />
 				</li>
 			</ul>
 		</div>
-
 	</div>
 
 	<div th:replace="fragments/layout::fragment-footer"></div>
 	<div th:replace="fragments/layout::fragment-foot(angular=true)"></div>
 	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
+	<script type="text/ng-template" id="productOptionsTemp">
+		<div th:replace="fragments/layout::fragment-product-option"></div>
+    </script>
 	<script type="text/javascript">
 	</script>
 </body>

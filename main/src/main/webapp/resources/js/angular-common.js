@@ -14,48 +14,196 @@ var lbApp = angular.module(
  * Scroll to the bottom to see it being attached to the App.
  */ 
 var 
-allProductCtrlr = function($scope, $http){
-	
-	$scope.products = [];
-	$scope.categories = [];
-	$scope.categoryFilter = '';
-	
-	$scope.getProducts = function(){
-		
-		$http.get(_lbUrls.allprds + '/published', {
-			params : { 
-				'hidepop' : true  //tells the config not to show the loading popup
-			}
-		})
-		.success(function(data){
-			if(data.success){
-				
-				//Remove the products loaded by thymeleaf
-				angular.element('#thymelead-loader').remove();
-				
-				$scope.products = data.products;
-				$scope.categories = data.categories;
+allProductCtrlr = function($scope, $rootScope, $http, $templateRequest, $compile){
 
-			}
-			else{	
-				$scope.pageLevelError = "There was some error getting the products."
-					+" Please contact the support";
-			}
-
-		}).error(function(){
-
-			$scope.pageLevelError = "There was some error getting the products."
-				+" Please contact the support";
-		});	
-		
-	};
 	
 	$scope.filterProducts = function(){
 		$scope.categoryFilter = this.cat.name;
 		$scope.productFilter = '';
 	};
+
+	$scope.addingToCart = false;
+	$scope.itemsOutofStock = false;
+	$scope.prices = [];
+	$scope.productPrices = {};
+	$scope.flipBack = function(){
+		angular.element(event.target).closest('li').find('.product-item-card').removeClass('flipped');
+	};
 	
-	$scope.getProducts();
+	$scope.showOptions = function(){
+		
+		//Unflip all flipped elements
+		angular.element('.product-item-card.flipped').removeClass('flipped');
+		
+		var $angularElement = angular.element(event.target).closest('li');
+		$angularElement.find('.product-item-card').addClass('flipped');
+		
+		var pid = $angularElement.attr('data-pid');
+		if(pid != 0){	
+			
+			$scope.prices = [];
+			
+			if(!$scope.productPrices[pid]){
+				
+				$http.get(_lbUrls.getprdprice + pid + '/price', {
+					params : { 
+						'hidepop' : true  //tells the config not to show the loading popup
+					}
+				})
+				.then(function(resp){
+					$scope.prices = resp.data;		
+					
+					
+					if($scope.prices){
+						
+						//Sort the data
+						$scope.prices.sort(function(a,b){return a.regPrice - b.regPrice;});
+						
+						var itemsOutofStock = true;
+						//Check stock status and Set the quantity as zero;
+						for(var i=0; i<$scope.prices.length; i++){
+							$scope.prices[i].qty = 0;
+							
+							if($scope.prices[i].stockStat=='instock')
+								itemsOutofStock =false;
+						}
+						$scope.itemsOutofStock = itemsOutofStock;
+
+						//save price for future uses.
+						$scope.productPrices[pid] = $scope.prices;
+						
+						//calculate new total
+						$scope.calculateItemTotal();
+						
+						$scope.loadTemplate($angularElement);
+					}
+				});	
+			}
+			else{
+				
+				//load stored prices
+				$scope.prices = $scope.productPrices[pid];
+				
+				//Check stock status
+				var itemsOutofStock = true;
+				for(var i=0; i<$scope.prices.length; i++){
+					if($scope.prices[i].stockStat=='instock')
+						itemsOutofStock =false;
+				}
+				$scope.itemsOutofStock = itemsOutofStock;
+				
+				//calculate new total
+				$scope.calculateItemTotal();
+
+				$scope.loadTemplate($angularElement);
+			}
+		}
+	};
+	
+	
+	$scope.loadTemplate = function($angularElement){
+
+		//load productOptions		
+		$templateRequest("productOptionsTemp")
+		.then(function(html){
+		      var template = angular.element(html);
+		      $angularElement.find('.product-options')
+		      	.removeClass('empty')
+		      	.empty()
+		      	.append(template);
+		      
+		      $compile(template)($scope);
+		 });
+	};
+
+	$scope.itemTotal = 0;
+	$scope.calculateItemTotal = function(){
+		$scope.itemTotal = 0;
+		//Set the quantity as zero;
+		for(var i=0; i<$scope.prices.length; i++){
+			var curr = $scope.prices[i];
+			if(curr.qty != 0){
+				if(curr.salePrice){
+					$scope.itemTotal+=(curr.salePrice*curr.qty);
+				}
+				else{
+					$scope.itemTotal+=(curr.regPrice*curr.qty);
+				}
+			};
+		}
+	};
+	
+	$scope.itemError = '';
+	$scope.itemSuccess = '';
+	$scope.quickAddToCart = function(){
+		
+		$scope.itemError = '';
+		$scope.itemSuccess = '';
+		
+		var $angularElement = angular.element(event.target).closest('li'),
+		
+		productName = $angularElement.find('.inputProductName').val(),
+		productId = $angularElement.find('.inputProductId').val(),
+		featuredImg = $angularElement.find('.inputFeaturedImg').val(),
+		
+		lineItems = [];		
+		
+		for(var i=0; i<$scope.prices.length; i++){
+			var curr = $scope.prices[i];
+			if(curr.qty != 0){
+
+				lineItems.push({
+					name : productName,
+					qty : curr.qty,
+					productId : productId,
+					img : curr.img ? curr.img : featuredImg,
+					variationId : curr._id ? curr._id : 0
+				});
+			};
+		}
+			
+		if(lineItems.length==0){
+			$scope.itemError = 'Please select quantity for atleast one item.';
+			return false;
+		}
+
+		$scope.addingToCart = true;
+		$http.post(_lbUrls.addtocart+'/multi/?hidepop', lineItems)
+		.then(function(resp){
+			
+			if(resp.data && resp.data.success){
+				
+				$scope.productInCart = resp.data.productCount;
+				$rootScope.rootCartCount = resp.data.cartCount;
+				$.cookie('lbbagnumber', resp.data.orderId, {expires:30, path:'/'});
+				$scope.itemSuccess = 'Item(s) added to cart.';
+				
+				//Reset Quantity
+				for(var i=0; i<$scope.prices.length; i++){
+					$scope.prices[i].qty = 0;
+				}
+			}
+			else {
+				$scope.itemError  = resp.data.message;
+			}
+
+			$scope.addingToCart = false;
+		},
+		function(resp){
+			if(resp.status == 403){
+				$scope.pageLevelAlert  = "Your browser was idle for long. "
+					+"Please refresh the page and add the item to cart again.";
+			}
+			else {
+				$scope.pageLevelAlert  = "There was some error creating the order. "
+					+"Please try later. If problem persists, please call the customer care.";
+			}
+
+			$scope.addingToCart = false;
+		});		
+		
+		
+	};
 },
 
 categoryCtrlr = function($scope, $http){
