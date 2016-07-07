@@ -8,7 +8,6 @@
 .recommenders
 bin
 build
-lib/
 target
 manifest.yml
 MANIFEST.MF
