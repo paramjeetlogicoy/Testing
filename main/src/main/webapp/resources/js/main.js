@@ -16,9 +16,9 @@ _lbFns = {
 	},
 	
 	navOffsetCorrection : function(){
-		if($('.header-offset').size()!=0){
-			$('.header-offset').css('margin-top',($('.header-navbar').height())+'px');
-		}
+		/*if($('.header-offset').size()!=0){
+			$('.header-offset').css('margin-top',(($('.header-navbar').height() + $('.header-sub').height())+'px'));
+		}*/
 	},
 	
 	showToTop : function(){

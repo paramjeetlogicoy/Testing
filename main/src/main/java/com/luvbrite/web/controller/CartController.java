@@ -1,9 +1,12 @@
 package com.luvbrite.web.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +32,7 @@ import com.luvbrite.services.CouponManager;
 import com.luvbrite.services.EmailService;
 import com.luvbrite.services.OrderFinalization;
 import com.luvbrite.services.PostOrderMeta;
+import com.luvbrite.services.paymentgateways.SquareUp;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.Utility;
 import com.luvbrite.web.models.AttrValue;
@@ -43,10 +47,13 @@ import com.luvbrite.web.models.Order;
 import com.luvbrite.web.models.OrderCustomer;
 import com.luvbrite.web.models.OrderLineItemCart;
 import com.luvbrite.web.models.OrderNotes;
+import com.luvbrite.web.models.OrderPlaceResponse;
 import com.luvbrite.web.models.Price;
 import com.luvbrite.web.models.Product;
 import com.luvbrite.web.models.User;
 import com.luvbrite.web.models.UserDetailsExt;
+import com.luvbrite.web.models.squareup.AmountMoney;
+import com.luvbrite.web.models.squareup.Charge;
 
 
 @Controller
@@ -87,6 +94,9 @@ public class CartController {
 	
 	@Autowired
 	private PostOrderMeta postOrderMeta;
+	
+	@Autowired
+	private SquareUp paymentService;
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public String homePage(@AuthenticationPrincipal 
@@ -351,13 +361,7 @@ public class CartController {
 									itemFound = true;						
 								}
 								
-								/*totalItems refers to the cart count*/
-								if(item.getType().equals("item")
-										&& item.isInstock()){
-									totalItems+= item.getQty();
-								}
-								
-								else if(item.getType().equals("coupon")){
+								if(item.getType().equals("coupon")){
 									couponCode = item.getName();
 								}
 							}
@@ -377,15 +381,20 @@ public class CartController {
 								
 								items.add(newItem);
 								
-								/*totalItems refers to the cart count*/
-								totalItems+= newItem.getQty();
-								
 								productItems+= newItem.getQty();
 							}
 						}					
 						
 					}
 					
+					
+					/* Calculate total Items in the cart */
+					for(OrderLineItemCart item : items){		
+						if(item.getType().equals("item")
+								&& item.isInstock()){
+							totalItems+= item.getQty();
+						}
+					}
 					
 					/*Update order with lineItems*/
 					order.setLineItems(items);
@@ -495,6 +504,48 @@ public class CartController {
 	}
 	
 	
+
+	@RequestMapping(value = "/validatezip", method = RequestMethod.GET)
+	public @ResponseBody GenericResponse validateZipcode(
+			@RequestParam(value="zip", required=true) int zipcode) {
+
+		GenericResponse gr = new GenericResponse();
+		gr.setSuccess(true);
+		
+		boolean local = false;
+		boolean shipping = false;
+		
+		List<Integer> localZipcodes = controlOptions.getLocalZipcodes();
+		for(Integer lz : localZipcodes){
+			if((int)lz == zipcode){
+				local = true;
+				break;
+			}
+		}
+
+		List<Integer> shippingZipcodes = controlOptions.getShippingZipcodes();
+		for(Integer sz : shippingZipcodes){
+			if((int)sz == zipcode){
+				shipping = true;
+				break;
+			}
+		}
+		
+		if(local && shipping){
+			gr.setMessage("both");
+		}
+		else if(local){
+			gr.setMessage("local");
+		}
+		else if(shipping){
+			gr.setMessage("shipping");
+		}
+		else{
+			gr.setMessage("invalid");
+		}
+
+		return gr;
+	}
 	
 	
 	/**
@@ -654,12 +705,15 @@ public class CartController {
 	
 	
 	@RequestMapping(value = "/{orderId}/placeorder", method = RequestMethod.POST)
-	public @ResponseBody GenericResponse placeOrder(
-			@PathVariable long orderId, @RequestBody CartOrder order){
+	public @ResponseBody OrderPlaceResponse placeOrder(
+			@PathVariable long orderId, @RequestBody CartOrder order,
+			HttpServletRequest request){
 		
-		GenericResponse gr = new GenericResponse();
+		OrderPlaceResponse gr = new OrderPlaceResponse();
 		gr.setSuccess(false);
 		gr.setMessage("");
+		gr.setPaymentProcessed(false);
+		gr.setOrderFinalizationError(false);
 
 		try {
 
@@ -674,13 +728,64 @@ public class CartController {
 			}
 			else{
 				
+
+				
 				CartOrder currOrder = dao.findCartOrder(orderId);
 				if(currOrder == null){
 					gr.setMessage("Invalid order id. "
 							+ "Please refresh the page and try again. "
 							+ "If problem persists, please contact customer care.");
 				}				
-				else {					
+				else {
+					
+					
+					/* Save Remote IP into the orderData */
+					try{
+						order.getPmtMethod().setIp(request.getRemoteAddr());
+					}catch(Exception e){}
+					
+					
+					/* If there is payment data, process payment */		
+					if(order.getPmtMethod().getCardData() != null){
+						
+						long money = 0l;
+						String cardNonce = "";
+						
+						try {							
+							/* Multiply by 100 to make it in cents */
+							money = (long) (order.getTotal() * 100);
+							cardNonce = order.getPmtMethod().getCardData().getNonce();
+							
+						}catch(Exception e){
+							gr.setMessage("Invalid payment details");
+							return gr;
+						}
+						
+						/* Create a unique number */
+						SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+						String idemPotencyKey = sd.format(Calendar.getInstance().getTime()) 
+											+ "_" 
+											+ (int) (Math.random()*1000);
+						System.out.println("idemPotencyKey - " + idemPotencyKey);
+						
+						Charge body = new Charge();
+						body.setAmount_money(new AmountMoney(money));
+						body.setCard_nonce(cardNonce);
+						body.setDelay_capture(true);
+						body.setIdempotency_key(idemPotencyKey);
+						body.setReference_id("CartOrderID:" + order.get_id());
+						
+						String response = paymentService.processPayment(body);
+						if(response.equals("")){
+							gr.setPaymentProcessed(true);
+						}
+						else{
+							gr.setPaymentError(response);
+							return gr;
+						}		
+					}
+					/** Payment process ends **/
+						
 					String resp = orderFinalization.finalizeOrder(order);
 					if("".equals(resp)){
 						gr.setSuccess(true);
@@ -722,6 +827,7 @@ public class CartController {
 						
 					}
 					else{
+						gr.setOrderFinalizationError(true);
 						gr.setMessage(resp);
 					}
 				}				

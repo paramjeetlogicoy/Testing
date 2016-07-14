@@ -8,7 +8,7 @@
 <meta th:include="fragments/layout::fragment-head" />
 </head>
 <body ng-app="lbApp" ng-controller="allProductCtrlr" class="bg-greyF9 allproductspage">
-	<div th:replace="fragments/layout::fragment-header(extn=false)"></div>
+	<div th:replace="fragments/layout::fragment-header"></div>
 	<div class="container page-container rel">
 		
 		<ol class="breadcrumb">
@@ -32,35 +32,39 @@
 
 
 					<div class="product-item-container">
-						<div class="product-item-card">
-							<div class="cards product-item">
-								<div>
-									<a th:if="${product.featuredImg}!=null" th:href="@{'/product/' + ${product.url}}" href=""
-										class="pc-img-holder"> <img
+						<div class="product-item-card showItem">
+							<div class="pi-cards product-item">
+								<h3>
+									<a th:href="@{'/product/' + ${product.url}}"
+										th:title="${product.name}" th:text="${product.name}"></a>
+								</h3>
+
+								<div class="card-center">
+									<a th:if="${product.featuredImg}!=null"
+										th:href="@{${_lbGlobalCDNPath} + ${product.featuredImg}}"
+										class="pc-img-holder" ng-click="showBiggerImg($event)"> <img
 										th:src="${_lbGlobalCDNPath} + ${#strings.replace(product.featuredImg,'.jpg','-300x266.jpg')}"
 										class="featured-img" /></a>
 								</div>
-								<div class="pc-info">
-									<h3>
-										<a th:href="@{'/product/' + ${product.url}}"
-											th:title="${product.name}" th:text="${product.name}"></a>
-									</h3>
-									<hr />
-									<div class="clearfix">
-										<div class="pull-left pc-price-range"
-											th:text="${product.priceRange}"></div>
-										<div class="pull-right pc-action">
-											<button class="btn btn-lb btn-sm" ng-click="showOptions($event)">
-												<i class="fa fa-plus" aria-hidden="true"></i>
-											</button>
+
+								<div class="tocart">
+									<div class="text-center size16 marg-b1">
+										Price: <strong th:text="${product.priceRange}"></strong>
+									</div>
+									<div class="row">
+										<div class="col-xs-6">
+											<button type="button" class="btn btn-lb btn-sm btn-block"
+												ng-click="showInfo($event)">INFO</button>
+										</div>
+										<div class="col-xs-6">
+											<button type="button" class="btn btn-lb btn-sm btn-block"
+												ng-click="showOptions($event)">QTY</button>
 										</div>
 									</div>
 								</div>
 							</div>
 
-							<div class="cards pi-card-back">
-								<a href="#" ng-click="flipBack($event)" class="pi-card-undo"><i
-									class="fa fa-undo white" aria-hidden="true"></i></a>
+							<div class="pi-cards pi-info">
 								<h3>
 									<a th:href="@{'/product/' + ${product.url}}"
 										th:title="${product.name}" th:text="${product.name}"></a>
@@ -74,6 +78,18 @@
 									</table>
 								</div>
 
+								<div class="product-desc">
+									<div class="card-center">
+										<ul class="lb-scrollbar">
+											<li th:utext="${product.description}"></li>
+										</ul>
+									</div>
+
+									<div class="tocart">
+										<button type="button" class="btn btn-lb btn-sm"
+											ng-click="flipBack($event)">BACK</button>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -89,6 +105,16 @@
 		<div th:replace="fragments/layout::fragment-product-option"></div>
     </script>
 	<script type="text/javascript">
+		
 	</script>
+	<div class="modal fade" tabindex="-1" role="dialog" id="prodImgModal"
+		data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog">
+			<button class="close rel">
+				<i class="fa fa-times" aria-hidden="true" ng-click="closeImgModal()"></i>
+			</button>
+			<div class="modal-content"></div>
+		</div>
+	</div>
 </body>
 </html>

@@ -7,6 +7,7 @@ public class PaymentMethod {
 	private String ip = "";
 	private String method = "";
 	private String type = "";
+	private CardData cardData;
 	public String getIp() {
 		return ip;
 	}
@@ -24,5 +25,11 @@ public class PaymentMethod {
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	public CardData getCardData() {
+		return cardData;
+	}
+	public void setCardData(CardData cardData) {
+		this.cardData = cardData;
 	}
 }

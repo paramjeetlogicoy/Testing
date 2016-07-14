@@ -6,20 +6,121 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Luvbrite</title>
 <meta th:include="fragments/layout::fragment-head" />
-
+<style type="text/css">
+.newarrivals-slider{background-image: url(/resources/imgs/sliders/new-arrivals-offer.jpg)}
+.endofeight-slider{background-image: url(/resources/imgs/sliders/end-of-eigth-offer.jpg)}
+.endofeight-slider.item a.btn {bottom: 37px;right: 18%;}
+.offhouroffer-slider{background-image: url(/resources/imgs/sliders/off-hour-offer.jpg)}
+.doubledown-slider{background-image: url(/resources/imgs/sliders/double-down-offer.jpg);background-color:white;}
+.doubledown-slider.item a.btn {bottom:5px;right:22%;}
+@media (min-width: 768px){
+	.endofeight-slider.item a.btn {bottom:100px;right:36%;}
+	.offhouroffer-slider.item a.btn {bottom:70px}
+	.doubledown-slider.item a.btn {bottom:35px;right:37%;}
+}
+</style>
 </head>
 <body ng-app="lbApp">
-	<div th:replace="fragments/layout::fragment-header(extn=false)"></div>
-	<div class="container page-container">
-		<div class="generic-container pad3">
-			<h1>Luvbrite Home Page</h1>
+	<div th:replace="fragments/layout::fragment-header"></div>
+	<div class="homepage-container">
+		<div id="home-sliders" class="carousel slide" data-ride="carousel">
 
+			<!-- Wrapper for slides -->
+			<div class="carousel-inner" role="listbox">
+
+				<div class="newarrivals-slider item active">
+					<a href="/category/new-arrivals" class="btn btn-sm btn-lb">TAKE A PEAK</a>
+				</div>
+
+				<div class="endofeight-slider item">
+					<a href="" class="btn btn-sm btn-lb">GET SPECIFICS</a>
+				</div>
+
+				<div class="offhouroffer-slider item">
+					<a href="" class="btn btn-warning btn-sm">VIEW DETAILS</a>
+				</div>
+
+				<div class="doubledown-slider item">
+					<a href="" class="btn btn-sm btn-black">VIEW DETAILS</a>
+				</div>
+			</div>
+
+			<!-- Controls -->
+			<a class="left carousel-control" href="#home-sliders" role="button"
+				data-slide="prev"> <span
+				class="glyphicon glyphicon-chevron-left fa fa-chevron-left"
+				aria-hidden="true"></span> <span class="sr-only">Previous</span>
+			</a> <a class="right carousel-control" href="#home-sliders" role="button"
+				data-slide="next"> <span
+				class="glyphicon glyphicon-chevron-right fa fa-chevron-right"
+				aria-hidden="true"></span> <span class="sr-only">Next</span>
+			</a>
 		</div>
 
-		<div th:replace="fragments/layout::fragment-footer"></div>
-		<div th:replace="fragments/layout::fragment-foot(angular=true)"></div>
-		<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
+		<div class="home-categories">
+			<div class="hc-flowers">
+				<h2><a href="/category/flowers">FLOWERS</a></h2>
+				<ul class="row">
+					<li class="col-sm-4"><a href=""><span
+							class="hc-img hc-img-indica"></span><strong>INDICA</strong></a></li>
+					<li class="col-sm-4"><a href=""><span
+							class="hc-img hc-img-hybrid"></span><strong>HYBRID</strong></a></li>
+					<li class="col-sm-4"><a href=""><span
+							class="hc-img hc-img-sativa"></span><strong>SATIVA</strong></a></li>
+				</ul>
+			</div>
+			<hr />
+			<div class="hc-edibles">
+				<h2><a href="/category/edibles">EDIBLES</a></h2>
+				<ul class="row">
+					<li class="col-sm-4"><a href=""><span
+							class="hc-img hc-img-candy"></span><strong>CANDY</strong></a></li>
+					<li class="col-sm-4"><a href=""><span
+							class="hc-img hc-img-baked"></span><strong>BAKED GOODS</strong></a></li>
+					<li class="col-sm-4"><a href=""><span
+							class="hc-img hc-img-drinks"></span><strong>DRINKS/BEVERAGES</strong></a></li>
+				</ul>
+
+			</div>
+			<hr />
+			<div class="hc-concentrates">
+				<h2><a href="/category/concentrates">CONCENTRATES</a></h2>
+				<ul class="row">
+					<li class="col-sm-3"><a href=""><span
+							class="hc-img hc-img-wax"></span><strong>WAX/CRUMBLE</strong></a></li>
+					<li class="col-sm-3"><a href=""><span
+							class="hc-img hc-img-pills"></span><strong>PILLS/CAPSULES</strong></a></li>
+					<li class="col-sm-3"><a href=""><span
+							class="hc-img hc-img-drops"></span><strong>DROPS</strong></a></li>
+					<li class="col-sm-3"><a href=""><span
+							class="hc-img hc-img-vapes"></span><strong>VAPES</strong></a></li>
+				</ul>
+
+			</div>
+			<hr />
+			<div class="hc-topicals">
+				<h2><a href="/category/topicals">TOPICALS &amp; CREAMS</a></h2>
+				<ul class="row">
+					<li class="col-sm-3"></li>
+					<li class="col-sm-3"><a href=""><span
+							class="hc-img hc-img-creams"></span><strong>CREAMS</strong></a></li>
+					<li class="col-sm-3"><a href=""><span
+							class="hc-img hc-img-topicals"></span><strong>TOPICALS</strong></a></li>
+					<li class="col-sm-3"></li>
+				</ul>
+
+			</div>
+		</div>
+
+
+
+
+
+
 	</div>
+	<div th:replace="fragments/layout::fragment-footer"></div>
+	<div th:replace="fragments/layout::fragment-foot(angular=true)"></div>
+	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
 	<script type="text/javascript">
 	</script>
 </body>

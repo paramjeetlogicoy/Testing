@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luvbrite.dao.LogDAO;
-import com.luvbrite.dao.OrderDAO;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.GenericConnection;
 import com.luvbrite.web.models.Address;
@@ -32,9 +31,6 @@ import com.luvbrite.web.models.ordermeta.itemmeta.Meta;
 public class PostOrderMeta {
 	
 	private static Logger logger = LoggerFactory.getLogger(PostOrderMeta.class);
-
-	@Autowired
-	private OrderDAO dao;
 	
 	@Autowired
 	private LogDAO logDao;
