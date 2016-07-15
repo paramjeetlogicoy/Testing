@@ -10,28 +10,22 @@
 </head>
 <body ng-app="lbApp">
 	<div th:replace="fragments/layout::fragment-header"></div>
-	<div class="container page-container rel">
+	<div class="container page-container">
 		
 		<ol class="breadcrumb">
 			<li><a href="/">Home</a></li>
 			<li class="active">All Categories</li>
 		</ol>
 
-		<h1>ALL CATEGORIES</h1>
+		<h1>All Categories</h1>
 
 		<div class="category-groups">
-			<ul class="category-group">
-
+			<ul class="category-group row">
 				<li th:each="cat : ${categories}" class="col-lg-3 col-sm-4 col-xs-6">
-					<div class="product-item">
-						<h3>
-							<a th:href="@{'/category/' + ${cat.url}}" href=""
-								th:text="${cat.name}"></a>
-						</h3>
-						<div class="marg-b2">
-							<div th:text="${cat.description}"></div>
-						</div>
-					</div>
+					<h3>
+						<a th:href="@{'/category/' + ${cat.url}}" href=""
+							th:text="${cat.name}"></a>
+					</h3>
 				</li>
 			</ul>
 		</div>

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.luvbrite.dao.CategoryDAO;
-import com.luvbrite.dao.PriceDAO;
 import com.luvbrite.dao.ProductDAO;
 import com.luvbrite.web.models.Category;
 import com.luvbrite.web.models.Product;
@@ -20,7 +19,7 @@ import com.luvbrite.web.models.UserDetailsExt;
 
 
 @Controller
-@RequestMapping(value = {"/category"})
+@RequestMapping(value = {"/category", "/categories"})
 public class CategoryController {
 	
 	@Autowired
@@ -28,9 +27,6 @@ public class CategoryController {
 	
 	@Autowired
 	private CategoryDAO catDao;
-	
-	@Autowired
-	private PriceDAO priceDao;
 	
 
 	@RequestMapping(method = RequestMethod.GET)
@@ -66,8 +62,19 @@ public class CategoryController {
 		
 		Category c = catDao.findOne("url", categoryUrl);		
 		if(c != null){
-			model.addAttribute("category", c);
-			return "category-page";
+			String categoryName = c.getName();
+			
+			List<Product> products = prdDao.createQuery()
+					.field("categories").equal(categoryName)
+					.filter("status", "publish")
+					.filter("stockStat", "instock")
+					.order("-_id")
+					.asList();
+			
+			model.addAttribute("products", products);
+			model.addAttribute("category", categoryName);
+			
+			return "products";
 		}		
 		else{
 			return "404";

@@ -4,7 +4,8 @@
 <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Luvbrite</title>
+<title th:if="${category}==null">All Products</title>
+<title th:if="${category}!=null"  th:text="'All Products | ' + ${category}"></title>
 <meta th:include="fragments/layout::fragment-head" />
 </head>
 <body ng-app="lbApp" ng-controller="allProductCtrlr" class="bg-greyF9 allproductspage">
@@ -13,10 +14,13 @@
 		
 		<ol class="breadcrumb">
 			<li><a href="/">Home</a></li>
-			<li class="active">All Products</li>
+			<li th:if="${category}==null" class="active">All Products</li>
+			<li th:if="${category}!=null" ><a href="/categories">All Categories</a></li>
+			<li th:if="${category}!=null" class="active" th:text="${category}">Products</li>
 		</ol>
 
-		<h1>ALL PRODUCTS</h1>
+		<h1 th:if="${category}==null">All Products</h1>
+		<h1 th:if="${category}!=null" th:text="${category}">Products</h1>
 
 		<div class="products-listing">
 

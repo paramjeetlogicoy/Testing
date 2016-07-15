@@ -135,7 +135,7 @@ public class ControlConfig {
 							}
 						}
 						
-						cOps.setLocalZipcodes(shippingZipcodes);						
+						cOps.setShippingZipcodes(shippingZipcodes);						
 					}
 					
 					

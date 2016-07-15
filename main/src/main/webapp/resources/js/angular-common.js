@@ -1,6 +1,6 @@
 var lbApp = angular.module(
 	'lbApp', [
-	     'ngRoute',
+	     //'ngRoute',
 	     'ngAnimate',
          'ngSanitize',
          'ui.bootstrap',
@@ -27,19 +27,19 @@ allProductCtrlr = function($scope, $rootScope, $http, $templateRequest, $compile
 	$scope.prices = [];
 	$scope.productPrices = {};
 	$scope.flipBack = function(event){
-		angular.element(event.target).closest('li').find('.product-item-card').removeClass('showOptions').removeClass('showInfo');
+		angular.element(event.target).closest('li').find('.product-item-card').removeClass('showInfo showOptions');
 	};
 	
 	$scope.showInfo = function(event){		
 		//Unflip all flipped elements
-		angular.element('.product-item-card').removeClass('showInfo').removeClass('showOptions');
+		angular.element('.product-item-card').removeClass('showInfo showOptions');
 		angular.element(event.target).closest('li').find('.product-item-card').addClass('showInfo');
 	};
 	
 	$scope.showOptions = function(event){
 		
 		//Unflip all flipped elements
-		angular.element('.product-item-card').removeClass('showInfo').removeClass('showOptions');
+		angular.element('.product-item-card').removeClass('showInfo showOptions');
 		
 		var $angularElement = angular.element(event.target).closest('li');
 		$angularElement.find('.product-item-card').addClass('showOptions');
@@ -271,41 +271,6 @@ allProductCtrlr = function($scope, $rootScope, $http, $templateRequest, $compile
 	$scope.closeImgModal = function(){
 		$('#prodImgModal').modal('hide');	
 	};
-},
-
-categoryCtrlr = function($scope, $http){
-	
-	$scope.products = [];
-	$scope.categoryName = _pageCatName; /*Defined in the HTML page*/
-	
-	$scope.getProducts = function(){
-		
-		$http.get(_lbUrls.catprds + $scope.categoryName, {
-			params : { 
-				'hidepop' : true  //tells the config not to show the loading popup
-			}
-		})
-		.then(function(response){
-			var data = response ? response.data : '';
-			if(data){
-				$scope.products = data;
-			}
-			else{	
-				$scope.pageLevelError = "There was some error getting the products."
-					+" Please contact the support";
-			}
-
-		},
-		function(){
-			$scope.pageLevelError = "There was some error getting the products."
-				+" Please contact the support";
-		});	
-		
-	};
-	
-	if($scope.categoryName != ''){ 
-		$scope.getProducts();
-	}
 },
 
 loginCtrlr = function($scope, $http){
@@ -880,8 +845,12 @@ cartCtrlr = function($scope, $rootScope, $http){
 	$scope.goodToProceed = false;
 	$scope.showPayment = false;
 	$scope.cardData = null;	
+	
+	$scope.deliveryOptionSelected = false;
 	$scope.deliveryEligible = false;
 	$scope.shippingEligible = false;
+	$scope.deliverySelected = false;
+	$scope.shippingSelected = false;
 	
 	if(_globalUserId) $scope.user._id = _globalUserId;
 	
@@ -942,7 +911,7 @@ cartCtrlr = function($scope, $rootScope, $http){
 			$scope.addressValidated = true; 
 			
 			$scope.mainZip = $scope.user.billing.zip;
-			$scope.validateZip(false);
+			$scope.validateZip(true);
 			
 			/* Show payment info, if cardData is missing, build the form fresh. */
 			$scope.showPayment = true;							
@@ -1127,9 +1096,27 @@ cartCtrlr = function($scope, $rootScope, $http){
 		
 	};	
 	
+	$scope.resetDeliveryOptions = function(){
+		$scope.deliveryEligible = false;
+		$scope.shippingEligible = false;
+		$scope.deliveryOptionSelected = false;
+		$scope.deliverySelected = false;
+		$scope.shippingSelected = false;
+	};
 	
-	$scope.validateZip = function(noalert){
-		$http.post(_lbUrls.cart + '/validatezip',{
+	$scope.checkDeliveryOptions = function(){
+		$scope.validateZip();
+		
+		if($scope.user && $scope.user.billing){
+			$scope.user.billing.zip = $scope.mainZip;
+		}
+	};
+	
+	$scope.validateZip = function(auto){
+		$scope.pageLevelAlert = '';
+		$scope.resetDeliveryOptions();
+		
+		$http.get(_lbUrls.cart + '/validatezip',{
 			params : { 
 				'hidepop' : true,  //tells the config not to show the loading popup
 				'zip' : $scope.mainZip
@@ -1138,17 +1125,33 @@ cartCtrlr = function($scope, $rootScope, $http){
 		.then(
 				function(resp){
 					if(resp.data && resp.data.success){
-						if(resp.data.message = "both"){
+						if(resp.data.message == "both"){
 							$scope.deliveryEligible = true;
 							$scope.shippingEligible = true;
+							
+							//If both option available, select delivery in auto mode.
+							if(auto){
+								$scope.deliverySelected = true;
+								$scope.deliveryOptionSelected = true;
+							}
 						}
-						else if(resp.data.message = "local"){
-							$scope.deliveryEligible = true;							
+						else if(resp.data.message == "local"){
+							$scope.deliveryEligible = true;		
+							
+							if(auto){
+								$scope.deliverySelected = true;
+								$scope.deliveryOptionSelected = true;
+							}
 						}
-						else if(resp.data.message = "shipping"){
-							$scope.shippingEligible = true;							
+						else if(resp.data.message == "shipping"){
+							$scope.shippingEligible = true;		
+							
+							if(auto){
+								$scope.shippingSelected = true;
+								$scope.deliveryOptionSelected = true;
+							}					
 						}
-						else if(!noalert){
+						else if(!auto){
 							$scope.pageLevelAlert = "Sorry, we currently don't service your area. " 
 								+ "We are working very hard on expanding to your city. " 
 								+ "We will safeguard your information till then, " 
@@ -1162,6 +1165,49 @@ cartCtrlr = function($scope, $rootScope, $http){
 				}
 		);
 	};
+	
+	/* Google MAPS API related Functions */
+	$scope.gmapComponentForm = {
+	        street_number: 'short_name',
+	        route: 'long_name',
+	        locality: 'long_name',
+	        administrative_area_level_1: 'short_name',
+	        postal_code: 'short_name'
+	};
+	$scope.geolocate = function() {
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(function(position) {
+				var geolocation = {
+						lat: position.coords.latitude,
+						lng: position.coords.longitude
+				};
+				var circle = new google.maps.Circle({
+					center: geolocation,
+					radius: position.coords.accuracy
+				});
+				
+				$scope.autocomplete.setBounds(circle.getBounds());
+			});
+		}
+	};
+	$scope.fillInAddress = function(){
+		var place = $scope.autocomplete.getPlace();
+		for (var i = 0; i < place.address_components.length; i++) {
+			var addressType = place.address_components[i].types[0];
+			if ($scope.gmapComponentForm[addressType]) {
+				var val = place.address_components[i][$scope.gmapComponentForm[addressType]];
+				document.getElementById(addressType).value = val;
+			}
+		}
+	};
+	$scope.mapsInit = function(){
+		$scope.autocomplete = new google.maps.places.Autocomplete(
+				(document.getElementById('route')),
+	            {types: ['geocode']});
+		
+		$scope.autocomplete.addListener('place_changed', $scope.fillInAddress);
+	};
+	$scope.mapsInit();
 	
 	
 	$scope.removeCoupon = function(){
@@ -1493,7 +1539,6 @@ lbApp
 
 
 .controller('allProductCtrlr', allProductCtrlr)
-.controller('categoryCtrlr', categoryCtrlr)
 .controller('productCtrlr', productCtrlr)
 .controller('loginCtrlr', loginCtrlr)
 .controller('registerCtrlr', registerCtrlr)

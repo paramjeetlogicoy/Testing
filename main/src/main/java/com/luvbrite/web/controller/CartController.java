@@ -516,18 +516,24 @@ public class CartController {
 		boolean shipping = false;
 		
 		List<Integer> localZipcodes = controlOptions.getLocalZipcodes();
-		for(Integer lz : localZipcodes){
-			if((int)lz == zipcode){
-				local = true;
-				break;
+		if(localZipcodes!=null){
+			for(Integer lz : localZipcodes){
+		
+				if((int)lz == zipcode){
+					local = true;
+					break;
+				}
 			}
 		}
 
 		List<Integer> shippingZipcodes = controlOptions.getShippingZipcodes();
-		for(Integer sz : shippingZipcodes){
-			if((int)sz == zipcode){
-				shipping = true;
-				break;
+		if(shippingZipcodes!=null){
+			for(Integer sz : shippingZipcodes){
+		
+				if((int)sz == zipcode){
+					shipping = true;
+					break;
+				}
 			}
 		}
 		
