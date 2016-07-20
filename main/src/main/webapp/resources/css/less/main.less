@@ -164,6 +164,7 @@ header{
 
 /* body */
 .page-container:extend(.pad-t3){
+	min-height: 380px;
 
 	@media(min-width:768px){
 		min-height: 650px;
@@ -469,6 +470,8 @@ nav#pagination-nav{
 }
 .home-categories:extend(.automarg,.text-center){
 	max-width: 830px;
+	padding-left: 15px;
+	padding-right: 15px;
 
 	>div:extend(.pad-t3){}
 
@@ -496,17 +499,20 @@ nav#pagination-nav{
 	.hc-img{		
 		.marg-b1;
 		.show;
+		.automarg;
 
 		background-repeat: no-repeat;
 		background-position: center right;
 		background-size: 200% auto;
 		height:270px;
+		max-width: 256px;
 	}
 
 	.hc-topicals,
 	.hc-concentrates{
 		.hc-img{
 			height:165px;
+    		max-width:185px;
 		}		
 	}
 
@@ -571,8 +577,14 @@ nav#pagination-nav{
 		padding:0 13.5px;
 		text-align: left;
 		display: inline-block;
-		width: 370px;
-    	height: 405px;
+		
+		width: 320px;
+    	height: 366px;
+
+		@media (min-width: 370px){
+			width: 370px;
+			height: 405px;
+		}
 
 		@media (min-width: 1245px){
 			width: 307.5px;
@@ -615,10 +627,10 @@ nav#pagination-nav{
 
 		.no-preserve3d &{
 			transform: rotateY(0deg);
-			display:none;
+			z-index:-1;
   			opacity: 0;
-  			visibility:hidden;
-  			transition: visibility 0s linear 0.5s,opacity 0.5s linear;
+  			visibility: hidden;
+  			transition: visibility 0s,opacity 0.3s linear;
 		}
 	}
 
@@ -636,10 +648,13 @@ nav#pagination-nav{
 	}
 
 	ul{
-		max-height: 274px;
+		max-height: 260px;
     	overflow-y: auto;
     	overflow-x: hidden;
 
+		@media (min-width: 370px){
+			max-height: 274px;
+		}
 
 		@media (min-width: 1245px){
 			.size12();
@@ -669,7 +684,12 @@ nav#pagination-nav{
 
 	.product-options{    	
     	ul{
-			max-height: 233px;
+			
+    		max-height: 196px;
+
+			@media (min-width: 370px){
+				max-height: 233px;
+			}
 
 			@media (min-width: 1245px){
 				max-height: 180px;
@@ -713,6 +733,8 @@ nav#pagination-nav{
 
 .product-item{
 	border:1px solid #eee;
+	opacity: 1;
+  	transition: visibility 0s,opacity 0.3s linear;
 	
 	.pc-img-holder{
 		.marg-b2;
@@ -757,13 +779,14 @@ nav#pagination-nav{
 			transform: rotateY(0deg);
 
 			.pi-cards.pi-info{
-				display:block;
+				z-index:2;
   				opacity: 1;
   				visibility:visible;
 			}
 
 			.pi-cards.product-item{
-				display:none;
+				opacity: 0;
+				z-index: 0;
 			}
 		}
 	}
@@ -779,13 +802,14 @@ nav#pagination-nav{
 			transform: rotateY(0deg);
 
 			.pi-cards.pi-info{
-				display:block;
+				z-index:2;
   				opacity: 1;
   				visibility:visible;
 			}
 
 			.pi-cards.product-item{
-				display:none;
+				opacity: 0;
+				z-index: 0;
 			}
 		}
 	}

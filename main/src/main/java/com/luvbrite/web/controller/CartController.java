@@ -615,7 +615,8 @@ public class CartController {
 		 * the cart loads.
 		 **/
 		
-		cartPostProcessing(order, true /*reapply coupon*/);
+		if(order !=null) 
+			cartPostProcessing(order, true /*reapply coupon*/);
 		
 		
 		cr.setOrder(order);
