@@ -94,7 +94,7 @@ public class OrderFinalization {
 		o.setDate(Calendar.getInstance().getTime());
 		
 		if(co.getBilling() != null) 	o.setBilling(co.getBilling());
-		if(co.getPmtMethod() != null) 	o.setPmtMethod(co.getPmtMethod());
+		if(co.getShipping() != null) 	o.setShipping(co.getShipping());
 		if(co.getNotes() != null) 		o.setNotes(co.getNotes());
 		if(co.getCustomer() != null) 	o.setCustomer(co.getCustomer());
 		

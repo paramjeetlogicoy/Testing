@@ -112,7 +112,7 @@
 								</td>
 							</tr>
 
-							<tr th:if="*{billing}">
+							<tr th:if="*{shipping.address}">
 								<td>
 
 									<table border="0" cellspacing="0" cellpadding="0" align="left"
@@ -130,16 +130,18 @@
 												</td>
 											</tr>
 											<tr>
-												<td><div>
-														<span th:text="*{billing.firstName}"></span> <span
-															th:text="*{billing.lastName}"></span><br /> <span
-															th:text="*{billing.address1}"></span> <span
-															th:text="*{billing.address2}"></span><br /> <span
-															th:text="*{billing.city}"></span>, <span
-															th:text="*{billing.state}"></span> <span
-															th:text="*{billing.zip}"></span> <span
-															th:if="*{billing.phone}"><br />Ph: <span
-															th:text="*{billing.phone}"></span></span>
+												<td>
+													<div><strong th:text="*{shipping.deliveryMethod}"></strong></div>
+													<div>
+														<span th:text="*{shipping.address.firstName}"></span> <span
+															th:text="*{shipping.address.lastName}"></span><br /> <span
+															th:text="*{shipping.address.address1}"></span> <span
+															th:text="*{shipping.address.address2}"></span><br /> <span
+															th:text="*{shipping.address.city}"></span>, <span
+															th:text="*{shipping.address.state}"></span> <span
+															th:text="*{shipping.address.zip}"></span> <span
+															th:if="*{shipping.address.phone}"><br />Ph: <span
+															th:text="*{shipping.address.phone}"></span></span>
 													</div></td>
 
 											</tr>

@@ -1,0 +1,161 @@
+<div ng-controller="cartPaymentCtrlr">
+
+	<div class="cart-details">
+		<h4 class="cart-steps">Step3: Payment Information</h4>
+
+		<div class="row marg-b3" ng-hide="pmtMethod">
+			<h6 class="col-sm-12 orange">Select a Payment Method</h6>
+			<div class="col-sm-6">
+				<div class="radio">
+					<label> <input type="radio" ng-model="pmtMethod"
+						value="cod" /> Cash On Delivery
+					</label>
+				</div>
+			</div>
+
+			<div class="col-sm-6">
+				<div class="radio">
+					<label> <input type="radio" ng-model="pmtMethod"
+						value="cc" ng-click="squareUpInit()" /> Credit
+						Card
+					</label>
+				</div>
+			</div>
+		</div>
+
+
+		<div ng-show="pmtMethod == 'cc'">
+			<h5>Payment Method - Credit Card <a href="" ng-show="pmtChangable"
+					ng-click="pmtMethod='';clearReview();" class="marg-l2 size13"><i
+					class="fa fa-pencil" aria-hidden="true"></i> <em>change </em></a>
+			</h5>
+			<div class="cart-payment clearfix" ng-hide="m.cardData">
+				<form name="cartPayment" ng-submit="reqCardNonce()">
+					<div class="row">
+						<div class="col-sm-5">
+							<div class="form-group">
+								<label class="control-label">Card Number<sup>*</sup></label>
+								<div id="sq-card-number"></div>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group">
+										<label class="control-label">CVV<sup>*</sup></label>
+										<div id="sq-cvv"></div>
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<div class="form-group">
+										<label class="control-label">Exp. Date<sup>*</sup></label>
+										<div id="sq-expiration-date"></div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+						<div class="col-sm-3">
+							<div class="form-group">
+								<label class="control-label">Postal Code<sup>*</sup></label>
+								<div id="sq-postal-code"></div>
+							</div>
+						</div>
+					</div>
+
+					<div class="alert alert-danger alert-dismissible" role="alert"
+						ng-show="m.ccErrors">
+						<button type="button" class="close" ng-click="m.ccErrors=''"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<strong>Warning!</strong> <span ng-bind="m.ccErrors"></span>
+					</div>
+
+					<div class="text-center">
+						<button type="submit" class="btn btn-lb btn-lb-w"
+							ng-disabled="nonceRequesting">
+							<strong>NEXT</strong> <i ng-show="nonceRequesting"
+								class="fa fa-spinner fa-spin fa-fw"></i>
+						</button>
+					</div>
+
+				</form>
+			</div>
+
+			<div class="cart-payment" ng-show="m.cardData">
+				<div class="pad-v3">
+					<div class="row">
+						<div class="col-xs-8 border-r">
+
+							<div class="row">
+								<div class="col-sm-7 pad-r0">
+									<div class="cc-frame rel">
+
+										<div class="abs cc-type">
+											<i ng-if="m.cardData.card_brand=='VISA'" class="fa fa-cc-visa"
+												aria-hidden="true"></i> <i
+												ng-if="m.cardData.card_brand=='MASTERCARD'"
+												class="fa fa-cc-mastercard" aria-hidden="true"></i> <i
+												ng-if="m.cardData.card_brand=='AMERICAN_EXPRESS'"
+												class="fa fa-cc-amex" aria-hidden="true"></i> <i
+												ng-if="m.cardData.card_brand=='DISCOVER'"
+												class="fa fa-cc-discover" aria-hidden="true"></i> <i
+												ng-if="m.cardData.card_brand=='JCB'" class="fa fa-cc-jcb"
+												aria-hidden="true"></i><i
+												ng-if="m.cardData.card_brand=='DISCOVER_DINERS'"
+												class="fa fa-cc-diners-club" aria-hidden="true"></i>
+										</div>
+
+										<div class="abs cc-number size16">
+											<span ng-repeat="x in [1,2,3]">&bull;&bull;&bull;&bull;</span>
+											<strong class="cc-shown">{{m.cardData.last_4}}</strong>
+										</div>
+
+										<div class="abs cc-expiry size11">Exp:
+											{{m.cardData.exp_month + '/' + m.cardData.exp_year}}</div>
+									</div>
+								</div>
+
+								<div class="col-sm-5 marg-t1">
+									<div class="marg-b05">{{m.cardData.card_brand.replace('_','
+										')}} &bull;&bull;&bull; {{m.cardData.last_4}}</div>
+									<div class="size11 grey7">
+										Expires at {{m.cardData.exp_month + '/' + m.cardData.exp_year}}<br />
+										Zipcode {{m.cardData.billing_postal_code}}
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+						<div class="col-xs-4 marg-t1">
+							<a href="" ng-click="m.cardData = null;clearReview();" class="pad1 inherit"><i
+								class="fa fa-pencil" aria-hidden="true"></i> <em>edit card info</em></a>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+
+		<div ng-show="pmtMethod == 'cod'">
+			<div class="cart-payment">
+				<h5>
+					Payment Method<a href="" ng-show="pmtChangable"
+						ng-click="pmtMethod='';clearReview();" class="marg-l2 size13"><i
+						class="fa fa-pencil" aria-hidden="true"></i> <em>change </em></a>
+				</h5>
+				<div class="marg-l2 marg-b3">Cash on Delivery</div>
+
+				<div class="text-center" ng-hide="reviewLoaded">
+					<button type="button" class="btn btn-lb btn-lb-w"
+						ng-click="proceedToReview()">
+						<strong>REVIEW ORDER</strong>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

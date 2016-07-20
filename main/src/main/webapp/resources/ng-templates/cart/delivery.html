@@ -1,0 +1,225 @@
+<div class="cart-details" ng-controller="cartDeliveryCtrlr">
+	<h4 class="cart-steps">
+		Step2: <span ng-hide="deliveryOptionSelected">Choose a </span>Delivery
+		Options
+	</h4>
+
+	<div class="clearfix deliveryOptions rel"
+		ng-hide="deliveryOptionSelected">
+		<div class="col-xs-6 delivery">
+			<p>Local Delivery</p>
+			<div ng-show="deliveryEligible">
+				Awesome! We do local delivery at your zipcode.
+				<div class="marg-t1">
+					<a href="" class="btn btn-sm btn-default"
+						ng-click="deliverySelected=true;selectDeliveryOption()">Let's
+						Go</a>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-6 shipping">
+			<p>Overnight Shipping</p>
+			<div ng-show="shippingEligible">
+				Awesome! We currently do overnight shipping to your zipcode.
+				<div class="marg-t1">
+					<a href="" class="btn btn-sm btn-default"
+						ng-click="shippingSelected=true;selectDeliveryOption()">Let's
+						Go</a>
+				</div>
+			</div>
+		</div>
+		<form class="abs" ng-submit="checkDeliveryOptions()"
+			ng-hide="deliveryEligible || shippingEligible">
+			<div class="input-group">
+				<input type="text" class="form-control" ng-model="mainZip"
+					placeholder="Enter Zipcode" /><span class="input-group-btn">
+					<button class="btn btn-default" type="submit">Check!</button>
+				</span>
+			</div>
+		</form>
+		<div class="col-xs-12 text-center marg-t1"
+			ng-show="deliveryEligible || shippingEligible">
+			<a href="" class="u" ng-click="resetDeliveryOptions()">Try
+				another Zipcode.</a>
+		</div>
+	</div>
+
+	<div ng-if="invalidZip">
+		<div class="marg-t2">
+			<div class="alert alert-warning" role="alert">
+				<span ng-bind-html="invalidZip"></span>
+			</div>
+		</div>
+	</div>
+
+	<div class="cart-address" ng-show="deliveryOptionSelected">
+		<div class="cart-address" ng-hide="m.addressSaved">
+			
+			<div class="pad-h1 bg-green2 marg-b2 white"
+				ng-show="deliverySelected">
+				<strong>Local Delivery</strong> <a href=""
+					ng-click="resetDeliveryOptions()" class="inlineb pad1 inherit"><i
+					class="fa fa-pencil" aria-hidden="true"></i> <em>change</em></a>
+			</div>
+			
+			<div class="pad-h1 bg-orange2 marg-b2 white"
+				ng-show="shippingSelected">
+				<strong>Overnight Shipping</strong> <a href=""
+					ng-click="resetDeliveryOptions()" class="inlineb pad1 inherit"><i
+					class="fa fa-pencil" aria-hidden="true"></i> <em>change</em></a>
+			</div>
+			
+			<form id="cartAddress" name="cartAddress" ng-submit="saveDeliveryAddress()">
+				<div class="row">
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label class="control-label">First Name<sup>*</sup></label> <input
+								type="text" class="form-control" required="required"
+								ng-model="m.user.billing.firstName" ng-blur="formElemValidate($event)" />
+							<p class="help-block onerror">First Name is required</p>
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label class="control-label">Last Name<sup>*</sup></label> <input
+								type="text" class="form-control" required="required"
+								ng-blur="formElemValidate($event)" ng-model="m.user.billing.lastName" />
+							<p class="help-block onerror">Last Name is required</p>
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label class="control-label">Phone<sup>*</sup></label> <input
+								type="text" class="form-control" ng-model="m.user.billing.phone"
+								required="required" ng-blur="formElemValidate($event)" />
+							<p class="help-block onerror">Phone number is required</p>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-8">
+						<div class="form-group">
+							<label class="control-label">Address<sup>*</sup></label> <input
+								type="text" class="form-control" required="required"
+								ng-blur="formElemValidate($event)" id="addressLocator"
+								ng-model="m.user.billing.address1" />
+							<p class="help-block onerror">Address is required</p>
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label class="control-label">Suite/Apt</label> <input type="text"
+								class="form-control" ng-model="m.user.billing.address2" />
+						</div>
+					</div>
+				</div>
+				<div class="row marg-b3">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label">City<sup>*</sup></label> <input
+								type="text" required="required" ng-blur="formElemValidate($event)"
+								class="form-control" ng-model="m.user.billing.city" />
+							<p class="help-block onerror">City is required</p>
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class="form-group">
+							<label class="control-label">State<sup>*</sup></label> <input
+								type="text" required="required" ng-blur="formElemValidate($event)"
+								class="form-control" ng-model="m.user.billing.state" />
+							<p class="help-block onerror">State is required</p>
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class="form-group">
+							<label class="control-label">Zip Code<sup>*</sup></label> <input
+								type="text" required="required" ng-blur="formElemValidate($event)"
+								class="form-control" ng-model="m.user.billing.zip" />
+							<p class="help-block onerror">Zipcode is required</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="text-center">
+					<button type="submit" class="btn btn-lb btn-lb-w"
+						ng-disabled="cartAddress.$invalid">
+						<strong>Save Address</strong>
+					</button>
+				</div>
+
+			</form>
+
+			<div ng-if="addressError">
+				<div class="marg-t2">
+					<div class="alert alert-warning" role="alert">
+						<span ng-bind-html="invalidZip"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="cart-address-info" ng-show="m.addressSaved">
+
+			<div class="pad-h1 bg-green2 marg-b2 white"
+				ng-show="deliverySelected">
+				Delivery Method: <strong>Local Delivery</strong> <a href=""
+					ng-click="resetDeliveryOptions()" class="inlineb pad1 inherit"><i
+					class="fa fa-pencil" aria-hidden="true"></i> <em>change</em></a>
+			</div>
+
+			<div class="pad-h1 bg-orange2 marg-b2 white"
+				ng-show="shippingSelected">
+				Delivery Method: <strong>Overnight Shipping</strong> <a href=""
+					ng-click="resetDeliveryOptions()" class="inlineb pad1 inherit"><i
+					class="fa fa-pencil" aria-hidden="true"></i> <em>change</em></a>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-5 marg-b2">
+					<div class="delivery-address"></div>
+				</div>
+				<div class="col-sm-7">
+					<h6>Address</h6>
+					<div class="cart-address-holder">
+						<div class="row">
+							<div class="col-xs-8">
+								<div>{{m.user.billing.address1}} {{m.user.billing.address2 ? ', '
+									+ m.user.billing.address2 : ''}}</div>
+								<div>
+									<small>{{m.user.billing.city + ', ' + m.user.billing.state
+										+ ' ' + m.user.billing.zip}}</small>
+								</div>
+							</div>
+							<div class="col-xs-4 text-right">
+								<a href="" ng-click="editAddress()" class="inlineb pad1 inherit"><i
+									class="fa fa-pencil" aria-hidden="true"></i> <em>edit</em></a>
+							</div>
+						</div>
+					</div>
+					<div>
+						<h6>Delivery Instructions</h6>
+						<div>
+							<textarea class="form-control"
+								ng-model="m.order.notes.deliveryNotes"
+								ng-change="saveDeliveryNotes()"
+								ng-model-options="{updateOn: 'blur'}"
+								placeholder="e.g. Gate code, call upon arrival"></textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<div ng-if="!m.user._id">
+	<div class="cart-details">
+		<div class="alert alert-info marg-b0">
+			Please <a href="/login?ret=/cart" class="u">login to you account</a>
+			to review and place the order. If you don't have an account with us,
+			please visit our <a href="/register" class="u">patient
+				registration</a> page.
+		</div>
+	</div>
+</div>

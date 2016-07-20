@@ -56,14 +56,14 @@
 							<div class="col-sm-4">
 								<h5>Billing Details</h5>
 								<dl>
-									<dt>Address:</dt>
-									<dd>
-										{{o.billing.firstName}} {{o.billing.lastName}}<br />
-										{{o.billing.address1}} {{o.billing.address2}}<br />
-										{{o.billing.city}}, {{o.billing.state}} {{o.billing.zip}}
-
-									</dd>
+									<dt>Payment:</dt>
+									<dd ng-if="o.billing.pmtMethod.method=='cc'">
+										{{o.billing.pmtMethod.cardData.card_brand}} Card ending in
+										{{o.billing.pmtMethod.cardData.last_4}}</dd>
+									<dd ng-if="o.billing.pmtMethod.method=='cod'">
+										{{o.billing.pmtMethod.type}}</dd>
 								</dl>
+
 								<dl ng-if="o.billing.email">
 									<dt>Email:</dt>
 									<dd>{{o.billing.email}}</dd>
@@ -72,13 +72,29 @@
 									<dt>Phone:</dt>
 									<dd>{{o.billing.phone}}</dd>
 								</dl>
+
+
+								<h5>Delivery Details</h5>
+								<dl>
+									<dt>Method:</dt>
+									<dd>{{o.shipping.deliveryMethod}}</dd>
+									<dt>Address:</dt>
+									<dd>
+										{{o.shipping.address.firstName}}
+										{{o.shipping.address.lastName}}<br />
+										{{o.shipping.address.address1}}
+										{{o.shipping.address.address2}}<br />
+										{{o.shipping.address.city}}, {{o.shipping.address.state}}
+										{{o.shipping.address.zip}}
+									</dd>
+								</dl>
 							</div>
 
 							<div class="col-sm-3">
 								<h5>Notes</h5>
 								<div>
 									<dl ng-if="o.notes.deliveryNotes">
-										<dt>Delivery Schedule:</dt>
+										<dt>Delivery Notes:</dt>
 										<dd>
 											<span class="size12">{{o.notes.deliveryNotes}}</span>
 										</dd>

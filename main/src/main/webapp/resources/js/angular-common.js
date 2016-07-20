@@ -214,6 +214,11 @@ allProductCtrlr = function($scope, $rootScope, $http, $templateRequest, $compile
 		}
 
 		$scope.addingToCart = true;
+		
+		//Reset Messages
+		$scope.itemError = '';
+		$scope.itemSuccess = '';
+		
 		$http.post(_lbUrls.addtocart+'/multi/?hidepop', lineItems)
 		.then(function(resp){
 			
@@ -231,10 +236,6 @@ allProductCtrlr = function($scope, $rootScope, $http, $templateRequest, $compile
 				
 				//Reset itemTotal
 				$scope.itemTotal = 0;
-				
-				//Reset Messages
-				$scope.itemError = '';
-				$scope.itemSuccess = '';
 			}
 			else {
 				$scope.itemError  = resp.data.message;
@@ -828,7 +829,7 @@ productCtrlr = function($scope, $rootScope, $http){
 	$scope.zoomFn.activate();
 },
 
-cartCtrlr = function($scope, $rootScope, $http){
+cartCtrlrBkp = function($scope, $rootScope, $http){
 	
 	$scope.order = {};	
 	$scope.pageLevelAlert='';	
@@ -1032,7 +1033,10 @@ cartCtrlr = function($scope, $rootScope, $http){
 							if(!$scope.cardData 
 									&& $scope.user && $scope.user._id){
 								
-								$scope.paymentForm.build();
+								/*Destroy if already build*/
+								try{paymentForm.destroy();}catch(e){}
+								
+								try{$scope.paymentForm.build();;}catch(e){}
 								$scope.paymentForm.setPostalCode($scope.user.billing.zip);
 							}
 							
@@ -1092,8 +1096,7 @@ cartCtrlr = function($scope, $rootScope, $http){
 		if($scope.order._id && $scope.order.notes.deliveryNotes){			
 			$http.post(_lbUrls.cart + $scope.order._id + '/savedeliverynote?hidepop',
 				{'deliveryNotes':$scope.order.notes.deliveryNotes});			
-		}
-		
+		}		
 	};	
 	
 	$scope.resetDeliveryOptions = function(){
@@ -1166,12 +1169,14 @@ cartCtrlr = function($scope, $rootScope, $http){
 		);
 	};
 	
+	
+	
 	/* Google MAPS API related Functions */
 	$scope.gmapComponentForm = {
 	        street_number: 'short_name',
-	        route: 'long_name',
-	        locality: 'long_name',
-	        administrative_area_level_1: 'short_name',
+	        route: 'short_name', //Street Address
+	        locality: 'long_name',  //city
+	        administrative_area_level_1: 'short_name',  //State
 	        postal_code: 'short_name'
 	};
 	$scope.geolocate = function() {
@@ -1191,23 +1196,64 @@ cartCtrlr = function($scope, $rootScope, $http){
 		}
 	};
 	$scope.fillInAddress = function(){
-		var place = $scope.autocomplete.getPlace();
+		var place = $scope.autocomplete.getPlace(),
+		streetNumber = '',
+		streetAddr = '';
+		
 		for (var i = 0; i < place.address_components.length; i++) {
 			var addressType = place.address_components[i].types[0];
 			if ($scope.gmapComponentForm[addressType]) {
 				var val = place.address_components[i][$scope.gmapComponentForm[addressType]];
-				document.getElementById(addressType).value = val;
+				
+				switch(addressType){
+				
+					case 'street_number':
+						streetNumber = val; 
+						break;
+						
+					case 'route':
+						streetAddr = val; 
+						break;
+					
+					case 'locality':
+						$scope.user.billing.city = val; 
+						break;
+					
+					case 'administrative_area_level_1':
+						$scope.user.billing.state = val; 
+						break;
+					
+					case 'postal_code':
+						$scope.user.billing.zip = val; 
+						break;
+						
+					default:
+						break;
+				}
 			}
 		}
+		
+		$scope.user.billing.address1 = streetNumber? (streetNumber + ' ' + streetAddr) : streetAddr;
+		try{$scope.$apply();}catch(err){}
 	};
 	$scope.mapsInit = function(){
 		$scope.autocomplete = new google.maps.places.Autocomplete(
-				(document.getElementById('route')),
-	            {types: ['geocode']});
+				(document.getElementById('addressLocator')),
+	            {
+					types: ['geocode'],
+					componentRestrictions: {country: 'us'}
+				});
 		
 		$scope.autocomplete.addListener('place_changed', $scope.fillInAddress);
+		$scope.geolocate();
+		
+		//initialize address variables
+		if(!$scope.user) $scope.user = {};		
+		if(!$scope.user.billing) $scope.user.billing = {};
 	};
 	$scope.mapsInit();
+	/* Google MAPS API related Functions Ends */
+	
 	
 	
 	$scope.removeCoupon = function(){
@@ -1455,6 +1501,8 @@ cartCtrlr = function($scope, $rootScope, $http){
 		
 		$scope.nonceRequesting = false;
 		try{$scope.$apply();}catch(err){}
+		
+		$scope.processOrder();
 	};
 	
 	$scope.unsupportedBrowserDetected = function() {
@@ -1529,6 +1577,1007 @@ cartCtrlr = function($scope, $rootScope, $http){
 		  $scope.nonceRequesting = true;
 		  $scope.paymentForm.requestCardNonce();
 	  };
+},
+
+cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
+	var m = this;
+	m.order = {};	
+	m.user = {};
+	m.orderMin = 9999;
+	m.config = {};
+	m.sales = [];
+	
+	m.cartLoading = true;
+	m.pmtCOD = false;
+	
+	m.cartData = null;
+	m.ccErrors = '';
+
+	$scope.pageLevelAlert='';
+	
+	if(_globalUserId) m.user._id = _globalUserId;
+
+	m.cartLoadSuccess = function(resp){
+		
+		m.cartLoading = false;
+		m.order = resp.data.order;
+		
+		/*If we have customer info, set it to proper scope variable*/
+		m.user = resp.data.user?resp.data.user:{};
+		
+		/*General Control configurations*/
+		if(resp.data.config){			
+			m.config = resp.data.config;
+			if(m.config.orderMinimum && m.config.orderMinimum > 0){				
+				m.orderMin = m.config.orderMinimum;
+			}
+		}		
+
+		/*Perform this last*/
+		if(m.order){ 
+			m.processOrder();
+		}
+		
+		
+		m.loadItemTemplate();
+		
+		if(!m.emptyCart){
+			m.loadDeliveryTemplate();
+			m.loadCouponTemplate();
+		}
+	};
+	
+	m.cartLoadError = function(){
+		m.cartLoading = false;
+	};
+	
+	
+	m.getCart = function(){
+		$http.get(_lbUrls.getcart, {
+			params : { 
+				'hidepop' : true  //tells the config not to show the loading popup
+			}
+		})
+		.then(m.cartLoadSuccess, m.cartLoadError);
+	};
+	
+	m.getCart();
+		
+	
+	//Load item template
+	m.loadItemTemplate = function(){
+		
+		$scope.ivm = $scope.$new();
+				
+		$templateRequest("/resources/ng-templates/cart/item.html")
+		.then(function(html){
+		      var template = angular.element(html);
+		      angular.element('#itemCtrlr')
+		      .append(template);
+		      
+		      $compile(template)($scope.ivm);
+		 });
+	};
+		
+	
+	//Load coupon template
+	m.loadCouponTemplate = function(){
+		
+		$scope.cvm = $scope.$new();
+			
+		$templateRequest("/resources/ng-templates/cart/coupon.html")
+		.then(function(html){
+		      var template = angular.element(html);
+		      angular.element('#couponCtrlr')
+		      .append(template);
+		      
+		      $compile(template)($scope.cvm);
+		 });
+	};
+	
+	//destroy coupon template
+	m.destroyCouponTemplate = function(){		
+		if($scope.cvm){
+			$scope.cvm.$destroy();
+			angular.element('#couponCtrlr').empty();
+		}
+	};
+		
+	
+	//Load delivery template
+	m.loadDeliveryTemplate = function(){
+		
+		$scope.dvm = $scope.$new();
+				
+		$templateRequest("/resources/ng-templates/cart/delivery.html")
+		.then(function(html){
+		      var template = angular.element(html);
+		      angular.element('#deliveryCtrlr')
+		      .append(template);
+		      
+		      $compile(template)($scope.dvm);
+		 });
+	};
+		
+	
+	//Load payment template
+	m.loadPaymentTemplate = function(){
+		
+		$scope.pvm = $scope.$new();
+			
+		$templateRequest("/resources/ng-templates/cart/payment.html")
+		.then(function(html){
+		      var template = angular.element(html);
+		      angular.element('#paymentCtrlr')
+		      .append(template);
+		      
+		      $compile(template)($scope.pvm);
+		 });
+	};	
+	
+	//destroy payment template
+	m.destroyPaymentTemplate = function(){		
+		if($scope.pvm){
+			$scope.pvm.$destroy();
+			angular.element('#paymentCtrlr').empty();
+		}
+		
+		//Destory review as well;
+		m.destroyReviewTemplate();
+	};
+		
+	
+	//Load review template
+	m.loadReviewTemplate = function(){
+		
+		$scope.rvm = $scope.$new();
+				
+		$templateRequest("/resources/ng-templates/cart/review.html")
+		.then(function(html){
+		      var template = angular.element(html);
+		      angular.element('#reviewCtrlr')
+		      .append(template);
+		      
+		      $compile(template)($scope.rvm);
+		 });
+	};
+	
+	//destroy payment template
+	m.destroyReviewTemplate = function(){		
+		if($scope.rvm){
+			$scope.rvm.$destroy();
+			angular.element('#reviewCtrlr').empty();
+		}
+	};
+	
+	
+	m.couponApplied = true;  //Only refers to coupons
+	m.offersApplied = false; //Refers to all kinds of offers
+	m.emptyCart = true;
+	m.addressSaved = false;
+	m.codEnabled = true;
+	m.ccPmtEnabled = true;
+	
+	/* When ever there is a change in m.order, this function needs to be called 
+	 * most of the logic control flags are set here. */
+	m.processOrder = function(){
+		
+		m.sales = [];		
+		
+		var couponApplied = false,
+			offersApplied = false,
+			emptyCart = true;
+		
+		
+		if(m.order.lineItems && m.order.lineItems.length>0){
+			m.order.lineItems.forEach(function(item){
+				
+				if(item.instock){
+					
+					if(item.type=='item'){					
+						emptyCart = false;
+					}
+					
+					
+					if(item.type=='coupon'){					
+						couponApplied = true;
+					}
+					
+					
+					if(item.promo && item.promo != ''){					
+						offersApplied = true;
+					}
+					
+					
+					
+					if(item.type=='item' 
+						&& (item.promo == 's' || item.promo == 'doubledownoffer')){
+						
+						var productName = item.name.length>15?item.name.substr(0,15)+'...':item.name,
+						discount = (item.cost - item.price)*item.qty;
+						
+						
+						if(item.promo == 'doubledownoffer')
+							productName = 'Double Down Offer';
+							
+						
+						if(!isNaN(discount) && discount > 0){						
+							m.sales.push({
+								'name' : productName,
+								'price' : discount
+							});
+						}
+						
+					}
+				}
+			})
+		}	
+		
+		
+		m.couponApplied = couponApplied;
+		m.offersApplied = offersApplied;
+		m.emptyCart = emptyCart;
+		
+		if(m.emptyCart){
+			
+			if($scope.dvm){
+				$scope.dvm.$destroy();
+				angular.element('#deliveryCtrlr').empty();
+			}
+
+			
+			if($scope.ivm){
+				$scope.ivm.$destroy();
+				angular.element('#itemCtrlr').empty();
+			}
+
+			//Destroy coupon template
+			m.destroyCouponTemplate();
+			
+			//This will destroy payment and review if exists!
+			m.destroyPaymentTemplate();
+
+		}
+		
+	};
+},
+
+cartItemCtrlr = function($scope, $http, $rootScope){
+
+	var m = $scope.m;
+	
+	$scope.itemRemove = function(){
+		
+		$scope.$parent.$parent.pageLevelAlert='';
+		
+		if(m.order && this.item){
+			var req = {
+					method: 'DELETE',
+					url: _lbUrls.cart + 'removeitem',
+					params: {'oid' : m.order._id, 
+						'pid' : this.item.productId,
+						'vid' : this.item.variationId
+					}
+			};
+			
+			$http(req)
+			.then(
+					function(resp){
+						if(resp.data && resp.data.success){
+					
+							$rootScope.rootCartCount = resp.data.cartCount;
+							
+							m.order = resp.data.order;
+							m.processOrder();
+							
+							_lbFns.pSuccess('Item removed.');
+						}
+					
+						else if(resp.data && resp.data.message){
+							$scope.$parent.$parent.pageLevelAlert = resp.data.message;
+						}
+						else{
+							$scope.$parent.$parent.pageLevelAlert = $rootScope.errMsgPageRefresh;
+						}
+					},
+					
+					function(){
+						$scope.$parent.$parent.pageLevelAlert = $rootScope.errMsgPageRefresh;
+					}
+			);
+		}
+		else {
+			$scope.$parent.$parent.pageLevelAlert = $rootScope.errMsgPageRefresh;
+		}
+	};
+	
+	
+	
+	$scope.updateCart = function(){
+		
+		$scope.$parent.$parent.pageLevelAlert = '';
+		
+		if(this.item && this.item.qty && this.item.qty !=0){
+			$http.get(_lbUrls.cart + 'updatecart', {
+				params : { 
+					'oid' : m.order._id,
+					'vid' : this.item.variationId,
+					'pid' : this.item.productId,
+					'qty' : this.item.qty
+				}
+			})
+			.then(function(resp){
+				if(resp.data && resp.data.success){
+					
+					$rootScope.rootCartCount = resp.data.cartCount;
+					m.order = resp.data.order;
+					m.processOrder();
+					
+					_lbFns.pSuccess('Order Updated.');		
+				}
+				else{
+					$scope.$parent.$parent.pageLevelAlert = resp.data.message;
+				}
+			});
+		}
+		else if(!this.item.qty){
+			$scope.$parent.$parent.pageLevelAlert = "Please provide a valid quantity";
+			return false;
+		}
+		else {
+			$scope.$parent.$parent.pageLevelAlert = $rootScope.errMsgPageRefresh;
+		}
+	};	
+},
+
+cartDeliveryCtrlr = function($scope, $http, $rootScope){
+
+	var m = $scope.m,
+	addressApiInit = false,
+	
+	getAddress = function(){
+		return m.user.billing.address1 + ' ' + m.user.billing.city + ' ' + 
+				m.user.billing.state + ' ' + m.user.billing.zip;
+	},	
+	
+	getAddressMapLink = function(){
+		if(m.user && m.user.billing) {
+			var mapLink = {
+					'markers':'color:blue|label:S|' + getAddress(),
+					'zoom':17,
+					'scale':2,
+					'size':'280x280',
+					'center':getAddress(),
+					'key':'AIzaSyDOOuxNzzE247y4HbG9B5J2yM8vzzhegCU'};
+			
+			
+			return "https://maps.googleapis.com/maps/api/staticmap?" + $.param(mapLink);
+		}
+		else
+			return null;
+	},
+	
+	addressLogic = function(){
+		
+		if(m.user.billing && (m.user.billing.address1 != '' 
+			|| m.user.billing.city != ''
+			|| m.user.billing.state != ''
+			|| m.user.billing.zip != '')){			 
+			
+			$scope.mainZip = m.user.billing.zip;
+			$scope.validateZip(true);
+		}
+	},
+	
+	proceedToPayment =  function(){
+		
+		m.addressSaved = true; 
+		
+		$('.delivery-address').empty()
+		.append($('<img />').attr({'src' : getAddressMapLink(), 'class':'fit'}));
+		
+		if($scope.shippingSelected) 
+			m.codEnabled = false;
+		else
+			m.codEnabled = true;
+		
+		if(m.user && m.user._id)
+			m.loadPaymentTemplate();
+	};	
+	
+
+	
+	$scope.invalidZip = '';	
+	$scope.addressError = '';
+	$scope.deliveryOptionSelected = false;
+	$scope.deliveryEligible = false;
+	$scope.shippingEligible = false;
+	$scope.deliverySelected = false;
+	$scope.shippingSelected = false;
+	
+
+	$scope.resetDeliveryOptions = function(){
+		$scope.deliveryEligible = false;
+		$scope.shippingEligible = false;
+		
+		$scope.deliverySelected = false;
+		$scope.shippingSelected = false;
+
+		$scope.deliveryOptionSelected = false;
+		
+		$scope.invalidZip = '';
+		
+		m.addressSaved = false;
+		
+		/** Destroy payment form is present **/
+		m.destroyPaymentTemplate();
+	};	
+	
+	
+	$scope.checkDeliveryOptions = function(){
+		$scope.validateZip();
+		
+		if(m.user && m.user.billing){
+			m.user.billing.zip = $scope.mainZip;
+		}
+	};
+	
+	
+	$scope.validateZip = function(auto){
+		
+		$scope.resetDeliveryOptions();
+		
+		$http.get(_lbUrls.cart + '/validatezip',{
+			params : { 
+				'zip' : $scope.mainZip
+			}
+		})
+		.then(
+				function(resp){
+					if(resp.data && resp.data.success){
+						if(resp.data.message == "both"){
+							$scope.deliveryEligible = true;
+							$scope.shippingEligible = true;
+							
+							//If both option available, select delivery in auto mode.
+							if(auto){
+								$scope.deliverySelected = true;
+								$scope.selectDeliveryOption();
+							}
+						}
+						else if(resp.data.message == "local"){
+							$scope.deliveryEligible = true;		
+							
+							if(auto){
+								$scope.deliverySelected = true;
+								$scope.selectDeliveryOption();
+							}
+						}
+						else if(resp.data.message == "shipping"){
+							$scope.shippingEligible = true;		
+							
+							if(auto){
+								$scope.shippingSelected = true;
+								$scope.selectDeliveryOption();
+							}					
+						}
+						else if(!auto){
+							$scope.invalidZip = "Sorry, we currently don't service your area. " 
+								+ "We are working very hard on expanding to your city. " 
+								+ "We will safeguard your information till then, " 
+								+ "and will contact you with a generous welcome package."
+						}
+					}
+				},
+				
+				function(){
+					$scope.invalidZip = $rootScope.errMsgPageRefresh;
+				}
+		);
+	};
+	
+	
+	$scope.selectDeliveryOption = function(){
+		$scope.deliveryOptionSelected = true;
+
+		if(!addressApiInit)
+			$scope.mapsInit();
+	};
+	
+	
+	$scope.saveDeliveryAddress = function(){
+		
+		if($scope.cartAddress.$valid){
+			$scope.addressError = '';
+			
+			$http.post(_lbUrls.cart + m.order._id + '/savedeliveryaddr', m.user)
+			.then(
+					function(resp){
+						if(resp.data && resp.data.success){
+							_lbFns.pSuccess('Address Saved.');
+							
+							proceedToPayment();
+						}
+					
+						else if(resp.data && resp.data.message){
+							$scope.addressError = resp.data.message;
+						}
+						else{
+							$scope.addressError = $rootScope.errMsgPageRefresh;
+						}
+					},
+					
+					function(){
+						$scope.addressError = $rootScope.errMsgPageRefresh;
+					}
+			);
+			
+		}
+		
+	};	
+	
+	
+	$scope.editAddress = function(){
+		m.addressSaved = false;
+		
+		$scope.showPayment = false;
+		$scope.cartAddress.$setDirty();
+		
+		if(!addressApiInit)
+			$scope.mapsInit();
+		
+		/** Destroy payment form is present **/
+		m.destroyPaymentTemplate();
+	};
+	
+	
+	$scope.saveDeliveryNotes = function(){		
+		
+		if(!m.order.notes) m.order.notes = {};
+		if(!m.order.notes.deliveryNotes) m.order.notes.deliveryNotes = '';
+		
+		if(m.order._id && m.order.notes.deliveryNotes){			
+			$http.post(_lbUrls.cart + m.order._id + '/savedeliverynote?hidepop',
+				{'deliveryNotes':m.order.notes.deliveryNotes});			
+		}		
+	};			
+	
+	
+	/* Google MAPS API related Functions */
+	$scope.gmapComponentForm = {
+	        street_number: 'short_name',
+	        route: 'short_name', //Street Address
+	        locality: 'long_name',  //city
+	        administrative_area_level_1: 'short_name',  //State
+	        postal_code: 'short_name'
+	};
+	
+	$scope.geolocate = function() {
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(function(position) {
+				var geolocation = {
+						lat: position.coords.latitude,
+						lng: position.coords.longitude
+				};
+				var circle = new google.maps.Circle({
+					center: geolocation,
+					radius: position.coords.accuracy
+				});
+				
+				$scope.autocomplete.setBounds(circle.getBounds());
+			});
+		}
+	};
+	
+	$scope.fillInAddress = function(){
+		var place = $scope.autocomplete.getPlace(),
+		streetNumber = '',
+		streetAddr = '';
+		
+		for (var i = 0; i < place.address_components.length; i++) {
+			var addressType = place.address_components[i].types[0];
+			if ($scope.gmapComponentForm[addressType]) {
+				var val = place.address_components[i][$scope.gmapComponentForm[addressType]];
+				
+				switch(addressType){
+				
+					case 'street_number':
+						streetNumber = val; 
+						break;
+						
+					case 'route':
+						streetAddr = val; 
+						break;
+					
+					case 'locality':
+						m.user.billing.city = val; 
+						break;
+					
+					case 'administrative_area_level_1':
+						m.user.billing.state = val; 
+						break;
+					
+					case 'postal_code':
+						m.user.billing.zip = val; 
+						break;
+						
+					default:
+						break;
+				}
+			}
+		}
+		
+		m.user.billing.address1 = streetNumber? (streetNumber + ' ' + streetAddr) : streetAddr;
+		try{$scope.$apply();}catch(err){}
+		
+		$('#cartAddress .form-control').each(function(){
+			$(this).blur();
+		});
+	};
+	
+	$scope.mapsInit = function(){
+		$scope.autocomplete = new google.maps.places.Autocomplete(
+				(document.getElementById('addressLocator')),
+	            {
+					types: ['geocode'],
+					componentRestrictions: {country: 'us'}
+				});
+		
+		$scope.autocomplete.addListener('place_changed', $scope.fillInAddress);
+		$scope.geolocate();
+		
+		//initialize address variables
+		if(!m.user) m.user = {};		
+		if(!m.user.billing) m.user.billing = {};
+		
+		addressApiInit = true;
+	};	
+	
+	/* Google MAPS API related Functions Ends */
+	
+
+	
+	/** DELIVERY INIT **/	
+	(function(){
+		
+		/*if there is billing info in the order, use it*/
+		if(m.order && m.order.shipping && m.order.shipping.address){				
+			m.user.billing = m.order.shipping.address;
+			addressLogic();
+		}
+		
+		else if(m.user && m.user.billing){
+			
+			if(!addressApiInit)
+				$scope.mapsInit();
+		}
+	})();
+},
+
+cartPaymentCtrlr = function($scope, $http, $rootScope, $timeout){
+
+	var m = $scope.m,
+	pmtApiInit = false;
+	
+	$scope.nonceRequesting = false;
+	$scope.pmtChangable = true;
+	$scope.pmtMethod = null;
+	$scope.reviewLoaded = false;
+	
+	/** Payment form related fns **/
+	$scope.cardNonceResponseReceived = function(errors, nonce, cardData) {
+		
+		if (errors) {			
+			m.ccErrors = '';
+			
+			errors.forEach(function(error) {	
+    			m.ccErrors+= error.message;
+			});
+			
+		} else {			
+			m.cardData = cardData;
+			m.cardData.nonce = nonce;
+			//console.log(m.cardData);
+			
+			$scope.proceedToReview();
+		}
+		
+		$scope.nonceRequesting = false;
+		try{$scope.$apply();}catch(err){}		
+	};
+	
+	$scope.unsupportedBrowserDetected = function() {
+		m.ccErrors = 'Sorry, Your browser doesn\'t support '
+			+'the secure processing of this credit card. Please '
+			+'try a different browser.';
+		
+		$scope.nonceRequesting = false;
+		try{$scope.$apply();}catch(err){}
+	};
+	
+	$scope.paymentForm = new SqPaymentForm({
+		
+		    applicationId: 'sandbox-sq0idp-uKKHToPW2VxvmD6WKutvHA',
+		    inputClass: 'form-control',
+		    inputStyles: [
+		      {
+		        fontSize: '14px',
+		        color: '#555'
+		      }
+		    ],
+		    cardNumber: {
+		      elementId: 'sq-card-number',
+		      placeholder: '---- ---- ---- ----'
+		    },
+		    cvv: {
+		      elementId: 'sq-cvv',
+		      placeholder: 'CVV'
+		    },
+		    expirationDate: {
+		      elementId: 'sq-expiration-date',
+		      placeholder: 'MM/YY'
+		    },
+		    postalCode: {
+		      elementId: 'sq-postal-code'
+		    },
+		    
+		    callbacks: {
+		    	cardNonceResponseReceived: $scope.cardNonceResponseReceived,		      
+		    	unsupportedBrowserDetected: $scope.unsupportedBrowserDetected,
+		      
+		    	inputEventReceived: function(inputEvent) {
+		    		switch (inputEvent.eventType) {
+		    		
+		    		case 'focusClassAdded':
+		            // Handle as desired
+		    			break;
+		    		case 'focusClassRemoved':
+		            // Handle as desired
+		    			break;
+		    		case 'errorClassAdded':
+		            // Handle as desired
+		    			break;
+		    		case 'errorClassRemoved':
+		            // Handle as desired
+		    			break;
+		    		case 'cardBrandChanged':
+		            // Handle as desired
+		    			break;
+		    		case 'postalCodeChanged':
+		            // Handle as desired
+		    			break;
+		    		}
+		    	}
+		    }
+	 });
+	
+	 $scope.reqCardNonce = function() {	
+		 m.ccErrors = '';
+		 m.cardData = null;
+		 $scope.nonceRequesting = true;
+		 $scope.paymentForm.requestCardNonce();
+	 };
+	 /** Payment form related fns end **/
+	 
+	 
+
+	$scope.squareUpInit = function(){
+		if(!pmtApiInit) {			
+			try{$scope.paymentForm.build();}catch(e){console.log(e);}
+			$timeout(function(){
+				$scope.paymentForm.setPostalCode(m.user.billing.zip);
+			}, 1000);
+			pmtApiInit = true;
+		}	
+	};
+	
+	
+	$scope.proceedToReview = function(){
+		if($scope.pmtMethod == 'cod')
+			m.pmtCOD = true;
+		else
+			m.pmtCOD = false;
+		
+		/* UPDATE THE PAYMENT PARAMS */
+		if(!m.order.billing) m.order.billing = {};
+		if(!m.order.billing.pmtMethod) m.order.billing.pmtMethod = {};
+		
+		m.order.billing.pmtMethod.method = $scope.pmtMethod;
+		if($scope.pmtMethod=='cc')
+			m.order.billing.pmtMethod.type = 'Credit Card';
+		
+		else if($scope.pmtMethod=='cod')
+			m.order.billing.pmtMethod.type = 'Donation on Delivery';
+		
+		m.order.billing.pmtMethod.cardData = null;
+		
+		if(m.cardData){				
+			m.order.billing.pmtMethod.cardData = m.cardData;
+		}		
+		/* UPDATE THE PAYMENT PARAMS ENDS */
+		
+		m.loadReviewTemplate();
+		$scope.reviewLoaded = true;
+	};
+	
+	
+	$scope.clearReview = function(){
+		m.destroyReviewTemplate();
+		$scope.reviewLoaded = false;
+	};
+	 
+	
+	/* Pmt init function */
+	(function(){
+		if(!m.codEnabled) {
+			$scope.pmtMethod = 'cc';
+			$scope.pmtChangable = false;
+			$scope.squareUpInit();
+		}
+		
+		else if(!m.ccPmtEnabled) {
+			$scope.pmtMethod = 'cod';
+			$scope.pmtChangable = false;
+		}
+	})();
+},
+
+cartCouponCtrlr = function($scope, $http, $rootScope){
+	
+	var m = $scope.m;
+	
+	$scope.couponErrors = '';
+	
+	$scope.removeCoupon = function(){
+
+		$scope.couponErrors = '';
+		var couponCode = this.item.name;
+
+		if(couponCode){
+			$http.get(_lbUrls.cart + 'removecoupon/' + couponCode,{
+				params : {
+					'hidepop' : true,
+					'oid' : m.order._id
+				}
+			})
+			.then(
+					function(resp){
+						if(resp.data && resp.data.success){
+							_lbFns.pSuccess('Promocode removed');
+
+							m.order = resp.data.order;
+							m.processOrder();
+						}
+
+						else if(resp.data && resp.data.message){
+							$scope.couponErrors = resp.data.message;
+						}
+						else{
+							$scope.couponErrors = $rootScope.errMsgPageRefresh;
+						}
+					},
+
+					function(){
+						$scope.couponErrors = $rootScope.errMsgPageRefresh;
+					}
+			);
+		}
+		else{
+			$scope.couponErrors = "Invalid promo code";
+		}
+
+	}
+
+
+	$scope.applyCoupon = function(){
+
+		$scope.couponErrors = '';
+
+		if($scope.couponCode){
+			$http.get(_lbUrls.cart + 'applycoupon/' + $scope.couponCode,{
+				params : {
+					'hidepop' : true,
+					'oid' : m.order._id
+				}
+			})
+			.then(
+					function(resp){
+						if(resp.data && resp.data.success){
+							_lbFns.pSuccess('Promocode applied');
+							$scope.couponCode = '';
+
+							m.order = resp.data.order;
+							m.processOrder();
+						}
+
+						else if(resp.data && resp.data.message){
+							$scope.couponErrors = resp.data.message;
+						}
+						else{
+							$scope.couponErrors = $rootScope.errMsgPageRefresh;
+						}
+					},
+
+					function(){
+						$scope.couponErrors = $rootScope.errMsgPageRefresh;
+					}
+			);
+		}
+		else{
+			$scope.couponErrors = "Invalid promo code";
+		}
+
+	};
+},
+
+cartReviewCtrlr = function($scope, $http, $rootScope){
+	
+	var m = $scope.m;
+	
+	$scope.reviewErrors = '';
+	$scope.placeOrder = function(){
+		
+		if(m.order._id && m.user._id){	
+			
+			m.ccErrors = '';
+			$scope.reviewErrors = '';
+			
+			$http
+			.post(_lbUrls.cart + m.order._id + '/placeorder', m.order)
+			.then(
+					function(resp){
+						if(resp && resp.data){
+							if(resp.data.success){
+								location.href = "/confirmation/" + resp.data.message;
+							}
+							else{
+								
+								if(!resp.data.paymentProcessed && resp.data.paymentError != ''){
+									
+									if(resp.data.message == 'retry'){
+										m.ccErrors = 'Payment request timed out, please try again.';
+									}
+									else{
+										m.ccErrors = resp.data.paymentError;
+									}
+
+									m.cardData = '';
+									m.destroyReviewTemplate();
+								}
+								else{
+									
+									if(resp.data.paymentProcessed && resp.data.orderFinalizationError){
+										$scope.reviewErrors = 'Your payment was processed successfully. ' 
+											+ 'But there was some error finializing the order. ' 
+											+ 'Please don\'t place the order again. ' 
+											+ 'Please call our customer care. Error details -  '+ resp.data.message;
+									}
+									
+									else{
+										$scope.reviewErrors = resp.data.message;										
+									}
+									
+								}
+							}
+						}
+						else{
+							$scope.reviewErrors = 'There was error placing the order. '
+								+'Please refresh the page and try again later. '
+								+'If problem persists, please contact customer care.';
+						}
+					},
+					function(){
+						$scope.reviewErrors = $rootScope.errMsgPageRefresh;
+					}
+			);			
+		}
+		else{
+			$scope.reviewErrors = 'Unable to find an order. '
+				+'Are you sure you have items in your cart and '
+				+'you are logged in to your account?';
+		}
+		
+	};
 };
 
 lbApp
@@ -1543,4 +2592,10 @@ lbApp
 .controller('loginCtrlr', loginCtrlr)
 .controller('registerCtrlr', registerCtrlr)
 .controller('resetCtlr', resetCtlr)
-.controller('cartCtrlr', cartCtrlr);
+.controller('cartCtrlrBkp', cartCtrlrBkp)
+.controller('cartMainCtrlr', cartMainCtrlr)
+.controller('cartItemCtrlr', cartItemCtrlr)
+.controller('cartDeliveryCtrlr', cartDeliveryCtrlr)
+.controller('cartPaymentCtrlr', cartPaymentCtrlr)
+.controller('cartCouponCtrlr', cartCouponCtrlr)
+.controller('cartReviewCtrlr', cartReviewCtrlr);

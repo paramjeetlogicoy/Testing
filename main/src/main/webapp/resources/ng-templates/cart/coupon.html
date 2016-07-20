@@ -1,0 +1,65 @@
+<div class="cart-totals" ng-controller="cartCouponCtrlr">
+	<h4>Order Summary</h4>
+	<table class="table cart-summary size13">
+		<tbody>
+			<tr>
+				<td>Items</td>
+				<td class="text-right">{{m.order.subTotal | currency}}</td>
+			</tr>
+			<tr ng-if="m.order.subTotal > m.order.total">
+				<td>Discount</td>
+				<td class="text-right">{{(m.order.subTotal - m.order.total) |
+					currency}}</td>
+			</tr>
+
+			<tr>
+				<td colspan="2">
+
+					<div class="promotions clearfix marg-b3" ng-hide="m.couponApplied">
+						<h6>Add Gift or Promo Code</h6>
+						<form ng-submit="applyCoupon()" name="promoForm"
+							class="cart-promo-form">
+							<div class="input-group input-group-sm">
+								<input type="text" class="form-control"
+									placeholder="Enter promo code" ng-model="couponCode" /><span
+									class="input-group-btn">
+									<button class="btn btn-sm btn-lb" type="submit">Apply</button>
+								</span>
+							</div>
+						</form>
+
+						<div class="pad-v2" ng-show="couponErrors">
+							<div class="alert alert-warning" role="alert">
+								<span ng-bind-html="couponErrors"></span>
+							</div>
+						</div>
+					</div>
+					
+					<div class="applied-coupons marg-b3" ng-if="m.offersApplied">
+						<h6>Promotions Applied</h6>
+						<div class="marg-l1" ng-repeat="item in m.sales">
+							<em class="green1">{{item.name}} (-{{item.price |
+								currency}})</em>
+						</div>
+						<div class="marg-l1" ng-repeat="item in m.order.lineItems"
+							ng-if="item.type=='coupon'">
+							<em><span class="green1">{{item.name}} (-{{item.price
+									| currency}})</span> <a href="" ng-click="removeCoupon()"
+								title="Remove Coupon"><i class="fa fa-trash-o marg-l1"
+									aria-hidden="true"></i></a></em>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"><hr /></td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<th>TOTAL</th>
+				<th class="text-right">{{m.order.total | currency}}</th>
+			</tr>
+		</tfoot>
+	</table>
+</div>

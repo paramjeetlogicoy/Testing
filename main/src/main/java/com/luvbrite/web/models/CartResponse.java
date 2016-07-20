@@ -1,7 +1,5 @@
 package com.luvbrite.web.models;
 
-import com.luvbrite.config.ControlConfig;
-
 public class CartResponse {
 	
 	private CartOrder order;

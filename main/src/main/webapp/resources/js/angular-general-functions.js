@@ -77,7 +77,7 @@ var appRunFns = function($http, $rootScope, $interval){
     	$rootScope.$broadcast("updateCartCount");//First time execute;
     
     
-    $rootScope.formElemValidate = function(){
+    $rootScope.formElemValidate = function(event){
     	var $elm = angular.element(event.target),
     		y = $elm.data('$ngModelController');
     	

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import com.luvbrite.dao.CartOrderDAO;
 import com.luvbrite.dao.LogDAO;
-import com.luvbrite.dao.PriceDAO;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.web.models.CartOrder;
 import com.luvbrite.web.models.Log;
@@ -37,9 +36,6 @@ public class SynchronizeCartItems {
 	
 	@Autowired
 	private CartOrderDAO cartDao;
-
-	@Autowired
-	private PriceDAO priceDao;
 	
 	@Autowired
 	private CartLogics cartLogics;

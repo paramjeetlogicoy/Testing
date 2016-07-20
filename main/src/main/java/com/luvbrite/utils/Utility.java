@@ -1,9 +1,6 @@
 package com.luvbrite.utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 public class Utility {
 	
@@ -49,40 +46,6 @@ public class Utility {
 		
 		
 		return javaArray;
-	}
-	
-	public static void main(String[] args){
-		
-		//phpToJavaArray("a:1:{i:0;s:25:\"georgeyporgy123@yahoo.com\";}");
-		//Object vars = PHPSerialization.unserialize("a:1:{s:6:'weight';a:6:{s:4:'name';s:6:'Weight';s:5:'value';s:8:'.5g | 1g';s:8:'position';s:1:'0';s:10:'is_visible';i:0;s:12:'is_variation';i:1;s:11:'is_taxonomy';i:0;}}");
-		//Object vars = PHPSerialization.unserialize("a:1:{s:6:'weight';s:12:'1/8oz (3.5g)';}");
-		
-		Object vars = PHPSerializationModified.unserialize("a:1:{s:6:'weight';a:6:{s:4:'name';s:6:'Weight';s:5:'value';s:8:'.5g | 1g';s:8:'position';s:1:'0';s:10:'is_visible';i:0;s:12:'is_variation';i:1;s:11:'is_taxonomy';i:0;}}");
-		if(vars!=null){
-			if(vars.getClass().equals(HashMap.class)){
-				Iterator<?> it = ((Map)vars).entrySet().iterator();
-				printArray(it);				
-			}
-			
-		}
-		else
-		{
-			System.out.println("Vars null");
-		}
-		
-	}	
-	
-	public static void printArray(Iterator<?> it){
-		while(it.hasNext()){
-			Map.Entry pair = (Map.Entry)it.next();
-			
-			if( pair.getValue().getClass().equals(HashMap.class)){
-				Iterator<?> newIt = ((Map)pair.getValue()).entrySet().iterator();
-				printArray(newIt);
-			}
-			else
-				System.out.println(pair.getKey() + " = " + pair.getValue());					
-		}
 	}
 	
 	public static double Round(double Rval, int Rpl) {

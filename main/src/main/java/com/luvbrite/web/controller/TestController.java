@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.luvbrite.dao.OrderDAO;
-import com.luvbrite.services.EmailService;
 import com.luvbrite.services.PostOrderMeta;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Order;
@@ -15,9 +14,6 @@ import com.luvbrite.web.models.Order;
 
 @Controller
 public class TestController {
-	
-	@Autowired
-	private EmailService emailService;
 	
 	@Autowired
 	private OrderDAO orderDao;

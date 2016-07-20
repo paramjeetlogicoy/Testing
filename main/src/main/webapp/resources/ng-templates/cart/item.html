@@ -1,0 +1,37 @@
+<div ng-controller="cartItemCtrlr">
+
+	<div class="cart-details" ng-hide="m.emptyCart">
+		<h4 class="cart-steps">Step1: Review Your Cart</h4>
+		<div class="cart-details-body">
+			<ul>
+				<li class="item-li" ng-repeat="item in m.order.lineItems"
+					ng-if="item.type=='item'" ng-hide="!item.instock">
+					<div class="item-thumb">
+						<img ng-if="item.img" ng-src="{{lbGlobalCDNPath + item.img}}"
+							class="fit" />
+					</div>
+
+					<div class="item-info">
+						<h5>{{item.name}}</h5>
+						<div ng-repeat="spec in item.specs"
+							class="size13 grey7 capitalize">
+							<em>{{spec.attr}}</em>: {{spec.value}}
+						</div>
+						<div class="grey7">
+							<del ng-if="item.cost>item.price">{{item.cost | currency}}</del>
+							<span class="bold">{{item.price | currency}}</span>
+						</div>
+					</div>
+					<div class="item-qty">
+						Qty: <input type="number" min="1" step="1" ng-model="item.qty"
+							class="form-control" ng-change="updateCart()" />
+					</div>
+					<div class="item-remove">
+						<a href="" ng-click="itemRemove()">Delete Item</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+
+	</div>
+</div>

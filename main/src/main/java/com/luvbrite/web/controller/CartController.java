@@ -36,6 +36,7 @@ import com.luvbrite.services.paymentgateways.SquareUp;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.Utility;
 import com.luvbrite.web.models.AttrValue;
+import com.luvbrite.web.models.Billing;
 import com.luvbrite.web.models.CartOrder;
 import com.luvbrite.web.models.CartResponse;
 import com.luvbrite.web.models.ControlOptions;
@@ -691,7 +692,13 @@ public class CartController {
 				
 				else {
 					
-					order.setBilling(user.getBilling());
+					//Everytime address is changed we are resetting the entire billing object
+					//so payment information is lost. This is desirable at this point!
+					
+					Billing bi = new Billing();
+					bi.setAddress(user.getBilling());
+					
+					order.setBilling(bi);
 					dao.save(order);
 					
 					gr.setSuccess(true);
@@ -747,12 +754,12 @@ public class CartController {
 					
 					/* Save Remote IP into the orderData */
 					try{
-						order.getPmtMethod().setIp(request.getRemoteAddr());
+						order.getBilling().getPmtMethod().setIp(request.getRemoteAddr());
 					}catch(Exception e){}
 					
 					
 					/* If there is payment data, process payment */		
-					if(order.getPmtMethod().getCardData() != null){
+					if(order.getBilling().getPmtMethod().getCardData() != null){
 						
 						long money = 0l;
 						String cardNonce = "";
@@ -760,7 +767,7 @@ public class CartController {
 						try {							
 							/* Multiply by 100 to make it in cents */
 							money = (long) (order.getTotal() * 100);
-							cardNonce = order.getPmtMethod().getCardData().getNonce();
+							cardNonce = order.getBilling().getPmtMethod().getCardData().getNonce();
 							
 						}catch(Exception e){
 							gr.setMessage("Invalid payment details");
@@ -1014,7 +1021,8 @@ public class CartController {
 	@RequestMapping(value = "/removeitem", method = RequestMethod.DELETE)
 	public @ResponseBody CreateOrderResponse removeItem(
 			@RequestParam(value="oid", required=false) Long orderId,
-			@RequestParam(value="vid", required=false) Integer variationId){
+			@RequestParam(value="vid", required=false) Integer variationId,
+			@RequestParam(value="pid", required=false) Integer productId){
 		
 		CreateOrderResponse cr = new CreateOrderResponse();
 		cr.setSuccess(false);
@@ -1026,8 +1034,8 @@ public class CartController {
 				cr.setMessage(" - Invalid order ID.");
 			}
 			
-			if(variationId == null || variationId == 0){
-				cr.setMessage(cr.getMessage() + " - Invalid item ID.");
+			if((variationId == null || variationId == 0) && (productId == null || productId == 0)){
+				cr.setMessage(cr.getMessage() + " - Invalid item/product ID.");
 			}
 			
 			if(cr.getMessage().length()>1){
@@ -1046,7 +1054,9 @@ public class CartController {
 				
 				while(iter.hasNext()){
 					OrderLineItemCart item = iter.next();
-					if(item.getVariationId() == variationId){
+					if((variationId==0 && productId == item.getProductId()) 
+							|| (item.getVariationId() == variationId)){
+						
 						iter.remove();
 							
 						/*Update Log*/
@@ -1055,7 +1065,8 @@ public class CartController {
 							Log log = new Log();
 							log.setCollection("cartorders");
 							log.setDetails("Item removed - " + item.getName() 
-									+ ". Var Id - " + variationId);
+									+ ". Var Id - " + variationId
+									+ ". Product Id - " + productId);
 							log.setDate(Calendar.getInstance().getTime());
 							log.setKey(order.get_id());
 							log.setUser("customer");

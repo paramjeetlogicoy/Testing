@@ -5,9 +5,10 @@ import org.mongodb.morphia.annotations.Embedded;
 @Embedded
 public class PaymentMethod {
 	private String ip = "";
-	private String method = "";
-	private String type = "";
+	private String method = ""; //cod, cc, etc
+	private String type = "";  //Donation On Delivery, Credit Card, etc
 	private CardData cardData;
+	
 	public String getIp() {
 		return ip;
 	}

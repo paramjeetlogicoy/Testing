@@ -9,8 +9,8 @@ import org.mongodb.morphia.annotations.Id;
 @Entity("orders")
 public class Order {
 
-	private Address billing;
-	private PaymentMethod pmtMethod;
+	private Billing billing;
+	private Shipping shipping;
 
 	private List<OrderLineItem> lineItems;
 	private OrderNotes notes;
@@ -34,17 +34,11 @@ public class Order {
 	public void set_id(long _id) {
 		this._id = _id;
 	}
-	public Address getBilling() {
+	public Billing getBilling() {
 		return billing;
 	}
-	public void setBilling(Address billing) {
+	public void setBilling(Billing billing) {
 		this.billing = billing;
-	}
-	public PaymentMethod getPmtMethod() {
-		return pmtMethod;
-	}
-	public void setPmtMethod(PaymentMethod pmtMethod) {
-		this.pmtMethod = pmtMethod;
 	}
 	public List<OrderLineItem> getLineItems() {
 		return lineItems;
@@ -99,5 +93,11 @@ public class Order {
 	}
 	public void setDate(Date date) {
 		this.date = date;
+	}
+	public Shipping getShipping() {
+		return shipping;
+	}
+	public void setShipping(Shipping shipping) {
+		this.shipping = shipping;
 	}
 }

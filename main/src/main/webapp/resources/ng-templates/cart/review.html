@@ -1,0 +1,29 @@
+<div ng-controller="cartReviewCtrlr">
+	<div class="cart-details">
+		<h4 class="cart-steps">Step4: Confirm Your Order</h4>
+		<div class="cart-confirmation text-center">
+			<h4>
+				<span class="green1">Your order total is {{m.order.total |
+					currency}} <span ng-show="m.pmtCOD"> and the donation is due
+						on product delivery</span>.
+				</span>
+			</h4>
+			<div>
+				<a href="" ng-click="placeOrder()" class="btn btn-lb btn-lb-w"><strong>Place
+						Order</strong></a>
+			</div>
+
+			<div class="pad2" ng-show="reviewErrors">
+				<div class="alert alert-danger" role="alert">
+					<span ng-bind="reviewErrors"></span>
+				</div>
+			</div>
+
+			<div class="pad2 grey7">
+				<em>By clicking on Place Order, I agree to the terms and
+					conditions of luvbrite.</em>
+			</div>
+		</div>
+
+	</div>
+</div>
