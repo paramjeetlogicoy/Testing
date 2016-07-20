@@ -1275,6 +1275,7 @@ cartDeliveryCtrlr = function($scope, $http, $rootScope){
 		$scope.deliveryOptionSelected = false;
 		
 		$scope.addressError = '';
+		$scope.invalidZip = '';
 		
 		m.addressSaved = false;
 		
@@ -1291,7 +1292,7 @@ cartDeliveryCtrlr = function($scope, $http, $rootScope){
 		}
 	};
 	
-	
+	$scope.invalidZip = '';
 	$scope.validateZip = function(auto){
 		
 		$scope.resetDeliveryOptions();
@@ -1331,14 +1332,14 @@ cartDeliveryCtrlr = function($scope, $http, $rootScope){
 							}					
 						}
 						else if(!auto){
-							$scope.addressError = "Sorry, we currently don't service your area. " 
+							$scope.invalidZip = "Sorry, we currently don't service your area. " 
 								+ "We are working very hard on expanding to your city. ";								
 						}
 					}
 				},
 				
 				function(){
-					$scope.addressError = $rootScope.errMsgPageRefresh;
+					$scope.invalidZip = $rootScope.errMsgPageRefresh;
 				}
 		);
 	};
