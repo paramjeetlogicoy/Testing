@@ -1884,7 +1884,6 @@ lbApp
 .controller('loginCtrlr', loginCtrlr)
 .controller('registerCtrlr', registerCtrlr)
 .controller('resetCtlr', resetCtlr)
-.controller('cartCtrlrBkp', cartCtrlrBkp)
 .controller('cartMainCtrlr', cartMainCtrlr)
 	.controller('cartItemCtrlr', cartItemCtrlr)
 	.controller('cartDeliveryCtrlr', cartDeliveryCtrlr)
