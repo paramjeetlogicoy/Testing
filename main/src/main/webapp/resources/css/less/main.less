@@ -612,6 +612,14 @@ nav#pagination-nav{
 		transform: rotateY( -180deg );
 		background: white;
     	border: 1px solid #5cb85c;
+
+		.no-preserve3d &{
+			transform: rotateY(0deg);
+			display:none;
+  			opacity: 0;
+  			visibility:hidden;
+  			transition: visibility 0s linear 0.5s,opacity 0.5s linear;
+		}
 	}
 
 	h3:extend(.text-center,.marg-b0, .pad-h2){
@@ -728,13 +736,13 @@ nav#pagination-nav{
 .product-item-card:extend(.abs){
 	width: 100%;
 	height: 100%;
+	transform-style: preserve-3d;
 
 	.product-options,.product-desc{
 		display:none;
 	}
 
 	.preserve3d &{
-		transform-style: preserve-3d;
 		transition: transform 1s;
 	}
 
@@ -744,6 +752,20 @@ nav#pagination-nav{
 		.product-desc{
 			display:block;
 		}
+
+		.no-preserve3d &{
+			transform: rotateY(0deg);
+
+			.pi-cards.pi-info{
+				display:block;
+  				opacity: 1;
+  				visibility:visible;
+			}
+
+			.pi-cards.product-item{
+				display:none;
+			}
+		}
 	}
 
 	&.showOptions{
@@ -751,6 +773,20 @@ nav#pagination-nav{
 
 		.product-options{
 			display:block;
+		}
+
+		.no-preserve3d &{
+			transform: rotateY(0deg);
+
+			.pi-cards.pi-info{
+				display:block;
+  				opacity: 1;
+  				visibility:visible;
+			}
+
+			.pi-cards.product-item{
+				display:none;
+			}
 		}
 	}
 
@@ -1097,6 +1133,17 @@ nav#pagination-nav{
     span {
     	margin-right: 10px;
 	}
+}
+
+#couponCtrlr{	
+
+    @media(min-width:768px){
+    	position: fixed;
+    }
+
+    @media(min-width:1230px){
+    	width:380px;
+    }
 }
 
 /*Confirmation Page*/

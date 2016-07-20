@@ -128,6 +128,8 @@ public class OrderFinalization {
 		if(co.getLineItems()!=null && co.getLineItems().size()>0){
 			co.setSubTotal(0d);
 			co.setTotal(0d);
+			co.getBilling().getPmtMethod().setCardData(null);
+			co.setNotes(null);
 
 			cartDAO.save(co);			
 		}

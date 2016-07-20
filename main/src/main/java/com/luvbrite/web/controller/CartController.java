@@ -36,7 +36,6 @@ import com.luvbrite.services.paymentgateways.SquareUp;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.Utility;
 import com.luvbrite.web.models.AttrValue;
-import com.luvbrite.web.models.Billing;
 import com.luvbrite.web.models.CartOrder;
 import com.luvbrite.web.models.CartResponse;
 import com.luvbrite.web.models.ControlOptions;
@@ -51,6 +50,7 @@ import com.luvbrite.web.models.OrderNotes;
 import com.luvbrite.web.models.OrderPlaceResponse;
 import com.luvbrite.web.models.Price;
 import com.luvbrite.web.models.Product;
+import com.luvbrite.web.models.Shipping;
 import com.luvbrite.web.models.User;
 import com.luvbrite.web.models.UserDetailsExt;
 import com.luvbrite.web.models.squareup.AmountMoney;
@@ -512,6 +512,15 @@ public class CartController {
 
 		GenericResponse gr = new GenericResponse();
 		gr.setSuccess(true);
+		gr.setMessage(zipValidation(zipcode));
+		
+		return gr;
+	}
+	
+	
+	private String zipValidation(int zip){
+		
+		String result = "";
 		
 		boolean local = false;
 		boolean shipping = false;
@@ -520,7 +529,7 @@ public class CartController {
 		if(localZipcodes!=null){
 			for(Integer lz : localZipcodes){
 		
-				if((int)lz == zipcode){
+				if((int)lz == zip){
 					local = true;
 					break;
 				}
@@ -531,7 +540,7 @@ public class CartController {
 		if(shippingZipcodes!=null){
 			for(Integer sz : shippingZipcodes){
 		
-				if((int)sz == zipcode){
+				if((int)sz == zip){
 					shipping = true;
 					break;
 				}
@@ -539,19 +548,19 @@ public class CartController {
 		}
 		
 		if(local && shipping){
-			gr.setMessage("both");
+			result = "both";
 		}
 		else if(local){
-			gr.setMessage("local");
+			result = "local";
 		}
 		else if(shipping){
-			gr.setMessage("shipping");
+			result = "shipping";
 		}
 		else{
-			gr.setMessage("invalid");
+			result = "invalid";
 		}
-
-		return gr;
+		
+		return result;
 	}
 	
 	
@@ -669,7 +678,7 @@ public class CartController {
 	
 	@RequestMapping(value = "/{orderId}/savedeliveryaddr", method = RequestMethod.POST)
 	public @ResponseBody GenericResponse saveDeliveryAddr(
-			@PathVariable long orderId, @RequestBody User user){
+			@PathVariable long orderId, @RequestBody Shipping shipping){
 		
 		GenericResponse gr = new GenericResponse();
 		gr.setSuccess(false);
@@ -677,9 +686,9 @@ public class CartController {
 
 		try {
 
-			if(user == null 
-					|| user.getBilling() == null 
-					|| user.getBilling().getPhone() == null){
+			if(shipping == null 
+					|| shipping.getAddress() == null 
+					|| shipping.getDeliveryMethod() == null){
 
 				gr.setMessage("Please fill in all mandatory fields.");				
 			}
@@ -692,15 +701,33 @@ public class CartController {
 				
 				else {
 					
-					//Everytime address is changed we are resetting the entire billing object
-					//so payment information is lost. This is desirable at this point!
+					//validate zipcode
+					String zipVal = zipValidation(Utility.getInteger(shipping.getAddress().getZip()));
+					if(zipVal.equals("invalid")){
+						gr.setMessage("Sorry, we currently don't service your area. " 
+								+ "We are working very hard on expanding to your city. ");	
+						
+						return gr;
+					}
 					
-					Billing bi = new Billing();
-					bi.setAddress(user.getBilling());
+					/**
+					 * Since we allow editing zipcode, we need to make
+					 * that they didn't switch from a shipping zipcode
+					 * to local zipcode. So set it again here!
+					 ***/					
+					if(zipVal.equals("local")){
+						shipping.setDeliveryMethod("Local Delivery");
+					}
+					else if(zipVal.equals("shipping")){
+						shipping.setDeliveryMethod("Overnight Shipping");					
+					}
 					
-					order.setBilling(bi);
+					
+					order.setShipping(shipping);
 					dao.save(order);
 					
+					//Send deliveryMethod back to client.
+					gr.setMessage(shipping.getDeliveryMethod());
 					gr.setSuccess(true);
 				}				
 				

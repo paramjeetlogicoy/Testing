@@ -75,7 +75,7 @@
 						<div class="form-group">
 							<label class="control-label">First Name<sup>*</sup></label> <input
 								type="text" class="form-control" required="required"
-								ng-model="m.user.billing.firstName" ng-blur="formElemValidate($event)" />
+								ng-model="m.order.shipping.address.firstName" ng-blur="formElemValidate($event)" />
 							<p class="help-block onerror">First Name is required</p>
 						</div>
 					</div>
@@ -83,14 +83,14 @@
 						<div class="form-group">
 							<label class="control-label">Last Name<sup>*</sup></label> <input
 								type="text" class="form-control" required="required"
-								ng-blur="formElemValidate($event)" ng-model="m.user.billing.lastName" />
+								ng-blur="formElemValidate($event)" ng-model="m.order.shipping.address.lastName" />
 							<p class="help-block onerror">Last Name is required</p>
 						</div>
 					</div>
 					<div class="col-sm-4">
 						<div class="form-group">
 							<label class="control-label">Phone<sup>*</sup></label> <input
-								type="text" class="form-control" ng-model="m.user.billing.phone"
+								type="text" class="form-control" ng-model="m.order.shipping.address.phone"
 								required="required" ng-blur="formElemValidate($event)" />
 							<p class="help-block onerror">Phone number is required</p>
 						</div>
@@ -102,14 +102,14 @@
 							<label class="control-label">Address<sup>*</sup></label> <input
 								type="text" class="form-control" required="required"
 								ng-blur="formElemValidate($event)" id="addressLocator"
-								ng-model="m.user.billing.address1" />
+								ng-model="m.order.shipping.address.address1" />
 							<p class="help-block onerror">Address is required</p>
 						</div>
 					</div>
 					<div class="col-sm-4">
 						<div class="form-group">
 							<label class="control-label">Suite/Apt</label> <input type="text"
-								class="form-control" ng-model="m.user.billing.address2" />
+								class="form-control" ng-model="m.order.shipping.address.address2" />
 						</div>
 					</div>
 				</div>
@@ -118,7 +118,7 @@
 						<div class="form-group">
 							<label class="control-label">City<sup>*</sup></label> <input
 								type="text" required="required" ng-blur="formElemValidate($event)"
-								class="form-control" ng-model="m.user.billing.city" />
+								class="form-control" ng-model="m.order.shipping.address.city" />
 							<p class="help-block onerror">City is required</p>
 						</div>
 					</div>
@@ -126,7 +126,7 @@
 						<div class="form-group">
 							<label class="control-label">State<sup>*</sup></label> <input
 								type="text" required="required" ng-blur="formElemValidate($event)"
-								class="form-control" ng-model="m.user.billing.state" />
+								class="form-control" ng-model="m.order.shipping.address.state" />
 							<p class="help-block onerror">State is required</p>
 						</div>
 					</div>
@@ -134,7 +134,7 @@
 						<div class="form-group">
 							<label class="control-label">Zip Code<sup>*</sup></label> <input
 								type="text" required="required" ng-blur="formElemValidate($event)"
-								class="form-control" ng-model="m.user.billing.zip" />
+								class="form-control" ng-model="m.order.shipping.address.zip" />
 							<p class="help-block onerror">Zipcode is required</p>
 						</div>
 					</div>
@@ -151,8 +151,8 @@
 
 			<div ng-if="addressError">
 				<div class="marg-t2">
-					<div class="alert alert-warning" role="alert">
-						<span ng-bind-html="invalidZip"></span>
+					<div class="alert alert-danger" role="alert">
+						<span ng-bind-html="addressError"></span>
 					</div>
 				</div>
 			</div>
@@ -183,11 +183,11 @@
 					<div class="cart-address-holder">
 						<div class="row">
 							<div class="col-xs-8">
-								<div>{{m.user.billing.address1}} {{m.user.billing.address2 ? ', '
-									+ m.user.billing.address2 : ''}}</div>
+								<div>{{m.order.shipping.address.address1}} {{m.order.shipping.address.address2 ? ', '
+									+ m.order.shipping.address.address2 : ''}}</div>
 								<div>
-									<small>{{m.user.billing.city + ', ' + m.user.billing.state
-										+ ' ' + m.user.billing.zip}}</small>
+									<small>{{m.order.shipping.address.city + ', ' + m.order.shipping.address.state
+										+ ' ' + m.order.shipping.address.zip}}</small>
 								</div>
 							</div>
 							<div class="col-xs-4 text-right">
