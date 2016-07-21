@@ -1258,21 +1258,21 @@ cartDeliveryCtrlr = function($scope, $http, $rootScope){
 	
 
 	$scope.addressError = '';
-	$scope.deliveryOptionSelected = false;
+	$scope.deliveryOptionSelected = true; //false;
 	$scope.deliveryEligible = false;
 	$scope.shippingEligible = false;
-	$scope.deliverySelected = false;
+	$scope.deliverySelected = true; //false;
 	$scope.shippingSelected = false;
 	
 
 	$scope.resetDeliveryOptions = function(){
-		$scope.deliveryEligible = false;
+/*		$scope.deliveryEligible = false;
 		$scope.shippingEligible = false;
 		
 		$scope.deliverySelected = false;
 		$scope.shippingSelected = false;
 
-		$scope.deliveryOptionSelected = false;
+		$scope.deliveryOptionSelected = false;*/
 		
 		$scope.addressError = '';
 		$scope.invalidZip = '';

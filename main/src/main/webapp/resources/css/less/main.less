@@ -28,8 +28,8 @@ header{
 		float:left; 
 
 		&:focus, 
-		&:active,
-		&:hover{
+		&:hover,
+		&:active{
 			.green1;
 		}  
 	}
@@ -44,8 +44,8 @@ header{
     		font-weight: 600;
 
 			&:focus, 
-			&:active,
-			&:hover{
+			&:hover,
+			&:active{
 				.green1;
 				background:none;
 			}
@@ -91,8 +91,8 @@ header{
 	margin: 10px 15px 0 0;
 
 	&:focus, 
-	&:active,
-	&:hover{
+	&:hover,
+	&:active{
 		.green1;
 		background:none;
 	}
@@ -135,8 +135,8 @@ header{
     	font-weight: 600;
     	text-transform: uppercase;
 
-    	&:hover,
     	&:focus,
+    	&:hover,
     	&:active{
     		.green1;
     		background: none;
@@ -196,9 +196,9 @@ footer:extend(.text-center,.white){
 			font-size: 30px;
 		}
 
+		a:focus,
 		a:hover,
-		a:active,
-		a:focus{
+		a:active{
 			text-decoration:none;
 		}
 	}
@@ -206,9 +206,9 @@ footer:extend(.text-center,.white){
 	a{
 		color:white;
 
+		&:focus
 		&:hover,
-		&:active,
-		&:focus{
+		&:active{
 			color:white;
 			text-decoration: underline;
 		}
@@ -485,9 +485,9 @@ nav#pagination-nav{
 			border:1px solid black;
 			padding:10px 20px;
 
-			&:focus, 
-			&:active,
-			&:hover{
+			&:focus,
+			&:hover, 
+			&:active{
 				.green1;
 
 				text-decoration: underline;
@@ -534,7 +534,9 @@ nav#pagination-nav{
 				padding: 5px 10px;
 			}
 
-			&:hover{
+			&:focus,
+			&:hover,
+			&:active{
 				.hc-img{
 					background-position: center left;
 				}
