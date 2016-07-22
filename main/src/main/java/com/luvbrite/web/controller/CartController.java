@@ -469,8 +469,6 @@ public class CartController {
 		return result;
 	}
 	
-
-		
 	
 	@RequestMapping(value = "/productInCart", method = RequestMethod.GET)
 	public @ResponseBody GenericResponse productInCart(
@@ -505,7 +503,6 @@ public class CartController {
 	}
 	
 	
-
 	@RequestMapping(value = "/validatezip", method = RequestMethod.GET)
 	public @ResponseBody GenericResponse validateZipcode(
 			@RequestParam(value="zip", required=true) int zipcode) {
@@ -852,7 +849,7 @@ public class CartController {
 							
 							email.setEmail(newOrder);
 							
-							emailService.sendEmail(email);
+							//emailService.sendEmail(email);
 							
 						}catch(Exception e){
 							logger.error(Exceptions.giveStackTrace(e));
@@ -861,7 +858,7 @@ public class CartController {
 						
 						//Sent Order Meta to Inventory
 						try {							
-							postOrderMeta.postOrder(newOrder);							
+							//postOrderMeta.postOrder(newOrder);							
 						}catch(Exception e){
 							logger.error(Exceptions.giveStackTrace(e));
 						}
@@ -1039,6 +1036,10 @@ public class CartController {
 				
 				cr.setOrder(order);
 			}
+		}
+		
+		else{
+			cr.setMessage(gr.getMessage());
 		}
 		
 		return cr;
