@@ -8,7 +8,8 @@
 <meta th:include="fragments/layout::fragment-head" />
 
 </head>
-<body ng-app="lbApp" ng-controller="cartMainCtrlr as m" class="bg-greyF9 cartPage">
+<body ng-app="lbApp" ng-controller="cartMainCtrlr as m"
+	class="bg-greyF9 cartPage">
 	<div th:replace="fragments/layout::fragment-header"></div>
 	<div class="container page-container rel">
 
@@ -28,7 +29,7 @@
 				<i class="fa fa-cog fa-spin fa-3x fa-fw"></i> <span class="sr-only">Loading...</span>
 			</h4>
 		</div>
-		
+
 		<div class="cart-details ng-cloak" ng-if="m.emptyCart">
 			<h4 class="text-center">Shopping cart is empty!</h4>
 		</div>
@@ -37,7 +38,7 @@
 
 			<div class="col-sm-8">
 				<div id="itemCtrlr"></div>
-				
+
 				<div id="deliveryCtrlr"></div>
 
 
@@ -48,9 +49,7 @@
 			</div>
 
 			<div class="col-sm-4 hidden-xs">
-				<div id="couponCtrlr">
-	
-				</div>
+				<div id="couponCtrlr"></div>
 
 			</div>
 		</div>
@@ -66,7 +65,16 @@
 	<script type="text/javascript"
 		th:src="@{https://maps.googleapis.com/maps/api/js?key=AIzaSyDOOuxNzzE247y4HbG9B5J2yM8vzzhegCU&amp;libraries=places}"></script>
 	<script type="text/javascript">
-		
+		$(document).ready(function(){
+			$('#couponCtrlr').affix({
+				  offset: {
+					  top:0,
+					  bottom: function () {
+						  return (this.bottom = $('footer').outerHeight(true));
+					}
+				  }
+			});
+		});
 	</script>
 </body>
 </html>

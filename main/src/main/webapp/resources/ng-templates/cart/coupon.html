@@ -28,14 +28,14 @@
 							</div>
 						</form>
 
-						<div class="pad-v2" ng-show="couponErrors">
-							<div class="alert alert-warning" role="alert">
+						<div class="pad-t2" ng-show="couponErrors">
+							<div class="alert alert-warning marg-b0" role="alert">
 								<span ng-bind-html="couponErrors"></span>
 							</div>
 						</div>
 					</div>
 					
-					<div class="applied-coupons marg-b3" ng-if="m.offersApplied">
+					<div class="applied-coupons marg-b1" ng-if="m.offersApplied">
 						<h6>Promotions Applied</h6>
 						<div class="marg-l1" ng-repeat="item in m.sales">
 							<em class="green1">{{item.name}} (-{{item.price |

@@ -435,6 +435,158 @@ public class CartController {
 		return r;	
 	}
 	
+	
+	@RequestMapping(value = "/adddoubledown/{productId}", method = RequestMethod.POST)
+	public @ResponseBody CreateOrderResponse addDoubleDownItem(
+			@CookieValue(value = "lbbagnumber", defaultValue = "0") String orderIdS, 
+			@PathVariable Long productId){
+
+		CreateOrderResponse r = new CreateOrderResponse();
+		r.setSuccess(false);
+		
+		//System.out.println("orderIdS:" + orderIdS + ";");
+		
+		try {
+			
+			if(productId == null 
+					|| productId == 0){
+				
+				r.setMessage("There is something wrong with this product. "
+						+ "Please select a different product, or contact support team.");
+			}
+			
+			else {
+				
+				
+				/** Find the product **/
+				Product product = prdDao.get(productId);
+				if(product == null){
+					r.setMessage("This product doesn't seems to be valid. "
+						+ "Please select a different product, or contact support team.");
+				}				
+				else {
+					
+					if(product.isVariation()){
+						
+						/** If it has variation, then return a URL 
+						 *  so we can forward customer to the product page **/
+						
+						r.setMessage("/product/" + product.getUrl());
+						
+						
+					}
+					else{
+						
+						/** If its simple, create the lineItem **/
+						OrderLineItemCart lineItem = new OrderLineItemCart();
+						lineItem.setName(product.getName());
+						lineItem.setQty(1);
+						lineItem.setProductId(productId);
+						lineItem.setImg(product.getFeaturedImg());
+						lineItem.setVariationId(0l);
+						
+						
+						
+						long orderId = Utility.getLong(orderIdS);
+						CartOrder order = dao.get(orderId);
+						if(order == null || !order.getStatus().equals("incart")){
+							r.setMessage("No valid order found.");
+						}		
+						
+						else {
+							
+							int totalItems = 0;
+							
+							long pid = lineItem.getProductId(),
+									vid = lineItem.getVariationId();
+							
+							//Check if the same item is already in the order
+							boolean itemFound = false;
+							String couponCode = "";
+							List<OrderLineItemCart> items = order.getLineItems();
+							if(items != null){
+								for(OrderLineItemCart item : items){
+									
+									if(item.getProductId() == pid){
+										
+										int currQty = item.getQty();
+										int newQty = currQty + lineItem.getQty();
+										
+										item.setQty(newQty);
+										
+										itemFound = true;						
+									}
+									
+									/*totalItems refers to the cart count*/
+									if(item.getType().equals("item")
+											&& item.isInstock()){
+										totalItems+= item.getQty();
+									}
+									
+									else if(item.getType().equals("coupon")){
+										couponCode = item.getName();
+									}
+								}
+							}
+							
+							
+							/**
+							 * If item doesn't exist in the cart already,
+							 * we build the item and add it to CartOrder.lineItems
+							 **/					
+							if(!itemFound){
+								if(items == null)
+									items = new ArrayList<OrderLineItemCart>();
+
+								OrderLineItemCart newItem = buildNewItem(lineItem, pid, vid);
+								if(newItem != null){
+									
+									items.add(newItem);
+									
+									/*totalItems refers to the cart count*/
+									totalItems+= newItem.getQty();
+								}
+							}
+							
+							
+							/*Update order with lineItems*/
+							order.setLineItems(items);
+							
+							
+							/* Reapply coupons if any! */
+							if(!couponCode.equals("")){
+								couponManager.reapplyCoupon(couponCode, order, false);
+							}
+							
+							//Run through deal logic
+							cartLogics.applyDeals(order, controlOptions, false);
+							
+							
+							/*Update orderTotals*/
+							cartLogics.calculateSummary(order);
+							
+							dao.save(order);
+							
+							r.setSuccess(true);
+							r.setCartCount(totalItems);				
+							r.setOrder(order);				
+						}
+					
+					}
+				}
+				
+			}
+			
+		}catch(Exception e){
+			
+			r.setMessage("There was some error creating the order, please try later.");
+			logger.error(Exceptions.giveStackTrace(e));
+		}
+		
+		return r;	
+	}
+	
+	
 	@SuppressWarnings("unused")
 	private boolean specsMatch(List<AttrValue> specs1, List<AttrValue> specs2){
 		
@@ -618,6 +770,40 @@ public class CartController {
 		
 		cr.setOrder(order);
 		cr.setConfig(controlOptions);
+		
+		
+		/**
+		 * Get doubledown products
+		 * */
+		List<Integer> ddPrdIds = controlOptions.getDoubleDownEligibleProducts();
+		List<Long> ddPrdIdsL = new ArrayList<>();
+		if(ddPrdIds != null && ddPrdIds.size()>0){
+			for(Integer ddPid : ddPrdIds){
+				ddPrdIdsL.add((long)ddPid);
+			}
+			
+			List<Product> prds = prdDao.createQuery()
+						.field("_id")
+						.in(ddPrdIdsL)
+
+						.filter("status", "publish")
+						.filter("stockStat", "instock")
+						
+						.retrievedFields(true, "featuredImg", "_id", "name", "url")
+						.asList();
+			
+/*			System.out.println(prdDao.createQuery()
+						.field("_id")
+						.in(ddPrdIdsL)
+
+						.filter("status", "publish")
+						.filter("stockStat", "instock")
+						
+						.retrievedFields(true, "featuredImg", "_id", "name").getQueryObject().toString());*/
+			
+			cr.setDdPrds(prds);
+		}
+		
 		
 		return cr;			
 	}

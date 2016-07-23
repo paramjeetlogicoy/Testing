@@ -120,5 +120,62 @@
 			<div class="modal-content"></div>
 		</div>
 	</div>
+
+	<div class="sidecart" ng-controller="cartMainCtrlr as m">
+		<div ng-controller="cartItemCtrlr" class="pch100">
+			<h4>Your Cart</h4>
+			<button class="close" ng-click="prdCartClose()">&times;</button>
+			<div class="sc-items lb-scrollbar">
+				<ul>
+					<li ng-repeat="item in m.order.lineItems"
+					ng-if="item.type=='item'" ng-hide="!item.instock">
+						<div class="clearfix">
+							<div class="sci-img">
+								<img class="fit" ng-if="item.img"
+									ng-src="{{lbGlobalCDNPath + item.img}}" />
+							</div>
+							<div class="sci-info">
+								<h6>{{item.name}}</h6>
+								<div class="scii-qty">
+									<div class="input-group">
+										<span class="input-group-btn">
+											<button class="btn btn-default" ng-show="item.qty==1"  ng-click="itemRemove()">
+												<i class="fa fa-minus"></i>
+											</button>
+											<button class="btn btn-default" ng-hide="item.qty==1" ng-click="updateCart(-1)">
+												<i class="fa fa-minus"></i>
+											</button>
+										</span> <input type="text" class="form-control" ng-model="item.qty"
+											ng-change="updateCart()" /><span class="input-group-btn">
+											<button class="btn btn-default" ng-click="updateCart(+1)">
+												<i class="fa fa-plus"></i>
+											</button>
+										</span>
+									</div>
+								</div>
+								<div class="scii-price">{{item.price | currency}}</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="sc-action">
+				<div class="clearfix strong uppercase marg-b1">
+					<div class="pull-left">SUBTOTAL</div>
+					<div class="pull-right text-right">{{m.order.total |
+						currency}}</div>
+				</div>
+
+				<a href="/cart" class="btn btn-lb btn-block"
+					ng-disabled="!m.orderAboveOrderMin">Proceed To Checkout</a>
+				<div class="marg-t1" ng-if="!m.orderAboveOrderMin">
+					<div class="alert alert-warning">
+						<span class="size12">Minimum order value is <strong>{{m.orderMin|currency}}</strong></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>

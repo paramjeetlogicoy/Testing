@@ -2,6 +2,50 @@
 
 	<div class="cart-details" ng-hide="m.emptyCart">
 		<h4 class="cart-steps">Step1: Review Your Cart</h4>
+
+		<div class="alert alert-danger" ng-if="!m.orderAboveOrderMin">
+			Minimum order value should should be <strong>{{m.orderMin|currency}}</strong>
+		</div>
+
+		<div
+			ng-if="m.orderAboveOrderMin && m.doubleDownActive && !m.couponApplied">
+			<div class="alert alert-success text-center"
+				ng-if="!m.doubleDownEligible">
+				<h4>Don't Forget</h4>
+				<div>
+					Receive the opportunity to select a <strong>FREE</strong> when you
+					<strong>DOUBLE DOWN</strong>. Click here for details.
+				</div>
+			</div>
+
+			<div ng-if="m.doubleDownEligible && !m.doubleDownApplied"
+				class="marg-b2 border-b">
+				<div class="alert alert-success text-center">
+					<h4>DOUBLE DOWN OFFER</h4>
+					<h5 class="marg-b0">Congratulations, You are eligible for to
+						select a free gift</h5>
+				</div>
+
+				<div class="marg-b2 size13">Choose one of the following
+					products to be added to your order. Item selected will be received
+					through the same method/location specified in your order's delivery
+					details. Cancelling or changing order specifications prior to or
+					post order confirmation may result in forfeiture of selected gift.</div>
+
+				<ul class="cart-doubledown text-center">
+					<li ng-repeat="prd in m.ddprds"><a href=""
+						ng-href="{{'/product/' + prd.url}}"><img
+							ng-if="prd.featuredImg"
+							ng-src="{{lbGlobalCDNPath + prd.featuredImg.replace('.jpg','-150x150.jpg')}}"
+							class="fit" /> <small>{{prd.name}}</small> </a> <span><a
+							href="" ng-click="addDoubleDown()" class="btn btn-xs btn-lb">ADD
+								TO CART</a></span></li>
+				</ul>
+
+			</div>
+		</div>
+
+
 		<div class="cart-details-body">
 			<ul>
 				<li class="item-li" ng-repeat="item in m.order.lineItems"
@@ -32,6 +76,8 @@
 				</li>
 			</ul>
 		</div>
+		<!-- .cart-details-body ends -->
+
 	</div>
 </div>
 

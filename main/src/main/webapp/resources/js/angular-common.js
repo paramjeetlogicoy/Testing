@@ -89,11 +89,7 @@ allProductCtrlr = function($scope, $rootScope, $http, $templateRequest, $compile
 				
 				
 			} else {
-/*				
-				//load stored prices
-				$scope.prices = $scope.productPrices[$scope.currentPid];
-
-				$scope.loadTemplate($angularElement);*/
+				//The template was previously loaded. So noop()
 			}
 		}
 	};
@@ -210,6 +206,9 @@ allProductPriceCtrlr = function($scope, $rootScope, $http){
 				
 				//Reset itemTotal
 				$scope.itemTotal = 0;
+				
+				//Send signal for sidecart load;
+				$rootScope.$broadcast('mCartReload');
 			}
 			else {
 				$scope.itemError  = resp.data.message;
@@ -821,11 +820,13 @@ cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 	deliveryLoaded = false;
 	
 	m.order = {};	
+	m.ddprds = [];
 	m.user = {};
 	m.orderMin = 9999;
 	m.config = {};
 	m.sales = [];
 	
+	m.cartPage = false;
 	m.cartLoading = true;
 	m.pmtCOD = false;
 	
@@ -850,6 +851,7 @@ cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 	m.doubleDownApplied = false;
 	m.doubleDownEligible = false;
 	
+	
 	/* When ever there is a change in m.order, this function needs to be called 
 	 * most of the logic control flags are set here. */
 	m.processOrder = function(){
@@ -858,6 +860,7 @@ cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		var couponApplied = false,
 			offersApplied = false,
+			doubleDownApplied = false,
 			emptyCart = true;
 		
 		
@@ -868,6 +871,10 @@ cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 					
 					if(item.type=='item'){					
 						emptyCart = false;
+						
+						if(item.img){
+							item.img = item.img.replace('.jpg','-150x150.jpg');
+						}
 					}
 					
 					
@@ -891,8 +898,9 @@ cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 						
 						if(item.promo == 'doubledownoffer'){
 							productName = 'Double Down Offer';
-							m.doubleDownApplied = true;
+							doubleDownApplied = true;
 						}
+						
 							
 						
 						if(!isNaN(discount) && discount > 0){						
@@ -907,7 +915,7 @@ cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 			})
 		}	
 		
-		
+		m.doubleDownApplied = doubleDownApplied;
 		m.couponApplied = couponApplied;
 		m.offersApplied = offersApplied;
 		m.emptyCart = emptyCart;
@@ -917,11 +925,12 @@ cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		if(m.order.total > m.orderMin){
 			m.orderAboveOrderMin = true;
 			
-			if(!deliveryLoaded) m.loadDeliveryTemplate();			
+			if(m.cartPage && !deliveryLoaded) m.loadDeliveryTemplate();			
 		} 
 		else {			
 			m.orderAboveOrderMin = false;
-			m.destroyDeliveryTemplate();
+			
+			if(m.cartPage) m.destroyDeliveryTemplate();
 		}
 		
 		
@@ -935,7 +944,7 @@ cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		}		
 		
 		
-		if(m.emptyCart){			
+		if(m.cartPage && m.emptyCart){			
 			//Will destory item, coupon, delivery, payment and review (if exists)!
 			m.destroyItemTemplate();
 		}
@@ -966,8 +975,15 @@ cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 							m.orderMin = m.config.orderMinimum;
 						}
 						
-						if(m.config.doubleDown && m.config.doubleDown > 0){
+						/* if we have a value > 0 for double down and we have 
+						 * products for double down	*/
+						if(m.config.doubleDown 
+								&& m.config.doubleDown > 0 
+								&& resp.data.ddPrds
+								&& resp.data.ddPrds.length > 0){
+							
 							m.doubleDownActive = true;
+							m.ddprds = resp.data.ddPrds;
 						}
 					}	
 					
@@ -977,10 +993,15 @@ cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 					}
 					
 					
-					if(!m.emptyCart){						
-						
+					if(m.cartPage && !m.emptyCart){				
 						m.loadItemTemplate();						
 						m.loadCouponTemplate();
+					}
+					else if(!m.emptyCart && !m.cartPage){
+						$('body').removeClass('sidecartClose').addClass('sidecartOpen');
+					}
+					else if(m.emptyCart && !m.cartPage){
+						$('body').removeClass('sidecartOpen').addClass('sidecartClose');
 					}
 				}, 
 				
@@ -991,7 +1012,16 @@ cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		);
 	};
 	
+	//Check if loaded from cart page
+	if(angular.element('.cartPage').size()>0){
+		m.cartPage = true;
+	}	
 	m.getCart();
+	
+	//Trigger cart load for sidecart from allProductPriceCtrlr
+	$scope.$on('mCartReload', function(){
+		m.getCart();
+	});
 		
 	
 	//Load item template
@@ -1175,32 +1205,35 @@ cartItemCtrlr = function($scope, $http, $rootScope){
 							m.order = resp.data.order;
 							m.processOrder();
 							
-							_lbFns.pSuccess('Item removed.');
+							if(m.cartPage) _lbFns.pSuccess('Item removed.');
 						}
 					
 						else if(resp.data && resp.data.message){
-							$scope.$parent.$parent.pageLevelAlert = resp.data.message;
+							if(m.cartPage) $scope.$parent.$parent.pageLevelAlert = resp.data.message;
 						}
 						else{
-							$scope.$parent.$parent.pageLevelAlert = $rootScope.errMsgPageRefresh;
+							if(m.cartPage) $scope.$parent.$parent.pageLevelAlert = $rootScope.errMsgPageRefresh;
 						}
 					},
 					
 					function(){
-						$scope.$parent.$parent.pageLevelAlert = $rootScope.errMsgPageRefresh;
+						if(m.cartPage) $scope.$parent.$parent.pageLevelAlert = $rootScope.errMsgPageRefresh;
 					}
 			);
 		}
 		else {
-			$scope.$parent.$parent.pageLevelAlert = $rootScope.errMsgPageRefresh;
+			if(m.cartPage) $scope.$parent.$parent.pageLevelAlert = $rootScope.errMsgPageRefresh;
 		}
 	};
 	
 	
-	
-	$scope.updateCart = function(){
+	$scope.updateCart = function(per){
 		
 		$scope.$parent.$parent.pageLevelAlert = '';
+		
+		if(!m.cartPage && per){
+			this.item.qty = this.item.qty + parseInt(per);
+		}
 		
 		if(this.item && this.item.qty && this.item.qty !=0){
 			$http.get(_lbUrls.cart + 'updatecart', {
@@ -1218,10 +1251,10 @@ cartItemCtrlr = function($scope, $http, $rootScope){
 					m.order = resp.data.order;
 					m.processOrder();
 					
-					_lbFns.pSuccess('Order Updated.');		
+					if(m.cartPage) _lbFns.pSuccess('Order Updated.');		
 				}
 				else{
-					$scope.$parent.$parent.pageLevelAlert = resp.data.message;
+					if(m.cartPage) $scope.$parent.$parent.pageLevelAlert = resp.data.message;
 				}
 			});
 		}
@@ -1232,7 +1265,50 @@ cartItemCtrlr = function($scope, $http, $rootScope){
 		else {
 			$scope.$parent.$parent.pageLevelAlert = $rootScope.errMsgPageRefresh;
 		}
+	};
+	
+	
+	$scope.addDoubleDown = function(){
+		
+		$http.post(_lbUrls.cart + '/adddoubledown/' + this.prd._id)
+		.then(function(resp){
+			if(resp.data && resp.data.success){
+				
+				$rootScope.rootCartCount = resp.data.cartCount;
+				
+				m.order = resp.data.order;
+				m.processOrder();
+				
+				_lbFns.pSuccess('Offer Item Added.');
+			}
+		
+			else if(resp.data && resp.data.message){
+				if(resp.data.message.indexOf('/product')>-1){
+					location.href = resp.data.message;
+				}
+				else{
+					$scope.$parent.$parent.pageLevelAlert = resp.data.message;
+				}
+			}
+			else{
+				$scope.$parent.$parent.pageLevelAlert = $rootScope.errMsgPageRefresh;
+			}
+		},
+		function(resp){
+			if(resp.status == 403){
+				$scope.$parent.$parent.pageLevelAlert  = "Your browser was idle for long. "
+					+"Please refresh the page and add the item to cart again.";
+			}
+			else {
+				$scope.$parent.$parent.pageLevelAlert  = "There was some error adding the item. "
+					+"Please try later. If problem persists, please call the customer care.";
+			}
+		});
 	};	
+	
+	$scope.prdCartClose = function(){
+		$('body').removeClass('sidecartOpen').addClass('sidecartClose');
+	};
 },
 
 cartDeliveryCtrlr = function($scope, $http, $rootScope){
