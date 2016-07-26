@@ -129,7 +129,7 @@ allProductCtrlr = function($scope, $rootScope, $http, $templateRequest, $compile
 	};
 },
 
-allProductPriceCtrlr = function($scope, $rootScope, $http){
+allProductPriceCtrlr = function($scope, $rootScope, $http, $timeout){
 
 	$scope.itemTotal = 0;
 	$scope.calculateItemTotal = function(){
@@ -198,6 +198,10 @@ allProductPriceCtrlr = function($scope, $rootScope, $http){
 				$rootScope.rootCartCount = resp.data.cartCount;
 				$.cookie('lbbagnumber', resp.data.orderId, {expires:30, path:'/'});
 				$scope.itemSuccess = 'Item(s) added to cart.';
+				
+				$timeout(function () {
+					$scope.itemSuccess = "";
+			    }, 4000);
 				
 				//Reset Quantity
 				for(var i=0; i<$scope.prices.length; i++){
@@ -1001,7 +1005,8 @@ cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 						$('body').removeClass('sidecartClose').addClass('sidecartOpen');
 					}
 					else if(m.emptyCart && !m.cartPage){
-						$('body').removeClass('sidecartOpen').addClass('sidecartClose');
+						if($('body').hasClass('.sidecartOpen'))
+								$('body').removeClass('sidecartOpen').addClass('sidecartClose');
 					}
 				}, 
 				
@@ -1311,7 +1316,7 @@ cartItemCtrlr = function($scope, $http, $rootScope){
 	};
 },
 
-cartDeliveryCtrlr = function($scope, $http, $rootScope){
+cartDeliveryCtrlr = function($scope, $http, $rootScope, $filter){
 
 	var m = $scope.m,
 	addressApiInit = false,
@@ -1367,6 +1372,44 @@ cartDeliveryCtrlr = function($scope, $http, $rootScope){
 			m.loadPaymentTemplate();
 	},
 	
+	setUpDeliveryTimes = function(){
+		var d = new Date(),
+		currHour = d.getHours();
+		
+		if(currHour >= 23){ //if past 11PM
+			//delivered tomorrow after 11 AM;
+			d.setDate(d.getDate()+1);
+			
+			$scope.deliveryTimeText = 'Tomorrow - ' 
+				+ $filter('date')(d, 'mediumDate') 
+				+ ' after 11:00 AM PST';			
+		}  
+		
+		else if(currHour < 11){//if before 11AM
+			//delivered today after 11 AM;
+			
+			$scope.deliveryTimeText = 'Today - ' 
+				+ $filter('date')(d, 'mediumDate') 
+				+ ' after 11:00 AM PST';	
+		}
+		
+		else if(currHour > 20){//During our operational period
+			d.setHours(22,59,0);
+			
+			$scope.endTime = d;
+			
+			$scope.deliveryTimeText = 'Today - ' 
+				+ $filter('date')(d, 'mediumDate')
+				+ ' if you order in ';
+		}
+		else{
+			//delivered today
+			
+			$scope.deliveryTimeText = 'Today - ' 
+				+ $filter('date')(d, 'mediumDate');
+		}
+	},
+	
 	initAddressVars = function(){
 		if(!m.order.shipping) m.order.shipping = {};		
 		if(!m.order.shipping.address) m.order.shipping.address = {};
@@ -1379,6 +1422,11 @@ cartDeliveryCtrlr = function($scope, $http, $rootScope){
 	$scope.shippingEligible = false;
 	$scope.deliverySelected = true; //false;
 	$scope.shippingSelected = false;
+	
+	$scope.deliveryTimeText = '';
+	$scope.endTime = null;
+	
+	
 	
 
 	$scope.resetDeliveryOptions = function(){
@@ -1641,14 +1689,16 @@ cartDeliveryCtrlr = function($scope, $http, $rootScope){
 	(function(){
 		
 		/*if there is shipping info in the order, use it*/
-		if(m.order && m.order.shipping && m.order.shipping.address){
+		if(m.order && m.order.shipping && m.order.shipping.address){		
+			setUpDeliveryTimes();
 			addressLogic();
 			
 			if(!addressApiInit)
 				$scope.mapsInit();
 		}
 		
-		else if(m.user && m.user.billing){			
+		else if(m.user && m.user.billing){		
+			setUpDeliveryTimes();
 			initAddressVars();
 			
 			m.order.shipping.address = m.user.billing;
@@ -2006,4 +2056,6 @@ lbApp
 	.controller('cartDeliveryCtrlr', cartDeliveryCtrlr)
 	.controller('cartPaymentCtrlr', cartPaymentCtrlr)
 	.controller('cartCouponCtrlr', cartCouponCtrlr)
-	.controller('cartReviewCtrlr', cartReviewCtrlr);
+	.controller('cartReviewCtrlr', cartReviewCtrlr)
+
+.directive('remainingTime', remainingTime);

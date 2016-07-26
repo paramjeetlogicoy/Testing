@@ -54,15 +54,21 @@
 
 	<div class="cart-address" ng-show="deliveryOptionSelected">
 		<div class="cart-address" ng-hide="m.addressSaved">
-			
-			<div class="pad1 bg-green2 marg-b2 white"
-				ng-show="deliverySelected">
-				<strong>Local Delivery</strong> <!-- <a href=""
+
+			<div class="marg-b2" ng-show="deliverySelected">
+				<div class="pad1 bg-green2 white">
+					<strong>Local Delivery</strong>
+					<!-- <a href=""
 					ng-click="resetDeliveryOptions()" class="inlineb pad-h1 inherit"><i
 					class="fa fa-pencil" aria-hidden="true"></i> <em>change</em></a> -->
+				</div>
+				<div class="text-center pad05 cart-deliverytime" ng-show="deliveryTimeText!=''">
+					<em>Delivery Date</em>: <strong>{{deliveryTimeText}} <span
+						remaining-time="endTime"></span></strong>
+				</div>
 			</div>
-			
-<!-- 			<div class="pad1 bg-orange2 marg-b2 white"
+
+			<!-- 			<div class="pad1 bg-orange2 marg-b2 white"
 				ng-show="shippingSelected">
 				<strong>Overnight Shipping</strong> <a href=""
 					ng-click="resetDeliveryOptions()" class="inlineb pad-h1 inherit"><i
@@ -160,11 +166,17 @@
 
 		<div class="cart-address-info" ng-show="m.addressSaved">
 
-			<div class="pad1 bg-green2 marg-b2 white"
-				ng-show="deliverySelected">
-				Delivery Method: <strong>Local Delivery</strong> <!-- <a href=""
+			<div class="marg-b2" ng-show="deliverySelected">
+				<div class="pad1 bg-green2 white">
+					Delivery Method: <strong>Local Delivery</strong>
+					<!-- <a href=""
 					ng-click="resetDeliveryOptions()" class="inlineb pad-h1 inherit"><i
 					class="fa fa-pencil" aria-hidden="true"></i> <em>change</em></a> -->
+				</div>
+				<div class="text-center pad05 cart-deliverytime" ng-show="deliveryTimeText!=''">
+					<em>Delivery Date</em>: <strong>{{deliveryTimeText}} <span
+						remaining-time="endTime"></span></strong>
+				</div>
 			</div>
 
 <!-- 			<div class="pad1 bg-orange2 marg-b2 white"

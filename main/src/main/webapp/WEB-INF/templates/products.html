@@ -66,7 +66,7 @@
 											</div>
 											<div class="col-xs-6">
 												<button type="button" class="btn btn-lb btn-sm btn-block"
-													ng-click="showOptions($event)">QTY</button>
+													ng-click="showOptions($event)">PICK</button>
 											</div>
 										</div>
 									</div>
@@ -135,31 +135,26 @@
 					<li ng-repeat="item in m.order.lineItems"
 					ng-if="item.type=='item'" ng-hide="!item.instock">
 						<div class="clearfix">
+							<div class="sci-qty">
+								<a href="" ng-click="updateCart(+1)"><i
+									class="fa fa-caret-up" aria-hidden="true"></i></a>
+								<div>{{item.qty}}</div>
+								<a href="" ng-hide="item.qty==1" ng-click="updateCart(-1)"><i
+									class="fa fa-caret-down" aria-hidden="true"></i></a> <a href=""
+									ng-show="item.qty==1" ng-click="itemRemove()"><i
+									class="fa fa-caret-down" aria-hidden="true"></i></a>
+							</div>
+
 							<div class="sci-img">
 								<img class="fit" ng-if="item.img"
 									ng-src="{{lbGlobalCDNPath + item.img}}" />
 							</div>
+							
 							<div class="sci-info">
 								<h6>{{item.name}}</h6>
-								<div class="scii-qty">
-									<div class="input-group">
-										<span class="input-group-btn">
-											<button class="btn btn-default" ng-show="item.qty==1"  ng-click="itemRemove()">
-												<i class="fa fa-minus"></i>
-											</button>
-											<button class="btn btn-default" ng-hide="item.qty==1" ng-click="updateCart(-1)">
-												<i class="fa fa-minus"></i>
-											</button>
-										</span> <input type="text" class="form-control" ng-model="item.qty"
-											ng-change="updateCart()" /><span class="input-group-btn">
-											<button class="btn btn-default" ng-click="updateCart(+1)">
-												<i class="fa fa-plus"></i>
-											</button>
-										</span>
-									</div>
-								</div>
-								<div class="scii-price">{{item.price | currency}}</div>
 							</div>
+							
+							<div class="scii-price">{{item.price | currency}}</div>
 						</div>
 					</li>
 				</ul>

@@ -141,4 +141,51 @@ appConfigs = function($httpProvider){
             }
         };
     });
+},
+
+remainingTime = function($interval, dateFilter) {
+	// return the directive link function. (compile function not needed)
+	return function(scope, element, attrs) {
+		var format = "h'h' mm'm' ss's'",  // date format
+		endTime = 0,
+		stopTime; // so that we can cancel the time updates
+
+		// used to update the UI
+		function clearTime() {
+			element.text('');
+			$interval.cancel(stopTime);
+		}
+
+		// used to update the UI
+		function updateTime() {
+			var now = new Date().getTime(),
+			et = endTime.getTime();
+			
+			if((endTime-now) > 0)
+				element.text(dateFilter(endTime-now, format));
+			
+			else {
+				element.text('Sorry you are past the cutt off time.');
+				$interval.cancel(stopTime);
+			}
+		}
+
+		// watch the expression, and update the UI on change.
+		scope.$watch(attrs.remainingTime, function(value) {
+			if(value) {
+				endTime = value;
+				updateTime();
+			}
+			else
+				clearTime();
+		});
+
+		stopTime = $interval(updateTime, 1000);
+
+		// listen on DOM destroy (removal) event, and cancel the next UI update
+		// to prevent updating time after the DOM element was removed.
+		element.on('$destroy', function() {
+			$interval.cancel(stopTime);
+		});
+	}
 };
