@@ -1363,9 +1363,9 @@ cartDeliveryCtrlr = function($scope, $http, $rootScope, $filter){
 		$('.delivery-address').empty()
 		.append($('<img />').attr({'src' : getAddressMapLink(), 'class':'fit'}));
 		
-		if($scope.shippingSelected) 
+/*		if($scope.shippingSelected) 
 			m.codEnabled = false;
-		else
+		else*/
 			m.codEnabled = true;
 		
 		if(m.user && m.user._id)

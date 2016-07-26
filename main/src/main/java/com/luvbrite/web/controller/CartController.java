@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -89,6 +90,9 @@ public class CartController {
 	
 	@Autowired
 	private ControlOptions controlOptions;
+	
+	@Autowired
+	private JobLauncher jobLauncher;
 	
 	@Autowired
 	private EmailService emailService;
@@ -1035,7 +1039,7 @@ public class CartController {
 							
 							email.setEmail(newOrder);
 							
-							//emailService.sendEmail(email);
+							emailService.sendEmail(email);
 							
 						}catch(Exception e){
 							logger.error(Exceptions.giveStackTrace(e));
@@ -1044,7 +1048,7 @@ public class CartController {
 						
 						//Sent Order Meta to Inventory
 						try {							
-							//postOrderMeta.postOrder(newOrder);							
+							postOrderMeta.postOrder(newOrder);							
 						}catch(Exception e){
 							logger.error(Exceptions.giveStackTrace(e));
 						}

@@ -56,6 +56,14 @@
 			<version>4.0.4.RELEASE</version>
 		</dependency>
 		
+		<!-- https://mvnrepository.com/artifact/org.springframework.batch/spring-batch-core -->
+		<dependency>
+			<groupId>org.springframework.batch</groupId>
+			<artifactId>spring-batch-core</artifactId>
+			<version>3.0.7.RELEASE</version>
+		</dependency>
+		
+		
 		<!-- Spring Context Support for Email -->
 		<!-- http://mvnrepository.com/artifact/org.springframework/spring-context-support -->
 		<dependency>
@@ -69,7 +77,12 @@
 		    <artifactId>mail</artifactId>
 		    <version>1.4</version>
 		</dependency>
-				
+		<!-- Google Cloud Needs Third Party to Send emails. Using mailjet -->
+	    <dependency>
+	      <groupId>com.mailjet</groupId>
+	      <artifactId>mailjet-client</artifactId>
+	      <version>4.0.1</version>
+	    </dependency>				
 
 		<!-- Connection Pool for MySQL -->
 		<dependency>

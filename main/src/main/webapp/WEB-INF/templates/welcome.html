@@ -9,14 +9,14 @@
 <style type="text/css">
 .newarrivals-slider{background-image: url(/resources/imgs/sliders/new-arrivals-offer.jpg);background-color:white !important;}
 .endofeight-slider{background-image: url(/resources/imgs/sliders/end-of-eigth-offer.jpg)}
-.endofeight-slider.item a.btn {bottom: 37px;right: 18%;}
+.endofeight-slider.item button.btn {bottom: 37px;right: 18%;}
 .offhouroffer-slider{background-image: url(/resources/imgs/sliders/off-hour-offer.jpg)}
 .doubledown-slider{background-image: url(/resources/imgs/sliders/double-down-offer.jpg);background-color:white !important;}
-.doubledown-slider.item a.btn {bottom:5px;right:22%;}
+.doubledown-slider.item button.btn {bottom:5px;right:22%;}
 @media (min-width: 768px){
-	.endofeight-slider.item a.btn {bottom:100px;right:36%;}
-	.offhouroffer-slider.item a.btn {bottom:70px}
-	.doubledown-slider.item a.btn {bottom:35px;right:37%;}
+	.endofeight-slider.item button.btn {bottom:100px;right:36%;}
+	.offhouroffer-slider.item button.btn {bottom:70px}
+	.doubledown-slider.item button.btn {bottom:35px;right:37%;}
 }
 </style>
 </head>
@@ -33,15 +33,15 @@
 				</div>
 
 				<div class="endofeight-slider item">
-					<a href="" class="btn btn-sm btn-lb">GET SPECIFICS</a>
+					<button data-toggle="modal" data-target="#endOfEightModal" class="btn btn-sm btn-lb">GET SPECIFICS</button>
 				</div>
 
 				<div class="offhouroffer-slider item">
-					<a href="" class="btn btn-warning btn-sm">VIEW DETAILS</a>
+					<button data-toggle="modal" data-target="#offHourOfferModal" class="btn btn-warning btn-sm">VIEW DETAILS</button>
 				</div>
 
 				<div class="doubledown-slider item">
-					<a href="" class="btn btn-sm btn-black">VIEW DETAILS</a>
+					<button data-toggle="modal" data-target="#doubleDownModal" class="btn btn-sm btn-black">VIEW DETAILS</button>
 				</div>
 			</div>
 
@@ -122,6 +122,71 @@
 	<div th:replace="fragments/layout::fragment-foot(angular=true)"></div>
 	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
 	<script type="text/javascript">
+		$(document).ready(function(){			
+			$('#doubleDownModal, #endOfEightModal, #offHourOfferModal')
+			.on('shown.bs.modal', function() {
+				$('#home-sliders').carousel('pause');
+			}).on('hide.bs.modal', function() {
+				$('#home-sliders').carousel('cycle');
+			});
+		});
 	</script>
+	
+	<div class="modalholder">		
+		<div th:replace="fragments/layout::fragment-doubledownmodal"></div>
+
+		<div class="modal fade" id="endOfEightModal" tabindex="-1"
+			role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title">End of Eighth</h4>
+					</div>
+					<div class="modal-body">
+						<div class="marg-b2">
+							As part of our latest campaign <em class="green1">The End of
+								Eighth</em>, we are replacing the weight option of 1/8oz with 5g for
+							select flowers. The new 5g weight comes at the same price. Thats
+							1.5g extra for free!
+						</div>
+						<div class="marg-b2">
+							<p>
+								<strong>To be More Specific</strong>: The following are now
+								available in 5g.
+							</p>
+							<div class="marg-l1">
+								Chemdawg Diesel - @ $45 per 5g<br />Sour Patch - @ $75 per 5g
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="modal fade" id="offHourOfferModal" tabindex="-1"
+			role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title">Orders during Off Hours</h4>
+					</div>
+					<div class="modal-body">
+						<div class="marg-b2">
+							Offer Details TBD
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>

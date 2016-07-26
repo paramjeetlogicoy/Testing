@@ -11,18 +11,25 @@
 			ng-if="m.orderAboveOrderMin && m.doubleDownActive && !m.couponApplied">
 			<div class="alert alert-success text-center"
 				ng-if="!m.doubleDownEligible">
-				<h4>Don't Forget</h4>
+				<h4>Don't Forget!</h4>
 				<div>
-					Receive the opportunity to select a <strong>FREE</strong> when you
-					<strong>DOUBLE DOWN</strong>. Click here for details.
+					Receive the opportunity to select a
+					<strong>FREE</strong> when you <strong>DOUBLE
+						DOWN</strong>. <a href="" data-toggle="modal"
+						data-target="#doubleDownModal" class="inherit u">Offer details.</a>
 				</div>
 			</div>
 
 			<div ng-if="m.doubleDownEligible && !m.doubleDownApplied"
 				class="marg-b2 border-b">
 				<div class="alert alert-success text-center">
-					<h4>DOUBLE DOWN OFFER</h4>
-					<h5 class="marg-b0">Congratulations, You are eligible for to
+					<h4>
+						DOUBLE DOWN OFFER <a href=""
+							data-toggle="modal" data-target="#doubleDownModal"
+							class="inherit marg-l1"><i class="fa fa-info-circle"
+							aria-hidden="true"></i></a>
+					</h4>
+					<h5 class="marg-b0">Congratulations, You are eligible to
 						select a free gift</h5>
 				</div>
 
