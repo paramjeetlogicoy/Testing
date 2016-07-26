@@ -556,18 +556,18 @@ nav#pagination-nav{
 	}
 }
 
-.hc-img-baked{background-image:url(/resources/imgs/baked.jpg)}
-.hc-img-candy{background-image:url(/resources/imgs/candies.jpg)}
-.hc-img-creams{background-image:url(/resources/imgs/creams.jpg)}
-.hc-img-drinks{background-image:url(/resources/imgs/drinks.jpg)}
-.hc-img-drops{background-image:url(/resources/imgs/drops.jpg)}
-.hc-img-hybrid{background-image:url(/resources/imgs/hybrid.jpg)}
-.hc-img-indica{background-image:url(/resources/imgs/indica.jpg)}
-.hc-img-pills{background-image:url(/resources/imgs/pills.jpg)}
-.hc-img-sativa{background-image:url(/resources/imgs/sativa.jpg)}
-.hc-img-topicals{background-image:url(/resources/imgs/topicals.jpg)}
-.hc-img-vapes{background-image:url(/resources/imgs/vapes.jpg)}
-.hc-img-wax{background-image:url(/resources/imgs/wax.jpg)}
+.hc-img-baked{background-image:url(https://lbrit.co/static/imgs/baked.jpg)}
+.hc-img-candy{background-image:url(https://lbrit.co/static/imgs/candies.jpg)}
+.hc-img-creams{background-image:url(https://lbrit.co/static/imgs/creams.jpg)}
+.hc-img-drinks{background-image:url(https://lbrit.co/static/imgs/drinks.jpg)}
+.hc-img-drops{background-image:url(https://lbrit.co/static/imgs/drops.jpg)}
+.hc-img-hybrid{background-image:url(https://lbrit.co/static/imgs/hybrid.jpg)}
+.hc-img-indica{background-image:url(https://lbrit.co/static/imgs/indica.jpg)}
+.hc-img-pills{background-image:url(https://lbrit.co/static/imgs/pills.jpg)}
+.hc-img-sativa{background-image:url(https://lbrit.co/static/imgs/sativa.jpg)}
+.hc-img-topicals{background-image:url(https://lbrit.co/static/imgs/topicals.jpg)}
+.hc-img-vapes{background-image:url(https://lbrit.co/static/imgs/vapes.jpg)}
+.hc-img-wax{background-image:url(https://lbrit.co/static/imgs/wax.jpg)}
 
 
 
@@ -1439,6 +1439,60 @@ nav#pagination-nav{
 	}
 }
 
+.slider-container{
+
+	text-align: center;
+	height:200px;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: auto 100%;
+	background-color: black;
+
+	@media(min-width:768px){
+		height:400px;
+	}	
+}
+
+/* Local Box */
+.localbox-container{
+	.slider-container{
+		background-image: url(https://lbrit.co/static/imgs/sliders/local-box-banner.jpg);
+	}
+}
+.localbox-div-wrapper{
+	max-width: 382px;
+}
+.localbox-action {
+    max-width: 208px;
+
+	em.qty {
+	    top: 7px;
+	    z-index: 5;
+	    left: 7px;
+	}
+
+	.form-control {
+    	padding-left: 45px;
+	}
+}
+
+ul.img-thumbnails {
+    margin: 0 -10px 20px;
+    font-size: 0;
+
+	li {
+		.size14;
+
+    	display: inline-block;
+    	width: 74px;
+    	padding: 0 10px 10px;
+	}
+
+	img {
+		.border1;
+    	cursor: pointer;
+    }
+}
 /*File Upload Generic*/
 .max-size-error,.invalid-pattern-error{
 	.marg-t(-1);

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Local Box</title>
+<meta th:include="fragments/layout::fragment-head" />
+<style type="text/css">
+</style>
+</head>
+<body ng-app="lbApp" ng-controller="localBoxCtrlr">
+	<div th:replace="fragments/layout::fragment-header"></div>
+
+	<div class="localbox-container">
+
+		<div class="slider-container marg-b6"></div>
+
+		<div class="container">
+			<div class="mx800">
+				<div class="row">
+					<div class="col-sm-6 marg-b3">
+						<div class="localbox-div-wrapper automarg"
+							ng-init="mainImg = 'localbox.jpg'">
+							<div class="marg-b1">
+								<img src="https://lbrit.co/static/imgs/localbox.jpg"
+									ng-src="{{'https://lbrit.co/static/imgs/' + mainImg}}"
+									class="fit border1" />
+							</div>
+							<ul class="img-thumbnails">
+								<li><img src="https://lbrit.co/static/imgs/localbox.jpg"
+									ng-mouseenter="mainImg = 'localbox.jpg'" class="fit"
+									title="Local Box" /></li>
+								<li><img src="https://lbrit.co/static/imgs/lb-sativa.jpg"
+									ng-mouseenter="mainImg = 'lb-sativa.jpg'" class="fit" title="Sativa" /></li>
+								<li><img src="https://lbrit.co/static/imgs/lb-indica.jpg"
+									ng-mouseenter="mainImg = 'lb-indica.jpg'" class="fit" title="Indica" /></li>
+								<li><img src="https://lbrit.co/static/imgs/lb-hybrid.jpg"
+									ng-mouseenter="mainImg = 'lb-hybrid.jpg'" class="fit" title="Hybrid" /></li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="col-sm-6 text-center marg-b6">
+						<div class="localbox-div-wrapper automarg">
+							<h1>THE LOCAL BOX</h1>
+							<div class="marg-b2">You're LOCAL - You know what you liked
+								and stick to it. You won't exactly say no to discovering new
+								things, but for the most part you are comfortable in familiar
+								territory.</div>
+
+							<div class="marg-b2">
+								<h6>
+									<span class="green1">Contents:</span>
+								</h6>
+								<div>
+									&bull; 1g Indica (I) - 100% Indica<br /> &bull; 1g Hybrid (H)
+									- 50/50 I to S ratio<br /> &bull; 1g Sativa (S) - 100% Sativa
+								</div>
+							</div>
+
+							<div class="localbox-action automarg">
+								<div class="input-group rel">
+									<em class="abs qty">Qty</em> <input type="number" step="1"
+										min="1" class="form-control text-center bold"
+										ng-model="quantity" /> <span class="input-group-btn">
+										<button class="btn btn-lb" type="button">ADD TO CART</button>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<div th:replace="fragments/layout::fragment-footer"></div>
+	<div th:replace="fragments/layout::fragment-foot(angular=true)"></div>
+	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
+	<script type="text/javascript"></script>
+</body>
+</html>

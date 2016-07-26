@@ -43,7 +43,7 @@ public class MainController {
 	@RequestMapping(value = "/home")
 	public String home(){	
 		
-		return "welcome";		
+		return "redirect:/";		
 	}
 
 	
@@ -133,6 +133,18 @@ public class MainController {
 			model.addAttribute("userId", user.getId());
 		
 		return "contact-us";		
+	}	
+	
+	
+	
+	@RequestMapping(value = "/localbox")
+	public String locabox(@AuthenticationPrincipal 
+			UserDetailsExt user, ModelMap model){	
+		
+		if(user!=null && user.isEnabled())
+			model.addAttribute("userId", user.getId());
+		
+		return "localbox";		
 	}
 	
 	

@@ -2035,6 +2035,11 @@ cartReviewCtrlr = function($scope, $http, $rootScope){
 		}
 		
 	};
+},
+
+localBoxCtrlr = function($scope, $http, $rootScope){
+	
+	$scope.quantity = 1;
 };
 
 lbApp
@@ -2057,5 +2062,7 @@ lbApp
 	.controller('cartPaymentCtrlr', cartPaymentCtrlr)
 	.controller('cartCouponCtrlr', cartCouponCtrlr)
 	.controller('cartReviewCtrlr', cartReviewCtrlr)
+	
+.controller('localBoxCtrlr', localBoxCtrlr)
 
 .directive('remainingTime', remainingTime);
