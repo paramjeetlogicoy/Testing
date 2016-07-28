@@ -81,6 +81,9 @@
 						<a href="" ng-click="itemRemove()">Delete Item</a>
 					</div>
 				</li>
+
+				<li class="item-li offhouritem" ng-if="itsOffHour"
+					ng-include="'/resources/ng-templates/cart/off-hour-item.html'"></li>
 			</ul>
 		</div>
 		<!-- .cart-details-body ends -->

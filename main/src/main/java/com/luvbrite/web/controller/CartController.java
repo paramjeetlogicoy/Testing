@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -90,9 +89,6 @@ public class CartController {
 	
 	@Autowired
 	private ControlOptions controlOptions;
-	
-	@Autowired
-	private JobLauncher jobLauncher;
 	
 	@Autowired
 	private EmailService emailService;
@@ -790,7 +786,7 @@ public class CartController {
 						.field("_id")
 						.in(ddPrdIdsL)
 
-						.filter("status", "publish")
+						//.filter("status", "publish")
 						.filter("stockStat", "instock")
 						
 						.retrievedFields(true, "featuredImg", "_id", "name", "url")
@@ -800,7 +796,7 @@ public class CartController {
 						.field("_id")
 						.in(ddPrdIdsL)
 
-						.filter("status", "publish")
+						//.filter("status", "publish")
 						.filter("stockStat", "instock")
 						
 						.retrievedFields(true, "featuredImg", "_id", "name").getQueryObject().toString());*/

@@ -19,39 +19,152 @@
 	<div class="container rel pad-t3" th:if="${order}">
 		<header>
 			<div class="row">
-				<div class="col-sm-6 text-left">
+				<div class="col-xs-6 text-left">
 
 					<a href="/" class="pad1"> <img class="site-logo"
 						src="/resources/imgs/luvbrite-header-logo.png" rel="logo"
 						alt="Luvbrite" />
 					</a>
 				</div>
-				<div class="col-sm-6 text-right">
+				<div class="col-xs-6 text-right">
 					<h3>Order Confirmation</h3>
 				</div>
 			</div>
 		</header>
-		<div class="confirmation-content cart-details">
+		<div class="confirmation-content">
 			<div class="text-center">
 				<h1>THANK YOU FOR YOUR ORDER</h1>
+				<h3>
+					Your Order Number is <span class="orange1"
+						th:text="${order.orderNumber}"></span>
+				</h3>
 			</div>
-			<hr />
-			<div class="marg-b3">
-				Dear <span th:text="${order.customer.name}"></span>, your Order
-				Number is <strong th:text="${order.orderNumber}"></strong>
+			<hr class="marg-b2" />
+			<div class="marg-b3 text-center">
+				<div class="mx800 automarg size16 lineheight-18">
+					An email has been sent to <span class="u green1"
+						th:text="${order.customer.email}"></span> containing all your
+					order details. Please allow up to 10 minutes for the email to reach
+					your inbox. Be sure to add <span class="u green1">no-reply@luvbrite.com</span>
+					to your "trusted email" list to avoid having any important
+					information go to spam.
+				</div>
 			</div>
 
-			<div class="pad5 text-center">
+			<div class="marg-b10 text-center">
 				<a th:href="@{'/customer#/details/' + ${order.orderNumber}}"
-					class="btn btn-lb btn-lb-w">View Order Details</a>
+					class="btn btn-lb btn-lb-w">VIEW ORDER DETAILS</a>
 			</div>
+
+			<div class="pad-h2">
+				<h3 class="split-lines">Popular This Month</h3>
+			</div>
+			<div class="yml-container">
+				<ul class="row products-container">
+					<li>
+						<div class="product-item-container">
+							<div class="product-item-card">
+								<div class="cards product-item">
+									<div>
+										<a href="/product/chemdawg-diesel" class="pc-img-holder"><span>
+												<img class="featured-img"
+												th:src="${_lbGlobalCDNPath} + '/uploads/2016/06/chemdawg-diesel.jpg'" />
+										</span> </a>
+									</div>
+									<div class="pc-info">
+										<h3>
+											<a href="/product/chemdawg-diesel">Chemdawg Diesel 5g
+												Special</a>
+										</h3>
+										<hr />
+										<div class="clearfix">
+											<div class="pull-left pc-price-range">$45.00</div>
+											<div class="pull-right pc-action">
+												<a class="btn btn-lb btn-sm" href="/product/chemdawg-diesel">
+													<span class="white">Details</span>
+												</a>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+
+					<li>
+						<div class="product-item-container">
+							<div class="product-item-card">
+								<div class="cards product-item">
+									<div>
+										<a href="/product/highlighter-vape-cartridge"
+											class="pc-img-holder"><span> <img
+												class="featured-img"
+												th:src="${_lbGlobalCDNPath} + '/uploads/2016/01/highlighter-vape-cartridge.jpg'" />
+										</span> </a>
+									</div>
+									<div class="pc-info">
+										<h3>
+											<a href="/product/highlighter-vape-cartridge"
+												title="Highlighter Vape Cartridge">Highlighter Vape
+												Cartridge</a>
+										</h3>
+										<hr />
+										<div class="clearfix">
+											<div class="pull-left pc-price-range">$35.00</div>
+											<div class="pull-right pc-action">
+												<a class="btn btn-lb btn-sm"
+													href="/product/highlighter-vape-cartridge"> <span
+													class="white">Details</span>
+												</a>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+
+					<li>
+						<div class="product-item-container">
+							<div class="product-item-card">
+								<div class="cards product-item">
+									<div>
+										<a href="/product/2020-knockout-pre-roll"
+											class="pc-img-holder"><span> <img
+												class="featured-img"
+												th:src="${_lbGlobalCDNPath} + '/uploads/2016/02/2020-knockout-pre-roll.jpg'" />
+										</span> </a>
+									</div>
+									<div class="pc-info">
+										<h3>
+											<a href="/product/2020-knockout-pre-roll"
+												title="2020 Knockout Pre Roll">2020 Knockout Pre Roll</a>
+										</h3>
+										<hr />
+										<div class="clearfix">
+											<div class="pull-left pc-price-range">$15.00 - $25.00</div>
+											<div class="pull-right pc-action">
+												<a class="btn btn-lb btn-sm"
+													href="/product/2020-knockout-pre-roll"> <span
+													class="white">Details</span>
+												</a>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+
+			</div>
+			<!-- .yml-container ends -->
 
 		</div>
 
 	</div>
 
 	<div th:replace="fragments/layout::fragment-footer"></div>
-	<script type="text/javascript">
-	</script>
+	<script type="text/javascript"></script>
 </body>
 </html>

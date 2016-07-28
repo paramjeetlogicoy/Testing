@@ -7,9 +7,11 @@
 
 /* header */
 header{
+	padding-right: inherit;
 }
 .header-navbar:extend(.fix,.bg-black,.white,.pc100){
 
+	padding-right: inherit;
 	top:0;
 	left:0;
 	z-index:20;
@@ -126,9 +128,12 @@ header{
 }
 
 .header-sub:extend(.fix,.pc100,.bg-white) {
+	
+	.box-shadow(0 0 5px 0px rgba(0,0,0,.1));
+
+	padding-right: inherit;
     top: 92px;
 	z-index:20;
-    box-shadow: 0 0 5px 0px rgba(0,0,0,.1);
 
     .nav>li>a{
     	color:black;
@@ -352,10 +357,11 @@ footer:extend(.text-center,.white){
 }
 
 .admin-editor-container{
+	.box-shadow(0 0 9px 3px rgba(0,0,0,.5));
+
     background: #fff;
     padding: 20px;
     border-radius: 4px;
-    box-shadow: 0 0 9px 3px rgba(0,0,0,.5);
 }
 
 .mypanel-collapsed{
@@ -440,10 +446,27 @@ nav#pagination-nav{
  	}
  }
 
+/* Customer Page */
+.customer-nav{
+	>li+li{
+		
+		margin-left: 1px;
+		
+		&:before {
+			content: '';
+			position: absolute;
+			height: 20px;
+			top: 11px;
+			left: -1px;
+			width: 1px;
+			background: #ccc;
+		}
+	}
+}
 
 /* Home Page */
 .home-carousel{
-	box-shadow: 0 0 10px 2px rgba(0,0,0,.1);
+	.box-shadow(0 0 10px 2px rgba(0,0,0,.1));
 
 	.item{
 		text-align: center;
@@ -602,6 +625,7 @@ nav#pagination-nav{
 
     		.yml-container &{
 				width: 304px;
+				height: 348px;
     		}
 		}
 	}
@@ -718,12 +742,13 @@ nav#pagination-nav{
 	}
 
 	.response-msgs {
+		.box-shadow(0 0 10px 5px rgba(0,0,0,.15));
+
 	    top: 45%;
 	    width: 90%;
 	    z-index: 5;
 	    left: 5%;
     	border-radius: 3px;
-    	box-shadow: 0 0 10px 5px rgba(0,0,0,.15);
 
     	.close{
     		position: relative;
@@ -743,7 +768,11 @@ nav#pagination-nav{
 
 .product-item{
 	border:1px solid #eee;
-
+	
+	.yml-container &{
+		border:none;
+	}
+	
 	.no-preserve3d &{
 		opacity: 1;
 		-webkit-transition: visibility 0s,opacity 0.3s linear;
@@ -759,9 +788,9 @@ nav#pagination-nav{
 
 	.featured-img{			
 		.automarg;
+		.box-shadow(0 0 5px rgba(0,0,0,.2));
 
 		max-width: 100%;
-		box-shadow: 0 0 5px rgba(0,0,0,.2);		
 	}
 
 	.tocart{
@@ -782,6 +811,13 @@ nav#pagination-nav{
 	.preserve3d &{
 		-webkit-transition: transform 1s;
 		transition: transform 1s;
+	}
+
+	.yml-container &{
+		.box-shadow(0 0 10px rgba(0,0,0,.25));
+
+	    background: white;
+	    padding: 15px;		
 	}
 
 	&.showInfo{
@@ -1081,9 +1117,10 @@ nav#pagination-nav{
 		}
 
 	   &.selected {
+		    .box-shadow(0 0 8px 0px rgba(0, 128, 0, 0.78));
+
 		    border: 1px solid green;
 		    color:#000;
-		    box-shadow: 0 0 8px 0px rgba(0, 128, 0, 0.78);
 	    }
     }
 }
@@ -1156,6 +1193,17 @@ nav#pagination-nav{
 	.item-li:extend(.clearfix all, .marg-b15, .pad1){
     	color: #555;
 		border-bottom: 1px solid #f7f7f7;
+
+		&.offhouritem {
+		    color: #31708f;
+		    background-color: #d9edf7;
+		    border: 1px solid #bce8f1;
+		    border-radius: 3px;
+
+		    h5{
+				margin:0 0 2px;
+			}
+		}
 	}
 
 	.item-thumb{		
@@ -1407,8 +1455,19 @@ nav#pagination-nav{
 	}
 	
 	.site-logo{
-		max-width:75px;
+		max-width:50px;
 	}
+
+    @media(min-width:768px){
+    	h1{
+    		.marg-b3;
+
+    		font-size:3.5rem;
+    	}
+    }	
+}
+.confirmation-content:extend(.marg-b3, .bg-white){
+	.pad-v4;
 }
 
 /*Registration Page*/
@@ -1473,6 +1532,10 @@ nav#pagination-nav{
 
 	.form-control {
     	padding-left: 45px;
+	}
+
+	.adding-to-cart{
+		padding: 0 35px;
 	}
 }
 

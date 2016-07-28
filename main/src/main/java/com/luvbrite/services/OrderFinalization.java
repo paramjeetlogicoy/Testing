@@ -21,6 +21,7 @@ import com.luvbrite.web.models.OrderLineItemCart;
 public class OrderFinalization {
 	
 	private static Logger logger = LoggerFactory.getLogger(OrderFinalization.class);
+	private static boolean offhourPromoActive = true;
 	
 	private long orderNumber = 0;	
 	public long getOrderNumber() {
@@ -52,6 +53,9 @@ public class OrderFinalization {
 				
 				//Create new Order
 				order = new Order();
+				
+				//Check for offhour promo
+				offHourPromo(cartOrder);
 				
 				//Copy info from cartOrder to Order
 				copyCartOrder(cartOrder, order);
@@ -116,6 +120,43 @@ public class OrderFinalization {
 			
 			o.setLineItems(items);
 			co.setLineItems(newCoItems);
+		}
+	}
+	
+	/**
+	 * If the order is placed during offhours, add the free item
+	 * to the order 
+	 * */
+	private void offHourPromo(CartOrder co){
+		
+		if(offhourPromoActive){
+			
+			//Check if it off hour
+			Calendar now = Calendar.getInstance();
+			int hour = now.get(Calendar.HOUR_OF_DAY);
+			if((hour >= 23) || (hour <= 10)){
+				
+				//Add the new item
+				OrderLineItemCart newItem = new OrderLineItemCart();
+				newItem.setTaxable(false);
+				newItem.setType("item");
+				newItem.setName("Kiva chocolate (Offhour Promo)");
+				newItem.setPromo("offhourpromo");
+				newItem.setProductId(10590);
+				newItem.setVariationId(0);
+				newItem.setQty(1);
+				newItem.setCost(10d);
+				newItem.setPrice(0d);
+				newItem.setImg("/uploads/2015/04/edibles-kiva-confections-large-150x150.jpg");
+
+				List<OrderLineItemCart> olic = co.getLineItems();
+				olic.add(newItem);
+				co.setLineItems(olic);
+				
+				//System.out.println("inside");
+			}
+			
+			//System.out.println("Time - " + hour);
 		}
 	}
 	

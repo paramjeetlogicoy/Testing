@@ -926,7 +926,7 @@ cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		
 		//OrderMin Check
-		if(m.order.total > m.orderMin){
+		if(m.order.total >= m.orderMin){
 			m.orderAboveOrderMin = true;
 			
 			if(m.cartPage && !deliveryLoaded) m.loadDeliveryTemplate();			
@@ -1182,9 +1182,30 @@ cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 	
 },
 
-cartItemCtrlr = function($scope, $http, $rootScope){
+cartItemCtrlr = function($scope, $http, $rootScope, $timeout){
 
-	var m = $scope.m;
+	$scope.itsOffHour = false;
+	
+	var m = $scope.m,
+	
+	checkOffHours = function(){
+		
+		if(m.emptyCart){
+			console.log('checkoffhours cancelled');
+			return;
+		}
+		
+		var currHour = (new Date()).getHours();		
+		if(currHour >= 23 || currHour < 11){ 
+			$scope.itsOffHour = true;
+		}  
+		else{
+			$scope.itsOffHour = false;
+		}
+		
+		$timeout(checkOffHours, 1000 * 60); //check everyminute
+	};	
+	checkOffHours(); //run for the first time;
 	
 	$scope.itemRemove = function(){
 		
@@ -1316,7 +1337,7 @@ cartItemCtrlr = function($scope, $http, $rootScope){
 	};
 },
 
-cartDeliveryCtrlr = function($scope, $http, $rootScope, $filter){
+cartDeliveryCtrlr = function($scope, $http, $rootScope, $filter, $timeout){
 
 	var m = $scope.m,
 	addressApiInit = false,
@@ -1373,8 +1394,15 @@ cartDeliveryCtrlr = function($scope, $http, $rootScope, $filter){
 	},
 	
 	setUpDeliveryTimes = function(){
+		
+		if(m.emptyCart){
+			console.log('setUpDeliveryTimes cancelled');
+			return;
+		}
+		
 		var d = new Date(),
-		currHour = d.getHours();
+		currHour = d.getHours(),
+		timeTocheck = 1000 * 60 * 60; //default every hour	
 		
 		if(currHour >= 23){ //if past 11PM
 			//delivered tomorrow after 11 AM;
@@ -1383,31 +1411,59 @@ cartDeliveryCtrlr = function($scope, $http, $rootScope, $filter){
 			$scope.deliveryTimeText = 'Tomorrow - ' 
 				+ $filter('date')(d, 'mediumDate') 
 				+ ' after 11:00 AM PST';			
+			
+			$scope.endTime = null;		
 		}  
 		
-		else if(currHour < 11){//if before 11AM
-			//delivered today after 11 AM;
+		else if(currHour < 11){//if before 11AM, delivered today after 11 AM;
+			
+			if(currHour > 10){//After 10 AM			
+				if(d.getMinutes() < 30){
+					//start checking every 15 minute.
+					timeTocheck = 1000 * 60 * 15;
+				}
+				else {
+					//start checking every minute.
+					timeTocheck = 1000 * 60;
+				}
+			}
+			
 			
 			$scope.deliveryTimeText = 'Today - ' 
 				+ $filter('date')(d, 'mediumDate') 
-				+ ' after 11:00 AM PST';	
+				+ ' after 11:00 AM PST';		
+			
+			$scope.endTime = null;
 		}
 		
 		else if(currHour > 20){//During our operational period
-			d.setHours(22,59,0);
 			
+			if(d.getMinutes() < 30){
+				//start checking every 15 minute.
+				timeTocheck = 1000 * 60 * 15;
+			}
+			else {
+				//start checking every minute.
+				timeTocheck = 1000 * 60;
+			}
+			
+			
+			d.setHours(22,59,0);			
 			$scope.endTime = d;
 			
 			$scope.deliveryTimeText = 'Today - ' 
-				+ $filter('date')(d, 'mediumDate')
-				+ ' if you order in ';
+				+ $filter('date')(d, 'mediumDate');
 		}
 		else{
 			//delivered today
 			
 			$scope.deliveryTimeText = 'Today - ' 
-				+ $filter('date')(d, 'mediumDate');
+				+ $filter('date')(d, 'mediumDate');		
+			
+			$scope.endTime = null;
 		}
+		
+		$timeout(setUpDeliveryTimes, timeTocheck);
 	},
 	
 	initAddressVars = function(){
@@ -1422,7 +1478,7 @@ cartDeliveryCtrlr = function($scope, $http, $rootScope, $filter){
 	$scope.shippingEligible = false;
 	$scope.deliverySelected = true; //false;
 	$scope.shippingSelected = false;
-	
+		
 	$scope.deliveryTimeText = '';
 	$scope.endTime = null;
 	
@@ -2040,6 +2096,58 @@ cartReviewCtrlr = function($scope, $http, $rootScope){
 localBoxCtrlr = function($scope, $http, $rootScope){
 	
 	$scope.quantity = 1;
+	$scope.successMsg = '';
+	$scope.errorMsg = '';
+	$scope.addingToCart = false;
+	
+	$scope.addToCart = function(){
+		$scope.errorMsg = '';
+		$scope.successMsg = '';
+		
+		if(!$scope.quantity || $scope.quantity<=0){
+			$scope.errorMsg  = 'Minimum quantity should be 1.';
+			return false;
+		}
+		
+		$scope.addingToCart = true;		
+			
+		$scope.lineItem = {
+				name : 'Localbox',
+				qty : $scope.quantity,
+				productId : 10589,
+				img : '/products/localbox.jpg',
+				variationId : 0
+		};
+		
+		$http.post(_lbUrls.addtocart+'?hidepop', $scope.lineItem)
+		.then(function(resp){
+			
+			if(resp.data && resp.data.success){
+				
+				$scope.productInCart = resp.data.productCount;
+				$rootScope.rootCartCount = resp.data.cartCount;
+				$.cookie('lbbagnumber', resp.data.orderId, {expires:30, path:'/'});
+				$scope.successMsg = 'Item added to cart.';
+			}
+			else {
+				$scope.errorMsg  = resp.data.message;
+			}
+
+			$scope.addingToCart = false;
+		},
+		function(resp){
+			if(resp.status == 403){
+				$scope.errorMsg  = "Your browser was idle for long. "
+					+"Please refresh the page and add the item to cart again.";
+			}
+			else {
+				$scope.errorMsg  = "There was some error creating the order. "
+					+"Please try later. If problem persists, please call the customer care.";
+			}
+
+			$scope.addingToCart = false;
+		});
+	};
 };
 
 lbApp

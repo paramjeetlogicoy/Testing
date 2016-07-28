@@ -143,11 +143,11 @@ appConfigs = function($httpProvider){
     });
 },
 
-remainingTime = function($interval, dateFilter) {
+remainingTime = function($interval) {
 	// return the directive link function. (compile function not needed)
 	return function(scope, element, attrs) {
-		var format = "h'h' mm'm' ss's'",  // date format
-		endTime = 0,
+		var endTime = 0,
+		timeOneDay = 1000 * 60 * 60 * 24,
 		stopTime; // so that we can cancel the time updates
 
 		// used to update the UI
@@ -161,9 +161,19 @@ remainingTime = function($interval, dateFilter) {
 			var now = new Date().getTime(),
 			et = endTime.getTime();
 			
-			if((endTime-now) > 0)
-				element.text(dateFilter(endTime-now, format));
-			
+			if((et-now) > 0){
+				var mils = et-now,
+					seconds = Math.floor((mils / 1000) % 60),
+	            	minutes = Math.floor(((mils / (60000)) % 60)),
+	            	hours = Math.floor(((mils / (3600000)) % 24)),
+	            	display = '';
+				
+				if(hours>0) display+= (hours + 'h ');
+				
+				display+= (minutes + 'm ' + seconds + 's');
+				
+				element.text(' (If you order in ' + display + ')');
+			}
 			else {
 				element.text('Sorry you are past the cutt off time.');
 				$interval.cancel(stopTime);

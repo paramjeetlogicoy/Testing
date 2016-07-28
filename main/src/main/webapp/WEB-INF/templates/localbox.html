@@ -59,14 +59,27 @@
 								</div>
 							</div>
 
-							<div class="localbox-action automarg">
+							<div class="localbox-action automarg marg-b2 ng-cloak">
 								<div class="input-group rel">
 									<em class="abs qty">Qty</em> <input type="number" step="1"
 										min="1" class="form-control text-center bold"
 										ng-model="quantity" /> <span class="input-group-btn">
-										<button class="btn btn-lb" type="button">ADD TO CART</button>
+										<button class="btn btn-lb" type="button"
+											ng-click="addToCart()">
+											<span class="adding-to-cart" ng-show="addingToCart"><i
+												class="fa fa-cog fa-spin fa-fw"></i></span><span
+												ng-hide="addingToCart">ADD TO CART</span>
+										</button>
 									</span>
 								</div>
+							</div>
+
+							<div class="alert alert-success ng-cloak" ng-show="successMsg">
+								<span ng-bind="successMsg"></span><span class="marg-l1"><a
+									href="/cart">Go To Cart</a></span>
+							</div>
+							<div class="alert alert-danger ng-cloak" ng-show="errorMsg">
+								<span ng-bind="errorMsg"></span>
 							</div>
 						</div>
 					</div>

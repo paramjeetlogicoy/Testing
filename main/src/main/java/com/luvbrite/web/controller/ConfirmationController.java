@@ -26,7 +26,7 @@ public class ConfirmationController {
 			Order order = dao.findOne(dao.getDs()
 					.createQuery(dao.getEntityClass())
 					.field("orderNumber").equal(orderNumber)
-					.retrievedFields(true, "customer.name", "orderNumber"));
+					.retrievedFields(true, "customer.name", "customer.email", "orderNumber"));
 			
 			if(order != null){
 				model.addAttribute("order", order);
