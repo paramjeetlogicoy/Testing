@@ -343,7 +343,7 @@ registerCtrlr = function($scope, $http, Upload){
 					localStorage.removeItem('recoFile');
 					localStorage.removeItem('idFile');
 					
-					alert('Account created');
+					location.href = "/pending-registration";
 				}
 				else{
 					$scope.pageLevelAlert = resp.message; 
@@ -555,7 +555,7 @@ resetCtlr = function($scope, $http, $rootScope){
 						var resp = response.data;
 						if(resp.success){
 							$scope.successNotification = 
-								"We have email the password reset link to your registered email";							
+								"We have emailed the password reset link to your registered email address";							
 						}
 						else{
 							$scope.pageLevelAlert = resp.message;
@@ -1169,6 +1169,9 @@ cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		      .append(template);
 		      
 		      $compile(template)($scope.rvm);
+		      
+		      /* Scroll down a bit, so customer can see next step*/
+		      $('html,body').animate({scrollTop:$('body').scrollTop() + 150},500);
 		 });
 	};
 	
@@ -1808,7 +1811,7 @@ cartPaymentCtrlr = function($scope, $http, $rootScope, $timeout){
 	
 	m.paymentForm = new SqPaymentForm({
 		
-		    applicationId: 'sandbox-sq0idp-uKKHToPW2VxvmD6WKutvHA',
+		    applicationId: 'sq0idp-uKKHToPW2VxvmD6WKutvHA',
 		    inputClass: 'form-control',
 		    inputStyles: [
 		      {

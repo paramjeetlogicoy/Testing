@@ -117,8 +117,9 @@ public class MainController {
 	public String pendingRegistration(@AuthenticationPrincipal 
 			UserDetailsExt user, ModelMap model){	
 		
-		if(user!=null && user.isEnabled())
-			model.addAttribute("userId", user.getId());
+		if(user!=null && user.isEnabled()) {
+			model.addAttribute("userName", user.getUsername());
+		}
 		
 		return "pending-registration";		
 	}	

@@ -133,7 +133,7 @@ public class OrdersController {
 					/* Post Meta if required */
 					try {							
 					
-						postOrderMeta.postOrder(order);							
+						postOrderMeta.postOrder(orderDb);							
 					
 					}catch(Exception e){
 						logger.error(Exceptions.giveStackTrace(e));
@@ -148,13 +148,13 @@ public class OrdersController {
 						email.setEmailTemplate("order-cancelled");
 						email.setFromName("Luvbrite Orders");
 						email.setFromEmail("no-reply@luvbrite.com");
-						email.setRecipientEmail(order.getCustomer().getEmail());
-						email.setRecipientName(order.getCustomer().getName());
+						email.setRecipientEmail(orderDb.getCustomer().getEmail());
+						email.setRecipientName(orderDb.getCustomer().getName());
 						
 						//email.setBccs(Arrays.asList(new String[]{"orders@luvbrite.com", "orders-notify@luvbrite.com"}));
 						
 						email.setEmailTitle("Order Cancellation Email");
-						email.setSubject("Luvbrite Order#" + order.getOrderNumber() + " has been cancelled");
+						email.setSubject("Luvbrite Order#" + orderDb.getOrderNumber() + " has been cancelled");
 						email.setEmailInfo("cancellation confirmation.");						
 						
 						emailService.sendEmail(email);

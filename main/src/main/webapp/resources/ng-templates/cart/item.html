@@ -73,10 +73,16 @@
 							<span class="bold">{{item.price | currency}}</span>
 						</div>
 					</div>
+					
 					<div class="item-qty">
 						Qty: <input type="number" min="1" step="1" ng-model="item.qty"
 							class="form-control" ng-change="updateCart()" />
 					</div>
+					
+					<div class="item-price">
+						<strong>{{item.price*item.qty | currency}}</strong>
+					</div>
+					
 					<div class="item-remove">
 						<a href="" ng-click="itemRemove()">Delete Item</a>
 					</div>

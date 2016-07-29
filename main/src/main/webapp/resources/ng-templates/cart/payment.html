@@ -3,18 +3,18 @@
 	<div class="cart-details">
 		<h4 class="cart-steps">Step3: Payment Information</h4>
 
-		<div class="row marg-b3" ng-hide="pmtMethod">
-			<h6 class="col-sm-12 orange">Select a Payment Method</h6>
-			<div class="col-sm-6">
-				<div class="radio">
+		<div class="row" ng-hide="pmtMethod">
+			<h5 class="col-sm-12">Select a Payment Method</h5>
+			<div class="col-sm-6 marg-b2">
+				<div class="marg-l2 radio">
 					<label> <input type="radio" ng-model="pmtMethod"
-						value="cod" /> Cash On Delivery
+						value="cod" /> Donation on Delivery
 					</label>
 				</div>
 			</div>
 
 			<div class="col-sm-6">
-				<div class="radio">
+				<div class="marg-l2 radio">
 					<label> <input type="radio" ng-model="pmtMethod"
 						value="cc" ng-click="squareUpInit()" /> Credit
 						Card
@@ -147,7 +147,7 @@
 						ng-click="pmtMethod='';clearReview();" class="marg-l2 size13"><i
 						class="fa fa-pencil" aria-hidden="true"></i> <em>change </em></a>
 				</h5>
-				<div class="marg-l2 marg-b3">Cash on Delivery</div>
+				<div class="marg-l2 marg-b3">Donation on Delivery</div>
 
 				<div class="text-center" ng-hide="reviewLoaded">
 					<button type="button" class="btn btn-lb btn-lb-w"

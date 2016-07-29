@@ -9,14 +9,19 @@
 <style type="text/css">
 .newarrivals-slider{background-image: url(https://lbrit.co/static/imgs/sliders/new-arrivals-offer.jpg);background-color:white !important;}
 .endofeight-slider{background-image: url(https://lbrit.co/static/imgs/sliders/end-of-eigth-offer.jpg)}
-.endofeight-slider.item button.btn {bottom: 37px;right: 18%;}
+.endofeight-slider.item button.btn {bottom: 37px;right:0;}
 .offhouroffer-slider{background-image: url(https://lbrit.co/static/imgs/sliders/off-hour-offer.jpg)}
 .doubledown-slider{background-image: url(https://lbrit.co/static/imgs/sliders/double-down-offer.jpg);background-color:white !important;}
-.doubledown-slider.item button.btn {bottom:5px;right:22%;}
-@media (min-width: 768px){
-	.endofeight-slider.item button.btn {bottom:100px;right:36%;}
+.localbox-slider{background-image: url(https://lbrit.co/static/imgs/sliders/local-box-banner.jpg);}
+.localbox-slider.item a.btn{right:0;bottom:20%;}
+.doubledown-slider.item button.btn {bottom:5px;right:0;}
+@media (min-width: 768px){	
+	.carousel-inner .mx300{max-width:768px;}
+	
+	.endofeight-slider.item button.btn {bottom:100px;right:19%;}
 	.offhouroffer-slider.item button.btn {bottom:70px}
-	.doubledown-slider.item button.btn {bottom:35px;right:37%;}
+	.doubledown-slider.item button.btn {bottom:35px;right:20%;}
+	.localbox-slider.item a.btn{right:19%;;bottom:25%;}
 }
 </style>
 </head>
@@ -29,19 +34,33 @@
 			<div class="carousel-inner" role="listbox">
 
 				<div class="newarrivals-slider item active">
-					<a href="/category/new-arrivals" class="btn btn-sm btn-lb">TAKE A PEAK</a>
+					<a href="/category/new-arrivals" class="btn btn-sm btn-lb">TAKE
+						A PEAK</a>
+				</div>
+
+				<div class="localbox-slider item">
+					<div class="mx300 rel pch100">
+						<a href="/localbox" class="btn btn-sm btn-lb">LEARN MORE</a>
+					</div>
 				</div>
 
 				<div class="endofeight-slider item">
-					<button data-toggle="modal" data-target="#endOfEightModal" class="btn btn-sm btn-lb">GET SPECIFICS</button>
+					<div class="mx300 rel pch100">
+						<button data-toggle="modal" data-target="#endOfEightModal"
+							class="btn btn-sm btn-lb">GET SPECIFICS</button>
+					</div>
 				</div>
 
 				<div class="offhouroffer-slider item">
-					<button data-toggle="modal" data-target="#offHourOfferModal" class="btn btn-warning btn-sm">VIEW DETAILS</button>
+					<button data-toggle="modal" data-target="#offHourOfferModal"
+						class="btn btn-warning btn-sm">VIEW DETAILS</button>
 				</div>
 
 				<div class="doubledown-slider item">
-					<button data-toggle="modal" data-target="#doubleDownModal" class="btn btn-sm btn-black">VIEW DETAILS</button>
+					<div class="mx300 rel pch100">
+						<button data-toggle="modal" data-target="#doubleDownModal"
+							class="btn btn-sm btn-black">VIEW DETAILS</button>
+					</div>
 				</div>
 			</div>
 

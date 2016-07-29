@@ -3,6 +3,7 @@ package com.luvbrite.security;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mongodb.morphia.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,8 +39,14 @@ public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 		 try {
 				
 			 //System.out.println("UserDetails - " + username + ":" + authentication.getCredentials());
+			
+			 final Query<User> query = dao.createQuery(); 
+			 query.or(
+					 query.criteria("username").equal(username.toLowerCase()), 
+					 query.criteria("email").equal(username.toLowerCase())
+					);			 
 			 
-			 dbUser = dao.findOne("username", username);
+			 dbUser = query.get();
 			 
 			 if(dbUser != null){					
 					

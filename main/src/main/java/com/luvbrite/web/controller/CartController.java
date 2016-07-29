@@ -999,12 +999,15 @@ public class CartController {
 						body.setIdempotency_key(idemPotencyKey);
 						body.setReference_id("CartOrderID:" + order.get_id());
 						
-						String response = paymentService.processPayment(body);
-						if(response.equals("")){
+						GenericResponse paymentResponse = paymentService.processPayment(body);
+						if(paymentResponse.isSuccess()){
 							gr.setPaymentProcessed(true);
+							
+							/* Save transactionId */
+							order.getBilling().getPmtMethod().setTransactionId(paymentResponse.getMessage());
 						}
 						else{
-							gr.setPaymentError(response);
+							gr.setPaymentError(paymentResponse.getMessage());
 							return gr;
 						}		
 					}

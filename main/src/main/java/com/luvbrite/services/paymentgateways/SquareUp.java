@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luvbrite.dao.SquareUpResponseDAO;
 import com.luvbrite.utils.Exceptions;
+import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.squareup.Charge;
 import com.luvbrite.web.models.squareup.Response;
 import com.luvbrite.web.models.squareup.ResponseError;
@@ -33,11 +34,15 @@ public class SquareUp {
 	
 	final private String paymentURL = "https://connect.squareup.com/v2/locations/{locationId}/transactions";
 	
-	public String processPayment(Charge body){
+	public GenericResponse processPayment(Charge body){
 		
 		String response = "";
 		String locationId = env.getProperty("squareUpLocationId");
 		String accessToken = env.getProperty("squareUpAccessToken");
+		
+		GenericResponse gr = new GenericResponse();
+		gr.setSuccess(false);
+		gr.setMessage("");
 		
 		try {
 			
@@ -58,8 +63,9 @@ public class SquareUp {
 			//Save response into DB
 			dao.save(r);
 
-			if(postResponse.getStatus() == 200){			
-				response = "";	
+			if(postResponse.getStatus() == 200){	
+				gr.setSuccess(true);
+				response = r.getTransaction().getId();	
 			}
 			else{
 
@@ -68,7 +74,9 @@ public class SquareUp {
 					for(ResponseError error: errors){
 						if(error.getCode().equals("CARD_TOKEN_EXPIRED") 
 								|| error.getCode().equals("CARD_TOKEN_USED")){
-							return "retry";
+							
+							gr.setMessage("retry");
+							return gr;
 						}
 						response+= (error.getDetail() + " ");
 					}
@@ -80,6 +88,7 @@ public class SquareUp {
 			logger.error(Exceptions.giveStackTrace(e));
 		}
 		
-		return response;
+		gr.setMessage(response);
+		return gr;
 	}
 }

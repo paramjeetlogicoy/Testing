@@ -8,6 +8,7 @@ public class PaymentMethod {
 	private String method = ""; //cod, cc, etc
 	private String type = "";  //Donation On Delivery, Credit Card, etc
 	private CardData cardData;
+	private String transactionId;
 	
 	public String getIp() {
 		return ip;
@@ -32,5 +33,11 @@ public class PaymentMethod {
 	}
 	public void setCardData(CardData cardData) {
 		this.cardData = cardData;
+	}
+	public String getTransactionId() {
+		return transactionId;
+	}
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
 	}
 }
