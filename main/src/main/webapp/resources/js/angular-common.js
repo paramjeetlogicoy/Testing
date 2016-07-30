@@ -1811,7 +1811,7 @@ cartPaymentCtrlr = function($scope, $http, $rootScope, $timeout){
 	
 	m.paymentForm = new SqPaymentForm({
 		
-		    applicationId: 'sandbox-sq0idp-uKKHToPW2VxvmD6WKutvHA',
+		    applicationId: 'sq0idp-uKKHToPW2VxvmD6WKutvHA',
 		    inputClass: 'form-control',
 		    inputStyles: [
 		      {
