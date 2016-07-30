@@ -1171,7 +1171,7 @@ cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		      $compile(template)($scope.rvm);
 		      
 		      /* Scroll down a bit, so customer can see next step*/
-		      $('html,body').animate({scrollTop:$('body').scrollTop() + 150},500);
+		      $('html,body').animate({scrollTop:$(window).scrollTop() + 250},500);
 		 });
 	};
 	
@@ -1811,7 +1811,7 @@ cartPaymentCtrlr = function($scope, $http, $rootScope, $timeout){
 	
 	m.paymentForm = new SqPaymentForm({
 		
-		    applicationId: 'sq0idp-uKKHToPW2VxvmD6WKutvHA',
+		    applicationId: 'sandbox-sq0idp-uKKHToPW2VxvmD6WKutvHA',
 		    inputClass: 'form-control',
 		    inputStyles: [
 		      {
@@ -2117,8 +2117,8 @@ localBoxCtrlr = function($scope, $http, $rootScope){
 		$scope.lineItem = {
 				name : 'Localbox',
 				qty : $scope.quantity,
-				productId : 10589,
-				img : '/products/localbox.jpg',
+				productId : 11823,
+				img : '/uploads/2016/07/localbox.jpg',
 				variationId : 0
 		};
 		

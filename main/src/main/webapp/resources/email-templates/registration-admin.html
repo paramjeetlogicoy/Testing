@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Registration Admin</title>
+</head>
+<body>
+
+	<table border="0" cellspacing="0" cellpadding="0"
+		style="font-family: Helvetica, Arial, sans-serif" width="100%"
+		bgcolor="#FFFFFF" th:fragment="main">
+		<tbody>
+			<tr>
+				<td>Hi Luvbrite,
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>We have a new customer registration. The details are as given below.</td>
+			</tr>
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+				</td>
+			</tr>
+			<tr th:if="${emailObj.email != null}">
+				<td th:object="${emailObj.email}"><div>
+						Customer Name: <span th:text="*{fname} + ' ' + *{lname}"></span><br />
+						Customer Email: <span th:text="*{email}"></span><br /> <br />
+
+						<div>
+							ID:<span><a
+								th:href="@{'https://www.luvbrite.com/files/view/' + *{identifications.idCard}}">View
+									ID</a></span>
+						</div>
+						<div>
+							Reco. Letter: <span><a
+								th:href="@{'https://www.luvbrite.com/files/view/' + *{identifications.recomendation}}">View
+									Reco</a></span>
+						</div>
+						<div th:replace="fragments::spacer(width=1, padding=1, size=10)"></div>
+						<div>
+							Activate User by clicking <a
+								th:href="@{'https://www.luvbrite.com/admin/user/json/activate-n-email/' + *{_id} + '?c=coupon'}"
+								href="">this activate link</a>. (This will also send the
+							activation email along with first time user coupon)
+						</div>
+						<div th:replace="fragments::spacer(width=1, padding=1, size=10)"></div>
+						<div>
+							View user details by clicking <a
+								th:href="@{'https://www.luvbrite.com/admin/users/#/details/' + *{_id}}"
+								href="">this user info link</a>.
+						</div>
+
+					</div></td>
+			</tr>
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>Thank you!</td>
+			</tr>
+			<tr>
+				<td>Formidable Admin</td>
+			</tr>
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+</body>
+</html>

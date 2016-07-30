@@ -35,8 +35,8 @@ public class PostOrderMeta {
 	@Autowired
 	private LogDAO logDao;
 	
-	private final String newOrderURL = "http://www.luvbrite.com/inventory/apps/a-ordermeta?json";
-	private final String updateOrderURL = "http://www.luvbrite.com/inventory/apps/a-c-ordermeta?json";
+	private final String newOrderURL = "https://www.luvbrite.com/inventory/apps/a-ordermeta?json";
+	private final String updateOrderURL = "https://www.luvbrite.com/inventory/apps/a-c-ordermeta?json";
 	
 	public String postOrder(Order order){
 		

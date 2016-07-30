@@ -20,6 +20,7 @@ import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Order;
 import com.luvbrite.web.models.User;
 import com.luvbrite.web.models.UserDetailsExt;
+import com.luvbrite.web.models.UserIdentity;
 
 
 @Controller
@@ -200,6 +201,23 @@ public class MainController {
 					if(templateName.indexOf("password") > -1){
 						User user = new User();
 						user.setPassword("876472364876234");
+
+						email.setEmail(user);
+					}
+					
+					else if(templateName.indexOf("registration-admin") > -1){
+						User user = new User();
+						
+						user.set_id(1l);
+						user.setFname("Main");
+						user.setLname("Admin");
+						user.setEmail("some@email.com");
+						
+						UserIdentity ids = new UserIdentity();
+						ids.setIdCard("/user/IMG_8471-150x150.jpg");
+						ids.setRecomendation("/user/IMG_8471-150x150.jpg");
+						
+						user.setIdentifications(ids);
 
 						email.setEmail(user);
 					}

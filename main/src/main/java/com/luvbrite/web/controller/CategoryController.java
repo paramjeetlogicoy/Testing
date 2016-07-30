@@ -73,6 +73,7 @@ public class CategoryController {
 			
 			model.addAttribute("products", products);
 			model.addAttribute("category", categoryName);
+			model.addAttribute("page", "category");
 			
 			return "products";
 		}		

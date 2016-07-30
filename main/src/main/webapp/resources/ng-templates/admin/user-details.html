@@ -130,8 +130,8 @@
 										ng-model="u.identifications.idCard" />
 									<div class="thumbnail-holder" ng-if="u.identifications.idCard">
 										<a target="_blank"
-											href="{{cdnPath + u.identifications.idCard}}"><img
-											ng-src="{{cdnPath + u.identifications.idCard}}" /></a>
+											href="{{'/files/view/' + u.identifications.idCard}}"><img
+											ng-src="{{'/files/view/' + u.identifications.idCard}}" /></a>
 									</div>
 								</div>
 							</div>
@@ -152,8 +152,8 @@
 									<div class="thumbnail-holder"
 										ng-if="u.identifications.recomendation">
 										<a target="_blank"
-											href="{{cdnPath + u.identifications.recomendation}}"><img
-											ng-src="{{cdnPath + u.identifications.recomendation}}" /></a>
+											href="{{'/files/view/' + u.identifications.recomendation}}"><img
+											ng-src="{{'/files/view/' + u.identifications.recomendation}}" /></a>
 									</div>
 								</div>
 							</div>
@@ -198,8 +198,14 @@
 									<select class="form-control"
 										ng-options="status for status in statuses" ng-model="u.active"
 										name="active" required></select> <a href=""
-										class="btn btn-xs btn-primary marg-t1" ng-click="activateNemail()"
-										ng-if="!u.active">Activate &amp; Email</a>
+										uib-tooltip="Just activation and email. No coupon generated or emailed."
+										class="btn btn-xs btn-primary marg-t1"
+										ng-click="activateNemail(false)" ng-if="!u.active">Activate
+										&amp; Email</a> <a href=""
+										uib-tooltip="Creates welcome coupon and sends it to the customer along with activation email"
+										class="btn btn-xs btn-primary marg-t1 marg-l1"
+										ng-click="activateNemail(true)" ng-if="!u.active">Generate
+										Coupon, Activate &amp; Email</a>
 								</div>
 							</div>
 

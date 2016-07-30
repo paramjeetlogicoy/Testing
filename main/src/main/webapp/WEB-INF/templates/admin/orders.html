@@ -29,6 +29,7 @@
 								<div class="col-sm-3">
 									<div class="input-group input-group-sm">
 										<input type="text" class="form-control"
+											uib-tooltip="Search product name, customer name, email, etc"
 											placeholder="Order Search" ng-model="orderSearch" /> <span
 											class="input-group-btn">
 											<button class="btn btn-default" type="submit">
@@ -62,7 +63,7 @@
 					</thead>
 					<tbody>
 						<tr ng-repeat="o in orders">
-							<td><a href="" ng-click="showDetails()">{{o.orderNumber}}</a>
+							<td><a href="" ng-click="showDetails()" class="accent">{{o.orderNumber}}</a>
 								by {{o.customer.name}}<br /> <a target="_blank"
 								href="/admin/users/#/details/{{o.customer._id}}">{{o.customer.email}}</a>
 							</td>

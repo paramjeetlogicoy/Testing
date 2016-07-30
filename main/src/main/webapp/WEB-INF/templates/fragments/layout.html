@@ -67,6 +67,9 @@
 							<li><a href="/login" th:if="not ${userId}">Login / Sign
 									Up</a><a href="/customer" th:if="${userId}">My Account</a></li>
 
+							<li><a href="" title="Search Products"
+								ng-click="showGlobalSearch()"><i class="fa fa-search"></i></a></li>
+
 							<li><form method="post" action="/logout"
 									class="nav-logout-form" th:if="${userId}">
 									<input type="hidden" id="_lb_sec_tok"
@@ -75,15 +78,17 @@
 										value="Logout" />
 								</form></li>
 
-							<li><a href="/cart" class="header-cart">
-									<i class="fa fa-shopping-cart" aria-hidden="true"></i><strong
+							<li><a href="/cart" class="header-cart" title="Cart"> <i
+									class="fa fa-shopping-cart" aria-hidden="true"></i><strong
 									ng-show="rootCartCount" class="ng-cloak">{{rootCartCount}}</strong>
 							</a></li>
 						</ul>
 						<a href="/cart" class="header-cart visible-xs-block"> <i
 							class="fa fa-shopping-cart" aria-hidden="true"></i><strong
 							ng-show="rootCartCount" class="ng-cloak">{{rootCartCount}}</strong>
-						</a>
+						</a> <a href="" class="header-search visible-xs-block"
+							title="Search Products" ng-click="showGlobalSearch()"><i
+							class="fa fa-search"></i></a>
 					</div>
 				</div>
 				<div class="navbar-collapse collapse" id="xs-navbar">
@@ -122,6 +127,25 @@
 				</ul>
 			</div>
 		</nav>
+
+		<nav class="nav-search">
+			<form method="GET" class="nav-search-form"
+				action="/product/product-search">
+				<button type="submit">
+					<i class="fa fa-search"></i>
+				</button>
+
+				<button type="button" class="btn-close"
+					ng-click="hideGlobalSearch()">
+					<i class="fa fa-times"></i>
+				</button>
+
+				<input type="text" name="s" class="nav-search-input"
+					autocomplete="off" ng-model="gSearch"
+					placeholder="Start typing your search here&hellip;" />
+			</form>
+		</nav>
+
 		<div class="header-offset"></div>
 	</header>
 
@@ -311,7 +335,7 @@
 								aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
-							<h4 class="modal-title">Double Down Offer</h4>
+							<h3 class="modal-title">Double Down Offer</h3>
 						</div>
 						<div class="modal-body">
 							<div class="marg-b2">When you double down on an order

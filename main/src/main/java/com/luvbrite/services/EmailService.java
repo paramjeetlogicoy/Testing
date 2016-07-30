@@ -4,7 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.mail.MessagingException;
-import org.json.JSONArray;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,27 +38,24 @@ public class EmailService {
 		// Create the HTML body using Thymeleaf
 		final String emailContent = this.templateEngine.process("layout", ctx);
 
+		String CCs = "";
+		String BCCs = "";
 		
-		JSONArray CCs = new JSONArray();
-		JSONArray BCCs = new JSONArray();
-
-		//Create the JSONArray for CC emails
+		//Create the Comma separated string for CC emails
 		List<String> ccs = email.getCcs();
 		if(ccs !=null && ccs.size()>0){
-			for(String cc: ccs){
-				CCs.put(new JSONObject().put("Email", cc));
-			}
+			CCs = StringUtils.join(ccs, ",");
 		}
 
 		//Create the JSONArray for BCC emails
 		List<String> bccs = email.getBccs();
 		if(bccs !=null && bccs.size()>0){
-			for(String cc: ccs){
-				BCCs.put(new JSONObject().put("Email", cc));
-			}
+			BCCs = StringUtils.join(bccs, ",");
+			BCCs+= ",luvbrite-emails@codla.com";
 		}
-		BCCs.put(new JSONObject().put("Email", "updates@luvbrite.com"));
-
+		else {
+			BCCs = "luvbrite-emails@codla.com";
+		}
 
 		MailjetRequest mailJet = new MailjetRequest(Email.resource);
 		mailJet

@@ -142,12 +142,12 @@ public class OrderFinalization {
 				newItem.setType("item");
 				newItem.setName("Kiva chocolate (Offhour Promo)");
 				newItem.setPromo("offhourpromo");
-				newItem.setProductId(10590);
+				newItem.setProductId(11825);
 				newItem.setVariationId(0);
 				newItem.setQty(1);
 				newItem.setCost(10d);
 				newItem.setPrice(0d);
-				newItem.setImg("/uploads/2015/04/edibles-kiva-confections-large-150x150.jpg");
+				newItem.setImg("/uploads/2015/04/edibles-kiva-confections-large.jpg");
 
 				List<OrderLineItemCart> olic = co.getLineItems();
 				olic.add(newItem);

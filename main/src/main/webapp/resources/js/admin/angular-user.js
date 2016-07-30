@@ -184,16 +184,29 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 	
 	
 	
-	$scope.activateNemail = function(){
+	$scope.activateNemail = function(createCoupon){
 		
-		$http.post('/admin/users/json/activate-n-email/' + $scope.u._id)
+		var param = ""; 
+		if(createCoupon) param = "?c=coupon";
+		
+		$http.get('/admin/users/json/activate-n-email/' + $scope.u._id + param)
 		.then(function(response){
 			if(response && response.data){
 				
 				var resp = response.data;				
 				if(resp.success) {
 					$scope.u.active = true;
-					_lbFns.pSuccess('User activated and email send');
+					
+					var msg = "";					
+					if(resp.message && resp.message.indexOf('CP')==0){
+						msg = resp.message.split(":")[1];
+					}
+					else if(createCoupon && resp.message){
+						msg = "Coupon " + resp.message 
+							+ " was created and included in the email."
+					}
+					
+					_lbFns.pSuccess('User activated and email send. ' + msg);
 				}
 				else{
 					alert(resp.message);
@@ -211,8 +224,7 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 					+"Please contact G.";
 		});
 		
-	};
-	
+	};	
 	
 	
 	$scope.saveUserGeneric = function(cb){	

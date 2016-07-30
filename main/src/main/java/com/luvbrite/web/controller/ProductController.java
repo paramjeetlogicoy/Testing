@@ -2,6 +2,7 @@ package com.luvbrite.web.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -10,6 +11,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.luvbrite.dao.CategoryDAO;
@@ -51,8 +53,9 @@ public class ProductController {
 				.asList();
 		
 		model.addAttribute("products", products);
+		model.addAttribute("page", "product");
 		
-		return "products";				
+		return "products";	
 	}
 	
 	
@@ -61,6 +64,31 @@ public class ProductController {
 			UserDetailsExt user, 
 			ModelMap model) {		
 		return home(user, model);		
+	}
+	
+	
+	@RequestMapping(value = "/product-search")
+	public String productSearch(@AuthenticationPrincipal 
+			UserDetailsExt user, 
+			ModelMap model, @RequestParam(value="s", required=false) String query) {	
+
+		if(user!=null && user.isEnabled())
+			model.addAttribute("userId", user.getId());
+		
+		Pattern regExp = Pattern.compile(query + "*", Pattern.CASE_INSENSITIVE);
+		
+		List<Product> products = prdDao.createQuery()
+				.filter("status", "publish")
+				.filter("stockStat", "instock")
+				.field("name").equal(regExp)
+				.order("-_id")
+				.asList();
+		
+		model.addAttribute("products", products);
+		model.addAttribute("page", "search");
+		model.addAttribute("query", query);
+		
+		return "products";
 	}		
 	
 	

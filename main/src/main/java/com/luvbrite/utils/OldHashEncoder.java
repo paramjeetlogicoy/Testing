@@ -8,7 +8,7 @@ public class OldHashEncoder  {
 	
 	private GenericConnection conn = new GenericConnection();
 	
-	private static final String postURL = "https://www.luvbrite.com/auth.php";
+	private static final String postURL = "https://www.luvzee.com/auth.php";
 	
 	public boolean isValid(String username, String rawPwd){
 		
@@ -20,7 +20,7 @@ public class OldHashEncoder  {
 			data = data + "&pd=" + URLEncoder.encode(rawPwd, "UTF-8");
 			
 			URL url = new URL(postURL);
-			String response = conn.contactService(data, url, true);
+			String response = conn.contactService(data, url, false);
 			
 			if(response.trim().equalsIgnoreCase("success"))
 				userValid = true;

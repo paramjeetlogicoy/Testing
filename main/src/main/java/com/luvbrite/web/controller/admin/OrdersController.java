@@ -1,5 +1,6 @@
 package com.luvbrite.web.controller.admin;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -151,7 +152,7 @@ public class OrdersController {
 						email.setRecipientEmail(orderDb.getCustomer().getEmail());
 						email.setRecipientName(orderDb.getCustomer().getName());
 						
-						//email.setBccs(Arrays.asList(new String[]{"orders@luvbrite.com", "orders-notify@luvbrite.com"}));
+						email.setBccs(Arrays.asList(new String[]{"orders-notify@luvbrite.com"}));
 						
 						email.setEmailTitle("Order Cancellation Email");
 						email.setSubject("Luvbrite Order#" + orderDb.getOrderNumber() + " has been cancelled");
@@ -180,6 +181,31 @@ public class OrdersController {
 		model.addAttribute("orderNumber", orderNumber);
 		
 		return "admin/order/details";		
+	}
+	
+
+	@RequestMapping(value = "/json/firstordercheck/{orderNumber}/{customerId}")
+	public @ResponseBody GenericResponse firstorder(
+			@PathVariable long orderNumber,
+			@PathVariable long customerId){	
+		
+		GenericResponse gr = new GenericResponse();
+		gr.setSuccess(true);
+		gr.setMessage("N");
+		
+		Order order = dao.createQuery()
+				.field("status").notEqual("cancelled")
+				.field("customer._id").equal(customerId)
+				.order("_id")
+				.limit(1)
+				.retrievedFields(true, "orderNumber")
+				.get();
+		
+		if(order != null && order.getOrderNumber()==orderNumber){
+			gr.setMessage("Y");
+		}
+		
+		return gr;		
 	}
 	
 

@@ -28,6 +28,20 @@
 					<div th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
 				</td>
 			</tr>
+
+			<tr th:if="${emailObj.email != null}">
+				<td>
+					<div>More good news! You are eligible to use the following
+						first time customer promotion. You can use this promocode in the
+						shopping cart.</div>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=10)"></div>
+					<div style="text-align: center;">
+						Promocode: <strong th:text="${emailObj.email._id}"></strong>
+					</div>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+				</td>
+			</tr>
+			
 			<tr>
 				<td>To log into your account, click <a
 					style="text-decoration: none; color: #0077b5"
@@ -52,8 +66,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td>If you have any questions please feel free to call us or
-					email us.</td>
+				<td>If you have any questions please feel free to call us.</td>
 			</tr>
 			<tr>
 				<td>

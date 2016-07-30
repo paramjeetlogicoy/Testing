@@ -35,8 +35,8 @@ public class OrderDAO extends BasicDAO<Order, Long> {
 			query.or(
 				query.criteria("customer.email").equal(regExp),
 				query.criteria("customer.name").equal(regExp),
-				query.criteria("billing.fname").equal(regExp),
-				query.criteria("billing.lname").equal(regExp),
+				query.criteria("billing.address.fname").equal(regExp),
+				query.criteria("billing.address.lname").equal(regExp),
 				query.criteria("lineItems.name").equal(regExp)
 			);
 		}
@@ -59,7 +59,7 @@ public class OrderDAO extends BasicDAO<Order, Long> {
 			
 			else {
 
-				Pattern regExp = Pattern.compile(search + ".*", Pattern.CASE_INSENSITIVE);	
+				Pattern regExp = Pattern.compile(search + "*", Pattern.CASE_INSENSITIVE);	
 				setFilters(query, regExp, customerId);
 			}
 			
@@ -95,7 +95,7 @@ public class OrderDAO extends BasicDAO<Order, Long> {
 			
 			else {
 
-				Pattern regExp = Pattern.compile(search + ".*", Pattern.CASE_INSENSITIVE);	
+				Pattern regExp = Pattern.compile(search + "*", Pattern.CASE_INSENSITIVE);	
 				setFilters(query, regExp, customerId);
 			}
 		}

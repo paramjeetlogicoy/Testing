@@ -90,6 +90,18 @@ var appRunFns = function($http, $rootScope, $interval){
     	}
     };
     
+    //Search Fn    
+    $rootScope.gSearch = '';
+    $rootScope.showGlobalSearch = function(){
+    	$rootScope.gSearch = '';
+    	$('.nav-search').slideDown(300, function(){
+    		$(this).find('input').focus();
+    	})
+    };
+    $rootScope.hideGlobalSearch = function(){
+    	$('.nav-search').fadeOut(300);
+    };
+    
 /*    $rootScope.$on('$locationChangeStart', function (event, next, current) {
     	console.log("Location change triggered. - " + next + " - " + current);
     });*/

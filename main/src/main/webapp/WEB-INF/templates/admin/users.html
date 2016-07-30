@@ -86,7 +86,8 @@
 						<tr ng-repeat="u in users">
 							<td>{{u._id}}</td>
 							<td><a href="#/details/{{u._id}}">{{u.fname}}
-									{{u.lname}}</a></td>
+									{{u.lname}}</a><a ng-hide="u.fname || u.lname"
+								href="#/details/{{u._id}}">no name</a></td>
 							<td>{{u.username}}</td>
 							<td>{{u.email}}</td>
 							<td>{{u.dateRegistered | date:"MM/dd/yyyy h:mm a"}}</td>

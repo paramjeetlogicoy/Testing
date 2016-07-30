@@ -17,16 +17,24 @@
 
 			<ol class="breadcrumb">
 				<li><a href="/">Home</a></li>
-				<li th:if="${category}==null" class="active">All Products</li>
-				<li th:if="${category}!=null"><a href="/categories">All
+				<li th:if="${page}=='product'" class="active">All Products</li>
+				<li th:if="${page}=='category'"><a href="/categories">All
 						Categories</a></li>
-				<li th:if="${category}!=null" class="active" th:text="${category}">Products</li>
+				<li th:if="${page}=='category'" class="active" th:text="${category}">Products</li>
+				<li th:if="${page}=='search'" class="active">Search Results</li>
 			</ol>
 
-			<h1 th:if="${category}==null">All Products</h1>
-			<h1 th:if="${category}!=null" th:text="${category}">Products</h1>
+			<h1 th:if="${page}=='product'">All Products</h1>
+			<h1 th:if="${page}=='category'" th:text="${category}">Products</h1>
+			<h1 th:if="${page}=='search'">Search Results : <small
+					th:if="${query}!=''" th:text="${query}"></small>
+			</h1>
 
 			<div class="products-listing">
+				
+				<div th:if="${page}=='search'" class="text-center">
+					<div th:if="${#lists.size(products)==0}"><em class="size16">No results found</em></div>
+				</div>
 
 				<ul class="products-container row">
 					<li th:each="product : ${products}"
@@ -119,14 +127,14 @@
 	<div class="modal fade" tabindex="-1" role="dialog" id="prodImgModal"
 		data-backdrop="static" data-keyboard="false">
 		<div class="modal-dialog">
-			<button class="close rel">
-				<i class="fa fa-times" aria-hidden="true" ng-click="closeImgModal()"></i>
+			<button class="close rel" ng-click="closeImgModal()">
+				<i class="fa fa-times" aria-hidden="true"></i>
 			</button>
 			<div class="modal-content"></div>
 		</div>
 	</div>
 
-	<div class="sidecart" ng-controller="cartMainCtrlr as m">
+	<div  th:if="${page}!='search'" class="sidecart" ng-controller="cartMainCtrlr as m">
 		<div ng-controller="cartItemCtrlr" class="pch100">
 			<h4>Your Cart</h4>
 			<button class="close" ng-click="prdCartClose()">&times;</button>

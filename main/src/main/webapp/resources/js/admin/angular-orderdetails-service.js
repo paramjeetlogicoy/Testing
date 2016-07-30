@@ -43,6 +43,23 @@ var ordDtlsCtrlr = function ($scope, $http, $sanitize, ordDtlService) {
 	$scope.orderNumber = ordDtlService.orderNumber == 0 ? _globalOrderNumber : ordDtlService.orderNumber;
 	
 	$scope.orderStatuses = ["new", "processing", "cancelled", "delivered", "on-hold"];
+	$scope.firstOrder = false;
+	$scope.checkIfFirstOrder = function(){
+		if($scope.o){
+			$scope.firstOrder = false;
+			$http.get('/admin/orders/json/firstordercheck/' 
+					+ $scope.orderNumber + '/' 
+					+ $scope.o.customer._id)
+				.then(function(resp){
+					if(resp && resp.data){
+						if(resp.data.message == 'Y'){
+							$scope.firstOrder = true;
+						}
+					}
+				},
+				function(){});
+		}
+	};
 	
 	$scope.o = {};
 	$scope.getDetails = function(){
@@ -50,7 +67,9 @@ var ordDtlsCtrlr = function ($scope, $http, $sanitize, ordDtlService) {
 		$scope.errorMsg = "";
 		$http.get('/admin/orders/json/' + $scope.orderNumber)
 		.success(function(data){
-			$scope.o = data;			
+			$scope.o = data;	
+			
+			$scope.checkIfFirstOrder();
 			
 		}).error(function(){
 			$scope.errorMsg = 'There was some error getting the order info. '

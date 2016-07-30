@@ -2,6 +2,7 @@ package com.luvbrite.web.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
@@ -995,7 +996,7 @@ public class CartController {
 						Charge body = new Charge();
 						body.setAmount_money(new AmountMoney(money));
 						body.setCard_nonce(cardNonce);
-						body.setDelay_capture(true);
+						//body.setDelay_capture(true); //For doing Auth only (no capture)
 						body.setIdempotency_key(idemPotencyKey);
 						body.setReference_id("CartOrderID:" + order.get_id());
 						
@@ -1030,7 +1031,7 @@ public class CartController {
 							email.setRecipientEmail(newOrder.getCustomer().getEmail());
 							email.setRecipientName(newOrder.getCustomer().getName());
 							
-							//email.setBccs(Arrays.asList(new String[]{"orders@luvbrite.com", "orders-notify@luvbrite.com"}));
+							email.setBccs(Arrays.asList(new String[]{"orders-notify@luvbrite.com"}));
 							
 							email.setEmailTitle("Order Confirmation Email");
 							email.setSubject("Luvbrite Order#" + newOrder.getOrderNumber() + " placed successfully");

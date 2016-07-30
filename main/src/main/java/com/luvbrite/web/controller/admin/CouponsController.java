@@ -53,7 +53,7 @@ public class CouponsController {
 	
 	
 	@RequestMapping(value = "/json/", method = RequestMethod.GET)
-	public @ResponseBody ResponseWithPg orders(
+	public @ResponseBody ResponseWithPg coupons(
 			@RequestParam(value="p", required=false) Integer page,
 			@RequestParam(value="q", required=false) String query,
 			@RequestParam(value="o", required=false) String order){

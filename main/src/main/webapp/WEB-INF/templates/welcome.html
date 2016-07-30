@@ -12,9 +12,11 @@
 .endofeight-slider.item button.btn {bottom: 37px;right:0;}
 .offhouroffer-slider{background-image: url(https://lbrit.co/static/imgs/sliders/off-hour-offer.jpg)}
 .doubledown-slider{background-image: url(https://lbrit.co/static/imgs/sliders/double-down-offer.jpg);background-color:white !important;}
+.doubledown-slider.item button.btn {bottom:5px;right:0;}
 .localbox-slider{background-image: url(https://lbrit.co/static/imgs/sliders/local-box-banner.jpg);}
 .localbox-slider.item a.btn{right:0;bottom:20%;}
-.doubledown-slider.item button.btn {bottom:5px;right:0;}
+.britebox-slider.item {background-image: url(https://lbrit.co/static/imgs/sliders/brite-box-temp.jpg);background-color:white !important;background-position:62% 50%;}
+.britebox-slider.item button.btn{right:0;bottom:5px;}
 @media (min-width: 768px){	
 	.carousel-inner .mx300{max-width:768px;}
 	
@@ -22,6 +24,9 @@
 	.offhouroffer-slider.item button.btn {bottom:70px}
 	.doubledown-slider.item button.btn {bottom:35px;right:20%;}
 	.localbox-slider.item a.btn{right:19%;;bottom:25%;}
+	
+	.britebox-slider.item {background-position:50% 50%;}
+	.britebox-slider.item button.btn{right:10%;bottom: 15px;}
 }
 </style>
 </head>
@@ -60,6 +65,13 @@
 					<div class="mx300 rel pch100">
 						<button data-toggle="modal" data-target="#doubleDownModal"
 							class="btn btn-sm btn-black">VIEW DETAILS</button>
+					</div>
+				</div>
+
+				<div class="britebox-slider item">
+					<div class="mx300 rel pch100">
+						<button data-toggle="modal" data-target="#britebox"
+							class="btn btn-sm btn-lb">OFFER DETAILS</button>
 					</div>
 				</div>
 			</div>
@@ -158,7 +170,7 @@
 							aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
-						<h4 class="modal-title">End of Eighth</h4>
+						<h3 class="modal-title">End of Eighth</h3>
 					</div>
 					<div class="modal-body">
 						<div class="marg-b2">
@@ -191,12 +203,41 @@
 							aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
-						<h4 class="modal-title">Orders during Off Hours</h4>
+						<h3 class="modal-title">Orders during Off Hours</h3>
 					</div>
 					<div class="modal-body">
+						<div class="marg-b2">When you order during off hours (11:00
+							PM - 11:00 AM PST) a 60mg Kiva Milk Chocolate will be added to
+							your order for FREE!</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="modal fade" id="britebox" tabindex="-1"
+			role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h3 class="modal-title">Brite Box</h3>
+					</div>
+					<div class="modal-body">
+						<h4>What to expect:</h4>
 						<div class="marg-b2">
-							Offer Details TBD
+							<ul class="styled">
+								<li>One (1) Baked Bees Medicated Honey with a generous 60mg
+									of tender loving THC.</li>
+								<li>One (1) Premium Keif Roll: This little guy (or not so
+									little) packs in 1.5g of some of our top shelf hybrid medicine.</li>
+								<li>Three (3) Flower Samples: You’ll get .35g of each of
+									our smoking hot Indica, Sativa, and Hybrid strains.</li>
+							</ul>
 						</div>
+						<div class="marg-b2 small">Note: Offer only valid for donations $75 or above.</div>
 					</div>
 				</div>
 			</div>

@@ -1,5 +1,6 @@
 package com.luvbrite.web.controller.admin;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -22,12 +23,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.luvbrite.dao.CouponDAO;
 import com.luvbrite.dao.LogDAO;
 import com.luvbrite.dao.OrderDAO;
 import com.luvbrite.dao.UserDAO;
 import com.luvbrite.services.EmailService;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.PaginationLogic;
+import com.luvbrite.web.models.Coupon;
 import com.luvbrite.web.models.Email;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Log;
@@ -59,6 +62,10 @@ public class UsersController {
 	
 	@Autowired
 	private UserValidator userValidator;
+	
+
+	@Autowired
+	private CouponDAO couponDao;
 	
 	
 	@Autowired
@@ -277,10 +284,11 @@ public class UsersController {
 	}
 
 	
-	@RequestMapping(value = "json/activate-n-email/{userId}", method = RequestMethod.POST)
+	@RequestMapping(value = "json/activate-n-email/{userId}", method = RequestMethod.GET)
 	public @ResponseBody GenericResponse activateNemail(
 			@PathVariable Long userId, 
-			@AuthenticationPrincipal UserDetailsExt user){
+			@AuthenticationPrincipal UserDetailsExt user, 
+			@RequestParam(value="c", required=false) String coupon){
 		
 		GenericResponse r = new GenericResponse();
 		r.setSuccess(false);
@@ -303,7 +311,37 @@ public class UsersController {
 				 **/			
 				dao.save(userDb);
 				
-
+				Coupon cp = null;
+				if(coupon != null && coupon.equals("coupon")){
+					String newCouponCode = (userDb.getUsername() + "rewards10").toLowerCase();
+					cp = couponDao.get(newCouponCode);
+					if(cp==null){
+						cp = new Coupon();
+						
+						Calendar now = Calendar.getInstance();
+						now.add(Calendar.MONTH, 6);
+						
+						cp.set_id(newCouponCode);
+						cp.setActive(true);
+						cp.setCouponValue(10d);
+						cp.setDescription("First time patient gift.");
+						cp.setEmails(Arrays.asList(new String[] { userDb.getEmail()} ));
+						cp.setExpiry(now.getTime());
+						cp.setMaxDiscAmt(0);
+						cp.setMaxUsageCount(10);
+						cp.setMinAmt(0);
+						cp.setType("F");
+						cp.setUsageCount(0);
+						
+						couponDao.save(cp);
+						
+						r.setMessage(newCouponCode);
+					}
+					else{
+						
+						r.setMessage("CP:Coupon " + newCouponCode + " already exists. So not created!");
+					}
+				}
 				
 				
 				/* Update Log */
@@ -311,7 +349,7 @@ public class UsersController {
 					
 					Log log = new Log();
 					log.setCollection("users");
-					log.setDetails("user activated.");
+					log.setDetails("user activated." + (cp!=null? " Coupon " + cp.get_id() + " emailed!" : ""));
 					log.setDate(Calendar.getInstance().getTime());
 					log.setKey(userDb.get_id());
 					log.setUser(user.getUsername());
@@ -336,6 +374,8 @@ public class UsersController {
 					email.setSubject("Luvbrite Account Activation Details");
 					email.setEmailTitle("Acount Activation Email");
 					email.setEmailInfo("your www.luvbrite.com account activated");	
+					
+					email.setEmail(cp);
 					
 					emailService.sendEmail(email);
 				}

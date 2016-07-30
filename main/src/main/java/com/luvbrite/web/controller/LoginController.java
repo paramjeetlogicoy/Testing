@@ -1,5 +1,6 @@
 package com.luvbrite.web.controller;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -88,7 +89,13 @@ public class LoginController {
 	
 
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
-	public String register(){
+	public String register(@AuthenticationPrincipal 
+			UserDetailsExt user){
+		
+		if(user!=null){
+			return "redirect:customer";
+		}
+		
 		return "register";
 	}
 
@@ -128,11 +135,11 @@ public class LoginController {
 					emailUnique = false,
 					proceed = true;
 			
-			User u1 = dao.findOne("username", user.getUsername());
+			User u1 = dao.findOne("username", user.getUsername().toLowerCase());
 			if(u1==null) usernameUnique = true;
 			
 
-			User u2 = dao.findOne("email", user.getEmail());
+			User u2 = dao.findOne("email", user.getEmail().toLowerCase());
 			if(u2==null) emailUnique = true;
 			
 			
@@ -169,6 +176,10 @@ public class LoginController {
 					user.setRole("customer");
 					user.setDateRegistered(Calendar.getInstance().getTime());
 					
+					//force username and email to lowercase
+					user.setEmail(user.getEmail().toLowerCase());
+					user.setUsername(user.getUsername().toLowerCase());
+					
 					//Encode the password before saving it
 					String encodedPwd = encoder.encode(user.getPassword());
 					user.setPassword(encodedPwd);
@@ -193,7 +204,7 @@ public class LoginController {
 					
 					
 					
-					/* Email */
+					/* Email User */
 					try {
 						
 						Email email = new Email();
@@ -203,11 +214,34 @@ public class LoginController {
 						email.setRecipientEmail(user.getEmail());
 						email.setRecipientName(user.getFname());
 						
-						//email.setBccs(Arrays.asList(new String[]{"new-users@luvbrite.com"}));
-						
 						email.setSubject("Luvbrite Registration Details");
 						email.setEmailTitle("Registration Email");
 						email.setEmailInfo("Info about your recent registration at www.luvbrite.com");	
+						
+						emailService.sendEmail(email);
+					}
+					catch(Exception e){
+						logger.error(Exceptions.giveStackTrace(e));
+					}
+					
+					
+					
+					/* Email Admin */
+					try {
+						
+						Email email = new Email();
+						email.setEmailTemplate("registration-admin");
+						email.setFromName("Luvbrite Security");
+						email.setFromEmail("no-reply@luvbrite.com");
+						email.setRecipientEmail("admin@day2dayprinting.com");
+						
+						email.setBccs(Arrays.asList(new String[]{"new-users@luvbrite.com"}));
+						
+						email.setSubject("Luvbrite New User Registration");
+						email.setEmailTitle("Registration Admin Email");
+						email.setEmailInfo("Info about new user registration at www.luvbrite.com");	
+						
+						email.setEmail(user);
 						
 						emailService.sendEmail(email);
 					}
@@ -232,15 +266,17 @@ public class LoginController {
 				if(proceed){
 					
 					if(!emailUnique && !usernameUnique){
-						r.setMessage("User exist with this username and email");
+						r.setMessage("User already exists with this username and email. "
+								+ "If you forgot your password, please reset your "
+								+ "password by visiting <a href='/resetrequest'>this page</a>.");
 					}
 
 					else if(!emailUnique){
-						r.setMessage("User exist with this email");
+						r.setMessage("User already exists with this email");
 					}
 
 					else {
-						r.setMessage("User already exist with this username. Please provide a different username.");
+						r.setMessage("User already exists with this username. Please provide a different username.");
 					}
 				}
 			}
