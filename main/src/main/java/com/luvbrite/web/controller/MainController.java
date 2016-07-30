@@ -1,7 +1,5 @@
 package com.luvbrite.web.controller;
 
-import java.util.Calendar;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.luvbrite.dao.OrderDAO;
 import com.luvbrite.services.EmailService;
 import com.luvbrite.web.models.Email;
 import com.luvbrite.web.models.GenericResponse;
@@ -28,6 +27,9 @@ public class MainController {
 	
 	@Autowired
 	private EmailService emailService;
+
+	@Autowired
+	private OrderDAO orderDao;
 	
 	@RequestMapping(value = "/")
 	public String homePage(
@@ -223,10 +225,7 @@ public class MainController {
 					}
 					
 					else if(templateName.indexOf("order-confirmation") > -1){
-						Order order = new Order();
-						order.setOrderNumber(5117);
-						order.setDate(Calendar.getInstance().getTime());
-						order.setTotal(180d);
+						Order order = orderDao.findOne("orderNumber", 8773);
 
 						email.setEmail(order);
 					}

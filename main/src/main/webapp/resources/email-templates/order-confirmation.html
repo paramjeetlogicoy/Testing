@@ -112,6 +112,49 @@
 								</td>
 							</tr>
 
+							<tr th:if="*{billing}">
+								<td>
+
+									<table border="0" cellspacing="0" cellpadding="0" align="left"
+										style="font-size: 14px">
+										<tbody>
+											<tr>
+												<th style="text-align: left; color: #557da1;">Payment</th>
+
+											</tr>
+
+											<tr>
+												<td>
+													<div
+														th:replace="fragments::spacer(width=1, padding=1, size=8)"></div>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div>
+														<strong th:text="*{billing.pmtMethod.type}"></strong>
+													</div>
+													<div th:if="*{billing.pmtMethod.method=='cc'}">
+														<span th:text="*{billing.pmtMethod.cardData.card_brand}"></span>
+														card ending in <span
+															th:text="*{billing.pmtMethod.cardData.last_4}"></span>
+													</div>
+												</td>
+
+											</tr>
+										</tbody>
+									</table>
+
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									<div
+										th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+								</td>
+							</tr>
+
 							<tr th:if="*{shipping.address}">
 								<td>
 

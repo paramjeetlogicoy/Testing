@@ -22,6 +22,7 @@ import com.luvbrite.web.models.AttrValue;
 import com.luvbrite.web.models.Log;
 import com.luvbrite.web.models.Order;
 import com.luvbrite.web.models.OrderLineItem;
+import com.luvbrite.web.models.PaymentMethod;
 import com.luvbrite.web.models.ordermeta.BillingAddress;
 import com.luvbrite.web.models.ordermeta.LineItem;
 import com.luvbrite.web.models.ordermeta.OrderMain;
@@ -89,6 +90,18 @@ public class PostOrderMeta {
 				bi.setPostcode(billing.getZip());
 				
 				o.setBilling_address(bi);
+			}
+			
+			PaymentMethod pmtMthd = order.getBilling() != null ? order.getBilling().getPmtMethod() : null;
+			if(pmtMthd != null){
+				if(pmtMthd.getMethod().equals("cc")){
+					o.setPaymentMethod("Credit Card - " 
+							+ pmtMthd.getCardData().getCard_brand() 
+							+ " ending in " + pmtMthd.getCardData().getLast_4());
+				}
+				else {
+					o.setPaymentMethod(pmtMthd.getType());
+				}
 			}
 			
 			List<LineItem> line_items = new ArrayList<LineItem>();

@@ -12,6 +12,7 @@ public class Order {
 	private String note = "";
 	private String delivery_notes = "";
 	private String status = "";
+	private String paymentMethod = "";
 	private int order_number = 0;
 	
 	public BillingAddress getBilling_address() {
@@ -67,5 +68,11 @@ public class Order {
 	}
 	public void setOrder_number(int order_number) {
 		this.order_number = order_number;
+	}
+	public String getPaymentMethod() {
+		return paymentMethod;
+	}
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
 	}	
 }
