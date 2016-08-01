@@ -29,7 +29,8 @@
 			<tr th:if="${emailObj.email != null}">
 				<td th:object="${emailObj.email}"><div>
 						Customer Name: <span th:text="*{fname} + ' ' + *{lname}"></span><br />
-						Customer Email: <span th:text="*{email}"></span><br /> <br />
+						Customer Email: <span th:text="*{email}"></span><br />
+						Customer Phone: <span th:text="*{phone}"></span><br /> <br />
 
 						<div>
 							ID:<span><a

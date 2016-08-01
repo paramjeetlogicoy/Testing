@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Contact Us</title>
+<meta th:include="fragments/layout::fragment-head" />
+</head>
+<body ng-app="lbApp" class="bg-greyF0">
+	<div th:replace="fragments/layout::fragment-google-analytics"></div>
+	<div th:replace="fragments/layout::fragment-header"></div>
+
+	<div class="container page-container">
+		
+		<ol class="breadcrumb">
+			<li><a href="/">Home</a></li>
+			<li class="active">Service Area</li>
+		</ol>
+
+		<div class="generic-container pad-v4 pad-h2">
+			<h1 class="text-center">Service Area</h1>
+			<div class="mx700">
+				<h5 class="marg-b0">HAVE TOP SHELF ORGANIC MEDICAL CANNABIS AT
+					YOUR DOORSTEP WITHIN 45-90 MINUTES*</h5>
+				<div class="text-center p25">
+					<p>
+						<small><em>*Depending on traffic, time of the day and
+								service area.</em></small>
+					</p>
+					<p>Please call us for more info on service area.</p>
+
+					<div class="text-center">
+						<span class="text-left inlineb"> <span
+							class="blue1 marg-r1"><i class="fa fa-phone-square"
+								aria-hidden="true"></i></span> 310-697-2611<br /> <span
+							class="blue1 marg-r1"><i class="fa fa-envelope"
+								aria-hidden="true"></i></span> info@luvbrite.com
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div th:replace="fragments/layout::fragment-footer"></div>
+	<div th:include="fragments/layout::fragment-foot(angular=true)"></div>
+	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
+</body>
+</html>

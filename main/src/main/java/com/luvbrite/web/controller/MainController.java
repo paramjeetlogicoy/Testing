@@ -137,6 +137,18 @@ public class MainController {
 			model.addAttribute("userId", user.getId());
 		
 		return "contact-us";		
+	}
+	
+	
+	
+	@RequestMapping(value = "/service-area")
+	public String serviceArea(@AuthenticationPrincipal 
+			UserDetailsExt user, ModelMap model){	
+		
+		if(user!=null && user.isEnabled())
+			model.addAttribute("userId", user.getId());
+		
+		return "service-area";		
 	}	
 	
 	

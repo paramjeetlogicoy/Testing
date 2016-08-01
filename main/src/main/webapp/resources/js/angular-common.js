@@ -849,7 +849,7 @@ cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 	m.emptyCart = true;
 	m.addressSaved = false;
 	m.codEnabled = true;
-	m.ccPmtEnabled = true;
+	m.ccPmtEnabled = false;
 	
 	m.doubleDownActive = false;
 	m.doubleDownApplied = false;
