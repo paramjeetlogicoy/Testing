@@ -404,7 +404,7 @@
 													</div>
 												</div>
 												<div class="col-sm-3 col-md-2">
-													<div class="form-group-sm" 
+													<div class="form-group-sm"
 														ng-class="{ 'has-error' : productPriceForm.regPrice{{$index}}.$invalid && !productPriceForm.regPrice{{$index}}.$pristine }">
 														<label class="control-label">Price</label> <input
 															type="number" step="any" ng-model="price.regPrice"
@@ -416,10 +416,13 @@
 															class="help-block">Price is required.</p>
 													</div>
 												</div>
-
 												<div class="pull-right text-right pad-h1">
+													<div ng-if="price.stockStat=='outofstock'">
+														<span class="label label-danger">Out of Stock</span>
+													</div>
 													<div class="product-default-attr" data-index="{{$index}}">
-														<a href="" ng-click="setDefautAttr()"><span class="glyphicon glyphicon-ok"></span></a>
+														<a href="" ng-click="setDefautAttr()"><span
+															class="glyphicon glyphicon-ok"></span></a>
 													</div>
 													<a href="" role="button" ng-click="removePriceLine()"><small
 														class="red1">Delete</small></a>

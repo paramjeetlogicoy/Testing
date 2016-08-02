@@ -8,10 +8,10 @@
 <meta th:include="fragments/admin/layout::fragment-head" />
 </head>
 <body ng-app="productsApp">
-	<div class="container-fluid">
+	<div class="admin-container">
 		<div th:replace="fragments/admin/layout::fragment-header"></div>
 		<div th:replace="fragments/admin/layout::fragment-subnav"></div>
-		<div class="container-fluid rel ng-cloak"
+		<div class="rel ng-cloak"
 			ng-controller="defaultRouteCtrl">
 			<div class="page-level-alert">
 				<div class="alert alert-danger alert-dismissible" role="alert"
@@ -73,21 +73,35 @@
 										ng-show="!sortReverse" class="fa fa-caret-down"></i> <i
 										ng-show="sortReverse" class="fa fa-caret-up"></i></span>
 							</a></th>
-							<th>Stock</th>
-							<th>Price</th>
-							<th>Categories</th>
+							<th class="hidden-xs">Stock</th>
+							<th class="hidden-xs">Price</th>
+							<th class="hidden-xs">Categories</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr ng-repeat="p in products">
 							<td>{{p._id}}</td>
-							<td><a href="#/details/{{p._id}}">{{p.name}}</a> <em
-								class="text-muted capitalize" ng-show="p.status=='private'">-
-									{{p.status}}</em></td>
-							<td>{{p.stockStat}}</td>
-							<td><span ng-show="p.variation">{{p.priceRange}}</span><span
+							<td><div>
+									<a href="#/details/{{p._id}}">{{p.name}}</a> <em
+										class="text-muted capitalize" ng-show="p.status=='private'">-
+										{{p.status}}</em>
+								</div>
+								<div class="visible-xs">
+									<div>
+										<em>Stock Status:</em> {{p.stockStat}}
+									</div>
+									<div>
+										<em>Price Range:</em> <span ng-show="p.variation">{{p.priceRange}}</span><span
+											ng-show="!p.variation">{{p.price | currency}}</span>
+									</div>
+									<div>
+										<em>Categories:</em> {{p.categories.join(" , ")}}
+									</div>
+								</div></td>
+							<td class="hidden-xs">{{p.stockStat}}</td>
+							<td class="hidden-xs"><span ng-show="p.variation">{{p.priceRange}}</span><span
 								ng-show="!p.variation">{{p.price | currency}}</span></td>
-							<td>{{p.categories.join(" , ")}}</td>
+							<td class="hidden-xs">{{p.categories.join(" , ")}}</td>
 						</tr>
 					</tbody>
 				</table>

@@ -52,4 +52,13 @@ public class ControlOptions {
 	public void setShippingZipcodes(List<Integer> shippingZipcodes) {
 		this.shippingZipcodes = shippingZipcodes;
 	}
+	
+
+	private boolean dev = true;
+	public boolean isDev() {
+		return dev;
+	}
+	public void setDev(boolean dev) {
+		this.dev = dev;
+	}
 }

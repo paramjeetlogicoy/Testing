@@ -596,33 +596,50 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 	
 	$scope.setPriceRange = function(){
 		var lowerPrice = 999999, higherPrice = -999999;
-		$scope.prices.forEach(function(e,i){
-			if(e.salePrice && e.salePrice < lowerPrice){
-				lowerPrice = e.salePrice;
-			}
-			
-			else if(e.regPrice && e.regPrice < lowerPrice){
-				lowerPrice = e.regPrice;
-			}
-			
-
-			else if(e.salePrice && e.salePrice > higherPrice){
-				higherPrice = e.salePrice;
-			}
-			
-			else if(e.regPrice && e.regPrice > higherPrice){
-				higherPrice = e.regPrice;
-			}
-			
-		});
 		
-		if(lowerPrice===higherPrice){
-			$scope.p.priceRange = $filter('currency')(lowerPrice);
+		if($scope.prices.length>1){
+			
+			$scope.prices.forEach(function(e,i){
+				if(e.salePrice && e.salePrice < lowerPrice){
+					lowerPrice = e.salePrice;
+				}
+				
+				else if(e.regPrice && e.regPrice < lowerPrice){
+					lowerPrice = e.regPrice;
+				}
+				
+
+				else if(e.salePrice && e.salePrice > higherPrice){
+					higherPrice = e.salePrice;
+				}
+				
+				else if(e.regPrice && e.regPrice > higherPrice){
+					higherPrice = e.regPrice;
+				}
+				
+			});
+			
+			if(lowerPrice===higherPrice){
+				$scope.p.priceRange = $filter('currency')(lowerPrice);
+			}
+			else if(lowerPrice!=999999 && higherPrice != -999999){
+				$scope.p.priceRange = $filter('currency')(lowerPrice) 
+						+ ' - ' 
+						+ $filter('currency')(higherPrice);
+			}
+			
 		}
-		else if(lowerPrice!=999999 && higherPrice != -999999){
-			$scope.p.priceRange = $filter('currency')(lowerPrice) 
-					+ ' - ' 
-					+ $filter('currency')(higherPrice);
+		else{
+			
+			// When there is only one price for this variable product			
+			var e = $scope.prices[0];
+			if(e.salePrice && e.salePrice < e.regPrice){
+				$scope.p.priceRange = $filter('currency')(e.salePrice);
+			}
+			else{
+				$scope.p.priceRange = $filter('currency')(e.regPrice);
+			}
+			
 		}
 		
 		//Save the price range back into the DB

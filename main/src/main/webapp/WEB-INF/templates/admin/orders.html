@@ -8,7 +8,7 @@
 <meta th:include="fragments/admin/layout::fragment-head" />
 </head>
 <body ng-app="orderApp">
-	<div class="container-fluid">
+	<div class="admin-container">
 		<div th:replace="fragments/admin/layout::fragment-header"></div>
 		<div th:replace="fragments/admin/layout::fragment-subnav"></div>
 		<div class="container-fluid" ng-controller="defaultRouteCtrl">
@@ -48,33 +48,35 @@
 				<table class="table table-striped">
 					<thead>
 						<tr>
-							<th><a class="sortables"
+							<th class="col-xs-6 col-sm-3"><a class="sortables"
 								ng-click="sortType = 'orderNumber'; sortReverse = !sortReverse; getOrders();">Order
 									<span ng-show="sortType == 'orderNumber'"><i
 										ng-show="!sortReverse" class="fa fa-caret-down"></i> <i
 										ng-show="sortReverse" class="fa fa-caret-up"></i></span> <i
 									ng-show="sortType != 'orderNumber'" class="fa fa-sort"></i>
 							</a></th>
-							<th>Date</th>
-							<th>Items</th>
-							<th class="text-right">Total</th>
-							<th></th>
+							<th class="col-xs-6 col-sm-9">Items</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr ng-repeat="o in orders">
-							<td><a href="" ng-click="showDetails()" class="accent">{{o.orderNumber}}</a>
-								by {{o.customer.name}}<br /> <a target="_blank"
-								href="/admin/users/#/details/{{o.customer._id}}">{{o.customer.email}}</a>
-							</td>
-							<td>{{o.date | date : 'MM/dd/yyyy hh:mm a'}}</td>
+							<td><div class="marg-b05">
+									<a href="" ng-click="showDetails()" class="accent">{{o.orderNumber}}</a>
+									by {{o.customer.name}} (<a target="_blank"
+										href="/admin/users/#/details/{{o.customer._id}}">{{o.customer.email}}</a>)
+								</div>
+								<div>
+									<i class="fa fa-calendar" aria-hidden="true"></i> {{o.date |
+									date : 'MM/dd/yyyy hh:mm a'}}
+								</div>
+								<div class="orange1 size16">
+									<strong>{{o.total | currency}}</strong>
+								</div></td>
 							<td>
 								<div ng-repeat="item in o.lineItems">
 									<span ng-if="item.type=='item'">{{item.name}}</span>
 								</div>
 							</td>
-							<td class="text-right">{{o.total | currency}}</td>
-							<td></td>
 						</tr>
 					</tbody>
 				</table>

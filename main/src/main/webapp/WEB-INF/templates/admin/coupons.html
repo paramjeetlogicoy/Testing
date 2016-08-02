@@ -8,10 +8,12 @@
 <meta th:include="fragments/admin/layout::fragment-head" />
 </head>
 <body ng-controller="defaultRouteCtrl">
-	<div class="container-fluid">
+
+	<div class="admin-container">
 		<div th:replace="fragments/admin/layout::fragment-header"></div>
 		<div th:replace="fragments/admin/layout::fragment-subnav"></div>
-		<div class="container-fluid">
+		
+		<div class="clearfix">
 			<div class="coupons-container col-lg-10 ng-cloak">
 
 				<div class="marg-b3">
@@ -54,7 +56,7 @@
 										ng-show="sortReverse" class="fa fa-caret-up"></i></span> <i
 									ng-show="sortType != '_id'" class="fa fa-sort"></i>
 							</a></th>
-							<th class="pc25">Description</th>
+							<th class="pc25 hidden-xs">Description</th>
 							<th><a class="sortables"
 								ng-click="sortType = 'type'; sortReverse = !sortReverse; getCoupons();">Type
 									<span ng-show="sortType == 'type'"><i
@@ -62,7 +64,7 @@
 										ng-show="sortReverse" class="fa fa-caret-up"></i></span> <i
 									ng-show="sortType != 'type'" class="fa fa-sort"></i>
 							</a></th>
-							<th>Value</th>
+							<th class="hidden-xs">Value</th>
 							<th><a class="sortables"
 								ng-click="sortType = 'expiry'; sortReverse = !sortReverse; getCoupons();">Expiry
 									<span ng-show="sortType == 'expiry'"><i
@@ -70,23 +72,44 @@
 										ng-show="sortReverse" class="fa fa-caret-up"></i></span> <i
 									ng-show="sortType != 'expiry'" class="fa fa-sort"></i>
 							</a></th>
-							<th>Curr Use</th>
-							<th>Max Use</th>
-							<th>Customer</th>
+							<th class="hidden-xs">Curr Use</th>
+							<th class="hidden-xs">Max Use</th>
+							<th class="hidden-xs">Customer</th>
 						</tr>
 					</thead>
 
 					<tbody>
 						<tr ng-repeat="c in coupons" ng:class="c.active ? '' : 'inactive'">
-							<td>{{c._id}}&nbsp;<a ng-click="editCoupon()" href=""><i
-									class="fa fa-pencil" aria-hidden="true"></i></a></td>
-							<td>{{c.description}}</td>
+							<td><div>
+									{{c._id}}&nbsp;<a ng-click="editCoupon()" href=""><i
+										class="fa fa-pencil" aria-hidden="true"></i></a>
+								</div>
+
+								<div class="visible-xs">
+									<div ng-if="c.description">
+										<em>Desc:</em> {{c.description}}
+									</div>
+									<div>
+										<em>Value:</em> {{c.couponValue}}
+									</div>
+									<div>
+										<em>Curr Use:</em> {{c.usageCount}}
+									</div>
+									<div>
+										<em>Max Use:</em> {{c.maxUsageCount}}
+									</div>
+									<div ng-if="c.emails.length">
+										<em>Customers:</em>
+										<div ng-repeat="email in c.emails">{{email}}</div>
+									</div>
+								</div></td>
+							<td class="hidden-xs">{{c.description}}</td>
 							<td>{{c.type}}</td>
-							<td>{{c.couponValue}}</td>
+							<td class="hidden-xs">{{c.couponValue}}</td>
 							<td>{{c.expiry | date : 'MM/dd/yyyy'}}</td>
-							<td>{{c.usageCount}}</td>
-							<td>{{c.maxUsageCount}}</td>
-							<td>
+							<td class="hidden-xs">{{c.usageCount}}</td>
+							<td class="hidden-xs">{{c.maxUsageCount}}</td>
+							<td class="hidden-xs">
 								<div ng-repeat="email in c.emails">{{email}}</div>
 							</td>
 						</tr>

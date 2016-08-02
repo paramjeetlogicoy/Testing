@@ -305,15 +305,14 @@ public class ProductsController {
 			}
 			
 			
-			//Delete existing prices
-			priceDao.deleteByQuery(priceDao.getDs()
-					.find(priceDao.getEntityClass())
-					.filter("pid",prices.get(0).get_id()));
+			//Delete existing prices by productId
+			priceDao.deleteByQuery(priceDao.createQuery()
+					.field("pid").equal(prices.get(0).getProductId()));
 			
 			
 			//Add new prices 
 			for(Price p : prices){
-				priceDao.getDs().save(p);
+				priceDao.save(p);
 			}	
 			
 			

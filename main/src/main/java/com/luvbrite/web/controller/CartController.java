@@ -991,7 +991,7 @@ public class CartController {
 						String idemPotencyKey = sd.format(Calendar.getInstance().getTime()) 
 											+ "_" 
 											+ (int) (Math.random()*1000);
-						System.out.println("idemPotencyKey - " + idemPotencyKey);
+						//System.out.println("idemPotencyKey - " + idemPotencyKey);
 						
 						Charge body = new Charge();
 						body.setAmount_money(new AmountMoney(money));
@@ -1028,10 +1028,15 @@ public class CartController {
 							email.setEmailTemplate("order-confirmation");
 							email.setFromName("Luvbrite Orders");
 							email.setFromEmail("no-reply@luvbrite.com");
-							email.setRecipientEmail(newOrder.getCustomer().getEmail());
 							email.setRecipientName(newOrder.getCustomer().getName());
 							
-							email.setBccs(Arrays.asList(new String[]{"orders-notify@luvbrite.com"}));
+							if(controlOptions.isDev()){
+								email.setRecipientEmail("admin@day2dayprinting.com");
+							}
+							else{
+								email.setRecipientEmail(newOrder.getCustomer().getEmail());								
+								email.setBccs(Arrays.asList(new String[]{"orders-notify@luvbrite.com"}));
+							}
 							
 							email.setEmailTitle("Order Confirmation Email");
 							email.setSubject("Luvbrite Order#" + newOrder.getOrderNumber() + " placed successfully");
@@ -1048,7 +1053,9 @@ public class CartController {
 						
 						//Sent Order Meta to Inventory
 						try {							
-							postOrderMeta.postOrder(newOrder);							
+							
+							if(!controlOptions.isDev()) postOrderMeta.postOrder(newOrder);
+							
 						}catch(Exception e){
 							logger.error(Exceptions.giveStackTrace(e));
 						}

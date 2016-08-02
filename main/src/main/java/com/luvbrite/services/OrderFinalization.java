@@ -16,6 +16,7 @@ import com.luvbrite.web.models.CartOrder;
 import com.luvbrite.web.models.Order;
 import com.luvbrite.web.models.OrderLineItem;
 import com.luvbrite.web.models.OrderLineItemCart;
+import com.luvbrite.web.models.OrderNotes;
 
 @Service
 public class OrderFinalization {
@@ -68,6 +69,9 @@ public class OrderFinalization {
 				
 				//Set the order status
 				order.setStatus("new");
+				
+				//First Order Check
+				firstOrderCheck();
 				
 				//Save the order.
 				dao.save(order);
@@ -159,6 +163,34 @@ public class OrderFinalization {
 			//System.out.println("Time - " + hour);
 		}
 	}
+	
+	/**
+	 * Check is this is customers first order and update order notes accordingly
+	 **/
+	private void firstOrderCheck(){
+		
+		Order check = dao.createQuery()
+				.field("status").notEqual("cancelled")
+				.field("customer._id").equal(order.getCustomer().get_id())
+				.order("_id")
+				.limit(1)
+				.retrievedFields(true, "orderNumber")
+				.get();
+		
+		if(check != null && check.getOrderNumber()==orderNumber){
+
+			OrderNotes notes = order.getNotes();
+			if(notes == null) notes = new OrderNotes();
+			if(notes.getAdditonalNotes()==null){
+				notes.setAdditonalNotes("**FIRST ORDER**");
+			}
+			else {
+				notes.setAdditonalNotes(notes.getAdditonalNotes() + "**FIRST ORDER**");
+			}
+			
+			order.setNotes(notes);
+		}		
+	};
 	
 	/**
 	 * Delete the cart order if all the items are copied to the

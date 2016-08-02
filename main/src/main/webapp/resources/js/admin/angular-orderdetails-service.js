@@ -69,7 +69,7 @@ var ordDtlsCtrlr = function ($scope, $http, $sanitize, ordDtlService) {
 		.success(function(data){
 			$scope.o = data;	
 			
-			$scope.checkIfFirstOrder();
+			//$scope.checkIfFirstOrder();
 			
 		}).error(function(){
 			$scope.errorMsg = 'There was some error getting the order info. '

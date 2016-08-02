@@ -36,33 +36,36 @@
 </script>
 </head>
 <body>
-	<header th:fragment="fragment-header">
+	<header class="container-fluid" th:fragment="fragment-header">
 		<nav  class="navbar navbar-default" id="noLbDisclaimer">
 			<div class="container-fluid">
-				<div class="navbar-header">
+				<div class="pull-left">
 					<a class="navbar-brand" href="/admin"> <img alt="Brand"
 						src="https://lbrit.co/static/imgs/luvbrite-header-logo.png" />
 					</a>
 				</div>
-				
-				<a href="/" class="sitelnk">Visit Site</a>
-				
-				<h3 class="pull-right marg-r3">Administration</h3>
+
+				<div class="pull-right text-right pad-t1">
+					<h3 class="marg-b05">Administration</h3>
+					<div class="marg-b05"><a href="/" class="sitelnk">Visit Luvbrite</a></div>
+					<div class="nav-user-info"
+						th:if="${session.SPRING_SECURITY_CONTEXT.authentication.name}">
+						<span
+							th:text="|Hi ${session.SPRING_SECURITY_CONTEXT.authentication.name}|"></span>
+						<form method="post" action="/logout" class="inline">
+							<input type="hidden" id="_lb_sec_tok"
+								th:name="*{_csrf.parameterName}" th:value="${_csrf.token}" /> <em>(<input
+								type="submit" class="btn btn-link nopadi" value="Logout" />)
+							</em>
+						</form>
+					</div>
+				</div>
 			</div>
 		</nav>
 	</header>
 
 	<div th:fragment="fragment-subnav" class="container-fluid">
 		<ul class="nav nav-pills admin-subnav">
-			<li><div class="nav-user-info pad1">
-					<span th:if="${session.SPRING_SECURITY_CONTEXT.authentication.name}" th:text="|Hi ${session.SPRING_SECURITY_CONTEXT.authentication.name}|"></span>
-					<form method="post" action="/logout" class="inline">
-						<input type="hidden" id="_lb_sec_tok" th:name="*{_csrf.parameterName}"
-							th:value="${_csrf.token}" /> <em>(<input type="submit"
-							class="btn btn-link nopadi" value="Logout" />)
-						</em>
-					</form>
-				</div></li>
 			<li class="nav-orders"><a href="/admin/orders/">Orders</a></li>
 			<li class="nav-users"><a href="/admin/users/">Users</a></li>
 			<li class="nav-products"><a href="/admin/products/">Products</a></li>
@@ -78,7 +81,7 @@
 		<uib-pagination total-items="pg.totalItems" ng-model="pg.currentPage"
 			num-pages="numPages" previous-text="&lsaquo;" next-text="&rsaquo;"
 			first-text="&laquo;" last-text="&raquo;"
-			items-per-page="pg.itemsPerPage" class="pagination-sm" max-size="10"
+			items-per-page="pg.itemsPerPage" class="pagination-sm" max-size="5"
 			boundary-links="true" rotate="true" ng-change="pageChanged()"></uib-pagination>
 	</nav>
 

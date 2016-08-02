@@ -5,6 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+
 import com.luvbrite.dao.ControlRecordDAO;
 import com.luvbrite.utils.Utility;
 import com.luvbrite.web.models.AttrValue;
@@ -13,7 +16,11 @@ import com.luvbrite.web.models.ControlRecord;
 
 
 @Configuration
+@PropertySource("classpath:/env.properties")
 public class ControlConfig {
+	
+	@Autowired
+	private Environment env;
 	
 	@Autowired
 	private ControlRecordDAO dao;
@@ -140,6 +147,11 @@ public class ControlConfig {
 					
 					
 				}
+		}
+		
+		cOps.setDev(false);
+		if(env.getProperty("mode").equalsIgnoreCase("dev")){
+			cOps.setDev(true);
 		}
 		
 		return cOps;

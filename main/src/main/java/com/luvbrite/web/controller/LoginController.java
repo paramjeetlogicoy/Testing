@@ -1,6 +1,5 @@
 package com.luvbrite.web.controller;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -233,9 +232,7 @@ public class LoginController {
 						email.setEmailTemplate("registration-admin");
 						email.setFromName("Luvbrite Security");
 						email.setFromEmail("no-reply@luvbrite.com");
-						email.setRecipientEmail("admin@day2dayprinting.com");
-						
-						email.setBccs(Arrays.asList(new String[]{"new-users@luvbrite.com"}));
+						email.setRecipientEmail("new-users@luvbrite.com");
 						
 						email.setSubject("Luvbrite New User Registration");
 						email.setEmailTitle("Registration Admin Email");
