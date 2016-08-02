@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import org.mongodb.morphia.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -169,15 +170,12 @@ public class OrderFinalization {
 	 **/
 	private void firstOrderCheck(){
 		
-		Order check = dao.createQuery()
+		Query<Order> q = dao.createQuery()
 				.field("status").notEqual("cancelled")
-				.field("customer._id").equal(order.getCustomer().get_id())
-				.order("_id")
-				.limit(1)
-				.retrievedFields(true, "orderNumber")
-				.get();
+				.field("customer._id").equal(order.getCustomer().get_id());
+		long count = dao.count(q);
 		
-		if(check != null && check.getOrderNumber()==orderNumber){
+		if(count == 0){
 
 			OrderNotes notes = order.getNotes();
 			if(notes == null) notes = new OrderNotes();
