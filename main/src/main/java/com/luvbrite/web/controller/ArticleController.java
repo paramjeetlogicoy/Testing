@@ -33,7 +33,6 @@ public class ArticleController {
 			Set<String> authorities = AuthorityUtils.authorityListToSet(user.getAuthorities());
 			if (authorities.contains("ROLE_EDIT")){
 				model.addAttribute("adminEditable", true);
-				System.out.println(" adminEditable SEt");
 			}
 				
 			

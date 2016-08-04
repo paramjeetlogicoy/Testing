@@ -44,12 +44,12 @@ defaultCtrlr = function($scope, $http, $filter, $sanitize, $templateRequest, $co
 			}
 			else{
 
-				$scope.pageLevelError = "There was some error getting the coupons."
+				$scope.pageLevelError = "There was some error getting coupons."
 					+" Please contact G";
 			}
 
 		}).error(function(){
-			$scope.pageLevelError = "There was some error getting the coupons."
+			$scope.pageLevelError = "There was some error getting coupons."
 					+" Please contact G";
 		});	
 		

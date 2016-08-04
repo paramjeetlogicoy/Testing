@@ -49,12 +49,12 @@ defaultCtrlr = function($scope, $http, $filter, $sanitize, $interval){
 			}
 			else{
 
-				$scope.pageLevelError = "There was some error getting the products."
+				$scope.pageLevelError = "There was some error getting users list."
 					+" Please contact G";
 			}
 
 		}).error(function(){
-			$scope.pageLevelError = "There was some error getting the products."
+			$scope.pageLevelError = "There was some error getting users list."
 					+" Please contact G";
 		});	
 		
