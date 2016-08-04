@@ -30,14 +30,33 @@ public class UserDAO extends BasicDAO<User, Long> {
 	}
 	
 	
-	public long count(String search){
+	public long count(String search, String status){
 		
 		if(!search.equals("")) {
 			Pattern regExp = Pattern.compile(search + ".*", Pattern.CASE_INSENSITIVE);	
 			Query<User> query = getDs().createQuery(getEntityClass());
 			setFilters(query, regExp);
 			
+			if(status.equals("inactive")){
+				query.field("active").equal(false);
+			}
+			else if(status.equals("active")){
+				query.field("active").equal(true);
+			}
+			
 			return count(query);	
+		}
+		else if(!status.equals("all")){
+
+			Query<User> query = getDs().createQuery(getEntityClass());
+			if(status.equals("inactive")){
+				query.field("active").equal(false);
+			}
+			else if(status.equals("active")){
+				query.field("active").equal(true);
+			}
+			
+			return count(query);
 		}
 		
 		else
@@ -45,7 +64,7 @@ public class UserDAO extends BasicDAO<User, Long> {
 	}
 	
 	
-	public List<User> find(String orderBy, int limit, int offset, String search){
+	public List<User> find(String orderBy, int limit, int offset, String search, String status){
 		
 		final Query<User> query = getDs().createQuery(getEntityClass()).order(orderBy);
 
@@ -53,6 +72,13 @@ public class UserDAO extends BasicDAO<User, Long> {
 		if(!search.equals("")){
 			Pattern regExp = Pattern.compile(search + ".*", Pattern.CASE_INSENSITIVE);
 			setFilters(query, regExp);
+		}
+		
+		if(status.equals("inactive")){
+			query.field("active").equal(false);
+		}
+		else if(status.equals("active")){
+			query.field("active").equal(true);
 		}
 		
 		//Apply limit if applicable

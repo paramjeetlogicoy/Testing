@@ -18,9 +18,15 @@
 			<li class="active" th:text="${product.name}"></li>
 		</ol>
 		
-		<div class="clearfix marg-b3">
+		<div class="clearfix marg-b3" th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
 			<a href="/products" class="pull-left inherit"><i
-				class="fa fa-list-alt size15" aria-hidden="true"></i> Back to Menu</a>
+				class="fa fa-list-alt size15" aria-hidden="true"></i> Back to Menu</a> 
+			
+			<a th:href="@{'/admin/products#/details/' + ${product._id}}"
+				class="pull-right inhert"
+				th:if="${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_ADMIN')}"><i
+				class="fa fa-pencil size15" aria-hidden="true"></i> Edit this
+				Product</a>
 		</div>
 		
 		<div class="row marg-b5">

@@ -17,12 +17,13 @@ var usrApp = angular.module(
  * Scroll to the bottom to see it being attached to the App.
  */ 
 var 
-defaultCtrlr = function($scope, $http, $filter, $sanitize){
+defaultCtrlr = function($scope, $http, $filter, $sanitize, $interval){
 	
 	$scope.pageLevelError = '';
 	$scope.pg = {};
 	$scope.pg.currentPage = 1;
 	$scope.users = [];
+	$scope.userStatus = 'all';
 	
 	$scope.sortType = '_id';
 	$scope.sortReverse = true;
@@ -34,6 +35,7 @@ defaultCtrlr = function($scope, $http, $filter, $sanitize){
 			params : { 
 				'p' : $scope.pg.currentPage,
 				'q' : $scope.userSearch,
+				's' : $scope.userStatus,
 				'o' : ($scope.sortReverse?'-':'') + $scope.sortType
 			}
 
@@ -58,11 +60,17 @@ defaultCtrlr = function($scope, $http, $filter, $sanitize){
 		
 	};
 	
+	/*Reload the users page every 5 minutes*/
+	$scope.reloadUsers = function(){
+		if($scope.pg.currentPage == 1) $scope.getUsers();
+	};
+	
 	$scope.pageChanged = function() {
 		$scope.getUsers();
 	};
 	
 	$scope.getUsers();
+	$interval($scope.reloadUsers, 5 * 60 * 1000);
 },
 
 usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $sanitize, uploadService, $rootScope){

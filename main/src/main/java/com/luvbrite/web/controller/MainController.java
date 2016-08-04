@@ -57,6 +57,13 @@ public class MainController {
 	}
 
 	
+	@RequestMapping(value = {"/wp-admin","/wp-admin/"})
+	public String wpadmin(){
+		
+		return "redirect:/admin/orders";		
+	}
+
+	
 	@RequestMapping(value = "/check")
 	public @ResponseBody GenericResponse check(HttpServletRequest req){
 		GenericResponse r = new GenericResponse();

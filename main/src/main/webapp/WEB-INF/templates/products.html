@@ -31,7 +31,7 @@
 					th:if="${query}!=''" th:text="${query}"></small>
 			</h1>
 
-			<div class="products-listing">
+			<div class="products-listing" th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
 				
 				<div th:if="${page}=='search'" class="text-center">
 					<div th:if="${#lists.size(products)==0}"><em class="size16">No results found</em></div>
@@ -51,6 +51,10 @@
 						<div class="product-item-container">
 							<div class="product-item-card showItem">
 								<div class="pi-cards product-item">
+									<a th:href="@{'/admin/products#/details/' + ${product._id}}"
+										class="pull-right inhert"
+										th:if="${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_ADMIN')}"><i
+										class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
 									<h3>
 										<a th:href="@{'/product/' + ${product.url}}"
 											th:title="${product.name}" th:text="${product.name}"></a>

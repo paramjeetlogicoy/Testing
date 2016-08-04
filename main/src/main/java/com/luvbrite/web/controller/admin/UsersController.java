@@ -91,12 +91,14 @@ public class UsersController {
 	public @ResponseBody ResponseWithPg users(
 			@RequestParam(value="p", required=false) Integer page,
 			@RequestParam(value="q", required=false) String query,
+			@RequestParam(value="s", required=false) String status,
 			@RequestParam(value="o", required=false) String order){
 
 		ResponseWithPg rpg = new ResponseWithPg();		
 
 		if(query==null) query = "";
 		if(order==null) order = "-_id";
+		if(status==null) status = "all";
 		
 		int offset = 0,
 			limit = 15; //itemsPerPage
@@ -104,8 +106,8 @@ public class UsersController {
 		if(page==null) page = 1;
 		if(page >1) offset = (page-1)*limit;
 		
-		PaginationLogic pgl = new PaginationLogic((int)dao.count(query), limit, page);
-		List<User> users = dao.find(order, limit, offset, query);
+		PaginationLogic pgl = new PaginationLogic((int)dao.count(query, status), limit, page);
+		List<User> users = dao.find(order, limit, offset, query, status);
 
 		rpg.setSuccess(true);
 		rpg .setPg(pgl.getPg());

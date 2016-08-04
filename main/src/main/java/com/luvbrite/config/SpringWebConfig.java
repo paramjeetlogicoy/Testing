@@ -50,7 +50,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 	        templateResolver.setSuffix(".html");
 	        templateResolver.setTemplateMode("HTML5");
 	        templateResolver.setOrder(2);
-	        templateResolver.setCacheable(false);
+	        //templateResolver.setCacheable(false);
 
 	        return templateResolver;
 	    }    
@@ -66,7 +66,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 	        templateResolver.setSuffix(".html");
 	        templateResolver.setTemplateMode("HTML5");
 	        templateResolver.setOrder(1);
-	        templateResolver.setCacheable(false);
+	        //templateResolver.setCacheable(false);
 	        
 	        return templateResolver;
 	    }

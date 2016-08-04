@@ -52,6 +52,18 @@
 										</span>
 									</div>
 								</div>
+								<div class="col-sm-5">
+									<label class="radio-inline"> <input type="radio"
+										name="userStatus" ng-model="userStatus" value="all"
+										ng-click="pg.currentPage=1;getUsers()" /> All Users
+									</label> <label class="radio-inline"> <input type="radio"
+										name="userStatus" ng-model="userStatus" value="active"
+										ng-click="pg.currentPage=1;getUsers()" /> Active Users Only
+									</label> <label class="radio-inline"> <input type="radio"
+										name="userStatus" ng-model="userStatus" value="inactive"
+										ng-click="pg.currentPage=1;getUsers()" /> InActive Users Only
+									</label>
+								</div>
 							</form>
 						</div>
 					</div>
@@ -83,7 +95,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="u in users">
+						<tr ng-repeat="u in users" ng-class="u.active?'':'warning'">
 							<td>{{u._id}}</td>
 							<td><div><a href="#/details/{{u._id}}">{{u.fname}}
 									{{u.lname}}</a><a ng-hide="u.fname || u.lname"

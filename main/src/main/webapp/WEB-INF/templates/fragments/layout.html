@@ -42,7 +42,19 @@
 <script src="/resources/js/lib/modernizr-custom.js"></script>
 </head>
 <body>	
-	<header th:fragment="fragment-header">
+	<header th:fragment="fragment-header" th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
+		<nav class="admin-navbar hidden-xs" th:if="${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_ADMIN')}">
+			<div class="container">
+				<div class="clearfix">
+					<ul class="nav navbar-nav pull-left">
+						<li><a href="/admin/orders">Admin Orders</a></li>
+						<li><a href="/admin/products">Admin Products</a></li>
+						<li><a href="/admin/users">Admin Users</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+							
 		<input type="hidden" id="_lb_sec_tok" th:name="*{_csrf.parameterName}"
 							th:value="${_csrf.token}" />
 		<nav class="header-navbar">
@@ -64,12 +76,11 @@
 					</div>
 					<div class="col-sm-5 col-xs-4">
 						<ul class="nav navbar-nav pull-right hidden-xs">
-							<li><a href="/login" th:if="not ${userId}">Login / Sign
-									Up</a><a href="/customer" th:if="${userId}">My Account</a></li>
-
 							<li><a href="" title="Search Products"
 								ng-click="showGlobalSearch()"><i class="fa fa-search"></i></a></li>
 
+							<li><a href="/login" th:if="not ${userId}">Login / Sign
+									Up</a><a href="/customer" th:if="${userId}">My Account</a></li>
 							<li><form method="post" action="/logout"
 									class="nav-logout-form" th:if="${userId}">
 									<input type="hidden" id="_lb_sec_tok"

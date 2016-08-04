@@ -15,7 +15,7 @@ var ordApp = angular.module(
  * Scroll to the bottom to see it being attached to the App.
  */ 
 var 
-defaultCtrlr = function($scope, $http, $filter, $rootScope, $sanitize, ordDtlService){
+defaultCtrlr = function($scope, $http, $filter, $rootScope, $sanitize, ordDtlService, $interval){
 	
 	$scope.pageLevelError = '';
 	$scope.pg = {};
@@ -56,11 +56,17 @@ defaultCtrlr = function($scope, $http, $filter, $rootScope, $sanitize, ordDtlSer
 		
 	};
 	
+	/*Reload the users page every 5 minutes*/
+	$scope.reloadOrders = function(){
+		if($scope.pg.currentPage == 1) $scope.getOrders();
+	};
+	
 	$scope.pageChanged = function() {
 		$scope.getOrders();
 	};
 	
 	$scope.getOrders();
+	$interval($scope.reloadOrders, 5 * 60 * 1000);
 	
 	/**
 	 * Order Details Fns
