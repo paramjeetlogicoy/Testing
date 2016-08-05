@@ -52,11 +52,12 @@ public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 					
 					String rawPassword = (String) authentication.getCredentials();
 					String encodedPwd = dbUser.getPassword();
+					String actualUsername = dbUser.getUsername();
 					
 					if(encodedPwd.indexOf("$P$B")==0){
 						
 						OldHashEncoder ohe = new OldHashEncoder();
-						if(ohe.isValid(username, rawPassword)){							
+						if(ohe.isValid(actualUsername, rawPassword)){							
 							dbUser.setPassword(encoder.encode(rawPassword));
 							dao.save(dbUser);
 							
@@ -98,7 +99,7 @@ public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 					else
 						authorities.add(new SimpleGrantedAuthority("ROLE_NONE"));
 					
-					currUser = new UserDetailsExt(username, dbUser.get_id(), enabled, authorities);
+					currUser = new UserDetailsExt(actualUsername, dbUser.get_id(), enabled, authorities);
 					
 				}
 
