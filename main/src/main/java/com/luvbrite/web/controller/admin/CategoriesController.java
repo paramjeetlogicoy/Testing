@@ -3,8 +3,7 @@ package com.luvbrite.web.controller.admin;
 import java.util.Calendar;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -32,7 +31,7 @@ import com.luvbrite.web.validator.CategoryValidator;
 @RequestMapping(value = {"/admin/categories","/admin/category"})
 public class CategoriesController {
 	
-	private static Logger logger = LoggerFactory.getLogger(CategoriesController.class);
+	private static Logger logger = Logger.getLogger(CategoriesController.class);
 
 	@Autowired
 	private CategoryDAO dao;

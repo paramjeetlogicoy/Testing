@@ -171,6 +171,7 @@ img.fit{max-width:100%;max-height:100%}
 .pad-v4{.pad-v(4)}
 .pad-l0{padding-left: 0!important}
 .pad-r0{padding-right: 0!important}
+.pad-d-r0{@media(min-width:768px){padding-right: 0!important;}}
 
 
 .automarg{.show; margin-left:auto; margin-right:auto;}
@@ -220,6 +221,7 @@ img.fit{max-width:100%;max-height:100%}
 .t-row{display:table-row}
 .t-cell{display:table-cell!important;vertical-align:middle}
 
+.no-outline{outline: none!important}
 .noborder{border:none!important}
 .border1{.border()}
 .border-b{.border-b()}
@@ -237,6 +239,11 @@ img.fit{max-width:100%;max-height:100%}
 
 .text-center{text-align:center}
 .text-right{text-align:right}
+.text-d-right{
+  @media(min-width:768px){
+    text-align:right;
+  }
+}
 .text-left{text-align:left}
 
 .size10{.size(1)}

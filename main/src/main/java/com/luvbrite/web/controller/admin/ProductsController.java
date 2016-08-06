@@ -3,8 +3,7 @@ package com.luvbrite.web.controller.admin;
 import java.util.Calendar;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -38,7 +37,7 @@ import com.luvbrite.web.validator.ProductDetailsFormValidator;
 @RequestMapping(value = {"/admin/products","/admin/product"})
 public class ProductsController {
 	
-	private static Logger logger = LoggerFactory.getLogger(ProductsController.class);
+	private static Logger logger = Logger.getLogger(ProductsController.class);
 	
 
 	@Autowired

@@ -424,6 +424,41 @@ registerCtrlr = function($scope, $http, Upload){
 		return $scope.registerForm.phone.$invalid 
 			&& !$scope.registerForm.phone.$pristine;
 	};
+	
+	$scope.invalidDob = function(){	
+		var now = new Date();
+		if(!$scope.registerForm.dob.$pristine 
+				&& $scope.user.dob 
+				&& $scope.user.dob.getTime()){
+			
+			var currYear = now.getFullYear();
+			year21Before = currYear - 21;
+			
+			//Set years back by 21
+			now.setFullYear(year21Before);
+			
+			//if user dob is greater than year21Before, then user is below 21 
+			if($scope.user.dob.getTime() > now.getTime()){
+				return true;
+			}
+		}	
+		
+		return $scope.registerForm.dob.$invalid 
+			&& !$scope.registerForm.dob.$pristine;
+	};
+	
+	
+	$scope.invalidRecoDate = function(){
+		var now = new Date();
+		if(!$scope.registerForm.recoExpiry.$pristine 
+				&& $scope.user.identifications.recoExpiry 
+				&& $scope.user.identifications.recoExpiry.getTime() < now.getTime()){
+			return true;
+		}
+		
+		return $scope.registerForm.recoExpiry.$invalid 
+			&& !$scope.registerForm.recoExpiry.$pristine;
+	};
 
 	
     $scope.$watch('idfileobj', function () {

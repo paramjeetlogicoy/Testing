@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Recommendation Expiry</title>
+</head>
+<body>
+
+	<table border="0" cellspacing="0" cellpadding="0"
+		style="font-family: Helvetica, Arial, sans-serif" width="100%"
+		bgcolor="#FFFFFF" th:fragment="main">
+		<tbody th:object="${emailObj.email}">
+			<tr>
+				<td>Hi There,</td>
+			</tr>
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>Please find below the recommendation expiry dates of our
+					patients</td>
+			</tr>
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+				</td>
+			</tr>
+
+
+			<tr>
+				<td><strong>Expiring in next 3 days</strong></td>
+			</tr>
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=10)"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+
+					<table cellspacing="0" cellpadding="0" border="0" align="center"
+						width="100%">
+						<tbody>
+							<tr th:each="expd : *{expiring}">
+								<td><span th:text="${expd.fname}"></span> <span
+									th:text="${expd.lname}"></span> (<a
+									th:href="@{'https://www.luvbrite.co/admin/users/#/' + ${expd._id}}"><span
+										th:text="${expd.email}"></span></a>)</td>
+								<td
+									th:text="${#dates.format(expd.identifications.recoExpiry,'MM/dd/yyyy')}"></td>
+							</tr>
+						</tbody>
+					</table>
+
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+				</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td><strong>Already Expired</strong></td>
+			</tr>
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=10)"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+
+					<table cellspacing="0" cellpadding="0" border="0" align="center"
+						width="100%">
+						<tbody>
+							<tr th:each="expd : *{expired}">
+								<td><span th:text="${expd.fname}"></span> <span
+									th:text="${expd.lname}"></span> (<a
+									th:href="@{'https://www.luvbrite.co/admin/users/#/' + ${expd._id}}"><span
+										th:text="${expd.email}"></span>)</a></td>
+								<td
+									th:text="${#dates.format(expd.identifications.recoExpiry,'MM/dd/yyyy')}"></td>
+							</tr>
+						</tbody>
+					</table>
+
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+				</td>
+			</tr>
+
+
+			<tr>
+				<td><strong>No or Invalid Expiry Date</strong></td>
+			</tr>
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=10)"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+
+					<table cellspacing="0" cellpadding="0" border="0" align="center"
+						width="100%">
+						<tbody>
+							<tr th:each="expd : *{invalid}">
+								<td><span th:text="${expd.fname}"></span> <span
+									th:text="${expd.lname}"></span> (<a
+									th:href="@{'https://www.luvbrite.co/admin/users/#/' + ${expd._id}}"><span
+										th:text="${expd.email}"></span></a>)</td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+				</td>
+			</tr>
+
+
+
+			<tr>
+				<td>Have an awesome day!</td>
+			</tr>
+			<tr>
+				<td>Admin</td>
+			</tr>
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+</body>
+</html>

@@ -34,6 +34,45 @@
 	<div th:replace="fragments/layout::fragment-google-analytics"></div>
 	<div th:replace="fragments/layout::fragment-header"></div>
 	<div class="homepage-container">
+
+		<div class="home-britebox">
+			<div>
+				<h1>FEEL THE LUV</h1>
+				<a href="" data-toggle="modal" data-target="#britebox"
+					class="show no-outline"><img class="fit marg-b3"
+					src="https://lbrit.co/static/imgs/uploads/2016/02/new-brite-box-t.png"
+					alt="welcome-kit" /></a>
+
+				<div class="size18 marg-b3">
+					<em>Show some luv by signing up and we'll return the gesture</em>
+				</div>
+				<div class="row marg-b3">
+					<div class="col-sm-8 pad-d-r0 marg-b2">
+						<div class="brite-bullets">
+							<span>1</span>The <strong>first online</strong> order of every
+							new membership comes with a <strong>"BRITE BOX"</strong>
+							containing samples of our medicines.<strong> <br />
+							<em>Click image above for details</em></strong>
+						</div>
+
+						<div class="brite-bullets">
+							<span>2</span>New members automatically receive a virtual
+							Loyalist Rewards card with a <strong>$100 value</strong> to be
+							used on future online orders.<strong> <br />
+							<em>Click the card image for details</em></strong>
+						</div>
+					</div>
+					<div class="col-sm-4 text-center text-d-right">
+						<a class="no-outline" href="" data-toggle="modal"
+							data-target="#briteboxuse"><img class="fit home-loyalistcard"
+							src="https://lbrit.co/static/imgs/uploads/2015/04/loyalist-card.png"
+							alt="loyalist-card" /></a>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
 		<div id="home-sliders" class="home-carousel carousel slide" data-ride="carousel">
 
 			<!-- Wrapper for slides -->
@@ -69,12 +108,12 @@
 					</div>
 				</div>
 
-				<div class="britebox-slider item">
+				<!--*/ <div class="britebox-slider item">
 					<div class="mx300 rel pch100">
 						<button data-toggle="modal" data-target="#britebox"
 							class="btn btn-sm btn-lb">OFFER DETAILS</button>
 					</div>
-				</div>
+				</div> /*-->
 			</div>
 
 			<!-- Controls -->
@@ -239,6 +278,28 @@
 							</ul>
 						</div>
 						<div class="marg-b2 small">Note: Offer only valid for donations $75 or above.</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="modal fade" id="briteboxuse" tabindex="-1"
+			role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h3 class="modal-title">Loyalist Rewards Card</h3>
+					</div>
+					<div class="modal-body">
+						<div class="marg-b2">To keep the luv flowing, after you register
+							and are verified, you'll also automatically receive a $100
+							Loyalist Rewards card. The $100 will be available through your
+							new online account as a $10 coupon which can be used for 10
+							future online orders.</div>
 					</div>
 				</div>
 			</div>

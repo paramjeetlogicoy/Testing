@@ -8,8 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +30,7 @@ import com.luvbrite.web.models.ordermeta.itemmeta.Meta;
 @Service
 public class PostOrderMeta {
 	
-	private static Logger logger = LoggerFactory.getLogger(PostOrderMeta.class);
+	private static Logger logger = Logger.getLogger(PostOrderMeta.class);
 	
 	@Autowired
 	private LogDAO logDao;

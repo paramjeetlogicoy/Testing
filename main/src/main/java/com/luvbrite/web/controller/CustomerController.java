@@ -3,8 +3,7 @@ package com.luvbrite.web.controller;
 import java.util.Calendar;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,7 +33,7 @@ import com.luvbrite.web.models.UserDetailsExt;
 @RequestMapping(value = "/customer")
 public class CustomerController {
 	
-	private static Logger logger = LoggerFactory.getLogger(CustomerController.class);
+	private static Logger logger = Logger.getLogger(CustomerController.class);
 	
 	@Autowired
 	private UserDAO dao;

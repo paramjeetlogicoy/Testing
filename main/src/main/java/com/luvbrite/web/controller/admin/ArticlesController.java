@@ -3,8 +3,7 @@ package com.luvbrite.web.controller.admin;
 import java.util.Calendar;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -30,7 +29,7 @@ import com.luvbrite.web.models.UserDetailsExt;
 @RequestMapping(value = "/admin/articles")
 public class ArticlesController {
 	
-	private static Logger logger = LoggerFactory.getLogger(ArticlesController.class);
+	private static Logger logger = Logger.getLogger(ArticlesController.class);
 	
 	@Autowired
 	private ArticleDAO dao;

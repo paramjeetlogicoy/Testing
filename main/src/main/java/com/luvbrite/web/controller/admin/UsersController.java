@@ -4,8 +4,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,7 +45,7 @@ import com.luvbrite.web.validator.UserValidator;
 @RequestMapping(value = {"/admin/users","/admin/user"})
 public class UsersController {
 	
-	private static Logger logger = LoggerFactory.getLogger(UsersController.class);
+	private static Logger logger = Logger.getLogger(UsersController.class);
 	
 	@Autowired
 	private UserDAO dao;

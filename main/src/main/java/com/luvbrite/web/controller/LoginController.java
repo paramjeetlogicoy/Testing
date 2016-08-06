@@ -4,8 +4,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.bson.types.ObjectId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,6 +26,7 @@ import com.luvbrite.dao.PasswordResetDAO;
 import com.luvbrite.dao.UserDAO;
 import com.luvbrite.services.EmailService;
 import com.luvbrite.utils.Exceptions;
+import com.luvbrite.web.models.ControlOptions;
 import com.luvbrite.web.models.Email;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Log;
@@ -38,10 +38,13 @@ import com.luvbrite.web.models.UserDetailsExt;
 @Controller
 public class LoginController {
 	
-	private static Logger logger = LoggerFactory.getLogger(LoginController.class);
+	private static Logger logger = Logger.getLogger(LoginController.class);
 	
 	@Autowired
 	private UserDAO dao;
+	
+	@Autowired
+	private ControlOptions controlOptions;
 	
 	@Autowired
 	private PasswordResetDAO pwdresetDAO;
@@ -224,26 +227,28 @@ public class LoginController {
 					}
 					
 					
-					
-					/* Email Admin */
-					try {
-						
-						Email email = new Email();
-						email.setEmailTemplate("registration-admin");
-						email.setFromName("Luvbrite Security");
-						email.setFromEmail("no-reply@luvbrite.com");
-						email.setRecipientEmail("new-users@luvbrite.com");
-						
-						email.setSubject("Luvbrite New User Registration");
-						email.setEmailTitle("Registration Admin Email");
-						email.setEmailInfo("Info about new user registration at www.luvbrite.com");	
-						
-						email.setEmail(user);
-						
-						emailService.sendEmail(email);
-					}
-					catch(Exception e){
-						logger.error(Exceptions.giveStackTrace(e));
+					if(!controlOptions.isDev()){
+
+						/* Email Admin */
+						try {
+
+							Email email = new Email();
+							email.setEmailTemplate("registration-admin");
+							email.setFromName("Luvbrite Security");
+							email.setFromEmail("no-reply@luvbrite.com");
+							email.setRecipientEmail("new-users@luvbrite.com");
+
+							email.setSubject("Luvbrite New User Registration");
+							email.setEmailTitle("Registration Admin Email");
+							email.setEmailInfo("Info about new user registration at www.luvbrite.com");	
+
+							email.setEmail(user);
+
+							emailService.sendEmail(email);
+						}
+						catch(Exception e){
+							logger.error(Exceptions.giveStackTrace(e));
+						}
 					}
 					
 					

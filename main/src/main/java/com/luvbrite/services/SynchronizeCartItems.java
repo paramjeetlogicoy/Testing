@@ -5,8 +5,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.mongodb.morphia.query.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +31,7 @@ import com.luvbrite.web.models.Product;
 @Service
 public class SynchronizeCartItems {
 	
-	private static Logger logger = LoggerFactory.getLogger(SynchronizeCartItems.class);
+	private static Logger logger = Logger.getLogger(SynchronizeCartItems.class);
 	
 	@Autowired
 	private CartOrderDAO cartDao;

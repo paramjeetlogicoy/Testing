@@ -5,15 +5,14 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.security.web.util.matcher.ELRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 
 public class RequestUtil {
 
-  private static final Logger logger = LoggerFactory.getLogger(RequestUtil.class.getName());
+  private static final Logger logger = Logger.getLogger(RequestUtil.class.getName());
 	
 	private static final RequestMatcher REQUEST_MATCHER = new ELRequestMatcher("hasHeader('X-Requested-With','XMLHttpRequest')");
 	

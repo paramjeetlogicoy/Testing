@@ -17,8 +17,7 @@ import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Positions;
 
 import org.mongodb.morphia.query.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.PropertySource;
@@ -47,7 +46,7 @@ import com.luvbrite.web.models.Upload;
 @PropertySource("classpath:/env.properties")
 public class FilesController implements HandlerExceptionResolver {
 	
-	private static Logger logger = LoggerFactory.getLogger(FilesController.class);
+	private static Logger logger = Logger.getLogger(FilesController.class);
 	
 	@Autowired
 	private Environment env;

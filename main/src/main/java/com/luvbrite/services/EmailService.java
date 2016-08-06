@@ -6,8 +6,7 @@ import java.util.List;
 import javax.mail.MessagingException;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,7 @@ public class EmailService {
 
 	private final String MAILJET_API_KEY = "2a61d967f5d0d2fc06f90b875ab01910";
 	private final String MAILJET_API_SECRET = "97b64359e8556e4413a1d41f33a6dbbc";
-	private static Logger logger = LoggerFactory.getLogger(EmailService.class);
+	private static Logger logger = Logger.getLogger(EmailService.class);
 
 	public void sendEmail(com.luvbrite.web.models.Email email) throws MessagingException, UnsupportedEncodingException{
 

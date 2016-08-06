@@ -5,8 +5,7 @@ import java.util.List;
 
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,7 @@ import com.luvbrite.web.models.Order;
 @Service
 public class OrdersDaoImp implements OrdersDao {
 
-	private static Logger logger = LoggerFactory.getLogger(OrdersDaoImp.class);
+	private static Logger logger = Logger.getLogger(OrdersDaoImp.class);
 	
 	@Autowired
 	private Datastore datastore;

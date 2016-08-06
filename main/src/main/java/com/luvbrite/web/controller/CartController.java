@@ -9,8 +9,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -62,7 +61,7 @@ import com.luvbrite.web.models.squareup.Charge;
 @RequestMapping(value = "/cart")
 public class CartController {
 	
-	private static Logger logger = LoggerFactory.getLogger(CartController.class);
+	private static Logger logger = Logger.getLogger(CartController.class);
 
 	@Autowired
 	private CartOrderDAO dao;

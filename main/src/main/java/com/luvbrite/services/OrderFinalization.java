@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.mongodb.morphia.query.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +21,7 @@ import com.luvbrite.web.models.OrderNotes;
 @Service
 public class OrderFinalization {
 	
-	private static Logger logger = LoggerFactory.getLogger(OrderFinalization.class);
+	private static Logger logger = Logger.getLogger(OrderFinalization.class);
 	private static boolean offhourPromoActive = true;
 	
 	private long orderNumber = 0;	

@@ -487,6 +487,63 @@ nav#pagination-nav{
 }
 
 /* Home Page */
+.home-britebox:extend(.text-center){
+
+    background: -moz-linear-gradient(top, rgba(255,255,255,0.04) 0%, rgba(19,59,56,0.08) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0.04)), color-stop(100%,rgba(19,59,56,0.08)));
+    background: -webkit-linear-gradient(top, rgba(255,255,255,0.04) 0%,rgba(19,59,56,0.08) 100%);
+    background: -o-linear-gradient(top, rgba(255,255,255,0.04) 0%,rgba(19,59,56,0.08) 100%);
+    background: -ms-linear-gradient(top, rgba(255,255,255,0.04) 0%,rgba(19,59,56,0.08) 100%);
+    background: linear-gradient(to bottom, rgba(255,255,255,0.04) 0%,rgba(19,59,56,0.08) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0affffff', endColorstr='#14133b38',GradientType=0 );
+    
+    padding-bottom:.1px;
+
+    h1{
+    	padding: 0.6em 0;
+    	font-size: 3rem;
+    	letter-spacing: .3rem;
+    	color:#777;
+    	margin:0;
+    }
+
+	>div{
+		.automarg;
+
+		max-width: 700px;
+		padding: 0 20px;
+	}
+
+	.brite-bullets{
+		.rel;
+		.pad-l(4);
+		.marg-b2;
+
+		span{
+		    position: absolute;
+		    border-radius: 50%;
+		    background: #d0d0d0;
+		    width: 34px;
+		    height: 34px;
+		    font-size: 20px;
+		    line-height: 1;
+		    padding-top: 6px;
+		    text-align: center;
+		    top: 5px;
+		    left: 0;			
+		}
+
+	}
+
+	.home-loyalistcard{
+		position: relative;
+		max-width: 215px;
+		
+		@media(min-width:768px){
+    		right:-40px;
+    	}
+	}
+}
 .home-carousel{
 	.box-shadow(0 0 10px 2px rgba(0,0,0,.1));
 

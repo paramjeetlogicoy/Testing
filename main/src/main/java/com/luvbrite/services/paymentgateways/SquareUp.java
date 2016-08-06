@@ -2,8 +2,7 @@ package com.luvbrite.services.paymentgateways;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -24,7 +23,7 @@ import com.mashape.unirest.http.Unirest;
 @PropertySource("classpath:/env.properties")
 public class SquareUp {
 	
-	private static Logger logger = LoggerFactory.getLogger(SquareUp.class);
+	private static Logger logger = Logger.getLogger(SquareUp.class);
 			
 	@Autowired
 	private Environment env;
