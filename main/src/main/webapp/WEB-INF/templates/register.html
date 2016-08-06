@@ -148,18 +148,6 @@
 							</div>
 
 
-							<div class="form-group" ng-class="{ 'has-error' : invalidDob()}">
-								<label class="control-label col-sm-4">Date of Birth <sup>*</sup><br />
-									<small class="em">(mm/dd/yyyy)</small></label>
-								<div class="col-sm-8">
-									<input type="date" ng-model="user.dob" class="form-control"
-										name="dob" placeholder="Ex: 11/20/1970" required="required" />
-									<p class="help-block help-error">Date of birth should be
-										valid and patient should be 21 years or older.</p>
-								</div>
-							</div>
-
-
 							<div class="form-group idfile-group">
 								<label class="control-label col-sm-4">Your
 									Identification Card /<br /> Drivers License <sup>*</sup> <br />
@@ -226,20 +214,6 @@
 											ng-click="removeFile('reco')"><i class="fa fa-trash"
 											aria-hidden="true"></i></a>
 									</div>
-								</div>
-							</div>
-
-
-							<div class="form-group" ng-class="{ 'has-error' : invalidRecoDate()}">
-								<label class="control-label col-sm-4">Recommendation
-									Expiry <sup>*</sup><br /> <small class="em">(mm/dd/yyyy)</small>
-								</label>
-								<div class="col-sm-8">
-									<input type="date" ng-model="user.identifications.recoExpiry"
-										class="form-control" name="recoExpiry" placeholder="Ex: 11/20/1970"
-										required="required" />
-									<p class="help-block help-error">Recommendation Expiry
-										should be a valid future date.</p>
 								</div>
 							</div>
 
