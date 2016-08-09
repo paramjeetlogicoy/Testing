@@ -20,7 +20,8 @@
 		</div>
 
 		<div class="generic-container article-container" th:if="${a!=null}">
-			<h1 th:text="${a.title}" contenteditable="true"></h1>
+			<h1 th:text="${a.title}"
+				th:contenteditable="${adminEditable==true}?'true':'false'"></h1>
 			<h3 th:if="${a.subTitle!=null and a.subTitle!=''}"
 				contenteditable="true">
 				<em th:text="${a.subTitle}"></em>
