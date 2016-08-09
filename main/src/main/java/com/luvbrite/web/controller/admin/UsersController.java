@@ -169,6 +169,10 @@ public class UsersController {
 				if(userId != 0l){
 					user.set_id(userId);
 					user.setDateRegistered(Calendar.getInstance().getTime());
+					
+					//Encode the password before saving it
+					String encodedPwd = encoder.encode(user.getPassword());
+					user.setPassword(encodedPwd);
 
 					dao.save(user);
 					

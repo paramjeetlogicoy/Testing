@@ -9,8 +9,9 @@
 					<i class="fa fa-times size24"></i>
 				</button>
 
-			<div class="alert alert-danger text-center" ng-if="!u">User
-				details not found!</div>
+				<div class="alert alert-danger text-center" ng-if="!u">User
+					details not found!</div>
+					
 				<div ng-show="u">
 					<h3>
 						<span class="text-success">{{u.fname}} {{u.lname}}</span>
@@ -21,9 +22,7 @@
 						<div class="text-right">
 							<a href="" ng-click="showPasswordForm()" ng-show="mode=='edit'"
 								class="btn btn-xs btn-warning"><span ng-show="u.password">Change
-									Password</span><span ng-show="!u.password">Set Password</span></a><a
-								href="" ng-if="!u.active" ng-click="activateNemail()"
-								class="btn btn-xs btn-primary marg-l1">Activate &amp; Email</a>
+									Password</span><span ng-show="!u.password">Set Password</span></a>
 						</div>
 						<form name="user" class="form-horizontal" ng-submit="saveUser()">
 
@@ -44,7 +43,7 @@
 									<p ng-show="mode=='edit'" class="form-control-static">{{u.dateRegistered
 										| date:"MM/dd/yyyy h:mm a"}}</p>
 									<p ng-show="mode=='new'" class="form-control-static">
-										<em class="text-muted">Auto Generated</em>
+										<em class="text-muted">Auto generated</em>
 									</p>
 									<input type="hidden" ng-model="u.dateRegistered"
 										name="dateRegistered" />
@@ -71,6 +70,18 @@
 										name="username" required />
 									<p ng-show="user.username.$invalid && !user.username.$pristine"
 										class="help-block">Username is required.</p>
+								</div>
+							</div>
+
+
+							<div class="form-group form-group-sm" ng-show="mode=='new'" 
+								ng-class="{ 'has-error' : user.password.$invalid && !user.password.$pristine }">
+								<label class="col-sm-4 control-label">Password</label>
+								<div class="col-sm-7">
+									<input type="text" class="form-control" ng-model="u.password"
+										name="password" ng-required="mode=='new'" />
+									<p ng-show="user.password.$invalid && !user.password.$pristine"
+										class="help-block">Password is required.</p>
 								</div>
 							</div>
 

@@ -321,18 +321,34 @@ registerCtrlr = function($scope, $http, Upload){
 	var today = new Date();
 	
 	$scope.user = {'identifications':{}, 'marketing':{}};
+	$scope.reco = {year:new Date().getFullYear()};
+	$scope.dob = {};
 	$scope.today = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+		
 	
 	$scope.hearAboutOptions = ['WeedMaps', 'Yelp', 'Facebook', 'Leafly', 'Friends & Family', 'La Weekly', 'Other'];
 	
 	$scope.register = function(){
 		
+		var proceed = true;
 		$scope.pageLevelAlert = "";
-		$('.recofile-group, .idfile-group').removeClass('has-error');
+		$('.recofile-group, .idfile-group, .dobWrapper, .recoWrapper').removeClass('has-error');		
+
+		
+		if($scope.invalidDob()){
+			proceed = false;
+			$('.dobWrapper').addClass('has-error');
+		}
+		
+		if($scope.invalidReco()){
+			proceed = false;
+			$('.recoWrapper').addClass('has-error');
+		}
 		
 		if($scope.registerForm.$valid 
 				&& $scope.recoFile 
-				&& $scope.idFile){
+				&& $scope.idFile
+				&& proceed){
 			
 			$http.post(_lbUrls.register, $scope.user)
 			.then(function(response){
@@ -426,38 +442,48 @@ registerCtrlr = function($scope, $http, Upload){
 	};
 	
 	$scope.invalidDob = function(){	
-		var now = new Date();
-		if(!$scope.registerForm.dob.$pristine 
-				&& $scope.user.dob 
-				&& $scope.user.dob.getTime()){
+		
+		if($scope.registerForm.dobDay.$valid 
+				&& $scope.registerForm.dobMonth.$valid 
+				&& $scope.registerForm.dobYear.$valid){
 			
-			var currYear = now.getFullYear();
+			var now = new Date(),
+			currYear = now.getFullYear(),
 			year21Before = currYear - 21;
 			
 			//Set years back by 21
 			now.setFullYear(year21Before);
 			
+			$scope.user.dob = new Date($scope.dob.year, $scope.dob.month-1, $scope.dob.day);
+			
 			//if user dob is greater than year21Before, then user is below 21 
 			if($scope.user.dob.getTime() > now.getTime()){
 				return true;
 			}
-		}	
-		
-		return $scope.registerForm.dob.$invalid 
-			&& !$scope.registerForm.dob.$pristine;
-	};
-	
-	
-	$scope.invalidRecoDate = function(){
-		var now = new Date();
-		if(!$scope.registerForm.recoExpiry.$pristine 
-				&& $scope.user.identifications.recoExpiry 
-				&& $scope.user.identifications.recoExpiry.getTime() < now.getTime()){
-			return true;
 		}
 		
-		return $scope.registerForm.recoExpiry.$invalid 
-			&& !$scope.registerForm.recoExpiry.$pristine;
+		return ($scope.registerForm.dobDay.$invalid && !$scope.registerForm.dobDay.$pristine) 
+			|| ($scope.registerForm.dobMonth.$invalid && !$scope.registerForm.dobMonth.$pristine) 
+			|| ($scope.registerForm.dobYear.$invalid && !$scope.registerForm.dobYear.$pristine);
+	};
+	
+	$scope.invalidReco = function(){
+		
+		if($scope.registerForm.recoDay.$valid 
+				&& $scope.registerForm.recoMonth.$valid 
+				&& $scope.registerForm.recoYear.$valid){
+		
+			var now = new Date();
+			$scope.user.identifications.recoExpiry = new Date($scope.reco.year, $scope.reco.month-1, $scope.reco.day);
+			
+			if($scope.user.identifications.recoExpiry.getTime() < now.getTime()){
+				return true;
+			}
+		}
+		
+		return ($scope.registerForm.recoDay.$invalid && !$scope.registerForm.recoDay.$pristine) 
+			|| ($scope.registerForm.recoMonth.$invalid && !$scope.registerForm.recoMonth.$pristine) 
+			|| ($scope.registerForm.recoYear.$invalid && !$scope.registerForm.recoYear.$pristine);
 	};
 
 	

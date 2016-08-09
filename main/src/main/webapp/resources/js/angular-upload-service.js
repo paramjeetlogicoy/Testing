@@ -22,10 +22,11 @@ var uploadServiceFn = function($templateRequest, $compile){
 	service.cdnPath = _lbGlobalCDNPath; //defined in <head />
 	
 	service.config = {
-			"cb" : null, 	//callback fn
-			"fields" : {path : '', ctrl : ''},
-			"listFiles" : true, //Whether the provide option to listFiles
-			"multipleSelect" : false   //Select only one file at a time
+		"cb" : null, 	//callback fn
+		"fields" : {path : '', ctrl : ''},
+		"listFiles" : true, //Whether the provide option to listFiles
+		"multipleSelect" : false,   //Select only one file at a time
+		"productUploader" : false  //If the upload is for products
 	};
 	
 	return service;	
@@ -41,6 +42,7 @@ var uploadCtrlr = function ($scope, $http, Upload, uploadService) {
 	$scope.sfiles = [];
 	$scope.search = '';
 	$scope.cdnPath = uploadService.cdnPath;
+	$scope.productUploader = uploadService.config.productUploader;
 	
     $scope.$watch('files', function () {
         $scope.upload($scope.files);

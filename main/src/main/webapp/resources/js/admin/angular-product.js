@@ -80,6 +80,7 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 	
 	/**UPLOAD SPECIFIC FUNCTIONS*/
 	$scope.cdnPath = uploadService.cdnPath;
+	uploadService.config.productUploader = true;
 	
 	$scope.afterSelect = function(){
 		if(uploadService.selectedFiles){

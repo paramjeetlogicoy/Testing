@@ -247,6 +247,7 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 			$http.post('/admin/users/json/create', $scope.u)
 			.success(function(resp){
 				if(resp.success){
+					_lbFns.pSuccess('User Created');
 					$location.path('/details/' + resp.message);
 				}
 				
@@ -300,8 +301,13 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 	if($scope.mode=='edit' && $scope.userId)
 		$scope.getUserDetails();
 	
-	else
+	else {
+		$scope.u = {};	
+		$scope.u._id = 0;
+		$scope.u.password = '123456';
+		$scope.role = 'customer';
 		$('#user-editor').show();
+	}
 
 };
 
