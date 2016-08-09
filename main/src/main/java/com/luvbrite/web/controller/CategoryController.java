@@ -60,6 +60,8 @@ public class CategoryController {
 		if(user!=null && user.isEnabled())
 			model.addAttribute("userId", user.getId());
 		
+		model.addAttribute("cUrl", categoryUrl);
+		
 		Category c = catDao.findOne("url", categoryUrl);		
 		if(c != null){
 			String categoryName = c.getName();

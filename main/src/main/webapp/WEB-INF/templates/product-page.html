@@ -5,6 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title th:text="${product.name}"></title>
+<link th:if="${url}!=null" th:href="@{'https://www.luvbrite.com/product/' + ${url}}" rel="canonical" />
 <meta th:include="fragments/layout::fragment-head" />
 </head>
 <body ng-app="lbApp" ng-controller="productCtrlr" class="bg-greyF9">

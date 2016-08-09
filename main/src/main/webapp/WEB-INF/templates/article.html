@@ -5,6 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title th:text="${a.title}"></title>
+<link th:if="${a.permalink}!=null" th:href="@{'https://www.luvbrite.com/article/' + ${a.permalink}}" rel="canonical" />
 <meta th:include="fragments/layout::fragment-head" />
 </head>
 <body ng-app="lbApp" class="bg-greyF0">

@@ -5,7 +5,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title th:if="${category}==null">All Products</title>
+<link th:if="${category}==null" href="https://www.luvbrite.com/products" rel="canonical" />
 <title th:if="${category}!=null"  th:text="'All Products | ' + ${category}"></title>
+<link th:if="${cUrl}!=null" th:href="@{'https://www.luvbrite.com/category/' + ${cUrl}}" rel="canonical" />
 <meta th:include="fragments/layout::fragment-head" />
 </head>
 <body ng-app="lbApp" ng-controller="allProductCtrlr" class="bg-greyF9 allproductspage">
@@ -66,7 +68,7 @@
 											class="pc-img-holder" ng-click="showBiggerImg($event)"> <img
 											th:src="${_lbGlobalCDNPath} + ${#strings.replace(product.featuredImg,'.jpg','-300x266.jpg')}"
 											class="featured-img" /> <span
-											th:if="${#lists.contains(product.categories, 'Specials')}"
+											th:if="${(product.categories!=null) and (#lists.contains(product.categories, 'Specials'))}"
 											class="splribbon"><span>special</span></span>
 										</a>
 									</div>
