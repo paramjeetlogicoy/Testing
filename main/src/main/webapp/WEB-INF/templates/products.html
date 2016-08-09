@@ -65,7 +65,10 @@
 											th:href="@{${_lbGlobalCDNPath} + ${product.featuredImg}}"
 											class="pc-img-holder" ng-click="showBiggerImg($event)"> <img
 											th:src="${_lbGlobalCDNPath} + ${#strings.replace(product.featuredImg,'.jpg','-300x266.jpg')}"
-											class="featured-img" /></a>
+											class="featured-img" /> <span
+											th:if="${#lists.contains(product.categories, 'Specials')}"
+											class="splribbon"><span>special</span></span>
+										</a>
 									</div>
 
 									<div class="tocart">

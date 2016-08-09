@@ -861,8 +861,10 @@ nav#pagination-nav{
 	.pc-img-holder{
 		.marg-b2;
 		.automarg;
+		.rel;
 
 		max-width: 300px;
+		overflow: hidden;
 	}
 
 	.featured-img{			
@@ -947,6 +949,27 @@ nav#pagination-nav{
 				z-index: 0;
 			}
 		}
+	}
+}
+
+.splribbon:extend(.abs, .white) {
+
+    background: rgb(132, 172, 181);
+    width: 90px;
+    height: 90px;
+    top: -47px;
+    right: -47px;
+    transform: rotateZ(45deg);
+
+	>span {
+		.size11;
+		.abs;
+		.pc100;
+		.text-center;
+
+	    bottom: 5px;
+	    letter-spacing: .5px;
+	    left: 0;
 	}
 }
 
