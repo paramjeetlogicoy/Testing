@@ -66,7 +66,7 @@
 												<th style="text-align: right; color: #557da1;">Price</th>
 											</tr>
 
-											<tr th:each="ol:*{lineItems}">
+											<tr th:each="ol:*{lineItems}" th:if="${ol.type=='item'}">
 												<td><div th:text="${ol.name}"></div>
 													<div th:each="spec : ${ol.specs}">
 														<em th:text="${spec.attr}"></em>: <span
@@ -75,7 +75,7 @@
 
 												<td style="text-align: right;" th:text="${ol.qty}">2</td>
 												<td style="text-align: right;">$<span
-													th:text="${#numbers.formatDecimal((ol.price*ol.qty), 0, 'COMMA', 2, 'POINT')}"></span></td>
+													th:text="${#numbers.formatDecimal((ol.cost*ol.qty), 0, 'COMMA', 2, 'POINT')}"></span></td>
 											</tr>
 
 
