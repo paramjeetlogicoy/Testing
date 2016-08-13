@@ -86,7 +86,7 @@ public class CategoryController {
 	
 
 	@RequestMapping(value = "/listproducts/{categoryName}")
-	public @ResponseBody List<Product> price(@PathVariable String categoryName){
+	public @ResponseBody List<Product> listProductsByCategory(@PathVariable String categoryName){
 		
 		return prdDao.createQuery()
 				.field("categories").equal(categoryName)

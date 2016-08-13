@@ -20,10 +20,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.luvbrite.dao.CategoryDAO;
 import com.luvbrite.dao.LogDAO;
+import com.luvbrite.dao.ProductDAO;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.web.models.Category;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Log;
+import com.luvbrite.web.models.Product;
 import com.luvbrite.web.validator.CategoryValidator;
 
 
@@ -35,6 +37,9 @@ public class CategoriesController {
 
 	@Autowired
 	private CategoryDAO dao;
+
+	@Autowired
+	private ProductDAO prdDao;
 	
 	@Autowired
 	private LogDAO logDao;
@@ -83,31 +88,86 @@ public class CategoriesController {
 		
 		else {
 			
-			String url = category.getName()
-					.toLowerCase().replace(" ", "-");
-			category.setUrl(url);
-			
-			dao.save(category);
-			
-			
-			/**
-			 * Update Log
-			 * */
-			try {
+			Category cDB = dao.get(category.get_id());
+			if(cDB != null){
+
+				String url = category.getName()
+						.toLowerCase().replace(" ", "-");
+				category.setUrl(url);
+
+				dao.save(category);
 				
-				Log log = new Log();
-				log.setCollection("categories");
-				log.setDetails("Category document updated");
-				log.setDate(Calendar.getInstance().getTime());
-				log.setKey(category.get_id());
-				
-				logDao.save(log);					
-			}
-			catch(Exception e){
-				logger.error(Exceptions.giveStackTrace(e));
+				//If the name has changed, update all products which has this Category.
+				if(!cDB.getName().equals(category.getName())){
+					String dbName = cDB.getName(),
+							newName = category.getName();
+					
+					List<Product> products = prdDao.createQuery()
+							.field("categories").equal(dbName)
+							.asList();
+					
+					if(products != null){
+						for(Product product : products){	
+							
+							boolean saveProduct = false;
+							
+							List<String> categories = product.getCategories();
+							for(int i=0; i<categories.size(); i++){
+								if(categories.get(i).equals(dbName)){
+									categories.set(i, newName);
+									saveProduct = true;
+									break;
+								}
+							}
+							
+							if(saveProduct){
+								product.setCategories(categories);
+								prdDao.save(product);
+								
+								/**
+								 * Update Log
+								 * */
+								try {
+
+									Log log = new Log();
+									log.setCollection("products");
+									log.setDetails("Category " + dbName + " replace with " + newName);
+									log.setDate(Calendar.getInstance().getTime());
+									log.setKey(product.get_id());
+
+									logDao.save(log);					
+								}
+								catch(Exception e){
+									logger.error(Exceptions.giveStackTrace(e));
+								}
+							}
+						}
+					}
+				}
+
+				/**
+				 * Update Log
+				 * */
+				try {
+
+					Log log = new Log();
+					log.setCollection("categories");
+					log.setDetails("Category document updated");
+					log.setDate(Calendar.getInstance().getTime());
+					log.setKey(category.get_id());
+
+					logDao.save(log);					
+				}
+				catch(Exception e){
+					logger.error(Exceptions.giveStackTrace(e));
+				}
+
+				r.setSuccess(true);	
 			}
 			
-			r.setSuccess(true);			
+			else {				
+				r.setMessage("Category not found in database.");
+			}
 		}
 		
 		return r;

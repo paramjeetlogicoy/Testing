@@ -675,14 +675,18 @@ catCtrlrs = function($scope, $http, $filter){
 	$scope.catParent = {_id:0, name:'No Parent'}
 	$scope.selCats = [];
 	
+	$scope.resetSelCats = function(){		
+		$scope.selCats = $scope.categories.slice(0);
+		$scope.selCats.unshift($scope.catParent);
+	};
+	
 	$scope.getCategories = function($event){
 		
 		$http.get('/admin/categories/json/list')
 		.success(function(data){
 			$scope.categories = data;	
 			
-			$scope.selCats = $scope.categories.slice(0);
-			$scope.selCats.unshift($scope.catParent);
+			$scope.resetSelCats();
 			
 			$('#category-editor').show();
 			
@@ -716,7 +720,26 @@ catCtrlrs = function($scope, $http, $filter){
 		$scope.catName = '';
 		$scope.catDesc = '';
 		$scope.catParent = {_id:0, name:'No Parent'}
+		
+		$scope.addCategoryForm.$setPristine();
+		$scope.addCategoryForm.name.$setPristine();
 	};
+	
+	
+	$scope.getParent = function(parentId){
+		var cat = $scope.selCats[0];
+
+		if($scope.categories){
+			for(var i in $scope.categories){
+				if($scope.categories[i]._id == parentId){
+					cat = $scope.categories[i];
+					break;
+				}
+			}
+		}
+		
+		return cat;
+	};	
 	
 	
 	$scope.editCat = function(){
@@ -725,7 +748,7 @@ catCtrlrs = function($scope, $http, $filter){
 		$scope.btnText = 'SAVE';
 		$scope.catName = this.c.name;
 		$scope.catDesc = this.c.description;
-		$scope.catParent = this.c.parent? this.c : $scope.selCats[0];
+		$scope.catParent = $scope.getParent(this.c.parent);
 		
 		/**
 		 * Show subtle color change.
@@ -775,6 +798,7 @@ catCtrlrs = function($scope, $http, $filter){
 				}
 				else{	
 					$scope.categories.push(c);
+					$scope.resetSelCats();
 					$scope.clearForm();
 				}
 				
@@ -800,6 +824,7 @@ catCtrlrs = function($scope, $http, $filter){
 						}
 					});
 					
+					$scope.resetSelCats();
 					$scope.clearForm();
 				}
 				else{		
