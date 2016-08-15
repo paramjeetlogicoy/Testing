@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.luvbrite.dao.CartOrderDAO;
+import com.luvbrite.dao.CouponDAO;
 import com.luvbrite.dao.LogDAO;
 import com.luvbrite.dao.PriceDAO;
 import com.luvbrite.dao.ProductDAO;
@@ -39,6 +40,7 @@ import com.luvbrite.web.models.AttrValue;
 import com.luvbrite.web.models.CartOrder;
 import com.luvbrite.web.models.CartResponse;
 import com.luvbrite.web.models.ControlOptions;
+import com.luvbrite.web.models.Coupon;
 import com.luvbrite.web.models.CreateOrderResponse;
 import com.luvbrite.web.models.Email;
 import com.luvbrite.web.models.GenericResponse;
@@ -80,6 +82,9 @@ public class CartController {
 	
 	@Autowired
 	private CartLogics cartLogics;
+	
+	@Autowired
+	private CouponDAO couponDao;
 	
 	@Autowired
 	private CouponManager couponManager;
@@ -1344,7 +1349,42 @@ public class CartController {
 		
 		return cr;
 	}	
+
 	
+	@RequestMapping(value = "/getcpromos")
+	public @ResponseBody GenericResponse getCustomerPromos(@AuthenticationPrincipal 
+			UserDetailsExt user){
+		
+		GenericResponse gr = new GenericResponse();
+		gr.setSuccess(false);
+		gr.setMessage("");
+		
+		if(user!=null && user.isEnabled()){
+			final User u = userDao.createQuery()
+					.field("_id").equal(user.getId())
+					.retrievedFields(true, "email")
+					.get();
+			
+			List<Coupon> coupons = couponDao.createQuery()
+					.field("emails").equalIgnoreCase(u.getEmail())
+					.field("active").equal(true)
+					.field("expiry").greaterThan(Calendar.getInstance().getTime())
+					.retrievedFields(true, "_id")
+					.asList();
+			
+			List<String> promos = new ArrayList<String>();
+			if(coupons != null && !coupons.isEmpty()){
+				for(Coupon c : coupons){
+					promos.add(c.get_id());
+				}
+				
+				gr.setSuccess(true);
+				gr.setResults(promos);
+			}
+		}
+		
+		return gr;		
+	}
 	
 	/**
 	 * Get cart count

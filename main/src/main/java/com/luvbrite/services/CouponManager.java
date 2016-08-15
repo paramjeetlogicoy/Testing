@@ -292,9 +292,11 @@ public class CouponManager {
 				pids = coupon.getPids();
 			}
 			
-			if(coupon.getEmails() != null 
-					&& coupon.getEmails().size()>0){				
-				emails = coupon.getEmails();
+			List<String> cEmails = coupon.getEmails();
+			if(cEmails != null && !cEmails.isEmpty()){
+				for(String email : cEmails){
+					emails.add(email.toLowerCase());
+				}
 			}
 			
 			CartOrder order = cartDao.get(orderId);
@@ -354,7 +356,7 @@ public class CouponManager {
 					/* Check if promo has email restriction, 
 					 * If yes, make sure the customer is logged in and 
 					 * is eligible to use the coupon */
-					if(emails.size()>0){
+					if(!emails.isEmpty()){
 						if(order.getCustomer()==null || order.getCustomer().getEmail().equals("")){
 							resp = "To apply this promo, you need to login in to "
 									+ "the system with your username and password.";

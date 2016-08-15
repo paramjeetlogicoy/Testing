@@ -113,6 +113,22 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 		uploadService.showGallery($rootScope);
 	};
 	/**UPLOAD SPECIFIC FN ENDS*/
+
+	
+	var getCouponsAssigned = function(createCoupon){
+		
+		$scope.promos = [];		
+		$http.get('/admin/users/json/getcpromos/' + $scope.u._id)
+		.then(function(response){
+			if(response && response.data){
+				
+				var resp = response.data;				
+				if(resp.success) {
+					$scope.promos = resp.results;
+				}
+			}				
+		});		
+	};
 	
 	$scope.getUserDetails = function($event){
 		
@@ -126,6 +142,8 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 		    
 		    if($scope.u.dob)
 	    		$scope.dob = new Date($scope.u.dob);
+		    
+		    getCouponsAssigned();
 		    
 		}).error(function(){
 			$scope.errorMsg = 'There was some error getting the product info. Please try later';

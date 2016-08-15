@@ -49,6 +49,14 @@
 									aria-hidden="true"></i></a></em>
 						</div>
 					</div>
+					
+					<div class="available-promos marg-b1" ng-if="m.promosAvailable">
+						<h6 class="marg-b05">Your Coupons</h6>
+						<div class="marg-l1" ng-repeat="promo in promos">
+							<strong class="orange1">{{promo}}</strong> <a href=""
+								ng-click="useThisCoupon()">Use</a>
+						</div>
+					</div>
 				</td>
 			</tr>
 			<tr>

@@ -903,7 +903,7 @@ cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 	if(_globalUserId) m.user._id = _globalUserId;
 	
 	
-	
+	m.promosAvailable = false;
 	m.couponApplied = true;  //Only refers to coupons
 	m.offersApplied = false; //Refers to all kinds of offers
 	m.orderAboveOrderMin = false;
@@ -986,8 +986,10 @@ cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		m.emptyCart = emptyCart;
 		
 		
-		//OrderMin Check
-		if(m.order.total >= m.orderMin){
+		//OrderMin Check (it doesnt apply to orders placed by orders@luvbrite.com [_id = 29])
+		if(m.order.total >= m.orderMin || 
+				(m.user && (m.user._id == 29 || m.user._id == 1))){
+			
 			m.orderAboveOrderMin = true;
 			
 			if(m.cartPage && !deliveryLoaded) m.loadDeliveryTemplate();			
@@ -2024,6 +2026,7 @@ cartCouponCtrlr = function($scope, $http, $rootScope){
 
 							m.order = resp.data.order;
 							m.processOrder();
+							fixAvailableCoupons();
 						}
 
 						else if(resp.data && resp.data.message){
@@ -2065,6 +2068,7 @@ cartCouponCtrlr = function($scope, $http, $rootScope){
 
 							m.order = resp.data.order;
 							m.processOrder();
+							fixAvailableCoupons();
 						}
 
 						else if(resp.data && resp.data.message){
@@ -2085,6 +2089,72 @@ cartCouponCtrlr = function($scope, $http, $rootScope){
 		}
 
 	};
+	
+	
+	$scope.useThisCoupon = function(){
+		if(this.promo){
+			$scope.couponCode = this.promo;
+			$scope.applyCoupon();
+		}
+	};
+	
+	
+	$scope.allPromos = [];
+	$scope.promos = [];
+	
+	var fixAvailableCoupons = function(){	
+		$scope.promos = $scope.allPromos.slice();
+	
+		for(var i=0; i<m.order.lineItems.length; i++){
+			var item = m.order.lineItems[i];
+			if(item.type=='coupon'){
+				
+				for(var j=0; j<$scope.promos.length; j++){
+					if($scope.promos[j] == item.name){
+						$scope.promos.splice(j,1);
+						break;
+					}
+				}
+			}
+		}
+		
+		if($scope.promos.length==0){
+			m.promosAvailable = false;
+		}
+		else{
+			m.promosAvailable = true;
+		}
+	},
+	
+	getCustomerCoupons = function(){
+		m.promosAvailable = false;
+
+		$http.get(_lbUrls.cart + 'getcpromos', {
+			params : {
+				'hidepop' : true
+			}
+		})
+		.then(
+			function(resp){
+				if(resp.data && resp.data.success){
+					m.promosAvailable = true;
+					$scope.allPromos = resp.data.results;
+					fixAvailableCoupons();
+				}
+				else{
+					$scope.promos = [];
+				}
+			},
+
+			function(){
+				$scope.promos = [];
+			}
+		);
+	};
+	
+	if(m.user && m.user._id){
+		getCustomerCoupons();
+	}
 },
 
 cartReviewCtrlr = function($scope, $http, $rootScope){

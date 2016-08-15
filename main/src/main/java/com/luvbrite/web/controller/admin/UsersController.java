@@ -1,5 +1,6 @@
 package com.luvbrite.web.controller.admin;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -556,5 +557,38 @@ public class UsersController {
 		
 		
 		return r;		
+	}	
+
+	
+	@RequestMapping(value = "/json/getcpromos/{userId}")
+	public @ResponseBody GenericResponse getCustomerPromos(@PathVariable Long userId){
+		
+		GenericResponse gr = new GenericResponse();
+		gr.setSuccess(false);
+		gr.setMessage("");		
+		
+		final User u = dao.createQuery()
+				.field("_id").equal(userId)
+				.retrievedFields(true, "email")
+				.get();
+		
+		List<Coupon> coupons = couponDao.createQuery()
+				.field("emails").equalIgnoreCase(u.getEmail())
+				.field("active").equal(true)
+				.field("expiry").greaterThan(Calendar.getInstance().getTime())
+				.retrievedFields(true, "_id")
+				.asList();
+		
+		List<String> promos = new ArrayList<String>();
+		if(coupons != null && !coupons.isEmpty()){
+			for(Coupon c : coupons){
+				promos.add(c.get_id());
+			}
+			
+			gr.setSuccess(true);
+			gr.setResults(promos);
+		}
+		
+		return gr;		
 	}
 }
