@@ -974,8 +974,16 @@ public class CartController {
 					}catch(Exception e){}
 					
 					
+
+					boolean cardDataPresent = false;
+					try{
+						if(order.getBilling().getPmtMethod().getCardData() != null){
+							cardDataPresent = true;
+						}
+					}catch(Exception e){}
+					
 					/* If there is payment data, process payment */		
-					if(order.getBilling().getPmtMethod().getCardData() != null){
+					if(!cardDataPresent){
 						
 						long money = 0l;
 						String cardNonce = "";
