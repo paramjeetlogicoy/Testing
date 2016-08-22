@@ -27,7 +27,8 @@
 	      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	    <![endif]-->
 
-<link href="/resources/css/main.css" rel="stylesheet" />
+<link th:href="@{/resources/css/main.css(v=${@ModifiedDate.cssDate})}"
+	href="/resources/css/main.css" rel="stylesheet" />
 
 <!-- Less Sheet and Compiler **$$** Remove for Production-->
 <!--/*
@@ -250,6 +251,7 @@
 	<div th:fragment="fragment-scripts(angular)">
 		<script src="/resources/js/main.js"></script>
 		<script th:if="${angular}"
+			th:src="@{/resources/js/angular-common.js(v=${@ModifiedDate.jsDate})}"
 			src="/resources/js/angular-common.js?v002"></script>
 
 

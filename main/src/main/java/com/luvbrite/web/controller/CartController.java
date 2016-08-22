@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -974,8 +975,16 @@ public class CartController {
 					}catch(Exception e){}
 					
 					
+
+					boolean cardDataPresent = false;
+					try{
+						if(order.getBilling().getPmtMethod().getCardData() != null){
+							cardDataPresent = true;
+						}
+					}catch(Exception e){}
+					
 					/* If there is payment data, process payment */		
-					if(order.getBilling().getPmtMethod().getCardData() != null){
+					if(cardDataPresent){
 						
 						long money = 0l;
 						String cardNonce = "";
@@ -1018,7 +1027,7 @@ public class CartController {
 					}
 					/** Payment process ends **/
 						
-					String resp = orderFinalization.finalizeOrder(order);
+					String resp = orderFinalization.finalizeOrder(order, cartLogics);
 					if("".equals(resp)){
 						gr.setSuccess(true);
 						gr.setMessage(orderFinalization.getOrderNumber()+"");
@@ -1366,7 +1375,7 @@ public class CartController {
 					.get();
 			
 			List<Coupon> coupons = couponDao.createQuery()
-					.field("emails").equalIgnoreCase(u.getEmail())
+					.field("emails").equalIgnoreCase(Pattern.quote(u.getEmail()))
 					.field("active").equal(true)
 					.field("expiry").greaterThan(Calendar.getInstance().getTime())
 					.retrievedFields(true, "_id")

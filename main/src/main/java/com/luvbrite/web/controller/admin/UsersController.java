@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -573,7 +574,7 @@ public class UsersController {
 				.get();
 		
 		List<Coupon> coupons = couponDao.createQuery()
-				.field("emails").equalIgnoreCase(u.getEmail())
+				.field("emails").equalIgnoreCase(Pattern.quote(u.getEmail()))
 				.field("active").equal(true)
 				.field("expiry").greaterThan(Calendar.getInstance().getTime())
 				.retrievedFields(true, "_id")

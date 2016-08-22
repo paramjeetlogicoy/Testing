@@ -1,6 +1,9 @@
 package com.luvbrite.config;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +16,7 @@ import com.luvbrite.utils.Utility;
 import com.luvbrite.web.models.AttrValue;
 import com.luvbrite.web.models.ControlOptions;
 import com.luvbrite.web.models.ControlRecord;
+import com.luvbrite.web.models.ModifiedDate;
 
 
 @Configuration
@@ -155,5 +159,30 @@ public class ControlConfig {
 		}
 		
 		return cOps;
+	}
+	
+	@Bean(name = "ModifiedDate")
+	public ModifiedDate modifiedDates(){
+	
+		ModifiedDate md = new ModifiedDate();
+		String contextPath = env.getProperty("contextPath");
+		if(contextPath != null){
+			SimpleDateFormat sdf = new SimpleDateFormat("yyMMddhhmm");
+			
+            File f1 = new File(contextPath + "resources/css/main.css");
+            long datetime = f1.lastModified();
+            Date d = new Date(datetime);
+            md.setCssDate(sdf.format(d));
+			
+            File f2 = new File(contextPath + "resources/js/angular-common.js");
+            datetime = f2.lastModified();
+            d = new Date(datetime);
+            md.setJsDate(sdf.format(d));
+            
+            System.out.println("ModifiedDate called");
+		}
+		
+		
+		return md;
 	}
 }

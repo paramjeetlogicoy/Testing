@@ -36,9 +36,12 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
     
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
-		registry.addResourceHandler("*.txt").addResourceLocations("/");
-		registry.addResourceHandler("*.ico").addResourceLocations("/");
+		
+		int cachePeriod = 60*60*24*10; //10 days
+		
+		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/").setCachePeriod(cachePeriod);
+		registry.addResourceHandler("*.txt").addResourceLocations("/").setCachePeriod(cachePeriod);
+		registry.addResourceHandler("*.ico").addResourceLocations("/").setCachePeriod(cachePeriod * 10);
 	}
 
 	@Bean

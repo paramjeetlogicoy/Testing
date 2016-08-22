@@ -41,7 +41,7 @@ public class OrderFinalization {
 	private CartOrderDAO cartDAO;
 	
 	
-	public String finalizeOrder(CartOrder cartOrder){
+	public String finalizeOrder(CartOrder cartOrder, CartLogics cartLogics){
 		String response = "";
 		
 		try {
@@ -56,7 +56,7 @@ public class OrderFinalization {
 				order = new Order();
 				
 				//Check for offhour promo
-				offHourPromo(cartOrder);
+				offHourPromo(cartOrder, cartLogics);
 				
 				//Copy info from cartOrder to Order
 				copyCartOrder(cartOrder, order);
@@ -131,7 +131,7 @@ public class OrderFinalization {
 	 * If the order is placed during offhours, add the free item
 	 * to the order 
 	 * */
-	private void offHourPromo(CartOrder co){
+	private void offHourPromo(CartOrder co, CartLogics cartLogics){
 		
 		if(offhourPromoActive){
 			
@@ -158,6 +158,9 @@ public class OrderFinalization {
 				co.setLineItems(olic);
 				
 				//System.out.println("inside");
+				
+				//Update orderTotals
+				cartLogics.calculateSummary(co);
 			}
 			
 			//System.out.println("Time - " + hour);

@@ -108,23 +108,25 @@ public class PostOrderMeta {
 			if(oils != null){
 				
 				for(OrderLineItem oil : oils){
-					LineItem li = new LineItem();
-					
-					li.setName(oil.getName());
-					li.setQuantity(oil.getQty());
-					
-					List<Meta> meta = new ArrayList<Meta>();
-					
-					List<AttrValue> specs = oil.getSpecs();
-					if(specs != null && specs.size() !=0){
-						AttrValue spec = specs.get(0);
+					if(oil.getType().equals("item")){
+						LineItem li = new LineItem();
 						
-						meta.add(new Meta(spec.getAttr(), spec.getAttr(), spec.getValue()));
+						li.setName(oil.getName());
+						li.setQuantity(oil.getQty());
+						
+						List<Meta> meta = new ArrayList<Meta>();
+						
+						List<AttrValue> specs = oil.getSpecs();
+						if(specs != null && specs.size() !=0){
+							AttrValue spec = specs.get(0);
+							
+							meta.add(new Meta(spec.getAttr(), spec.getAttr(), spec.getValue()));
+						}
+						
+						li.setMeta(meta);
+						
+						line_items.add(li);
 					}
-					
-					li.setMeta(meta);
-					
-					line_items.add(li);
 				}
 				
 			}

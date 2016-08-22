@@ -109,13 +109,14 @@ defaultCtrlr = function($scope, $http, $filter, $sanitize, $templateRequest, $co
 	/**
 	 * Add/Edit Coupon
 	 **/
+
+	$scope.couponTypes = ['F', 'R'];
+	$scope.couponStatus = [true, false];
 	
 	$scope.newCoupon = function(){
 		$scope.today = new Date();
-		$scope.cp = {'type':'R'};
-		$scope.couponCount = 0;
-		$scope.couponTypes = ['F', 'R'];
-		$scope.couponStatus = [true, false];	
+		$scope.cp = {'type':'R', 'active': true};
+		$scope.couponCount = 0;	
 	    $scope.prodSelected = undefined;
 	    $scope.mode = 'new';
 	    $scope.bulkCouponMsg = '';
