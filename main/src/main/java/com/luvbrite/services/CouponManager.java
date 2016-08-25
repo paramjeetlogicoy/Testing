@@ -440,7 +440,7 @@ public class CouponManager {
 					}
 					
 					orderTotal+= ( olic.getCost()*olic.getQty() );
-					System.out.println("CM - orderTotal = " + orderTotal);
+					//System.out.println("CM - orderTotal = " + orderTotal);
 				}
 			}
 			
@@ -491,7 +491,7 @@ public class CouponManager {
 				if(applicableTotal < couponValue)
 					couponValue = applicableTotal;
 				
-				System.out.println("CM - applicableTotal = " + applicableTotal);
+				//System.out.println("CM - applicableTotal = " + applicableTotal);
 				if(productItems > 0){ 
 					for(OrderLineItemCart olic : olics){
 						if(validPromoItem(olic)){
@@ -501,7 +501,7 @@ public class CouponManager {
 								olic.setPrice(olic.getCost() - itemDiscount);
 								olic.setPromo("p");
 
-								System.out.println("CM - F itemDiscount = " + itemDiscount);
+								//System.out.println("CM - F itemDiscount = " + itemDiscount);
 								totalDiscount+= (itemDiscount * olic.getQty());
 							}
 						}
@@ -516,7 +516,7 @@ public class CouponManager {
 							olic.setPrice(olic.getCost() - itemDiscount);
 							olic.setPromo("p");
 
-							System.out.println("CM - F else itemDiscount = " + itemDiscount);	
+							//System.out.println("CM - F else itemDiscount = " + itemDiscount);	
 
 							totalDiscount+= (itemDiscount * olic.getQty());	
 						}
@@ -544,7 +544,7 @@ public class CouponManager {
 							olic.setPrice(olic.getCost() - itemDiscount);
 							olic.setPromo("p");
 
-							System.out.println("CM - R itemDiscount = " + itemDiscount);
+							//System.out.println("CM - R itemDiscount = " + itemDiscount);
 							
 							totalDiscount+= (itemDiscount * olic.getQty());
 						}
@@ -560,7 +560,7 @@ public class CouponManager {
 							olic.setPrice(olic.getCost() - itemDiscount);
 							olic.setPromo("p");
 
-							System.out.println("CM - R else itemDiscount = " + itemDiscount);
+							//System.out.println("CM - R else itemDiscount = " + itemDiscount);
 
 							totalDiscount+= (itemDiscount * olic.getQty());	
 						}

@@ -29,19 +29,13 @@
 
 <link th:href="@{/resources/css/main.css(v=${@ModifiedDate.cssDate})}"
 	href="/resources/css/main.css" rel="stylesheet" />
-
-<!-- Less Sheet and Compiler **$$** Remove for Production-->
-<!--/*
-<link rel="stylesheet/less" type="text/css" href="/resources/css/less/main.less" />
-<script src="/resources/js/lib/less.min.2.5.3.js"></script>
-*/-->
 <script th:inline="javascript" type="text/javascript">
 /*<![CDATA[*/
     var _globalUserId = /*[[${userId}]]*/ 0;
     var _lbGlobalCDNPath = /*[[${_lbGlobalCDNPath}]]*/ '';
 /*]]>*/
 </script>
-<script src="/resources/js/lib/modernizr-custom.js"></script>
+<script src="//lbrit.co/static/js/modernizr-custom.js"></script>
 </head>
 <body>	
 	<header th:fragment="fragment-header" th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
@@ -225,16 +219,8 @@
 			src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.2/angular-route.min.js"></script>
 		<script th:if="${angular}"
 			src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.2/angular-sanitize.min.js"></script>
-		<script th:if="${angular}"
-			src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.2.1.js"></script>
-		<script th:if="${angular}"
-			src="/resources/js/lib/upload/ng-file-upload.min.js"></script>
-		<script th:if="${angular}"
-			src="/resources/js/angular-general-functions.js"></script>
 		<script
-			src="/resources/js/lib/cookie.js"></script>
-		<script
-			src="/resources/js/lib/pnotify.custom.min.js"></script>
+			src="//lbrit.co/static/js/cdn.min.js"></script>
 	</div>	
 	
 	<!-- GA analytics code -->
@@ -249,10 +235,10 @@
 	</script>
 	
 	<div th:fragment="fragment-scripts(angular)">
-		<script src="/resources/js/main.js"></script>
+		<!-- <script src="/resources/js/main.js"></script> -->
 		<script th:if="${angular}"
-			th:src="@{/resources/js/angular-common.js(v=${@ModifiedDate.jsDate})}"
-			src="/resources/js/angular-common.js?v002"></script>
+			th:src="@{/resources/js/comb.min.js(v=${@ModifiedDate.jsDate})}"
+			src="/resources/js/comb.min.js?v002"></script>
 
 
 		<div ng-show="pageLevelAlert"

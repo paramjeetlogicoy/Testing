@@ -68,6 +68,11 @@
 				<th>TOTAL</th>
 				<th class="text-right">{{m.order.total | currency}}</th>
 			</tr>
+
+			<tr ng-if="m.order.subTotal > m.order.total">
+				<th colspan="2" class="text-right orange1 size16"><em>(You just
+						saved {{(m.order.subTotal - m.order.total) | currency}})</em></th>
+			</tr>
 		</tfoot>
 	</table>
 </div>

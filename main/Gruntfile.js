@@ -18,49 +18,32 @@ module.exports = function(grunt) {
       build: ['Grunfile.js', 'src/main/webapp/resources/js/*.js']
     },
       
-    // configure uglify to minify js files -------------------------------------
+    // configure uglify to minify js files -------------------------------------    
     uglify: {
-      options: {
-        banner: '/*\n <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> \n*/\n'
-      },
-      
-      build: {
-        files: {
-          'src/main/webapp/resources/js/main.min.js': 'src/main/webapp/resources/js/*.js'
-        }
-      }
-    },
-      
-    less: {
-      build: {
-        files: {
-          'src/main/webapp/resources/css/main.css': 'src/main/webapp/resources/css/less/main.less'
-        }
-      }
-    },
+        options: {
+          banner: '/*<%= grunt.template.today("yyyy-mm-dd") %>*/\n',
+          mangle: false,
+          sourceMap: true
+        },
+        build: {
+          files: {
+            'src/main/webapp/resources/js/comb.min.js': ['src/main/webapp/resources/js/anuglar-controllers/*.js', 
+                                                         'src/main/webapp/resources/js/main.js',
+                                                         'src/main/webapp/resources/js/angular-general-functions.js',
+                                                         'src/main/webapp/resources/js/angular-common.js']
+          }
+       }
+    }, 
     
-    // configure cssmin to minify css files ------------------------------------
-    cssmin: {
-      options: {
-        banner: '/*\n <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> \n*/\n'
-      },
-      build: {
-        files: {
-          'src/main/webapp/resources/css/main.min.css': 'src/main/webapp/resources/css/main.css'
-        }
+    concat: {
+      dist: {
+        src: 'src/main/webapp/resources/js/lib/cdn/*.js',
+        dest: 'src/main/webapp/resources/js/lib/cdn.min.js',
       }
     },
     
     // configure watch to auto update ----------------
     watch: {
-      
-      // for stylesheets, watch css and less files 
-      // only run less and cssmin stylesheets: 
-      css : {
-    	files: ['src/main/webapp/resources/css/less/*.less'], 
-    	tasks: ['less', 'cssmin']
-      },
-
       // for scripts, run jshint and uglify 
       scripts: { 
         files: 'src/main/webapp/resources/js/*.js', tasks: ['jshint', 'uglify'] 
@@ -73,14 +56,13 @@ module.exports = function(grunt) {
   // ===========================================================================
   // we can only load these if they are in our package.json
   // make sure you have run npm install so our app can find these
+  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-less');
-  grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-watch');
   
   
   //============= // CREATE TASKS ========== //
-  grunt.registerTask('default', ['jshint', 'uglify', 'less', 'cssmin']);
+  grunt.registerTask('default', ['jshint', 'uglify']);
 
 };

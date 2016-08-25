@@ -75,7 +75,7 @@
 									<label class="control-label">First Name<sup>*</sup></label> <input
 										type="text" class="form-control" required="required"
 										ng-model="user.billing.firstName"
-										ng-blur="formElemValidate()" />
+										ng-blur="formElemValidate($event)" />
 									<p class="help-block onerror">First Name is required</p>
 								</div>
 							</div>
@@ -83,7 +83,7 @@
 								<div class="form-group">
 									<label class="control-label">Last Name<sup>*</sup></label> <input
 										type="text" class="form-control" required="required"
-										ng-blur="formElemValidate()"
+										ng-blur="formElemValidate($event)"
 										ng-model="user.billing.lastName" />
 									<p class="help-block onerror">Last Name is required</p>
 								</div>
@@ -92,7 +92,7 @@
 								<div class="form-group">
 									<label class="control-label">Phone<sup>*</sup></label> <input
 										type="text" class="form-control" ng-model="user.billing.phone"
-										required="required" ng-blur="formElemValidate()" />
+										required="required" ng-blur="formElemValidate($event)" />
 									<p class="help-block onerror">Phone number is required</p>
 								</div>
 							</div>
@@ -102,7 +102,7 @@
 								<div class="form-group">
 									<label class="control-label">Address<sup>*</sup></label> <input
 										type="text" class="form-control" required="required"
-										ng-blur="formElemValidate()"
+										ng-blur="formElemValidate($event)"
 										ng-model="user.billing.address1" />
 									<p class="help-block onerror">Address is required</p>
 								</div>
@@ -119,7 +119,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<label class="control-label">City<sup>*</sup></label> <input
-										type="text" required="required" ng-blur="formElemValidate()"
+										type="text" required="required" ng-blur="formElemValidate($event)"
 										class="form-control" ng-model="user.billing.city" />
 									<p class="help-block onerror">City is required</p>
 								</div>
@@ -127,7 +127,7 @@
 							<div class="col-sm-3">
 								<div class="form-group">
 									<label class="control-label">State<sup>*</sup></label> <input
-										type="text" required="required" ng-blur="formElemValidate()"
+										type="text" required="required" ng-blur="formElemValidate($event)"
 										class="form-control" ng-model="user.billing.state" />
 									<p class="help-block onerror">State is required</p>
 								</div>
@@ -136,7 +136,7 @@
 								<div class="form-group">
 									<label class="control-label">Zip Code<sup>*</sup></label> <input
 										type="text" class="form-control" required="required"
-										ng-blur="formElemValidate()" ng-model="user.billing.zip" />
+										ng-blur="formElemValidate($event)" ng-model="user.billing.zip" />
 									<p class="help-block onerror">Zipcode is required</p>
 								</div>
 							</div>

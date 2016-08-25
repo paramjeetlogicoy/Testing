@@ -174,7 +174,7 @@ public class ControlConfig {
             Date d = new Date(datetime);
             md.setCssDate(sdf.format(d));
 			
-            File f2 = new File(contextPath + "resources/js/angular-common.js");
+            File f2 = new File(contextPath + "resources/js/comb.min.js");
             datetime = f2.lastModified();
             d = new Date(datetime);
             md.setJsDate(sdf.format(d));
