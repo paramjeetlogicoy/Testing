@@ -62,7 +62,9 @@
 						<tr ng-repeat="o in orders">
 							<td><div class="marg-b05">
 									<a href="" ng-click="showDetails()" class="accent">{{o.orderNumber}}</a>
-									by {{o.customer.name}} (<a target="_blank"
+									<a href="/admin/order/{{o.orderNumber}}" target="_blank"><i
+										class="fa fa-external-link" aria-hidden="true"></i></a> by
+									{{o.customer.name}} (<a target="_blank"
 										href="/admin/users/#/details/{{o.customer._id}}">{{o.customer.email}}</a>)
 								</div>
 								<div>
