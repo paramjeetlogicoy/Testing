@@ -9,7 +9,7 @@ var ordDtlsServiceFn = function($templateRequest, $compile){
 	
 	service.showGallery = function(scope){
 		//Show popup		
-		$templateRequest("/resources/ng-templates/admin/ord-dtls-gallery.html")
+		$templateRequest("/resources/ng-templates/admin/ord-dtls-gallery.html?v001")
 		.then(function(html){
 		      var template = angular.element(html);
 		      angular.element('body').addClass('noscroll').append(template);
@@ -20,6 +20,8 @@ var ordDtlsServiceFn = function($templateRequest, $compile){
 	service.selectedFiles = [];
 	
 	service.orderNumber = 0;
+	
+	service.nextPrevNumbers = [];
 	
 	service.cdnPath = _lbGlobalCDNPath; //defined in main.js
 	
@@ -41,6 +43,7 @@ var ordDtlsCtrlr = function ($scope, $http, $sanitize, ordDtlService) {
 	};
 	
 	$scope.orderNumber = ordDtlService.orderNumber == 0 ? _globalOrderNumber : ordDtlService.orderNumber;
+	$scope.nextPrevNumbers = ordDtlService.nextPrevNumbers;
 	
 	$scope.orderStatuses = ["new", "processing", "cancelled", "delivered", "on-hold"];
 	$scope.firstOrder = false;
@@ -70,6 +73,9 @@ var ordDtlsCtrlr = function ($scope, $http, $sanitize, ordDtlService) {
 			$scope.o = data;	
 			
 			//$scope.checkIfFirstOrder();
+					
+			/* Check for the nexPrev order logic */
+			prevNextLogic();
 			
 		}).error(function(){
 			$scope.errorMsg = 'There was some error getting the order info. '
@@ -117,6 +123,48 @@ var ordDtlsCtrlr = function ($scope, $http, $sanitize, ordDtlService) {
 			$scope.errorMsg  = "There was some error sending the email. "
 					+"Please contact G.";
 		});	
-	}
+	};
+	
+	/* Prev/Next Order Logic */
+	$scope.prevOrderNumber = 0;
+	$scope.nextOrderNumber = 0;
+	
+	$scope.getPrevOrder = function(){
+		$scope.orderNumber = $scope.prevOrderNumber; 
+		$scope.o = {};
+		$scope.getDetails();
+	};
+	
+	$scope.getNextOrder = function(){
+		$scope.orderNumber = $scope.nextOrderNumber;
+		$scope.o = {};
+		$scope.getDetails();		
+	};
+	
+	var prevNextLogic = function(){
+		$scope.prevOrderNumber = 0;
+		$scope.nextOrderNumber = 0;
+		
+		if(!$scope.nextPrevNumbers) return;
+		
+		var length = $scope.nextPrevNumbers.length,
+		lastIndx = length?length-1:0;
+		
+		if(lastIndx){
+			for(var i=0; i<length; i++){
+				if($scope.nextPrevNumbers[i] == $scope.orderNumber){
+					if(i !=0 ){
+						$scope.prevOrderNumber = $scope.nextPrevNumbers[i-1];
+					}
+					
+					if(i != lastIndx){
+						$scope.nextOrderNumber = $scope.nextPrevNumbers[i+1];
+					}
+					
+					break;
+				}
+			}
+		}
+	};
 
 };

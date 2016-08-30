@@ -75,29 +75,40 @@
 
 												<td style="text-align: right;" th:text="${ol.qty}">2</td>
 												<td style="text-align: right;">$<span
-													th:text="${#numbers.formatDecimal((ol.cost*ol.qty), 0, 'COMMA', 2, 'POINT')}"></span></td>
+													th:text="${#numbers.formatDecimal((ol.cost*ol.qty), 1, 'COMMA', 2, 'POINT')}"></span></td>
 											</tr>
 
 
 											<tr>
 												<td colspan="2"
-													style="text-align: right; padding-top: 15px;">Sub
+													style="text-align: right; padding-top: 15px;color:#000000;">Sub
 													Total</td>
 												<td
-													style="text-align: right; width: 100px; padding-top: 15px;">$<span
-													th:text="*{#numbers.formatDecimal(subTotal, 0, 'COMMA', 2, 'POINT')}"></span></td>
+													style="text-align: right; width: 100px; padding-top: 15px;color:#000000;">$<span
+													th:text="*{#numbers.formatDecimal(subTotal, 1, 'COMMA', 2, 'POINT')}"></span></td>
 
 											</tr>
-											<tr>
-												<td colspan="2" style="text-align: right;">Discount</td>
-												<td style="text-align: right;">$<span
-													th:text="*{#numbers.formatDecimal((total - subTotal), 0, 'COMMA', 2, 'POINT')}"></span></td>
 
+											<tr th:each="ol:*{lineItems}" th:if="${ol.type!='item'}">
+												<td colspan="2"><div th:text="${ol.type}"></div></td>
+												<td style="text-align: right;">-$<span
+													th:text="${#numbers.formatDecimal(ol.price, 1, 'COMMA', 2, 'POINT')}"></span></td>
 											</tr>
+
+											<tr th:each="ol:*{lineItems}"
+												th:if="${ol.type=='item' and ol.promo != null and ol.promo.length() > 1}">
+												<td colspan="2">
+													<div th:if="${ol.promo=='doubledownoffer'}">Doubledown Promo</div>
+													<div th:if="${ol.promo=='offhourpromo'}">Off hour Promo</div>
+												</td>
+												<td style="text-align: right;">-$<span
+													th:text="${#numbers.formatDecimal(((ol.cost-ol.price)*ol.qty), 1, 'COMMA', 2, 'POINT')}"></span></td>
+											</tr>
+											
 											<tr>
 												<td colspan="2" style="text-align: right; color: #557da1;"><strong>Total</strong></td>
 												<td style="text-align: right; color: #557da1;"><strong>$<span
-														th:text="*{#numbers.formatDecimal(total, 0, 'COMMA', 2, 'POINT')}"></span></strong></td>
+														th:text="*{#numbers.formatDecimal(total, 1, 'COMMA', 2, 'POINT')}"></span></strong></td>
 
 											</tr>
 										</tbody>

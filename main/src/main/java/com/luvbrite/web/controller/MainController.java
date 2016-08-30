@@ -257,4 +257,25 @@ public class MainController {
 
 		return "404";		
 	}
+	
+
+	@RequestMapping(value = "/confemail/{orderNumber}")
+	public String confirmationEmailTemplate(@PathVariable long orderNumber, ModelMap model){
+	
+		Email email = new Email();
+		email.setEmailTemplate("order-confirmation");
+		email.setFromEmail("");
+		email.setRecipientEmail("info@luvbrite.com");
+		email.setRecipientName("Luvbrite Collection");
+		email.setSubject("");
+		email.setEmailTitle("Order Confirmation Email");
+		email.setEmailInfo("Test Info");
+		Order order = orderDao.findOne("orderNumber", orderNumber);
+
+		email.setEmail(order);
+
+		model.addAttribute("emailObj", email);		
+
+		return "layout";
+	}
 }

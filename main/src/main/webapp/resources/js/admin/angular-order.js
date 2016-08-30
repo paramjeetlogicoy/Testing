@@ -75,6 +75,8 @@ defaultCtrlr = function($scope, $http, $filter, $rootScope, $sanitize, ordDtlSer
 	$scope.showDetails = function(){
 		ordDtlService.orderNumber = this.o.orderNumber;
 		
+		ordDtlService.nextPrevNumbers = $scope.orders.map(function(x){return x.orderNumber;}); 
+		
 		ordDtlService.showGallery($rootScope);
 	};
 };

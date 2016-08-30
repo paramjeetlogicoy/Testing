@@ -15,7 +15,16 @@
 						<i class="fa fa-star" aria-hidden="true"></i> First Order
 					</strong>
 				</div>
+				
 				<div class="panel-body">
+
+					<div class="clearfix small marg-b2" ng-show="nextPrevNumbers.length">
+						<a href="" ng-click="getPrevOrder()" ng-if="prevOrderNumber"
+							class="pull-left"><i class="fa fa-arrow-left"
+							aria-hidden="true"></i> Prev</a> <a href="" ng-click="getNextOrder()"
+							ng-if="nextOrderNumber" class="pull-right">Next <i
+							class="fa fa-arrow-right" aria-hidden="true"></i></a>
+					</div>
 
 					<div class="alert alert-danger alert-dismissible" role="alert"
 						ng-show="errorMsg">
@@ -121,7 +130,6 @@
 									<tr>
 										<th class="col-xs-1"></th>
 										<th class="pc60">Item</th>
-										<th class="text-right">Cost</th>
 										<th class="text-right">Qty</th>
 										<th class="text-right">Price</th>
 									</tr>
@@ -135,20 +143,15 @@
 												<strong>{{spec.attr}}</strong>: <span>{{spec.value}}</span>
 											</div>
 										</td>
-										<td class="text-right"><del class="grey7"
-												ng-if="item.cost>item.price">
-												{{item.cost | currency}}</del> {{item.price | currency}}</td>
 										<td class="text-right">{{item.qty}}</td>
-											<td class="text-right">{{(item.price * item.qty) | currency}}</td>
-
+										<td class="text-right">{{(item.cost * item.qty) | currency}}</td>
 									</tr>
-
 								</tbody>
 							</table>
 						</div>
 
 						<div class="item-details">
-							<table class="table">
+							<table class="table table-condensed">
 								<thead>
 									<tr>
 										<th class="pc60">Coupons/Adjustments</th>
@@ -156,13 +159,23 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr ng-repeat="item in o.lineItems" ng-if="item.type!='item'">
-										<td>
-											<div>{{item.name + ' (' + item.type + ')' }}</div>
+									<tr>
+										<td colspan="4">
+											<div class="clearfix" ng-repeat="item in o.lineItems"
+												ng-if="item.type!='item'">
+												<div class="pull-left">{{item.name + ' (' + item.type
+													+ ')' }}</div>
+												<div class="pull-right text-right">-{{item.price |
+													currency}}</div>
+											</div>
+											<div class="clearfix" ng-repeat="item in o.lineItems"
+												ng-if="item.type=='item' && item.promo && item.promo.length > 1">
+												<div class="pull-left">{{item.name + ' (' + item.promo
+													+ ')' }}</div>
+												<div class="pull-right text-right">{{(item.cost -
+													item.price)* -item.qty | currency}}</div>
+											</div>
 										</td>
-										<td class="text-right" colspan="3">{{item.price |
-											currency}}</td>
-
 									</tr>
 
 								</tbody>
