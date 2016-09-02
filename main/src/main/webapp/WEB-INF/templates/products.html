@@ -69,7 +69,10 @@
 											th:src="${_lbGlobalCDNPath} + ${#strings.replace(product.featuredImg,'.jpg','-300x266.jpg')}"
 											class="featured-img" /> <span
 											th:if="${(product.categories!=null) and (#lists.contains(product.categories, 'Specials'))}"
-											class="splribbon"><span>special</span></span>
+											class="splribbon"><span>special</span></span><span
+											th:if="${(product.categories!=null) and (#lists.contains(product.categories, 'Super Special'))}"
+											class="splribbon sspl"><span>super <br />special
+											</span></span>
 										</a>
 									</div>
 
