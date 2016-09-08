@@ -39,6 +39,7 @@
 </head>
 <body>	
 	<header th:fragment="fragment-header" th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
+
 		<nav class="admin-navbar hidden-xs" th:if="${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_ADMIN')}">
 			<div class="container">
 				<div class="clearfix">
@@ -53,7 +54,9 @@
 							
 		<input type="hidden" id="_lb_sec_tok" th:name="*{_csrf.parameterName}"
 							th:value="${_csrf.token}" />
+							
 		<nav class="header-navbar">
+
 			<div class="container">
 				<div class="row">
 					<div class="col-sm-5 col-xs-4">
@@ -153,7 +156,7 @@
 					placeholder="Start typing your search here&hellip;" />
 			</form>
 		</nav>
-
+		
 		<div class="header-offset"></div>
 	</header>
 
@@ -196,6 +199,20 @@
 		</div>
 		<a href="#" class="to-top fix text-center bg-white hideme"><i
 			class="fa fa-caret-up"></i></a>
+
+
+		<div class="footer-disclaimer">
+			<div class="container">
+				<div class="marg-b2">Dear Visitor, you need be of age 21 or above and should
+					have a physicians recommendation letter to get medical marijuana.
+					Please confirm whether you are 21 or above.</div>
+				<div>
+					<a href="https://www.google.com/" class="btn btn-default m-marg-b2">NO, I am
+						under 21</a> <a href="" ng-click="saveDisclaimerSession()"
+						class="btn btn-success">YES, I am 21 or above</a>
+				</div>
+			</div>
+		</div>
 	</footer>
 
 
@@ -250,22 +267,7 @@
 			</button>
 			<span ng-bind-html="pageLevelAlert"></span>
 		</div>
-
-		<div class="modal fade lb-disclaimer-sm" tabindex="-1" role="dialog"
-			data-backdrop="static" data-keyboard="false">
-			<div class="modal-dialog modal-sm">
-				<div class="modal-content">
-					<div class="modal-body">Dear Visitor, you need be of age 21 or
-						above and should have a physicians recommendation letter to get
-						medical marijuana. Please confirm whether you are 21 or above.</div>
-					<div class="modal-footer text-right">
-						<a href="https://www.google.com/" class="btn btn-xs btn-warning">No,
-							I am under 21</a> <a href="" ng-click="saveDisclaimerSession()"
-							class="btn btn-xs btn-success">Yes, I am 21 or above</a>
-					</div>
-				</div>
-			</div>
-		</div>
+		
 	</div>
 
 

@@ -32,11 +32,15 @@ var appRunFns = function($http, $rootScope, $interval){
     //Disclaimer
     var cookieVal = $.cookie('above21');
     if(!cookieVal && $('#noLbDisclaimer').size()===0){
-    	$('.lb-disclaimer-sm').modal();
+    	$('.footer-disclaimer').addClass('present');
+    }else{
+    	$('.footer-disclaimer').remove();
     }
     $rootScope.saveDisclaimerSession = function(){
     	$.cookie('above21','accepted',{expires:30, path:'/'});
-    	$('.lb-disclaimer-sm').modal('hide');
+    	$('.footer-disclaimer').animate({opacity:0}, 1000, function(){
+    		$(this).remove();
+    	});
     };
     
     
