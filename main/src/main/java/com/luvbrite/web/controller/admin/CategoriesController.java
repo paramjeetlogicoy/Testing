@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -26,6 +27,7 @@ import com.luvbrite.web.models.Category;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Log;
 import com.luvbrite.web.models.Product;
+import com.luvbrite.web.models.UserDetailsExt;
 import com.luvbrite.web.validator.CategoryValidator;
 
 
@@ -65,7 +67,8 @@ public class CategoriesController {
 	@RequestMapping(value = "/json/save", method = RequestMethod.POST)
 	public @ResponseBody GenericResponse save(
 			@Validated @RequestBody Category category, 
-			BindingResult result){
+			BindingResult result, @AuthenticationPrincipal 
+			UserDetailsExt user){
 		
 		GenericResponse r = new GenericResponse();
 		
@@ -134,6 +137,7 @@ public class CategoriesController {
 									log.setDetails("Category " + dbName + " replace with " + newName);
 									log.setDate(Calendar.getInstance().getTime());
 									log.setKey(product.get_id());
+									log.setUser(user.getUsername());
 
 									logDao.save(log);					
 								}
@@ -155,6 +159,7 @@ public class CategoriesController {
 					log.setDetails("Category document updated");
 					log.setDate(Calendar.getInstance().getTime());
 					log.setKey(category.get_id());
+					log.setUser(user.getUsername());
 
 					logDao.save(log);					
 				}
@@ -176,7 +181,8 @@ public class CategoriesController {
 	@RequestMapping(value = "/json/create", method = RequestMethod.POST)
 	public @ResponseBody Category create(
 			@RequestBody Category category, 
-			BindingResult result){
+			BindingResult result, @AuthenticationPrincipal 
+			UserDetailsExt user){
 		
 		//Generate CategoryId
 		long Id = dao.getNextSeq();
@@ -195,6 +201,7 @@ public class CategoriesController {
 				log.setDetails("Category created");
 				log.setDate(Calendar.getInstance().getTime());
 				log.setKey(Id);
+				log.setUser(user.getUsername());
 				
 				logDao.save(log);					
 			}
@@ -213,7 +220,8 @@ public class CategoriesController {
 
 	@RequestMapping(value = "/json/delete/{catId}", method = RequestMethod.POST)
 	public @ResponseBody GenericResponse create(
-			@PathVariable long catId){
+			@PathVariable long catId, @AuthenticationPrincipal 
+			UserDetailsExt user){
 		
 		GenericResponse r = new GenericResponse();
 		if(catId!=0l) {
@@ -230,6 +238,7 @@ public class CategoriesController {
 				log.setDetails("Category deleted");
 				log.setDate(Calendar.getInstance().getTime());
 				log.setKey(catId);
+				log.setUser(user.getUsername());
 				
 				logDao.save(log);					
 			}

@@ -30,7 +30,11 @@
 							</h3>
 							<strong class="pull-right marg-r2"><i
 								class="fa fa-calendar" aria-hidden="true"></i> {{o.date | date :
-								'MM/dd/yyyy hh:mm a'}}</strong>
+								'MM/dd/yyyy hh:mm a'}}</strong> <strong
+								class="pull-right orange1 marg-r2"
+								ng-show="o.notes.additonalNotes.indexOf('**FIRST ORDER**')>-1">
+								<i class="fa fa-star" aria-hidden="true"></i> First Order
+							</strong>
 						</div>
 						<div class="panel-body">
 
@@ -75,14 +79,14 @@
 									<div class="col-sm-4">
 										<h5>Billing Details</h5>
 										<dl>
-											<dt>Address:</dt>
-											<dd>
-												{{o.billing.firstName}} {{o.billing.lastName}}<br />
-												{{o.billing.address1}} {{o.billing.address2}}<br />
-												{{o.billing.city}}, {{o.billing.state}} {{o.billing.zip}}
-
-											</dd>
+											<dt>Payment:</dt>
+											<dd ng-if="o.billing.pmtMethod.method=='cc'">
+												{{o.billing.pmtMethod.cardData.card_brand}} Card ending in
+												{{o.billing.pmtMethod.cardData.last_4}}</dd>
+											<dd ng-if="o.billing.pmtMethod.method=='cod'">
+												{{o.billing.pmtMethod.type}}</dd>
 										</dl>
+										
 										<dl ng-if="o.billing.email">
 											<dt>Email:</dt>
 											<dd>{{o.billing.email}}</dd>
@@ -91,18 +95,38 @@
 											<dt>Phone:</dt>
 											<dd>{{o.billing.phone}}</dd>
 										</dl>
+
+
+										<h5>Delivery Details</h5>
+										<dl>
+											<dt>Method:</dt>
+											<dd>{{o.shipping.deliveryMethod}}</dd>
+											<dt>Address:</dt>
+											<dd>
+												{{o.shipping.address.firstName}}
+												{{o.shipping.address.lastName}}<br />
+												{{o.shipping.address.address1}}
+												{{o.shipping.address.address2}}<br />
+												{{o.shipping.address.city}}, {{o.shipping.address.state}}
+												{{o.shipping.address.zip}}
+											</dd>
+										</dl>
 									</div>
 
 									<div class="col-sm-3">
 										<h5>Notes</h5>
-										<div ng-repeat="note in o.notes">
-											<dl ng-if="note.deliveryNotes">
-												<dt>Delivery Schedule:</dt>
-												<dd>{{note.deliveryNotes}}</dd>
+										<div>
+											<dl ng-if="o.notes.deliveryNotes">
+												<dt>Delivery Notes:</dt>
+												<dd>
+													<span class="size12">{{o.notes.deliveryNotes}}</span>
+												</dd>
 											</dl>
-											<dl ng-if="note.additonalNotes">
+											<dl ng-if="o.notes.additonalNotes">
 												<dt>Additional Notes:</dt>
-												<dd>{{note.additonalNotes}}</dd>
+												<dd>
+													<span class="size12">{{o.notes.additonalNotes}}</span>
+												</dd>
 											</dl>
 										</div>
 
@@ -155,13 +179,23 @@
 											</tr>
 										</thead>
 										<tbody>
-											<tr ng-repeat="item in o.lineItems" ng-if="item.type!='item'">
-												<td>
-													<div>{{item.name + ' (' + item.type + ')' }}</div>
+											<tr>
+												<td colspan="4">
+													<div class="clearfix" ng-repeat="item in o.lineItems"
+														ng-if="item.type!='item'">
+														<div class="pull-left">{{item.name + ' (' +
+															item.type + ')' }}</div>
+														<div class="pull-right text-right">-{{item.price |
+															currency}}</div>
+													</div>
+													<div class="clearfix" ng-repeat="item in o.lineItems"
+														ng-if="item.type=='item' &amp;&amp; item.promo &amp;&amp; item.promo.length > 1">
+														<div class="pull-left">{{item.name + ' (' +
+															item.promo + ')' }}</div>
+														<div class="pull-right text-right">{{(item.cost -
+															item.price)* -item.qty | currency}}</div>
+													</div>
 												</td>
-												<td class="text-right" colspan="3">{{item.price |
-													currency}}</td>
-
 											</tr>
 
 										</tbody>

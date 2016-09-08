@@ -158,9 +158,9 @@ orderCtrlr = function($scope, $http){
 		.success(function(data){
 			if(data.success){
 				$scope.orders = data.respData;
-				$scope.pg = data.pg
+				$scope.pg = data.pg;
 			}
-			else if(data.message && data.message!=''){
+			else if(data.message && data.message!==''){
 				$scope.pageLevelError = data.message;
 			}
 			else{

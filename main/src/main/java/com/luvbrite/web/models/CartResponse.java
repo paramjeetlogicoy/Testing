@@ -8,6 +8,7 @@ public class CartResponse {
 	private User user;
 	private ControlOptions config;
 	private List<Product> ddPrds;
+	private Address prevOrderAddress;
 	
 	public CartOrder getOrder() {
 		return order;
@@ -32,5 +33,11 @@ public class CartResponse {
 	}
 	public void setDdPrds(List<Product> ddPrds) {
 		this.ddPrds = ddPrds;
+	}
+	public Address getPrevOrderAddress() {
+		return prevOrderAddress;
+	}
+	public void setPrevOrderAddress(Address prevOrderAddress) {
+		this.prevOrderAddress = prevOrderAddress;
 	}
 }

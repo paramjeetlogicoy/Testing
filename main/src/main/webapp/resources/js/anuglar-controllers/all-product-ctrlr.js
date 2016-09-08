@@ -27,7 +27,7 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 		
 		$scope.currentPid = $angularElement.data('pid');
 		
-		if($scope.currentPid != 0){	
+		if($scope.currentPid !== 0){	
 			
 			$scope.prices = [];
 			

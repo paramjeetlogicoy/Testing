@@ -31,9 +31,9 @@ var cartPaymentCtrlr = function($scope, $http, $rootScope, $timeout){
 	};
 	
 	m.unsupportedBrowserDetected = function() {
-		m.ccErrors = 'Sorry, Your browser doesn\'t support '
-			+'the secure processing of this credit card. Please '
-			+'try a different browser.';
+		m.ccErrors = 'Sorry, Your browser doesn\'t support ' +
+			'the secure processing of this credit card. Please ' +
+			'try a different browser.';
 		
 		$scope.nonceRequesting = false;
 		try{$scope.$apply();}catch(err){}

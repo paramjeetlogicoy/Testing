@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Log;
 import com.luvbrite.web.models.Order;
 import com.luvbrite.web.models.ResponseWithPg;
+import com.luvbrite.web.models.UserDetailsExt;
 
 
 @Controller
@@ -88,7 +90,8 @@ public class OrdersController {
 	
 
 	@RequestMapping(value = "/json/savestatus")
-	public @ResponseBody GenericResponse saveStatus(@RequestBody Order order){	
+	public @ResponseBody GenericResponse saveStatus(@RequestBody Order order, @AuthenticationPrincipal 
+			UserDetailsExt user){	
 
 		GenericResponse r = new GenericResponse();
 		if(order.getStatus().trim().equals("")){
@@ -121,6 +124,7 @@ public class OrdersController {
 					log.setDetails("order.status changed. previous value: " + prevStatus);
 					log.setDate(Calendar.getInstance().getTime());
 					log.setKey(order.get_id());
+					log.setUser(user.getUsername());
 					
 					logDao.save(log);					
 				}

@@ -6,14 +6,14 @@ var allProductPriceCtrlr = function($scope, $http, $rootScope, $timeout){
 		//Set the quantity as zero;
 		for(var i=0; i<$scope.prices.length; i++){
 			var curr = $scope.prices[i];
-			if(curr.qty != 0){
+			if(curr.qty !== 0){
 				if(curr.salePrice){
 					$scope.itemTotal+=(curr.salePrice*curr.qty);
 				}
 				else{
 					$scope.itemTotal+=(curr.regPrice*curr.qty);
 				}
-			};
+			}
 		}
 	};
 	
@@ -34,7 +34,7 @@ var allProductPriceCtrlr = function($scope, $http, $rootScope, $timeout){
 		
 		for(var i=0; i<$scope.prices.length; i++){
 			var curr = $scope.prices[i];
-			if(curr.qty != 0){
+			if(curr.qty !== 0){
 
 				lineItems.push({
 					name : productName,
@@ -43,10 +43,10 @@ var allProductPriceCtrlr = function($scope, $http, $rootScope, $timeout){
 					img : curr.img ? curr.img : featuredImg,
 					variationId : curr._id ? curr._id : 0
 				});
-			};
+			}
 		}
 			
-		if(lineItems.length==0){
+		if(lineItems.length===0){
 			$scope.itemError = 'Please select quantity for atleast one item.';
 			return false;
 		}
@@ -91,12 +91,12 @@ var allProductPriceCtrlr = function($scope, $http, $rootScope, $timeout){
 		},
 		function(resp){
 			if(resp.status == 403){
-				$scope.$parent.setPageAlert("Your browser was idle for long. "
-					+"Please refresh the page and add the item to cart again.");
+				$scope.$parent.setPageAlert("Your browser was idle for long. " +
+					"Please refresh the page and add the item to cart again.");
 			}
 			else {
-				$scope.$parent.setPageAlert("There was some error creating the order. "
-					+"Please try later. If problem persists, please call the customer care.");
+				$scope.$parent.setPageAlert("There was some error creating the order. " +
+					"Please try later. If problem persists, please call the customer care.");
 			}
 
 			$scope.addingToCart = false;

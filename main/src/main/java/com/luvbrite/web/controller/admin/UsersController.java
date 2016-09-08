@@ -125,7 +125,8 @@ public class UsersController {
 	@RequestMapping(value = "/json/create", method = RequestMethod.POST)
 	public @ResponseBody GenericResponse createUser(
 			@Validated @RequestBody User user, 
-			BindingResult result){
+			BindingResult result, @AuthenticationPrincipal 
+			UserDetailsExt userExt){
 		
 		GenericResponse r = new GenericResponse();		
 		r.setSuccess(false);
@@ -189,6 +190,7 @@ public class UsersController {
 						log.setDetails("user created.");
 						log.setDate(Calendar.getInstance().getTime());
 						log.setKey(userId);
+						log.setUser(userExt.getUsername());
 						
 						logDao.save(log);						
 					}
@@ -232,7 +234,8 @@ public class UsersController {
 	
 	@RequestMapping(value = "/json/savep", method = RequestMethod.POST)
 	public @ResponseBody GenericResponse savePassword(
-			@RequestBody User user){
+			@RequestBody User user, @AuthenticationPrincipal 
+			UserDetailsExt userExt){
 		
 		GenericResponse r = new GenericResponse();
 			
@@ -268,7 +271,7 @@ public class UsersController {
 					log.setDetails("user.password changed.");
 					log.setDate(Calendar.getInstance().getTime());
 					log.setKey(user.get_id());
-					log.setUser(userDb.getUsername());
+					log.setUser(userExt.getUsername());
 					
 					logDao.save(log);					
 				}
@@ -407,7 +410,8 @@ public class UsersController {
 	@RequestMapping(value = "/json/save", method = RequestMethod.POST)
 	public @ResponseBody GenericResponse saveUser(
 			@Validated @RequestBody User user, 
-			BindingResult result){
+			BindingResult result, @AuthenticationPrincipal 
+			UserDetailsExt userExt){
 		
 		GenericResponse r = new GenericResponse();
 		
@@ -504,6 +508,7 @@ public class UsersController {
 									log.setDetails("order.customer changed during user collection update");
 									log.setDate(Calendar.getInstance().getTime());
 									log.setKey(order.get_id());
+									log.setUser("System");
 									
 									logDao.save(log);					
 								}
@@ -524,7 +529,7 @@ public class UsersController {
 						log.setDetails("user document updated.");
 						log.setDate(Calendar.getInstance().getTime());
 						log.setKey(user.get_id());
-						log.setUser(userDb.getUsername());
+						log.setUser(userExt.getUsername());
 						
 						logDao.save(log);						
 					}

@@ -759,6 +759,10 @@ public class CartController {
 	
 				order.setCustomer(cus);
 				dao.save(order);
+				
+				
+				//Get prev order address details
+				cr.setPrevOrderAddress(cartLogics.getPrevShippingInfo(userDb.get_id()));
 			}
 		}
 		
@@ -1393,7 +1397,28 @@ public class CartController {
 		}
 		
 		return gr;		
+	}	
+
+	
+	@RequestMapping(value = "/foc")
+	public @ResponseBody GenericResponse firstOrderCheck(@AuthenticationPrincipal 
+			UserDetailsExt user){
+		
+		GenericResponse gr = new GenericResponse();
+		gr.setSuccess(false);
+		gr.setMessage("");
+		
+		if(user!=null && user.getId() != 0){
+			String response = cartLogics.firstOrderCheck(user.getId());
+			if(response.equals("Y")){
+				gr.setSuccess(true);
+				gr.setMessage("check order total before showing the popup");
+			}
+		}
+		
+		return gr;		
 	}
+	
 	
 	/**
 	 * Get cart count

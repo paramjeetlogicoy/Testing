@@ -109,7 +109,8 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 	};
 	
 	$scope.selectRecoFile = function(){
-		uploadService.config.cb = $scope.afterRecoFileSelect;		
+		uploadService.config.cb = $scope.afterRecoFileSelect;
+		uploadService.config.fields = {path : '/user/', ctrl : 'controlled'};			
 		uploadService.showGallery($rootScope);
 	};
 	/**UPLOAD SPECIFIC FN ENDS*/

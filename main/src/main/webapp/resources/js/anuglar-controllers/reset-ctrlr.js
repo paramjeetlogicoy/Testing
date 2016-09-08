@@ -3,18 +3,18 @@ var resetCtlr = function($scope, $http, $rootScope){
 	$scope.successNotification = "";
 	
 	$scope.invalidPassword = function(){		
-		return $scope.resetRequest.password.$invalid 
-			&& !$scope.resetRequest.password.$pristine;
+		return $scope.resetRequest.password.$invalid && 
+			!$scope.resetRequest.password.$pristine;
 	};
 	
 	$scope.invalidCPassword = function(){		
-		return !$scope.resetRequest.cpassword.$pristine
-			&& ($scope.password != $scope.cpassword);
+		return !$scope.resetRequest.cpassword.$pristine && 
+			($scope.password != $scope.cpassword);
 	};
 	
 	$scope.requestReset = function(){
 		
-		if($scope.emailUsername != ''){
+		if($scope.emailUsername !== ''){
 			$http.get(_lbUrls.creset, {
 				params : { 
 					u : $scope.emailUsername
@@ -46,7 +46,7 @@ var resetCtlr = function($scope, $http, $rootScope){
 	
 	$scope.changePassword = function(){
 		
-		if($scope.password != '' && ($scope.password == $scope.cpassword)){
+		if($scope.password !== '' && ($scope.password == $scope.cpassword)){
 			
 			$http.post(_lbUrls.rsavep, {
 				username : $('#formusername').val(),
@@ -72,7 +72,7 @@ var resetCtlr = function($scope, $http, $rootScope){
 		}
 		else{
 			
-			if($scope.password == ''){
+			if($scope.password === ''){
 				$scope.pageLevelAlert = "Please provide valid passwords";
 			}
 			

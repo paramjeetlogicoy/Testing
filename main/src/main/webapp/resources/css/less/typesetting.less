@@ -209,6 +209,10 @@ img.fit{max-width:100%;max-height:100%}
 .marg-h2{.marg-h(2)}
 .p25 p{.marg-b(2.5)}
 
+@media(max-width:767px){
+  .m-marg-b2{.marg-b(2);}
+}
+
 .no-decor{text-decoration:none}
 .no-decori{text-decoration:none!important}
 .u{text-decoration:underline !important}
@@ -224,6 +228,12 @@ img.fit{max-width:100%;max-height:100%}
 .t-display{display:table!important}
 .t-row{display:table-row}
 .t-cell{display:table-cell!important;vertical-align:middle}
+
+.m-nofloat{
+  @media(max-width:767px){
+    float:none;
+  }  
+}
 
 .no-outline{outline: none!important}
 .noborder{border:none!important}
@@ -463,6 +473,23 @@ a.inherit{
     }
 }
 
+.btn-neg {
+    color: #555;
+    background-color: #ddd;
+    border: 1px solid #d0d0d0;
+    
+    &:hover,
+    &:active,
+    &:focus {
+      color: #333;
+      background-color: #D5D5D5;
+    }
+
+    &[disabled]:hover{
+      color: #777;
+    }
+}
+
 .btn-lb-w{
   padding: 11px 0;
   width: 210px;
@@ -504,8 +531,8 @@ a.inherit{
 .animate.ng-enter,
 .animate.ng-leave,
 .animate.ng-hide{
-  -webkit-transition: .3s linear all; /* Chrome */
-  transition: .3s linear all;
+  -webkit-transition: .5s linear all; /* Chrome */
+  transition: .5s linear all;
 }
 
 .animate.ng-leave.ng-leave-active,

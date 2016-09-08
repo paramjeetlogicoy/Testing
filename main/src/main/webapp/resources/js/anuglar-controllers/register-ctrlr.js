@@ -27,10 +27,10 @@ var registerCtrlr = function($scope, $http, Upload){
 			$('.recoWrapper').addClass('has-error');
 		}
 		
-		if($scope.registerForm.$valid 
-				&& $scope.recoFile 
-				&& $scope.idFile
-				&& proceed){
+		if($scope.registerForm.$valid && 
+				$scope.recoFile && 
+				$scope.idFile && 
+				proceed){
 			
 			$http.post(_lbUrls.register, $scope.user)
 			.then(function(response){
@@ -49,8 +49,8 @@ var registerCtrlr = function($scope, $http, Upload){
 			},
 			
 			function(){
-				$scope.pageLevelAlert = "There was some error creating your account. "
-					+"Please try later. If problem persists, please call the customer care.";
+				$scope.pageLevelAlert = "There was some error creating your account. " + 
+					"Please try later. If problem persists, please call the customer care.";
 			});	
 		}
 		
@@ -89,45 +89,45 @@ var registerCtrlr = function($scope, $http, Upload){
 	};
 	
 	$scope.invalidFname = function(){		
-		return $scope.registerForm.firstname.$invalid 
-			&& !$scope.registerForm.firstname.$pristine;
+		return $scope.registerForm.firstname.$invalid && 
+			!$scope.registerForm.firstname.$pristine;
 	};
 	
 	$scope.invalidLname = function(){		
-		return $scope.registerForm.lastname.$invalid 
-			&& !$scope.registerForm.lastname.$pristine;
+		return $scope.registerForm.lastname.$invalid && 
+			!$scope.registerForm.lastname.$pristine;
 	};
 	
 	$scope.invalidEmail = function(){		
-		return $scope.registerForm.email.$invalid 
-			&& !$scope.registerForm.email.$pristine;
+		return $scope.registerForm.email.$invalid && 
+			!$scope.registerForm.email.$pristine;
 	};
 	
 	$scope.invalidUname = function(){		
-		return $scope.registerForm.username.$invalid 
-			&& !$scope.registerForm.username.$pristine;
+		return $scope.registerForm.username.$invalid &&  
+			!$scope.registerForm.username.$pristine;
 	};
 	
 	$scope.invalidPassword = function(){		
-		return $scope.registerForm.password.$invalid 
-			&& !$scope.registerForm.password.$pristine;
+		return $scope.registerForm.password.$invalid && 
+			!$scope.registerForm.password.$pristine;
 	};
 	
 	$scope.invalidCPassword = function(){		
-		return !$scope.registerForm.confirmpassword.$pristine
-			&& ($scope.user.password != $scope.confirmPassword);
+		return !$scope.registerForm.confirmpassword.$pristine && 
+			($scope.user.password != $scope.confirmPassword);
 	};
 	
 	$scope.invalidPhone = function(){		
-		return $scope.registerForm.phone.$invalid 
-			&& !$scope.registerForm.phone.$pristine;
+		return $scope.registerForm.phone.$invalid && 
+			!$scope.registerForm.phone.$pristine;
 	};
 	
 	$scope.invalidDob = function(){	
 		
-		if($scope.registerForm.dobDay.$valid 
-				&& $scope.registerForm.dobMonth.$valid 
-				&& $scope.registerForm.dobYear.$valid){
+		if($scope.registerForm.dobDay.$valid && 
+				$scope.registerForm.dobMonth.$valid && 
+				$scope.registerForm.dobYear.$valid){
 			
 			var now = new Date(),
 			currYear = now.getFullYear(),
@@ -144,16 +144,16 @@ var registerCtrlr = function($scope, $http, Upload){
 			}
 		}
 		
-		return ($scope.registerForm.dobDay.$invalid && !$scope.registerForm.dobDay.$pristine) 
-			|| ($scope.registerForm.dobMonth.$invalid && !$scope.registerForm.dobMonth.$pristine) 
-			|| ($scope.registerForm.dobYear.$invalid && !$scope.registerForm.dobYear.$pristine);
+		return ($scope.registerForm.dobDay.$invalid && !$scope.registerForm.dobDay.$pristine) || 
+			($scope.registerForm.dobMonth.$invalid && !$scope.registerForm.dobMonth.$pristine) || 
+			($scope.registerForm.dobYear.$invalid && !$scope.registerForm.dobYear.$pristine);
 	};
 	
 	$scope.invalidReco = function(){
 		
-		if($scope.registerForm.recoDay.$valid 
-				&& $scope.registerForm.recoMonth.$valid 
-				&& $scope.registerForm.recoYear.$valid){
+		if($scope.registerForm.recoDay.$valid && 
+				$scope.registerForm.recoMonth.$valid &&  
+				$scope.registerForm.recoYear.$valid){
 		
 			var now = new Date();
 			$scope.user.identifications.recoExpiry = new Date($scope.reco.year, $scope.reco.month-1, $scope.reco.day);
@@ -163,9 +163,9 @@ var registerCtrlr = function($scope, $http, Upload){
 			}
 		}
 		
-		return ($scope.registerForm.recoDay.$invalid && !$scope.registerForm.recoDay.$pristine) 
-			|| ($scope.registerForm.recoMonth.$invalid && !$scope.registerForm.recoMonth.$pristine) 
-			|| ($scope.registerForm.recoYear.$invalid && !$scope.registerForm.recoYear.$pristine);
+		return ($scope.registerForm.recoDay.$invalid && !$scope.registerForm.recoDay.$pristine) || 
+			($scope.registerForm.recoMonth.$invalid && !$scope.registerForm.recoMonth.$pristine) ||  
+			($scope.registerForm.recoYear.$invalid && !$scope.registerForm.recoYear.$pristine);
 	};
 
 	
@@ -235,12 +235,12 @@ var registerCtrlr = function($scope, $http, Upload){
 			        		f.progress = true;
 			        		f.element = $('<div />').attr({'class': 'progress-bar progress-bar-success', 'role':'progressbar','style':'width:0%'});
 			        		
-			        		$('<div class="row"><div class="col-xs-4 file-name-holder">' 
-			                		+ evt.config.file.name 
-			                		+ '</div><div class="col-xs-8"><div class="progress"></div></div>')
-			                		.appendTo(container)
-			                		.find('.progress')
-			                		.append(f.element);
+			        		$('<div class="row"><div class="col-xs-4 file-name-holder">' + 
+			                	evt.config.file.name + 
+			                	'</div><div class="col-xs-8"><div class="progress"></div></div>')
+			                .appendTo(container)
+			                .find('.progress')
+			                .append(f.element);
 			        	}
 	
 			            if(evt.config.fileInfo){

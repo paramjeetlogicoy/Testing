@@ -77,7 +77,7 @@ var cartItemCtrlr = function($scope, $http, $rootScope, $timeout){
 			this.item.qty = this.item.qty + parseInt(per);
 		}
 		
-		if(this.item && this.item.qty && this.item.qty !=0){
+		if(this.item && this.item.qty && this.item.qty !==0){
 			$http.get(_lbUrls.cart + 'updatecart', {
 				params : { 
 					'oid' : m.order._id,
@@ -138,12 +138,12 @@ var cartItemCtrlr = function($scope, $http, $rootScope, $timeout){
 		},
 		function(resp){
 			if(resp.status == 403){
-				$scope.$parent.$parent.pageLevelAlert  = "Your browser was idle for long. "
-					+"Please refresh the page and add the item to cart again.";
+				$scope.$parent.$parent.pageLevelAlert  = "Your browser was idle for long. " +
+					"Please refresh the page and add the item to cart again.";
 			}
 			else {
-				$scope.$parent.$parent.pageLevelAlert  = "There was some error adding the item. "
-					+"Please try later. If problem persists, please call the customer care.";
+				$scope.$parent.$parent.pageLevelAlert  = "There was some error adding the item. " +
+					"Please try later. If problem persists, please call the customer care.";
 			}
 		});
 	};	

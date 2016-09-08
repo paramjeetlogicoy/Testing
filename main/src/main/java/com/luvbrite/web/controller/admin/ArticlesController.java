@@ -74,8 +74,9 @@ public class ArticlesController {
 	
 
 	@RequestMapping(value = "/json/create", method = RequestMethod.POST)
-	public @ResponseBody GenericResponse createUser(
-			@RequestBody Article article){
+	public @ResponseBody GenericResponse createArticle(
+			@RequestBody Article article, @AuthenticationPrincipal 
+			UserDetailsExt user){
 		
 		GenericResponse r = new GenericResponse();		
 		r.setSuccess(false);
@@ -118,6 +119,7 @@ public class ArticlesController {
 				log.setDetails("Article created.");
 				log.setDate(Calendar.getInstance().getTime());
 				log.setKey(article.get_id());
+				log.setUser(user.getUsername());
 				
 				logDao.save(log);						
 			}

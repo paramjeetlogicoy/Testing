@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -30,6 +31,7 @@ import com.luvbrite.web.models.Log;
 import com.luvbrite.web.models.Price;
 import com.luvbrite.web.models.Product;
 import com.luvbrite.web.models.ResponseWithPg;
+import com.luvbrite.web.models.UserDetailsExt;
 import com.luvbrite.web.validator.ProductDetailsFormValidator;
 
 
@@ -118,7 +120,8 @@ public class ProductsController {
 	@RequestMapping(value = "/json/savepdtls", method = RequestMethod.POST)
 	public @ResponseBody GenericResponse saveProductDetails(
 			@Validated @RequestBody Product product, 
-			BindingResult result){
+			BindingResult result, @AuthenticationPrincipal 
+			UserDetailsExt user){
 		
 		GenericResponse r = new GenericResponse();
 		
@@ -177,6 +180,7 @@ public class ProductsController {
 					log.setDetails("product document updated");
 					log.setDate(Calendar.getInstance().getTime());
 					log.setKey(product.get_id());
+					log.setUser(user.getUsername());
 					
 					logDao.save(log);					
 				}
@@ -213,7 +217,8 @@ public class ProductsController {
 	@RequestMapping(value = "/json/createproduct", method = RequestMethod.POST)
 	public @ResponseBody Product createProduct(
 			@RequestBody Product product, 
-			BindingResult result){
+			BindingResult result, @AuthenticationPrincipal 
+			UserDetailsExt user){
 			
 		//Generate productId
 		long productId = prdDao.getNextSeq();
@@ -231,6 +236,7 @@ public class ProductsController {
 				log.setDetails("product created");
 				log.setDate(Calendar.getInstance().getTime());
 				log.setKey(productId);
+				log.setUser(user.getUsername());
 				
 				logDao.save(log);					
 			}
@@ -257,7 +263,8 @@ public class ProductsController {
 
 	@RequestMapping(value = "/json/savepricedtls", method = RequestMethod.POST)
 	public @ResponseBody GenericResponse savePriceDetails(
-			@RequestBody List<Price> prices){
+			@RequestBody List<Price> prices, @AuthenticationPrincipal 
+			UserDetailsExt user){
 		
 		GenericResponse r = new GenericResponse();
 		StringBuilder errMsg = new StringBuilder();
@@ -323,9 +330,10 @@ public class ProductsController {
 				
 				Log log = new Log();
 				log.setCollection("prices");
-				log.setDetails("prices changed for product Id " + prices.get(0).get_id());
+				log.setDetails("prices changed for product Id " + prices.get(0).getProductId());
 				log.setDate(Calendar.getInstance().getTime());
-				log.setKey(prices.get(0).get_id());
+				log.setKey(prices.get(0).getProductId());
+				log.setUser(user.getUsername());
 				
 				logDao.save(log);					
 			}

@@ -392,7 +392,6 @@
 										<tr>
 											<th class="col-xs-1"></th>
 											<th class="pc60">Item</th>
-											<th class="text-right">Cost</th>
 											<th class="text-right">Qty</th>
 											<th class="text-right">Price</th>
 										</tr>
@@ -406,12 +405,8 @@
 													<strong>{{spec.attr}}</strong>: <span>{{spec.value}}</span>
 												</div>
 											</td>
-											<td class="text-right"><del class="grey7"
-													ng-if="item.cost>item.price">
-													{{item.cost | currency}}</del> {{item.price
-												| currency}}</td>
 											<td class="text-right">{{item.qty}}</td>
-											<td class="text-right">{{(item.price * item.qty) | currency}}</td>
+											<td class="text-right">{{(item.cost * item.qty) | currency}}</td>
 
 										</tr>
 
@@ -428,13 +423,23 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr ng-repeat="item in o.lineItems" ng-if="item.type!='item'">
-											<td>
-												<div>{{item.name + ' (' + item.type + ')' }}</div>
+										<tr>
+											<td colspan="4">
+												<div class="clearfix" ng-repeat="item in o.lineItems"
+													ng-if="item.type!='item'">
+													<div class="pull-left">{{item.name + ' (' + item.type
+														+ ')' }}</div>
+													<div class="pull-right text-right">-{{item.price |
+														currency}}</div>
+												</div>
+												<div class="clearfix" ng-repeat="item in o.lineItems"
+													ng-if="item.type=='item' &amp;&amp; item.promo &amp;&amp; item.promo.length > 1">
+													<div class="pull-left">{{item.name + ' (' +
+														item.promo + ')' }}</div>
+													<div class="pull-right text-right">{{(item.cost -
+														item.price)* -item.qty | currency}}</div>
+												</div>
 											</td>
-											<td class="text-right" colspan="3">{{item.price |
-												currency}}</td>
-
 										</tr>
 
 									</tbody>

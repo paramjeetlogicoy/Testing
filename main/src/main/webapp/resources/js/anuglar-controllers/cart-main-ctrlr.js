@@ -5,6 +5,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 	m.order = {};	
 	m.ddprds = [];
 	m.user = {};
+	m.prevOrderAddress = null;
 	m.orderMin = 9999;
 	m.config = {};
 	m.sales = [];
@@ -66,14 +67,14 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 					}
 					
 					
-					if(item.promo && item.promo != ''){					
+					if(item.promo && item.promo !== ''){					
 						offersApplied = true;
 					}
 					
 					
 					
-					if(item.type=='item' 
-						&& (item.promo == 's' || item.promo == 'doubledownoffer')){
+					if(item.type=='item' && 
+							(item.promo == 's' || item.promo == 'doubledownoffer')){
 						
 						var productName = item.name.length>15?item.name.substr(0,15)+'...':item.name,
 						discount = (item.cost - item.price)*item.qty;
@@ -95,7 +96,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 						
 					}
 				}
-			})
+			});
 		}	
 		
 		m.doubleDownApplied = doubleDownApplied;
@@ -120,8 +121,8 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		
 		//DoubleDown Check
-		if(m.doubleDownActive 
-				&& m.order.total >= m.config.doubleDown){
+		if(m.doubleDownActive && 
+				m.order.total >= m.config.doubleDown){
 			m.doubleDownEligible = true;
 		}
 		else {
@@ -153,6 +154,9 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 					/*If we have customer info, set it to proper scope variable*/
 					m.user = resp.data.user?resp.data.user:{};
 					
+					/*If we have prev order address info set that*/
+					m.prevOrderAddress = resp.data.prevOrderAddress?resp.data.prevOrderAddress:null;
+					
 					/*General Control configurations*/
 					if(resp.data.config){			
 						m.config = resp.data.config;
@@ -162,10 +166,8 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 						
 						/* if we have a value > 0 for double down and we have 
 						 * products for double down	*/
-						if(m.config.doubleDown 
-								&& m.config.doubleDown > 0 
-								&& resp.data.ddPrds
-								&& resp.data.ddPrds.length > 0){
+						if(m.config.doubleDown && (m.config.doubleDown > 0) && 
+								resp.data.ddPrds && (resp.data.ddPrds.length > 0)){
 							
 							m.doubleDownActive = true;
 							m.ddprds = resp.data.ddPrds;
@@ -343,7 +345,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		$scope.rvm = $scope.$new();
 				
-		$templateRequest("/resources/ng-templates/cart/review.html")
+		$templateRequest("/resources/ng-templates/cart/review.html?v001")
 		.then(function(html){
 		      var template = angular.element(html);
 		      angular.element('#reviewCtrlr')

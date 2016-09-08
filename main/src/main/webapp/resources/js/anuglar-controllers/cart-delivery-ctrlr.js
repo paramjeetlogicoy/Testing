@@ -19,8 +19,8 @@ var cartDeliveryCtrlr = function($scope, $http, $rootScope, $filter, $timeout){
 					'key':'AIzaSyDOOuxNzzE247y4HbG9B5J2yM8vzzhegCU'};
 			
 			
-			return "https://maps.googleapis.com/maps/api/staticmap?" 
-						+ $.param(mapLink);
+			return "https://maps.googleapis.com/maps/api/staticmap?" +
+						$.param(mapLink);
 		}
 		else
 			return null;
@@ -28,10 +28,10 @@ var cartDeliveryCtrlr = function($scope, $http, $rootScope, $filter, $timeout){
 	
 	addressLogic = function(){
 		
-		if(m.order.shipping.address && (m.order.shipping.address.address1 != '' 
-			|| m.order.shipping.address.city != ''
-			|| m.order.shipping.address.state != ''
-			|| m.order.shipping.address.zip != '')){			 
+		if(m.order.shipping.address && (m.order.shipping.address.address1 !== '' ||
+			m.order.shipping.address.city !== '' ||
+			m.order.shipping.address.state !== '' ||
+			m.order.shipping.address.zip !== '')){			 
 			
 			$scope.mainZip = m.order.shipping.address.zip;
 			$scope.validateZip(true);
@@ -69,9 +69,9 @@ var cartDeliveryCtrlr = function($scope, $http, $rootScope, $filter, $timeout){
 			//delivered tomorrow after 11 AM;
 			d.setDate(d.getDate()+1);
 			
-			$scope.deliveryTimeText = 'Tomorrow - ' 
-				+ $filter('date')(d, 'mediumDate') 
-				+ ' after 11:00 AM PST';			
+			$scope.deliveryTimeText = 'Tomorrow - ' +
+				$filter('date')(d, 'mediumDate') +
+				' after 11:00 AM PST';			
 			
 			$scope.endTime = null;		
 		}  
@@ -90,9 +90,9 @@ var cartDeliveryCtrlr = function($scope, $http, $rootScope, $filter, $timeout){
 			}
 			
 			
-			$scope.deliveryTimeText = 'Today - ' 
-				+ $filter('date')(d, 'mediumDate') 
-				+ ' after 11:00 AM PST';		
+			$scope.deliveryTimeText = 'Today - ' +
+				$filter('date')(d, 'mediumDate') + 
+				' after 11:00 AM PST';		
 			
 			$scope.endTime = null;
 		}
@@ -112,14 +112,14 @@ var cartDeliveryCtrlr = function($scope, $http, $rootScope, $filter, $timeout){
 			d.setHours(22,59,0);			
 			$scope.endTime = d;
 			
-			$scope.deliveryTimeText = 'Today - ' 
-				+ $filter('date')(d, 'mediumDate');
+			$scope.deliveryTimeText = 'Today - ' +
+				$filter('date')(d, 'mediumDate');
 		}
 		else{
 			//delivered today
 			
-			$scope.deliveryTimeText = 'Today - ' 
-				+ $filter('date')(d, 'mediumDate');		
+			$scope.deliveryTimeText = 'Today - ' + 
+				$filter('date')(d, 'mediumDate');		
 			
 			$scope.endTime = null;
 		}
@@ -213,8 +213,8 @@ var cartDeliveryCtrlr = function($scope, $http, $rootScope, $filter, $timeout){
 							}					
 						}
 						else if(!auto){
-							$scope.invalidZip = "Sorry, we currently don't service your area. " 
-								+ "We are working very hard on expanding to your city. ";								
+							$scope.invalidZip = "Sorry, we currently don't service your area. " + 
+								"We are working very hard on expanding to your city. ";								
 						}
 					}
 				},
@@ -409,6 +409,16 @@ var cartDeliveryCtrlr = function($scope, $http, $rootScope, $filter, $timeout){
 		if(m.order && m.order.shipping && m.order.shipping.address){		
 			setUpDeliveryTimes();
 			addressLogic();
+			
+			if(!addressApiInit)
+				$scope.mapsInit();
+		}
+		
+		else if(m.user && m.prevOrderAddress){		
+			setUpDeliveryTimes();
+			initAddressVars();
+			
+			m.order.shipping.address = m.prevOrderAddress;
 			
 			if(!addressApiInit)
 				$scope.mapsInit();

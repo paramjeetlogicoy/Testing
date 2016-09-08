@@ -3,13 +3,17 @@ package com.luvbrite.services;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.mongodb.morphia.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.luvbrite.dao.CartOrderDAO;
+import com.luvbrite.dao.OrderDAO;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.Utility;
+import com.luvbrite.web.models.Address;
 import com.luvbrite.web.models.CartOrder;
 import com.luvbrite.web.models.ControlOptions;
+import com.luvbrite.web.models.Order;
 import com.luvbrite.web.models.OrderLineItemCart;
 
 @Service
@@ -19,6 +23,9 @@ public class CartLogics {
 	
 	@Autowired
 	private CartOrderDAO dao;
+	
+	@Autowired
+	private OrderDAO completedOrderdao;
 	
 	public void calculateSummary(CartOrder order){
 		
@@ -254,5 +261,37 @@ public class CartLogics {
 		
 		
 	}
-
+	
+	
+	public String firstOrderCheck(long customerId){
+		
+		String response = "";
+		
+		Query<Order> q = completedOrderdao.createQuery()
+				.field("status").notEqual("cancelled")
+				.field("customer._id").equal(customerId);
+		
+		if(completedOrderdao.count(q) == 0){
+			response = "Y";
+		}
+		
+		return response;
+	}
+	
+	public Address getPrevShippingInfo(long customerId){
+		
+		Address a = new Address();
+		Query<Order> q = completedOrderdao.createQuery()
+				.field("customer._id").equal(customerId)
+				.order("-orderNumber").limit(1);
+		
+		Order o = q.get();
+		if(o.getShipping() != null && 
+				o.getShipping().getAddress() != null){
+			
+			a = o.getShipping().getAddress();
+		}		
+		
+		return a;		
+	}
 }

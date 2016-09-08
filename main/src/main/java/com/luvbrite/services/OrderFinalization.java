@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.mongodb.morphia.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +22,7 @@ public class OrderFinalization {
 	
 	private static Logger logger = Logger.getLogger(OrderFinalization.class);
 	private static boolean offhourPromoActive = true;
+	private static boolean firstOrderPromoActive = true;
 	
 	private long orderNumber = 0;	
 	public long getOrderNumber() {
@@ -58,6 +58,9 @@ public class OrderFinalization {
 				//Check for offhour promo
 				offHourPromo(cartOrder, cartLogics);
 				
+				//First Order Check
+				firstOrderCheck(cartOrder, cartLogics);
+				
 				//Copy info from cartOrder to Order
 				copyCartOrder(cartOrder, order);
 				
@@ -69,9 +72,6 @@ public class OrderFinalization {
 				
 				//Set the order status
 				order.setStatus("new");
-				
-				//First Order Check
-				firstOrderCheck();
 				
 				//Save the order.
 				dao.save(order);
@@ -155,9 +155,7 @@ public class OrderFinalization {
 
 				List<OrderLineItemCart> olic = co.getLineItems();
 				olic.add(newItem);
-				co.setLineItems(olic);
-				
-				//System.out.println("inside");
+				co.setLineItems(olic);				
 				
 				//Update orderTotals
 				cartLogics.calculateSummary(co);
@@ -169,27 +167,48 @@ public class OrderFinalization {
 	
 	/**
 	 * Check is this is customers first order and update order notes accordingly
+	 * Also add the britebox to the order
 	 **/
-	private void firstOrderCheck(){
+	
+	private void firstOrderCheck(CartOrder co, CartLogics cartLogics){
 		
-		Query<Order> q = dao.createQuery()
-				.field("status").notEqual("cancelled")
-				.field("customer._id").equal(order.getCustomer().get_id());
-		long count = dao.count(q);
-		
-		if(count == 0){
-
-			OrderNotes notes = order.getNotes();
-			if(notes == null) notes = new OrderNotes();
-			if(notes.getAdditonalNotes()==null){
-				notes.setAdditonalNotes("**FIRST ORDER**");
-			}
-			else {
-				notes.setAdditonalNotes(notes.getAdditonalNotes() + "**FIRST ORDER**");
-			}
+		if(firstOrderPromoActive && co.getTotal() >= 75d){
 			
-			order.setNotes(notes);
-		}		
+			String response = cartLogics.firstOrderCheck(co.getCustomer().get_id());
+			if(response.equals("Y")){
+				
+				//Add the new item
+				OrderLineItemCart newItem = new OrderLineItemCart();
+				newItem.setTaxable(false);
+				newItem.setType("item");
+				newItem.setName("Brite Box");
+				newItem.setPromo("firsttimepatient");
+				newItem.setProductId(11839);
+				newItem.setVariationId(0);
+				newItem.setQty(1);
+				newItem.setCost(50d);
+				newItem.setPrice(0d);
+				newItem.setImg("/products/brite-box-img.jpg");
+
+				List<OrderLineItemCart> olic = co.getLineItems();
+				olic.add(newItem);
+				co.setLineItems(olic);
+				
+				//Update orderTotals
+				cartLogics.calculateSummary(co);
+
+				OrderNotes notes = co.getNotes();
+				if(notes == null) notes = new OrderNotes();
+				if(notes.getAdditonalNotes()==null){
+					notes.setAdditonalNotes("**FIRST ORDER**");
+				}
+				else {
+					notes.setAdditonalNotes(notes.getAdditonalNotes() + "**FIRST ORDER**");
+				}
+
+				co.setNotes(notes);
+			}		
+		}
 	};
 	
 	/**

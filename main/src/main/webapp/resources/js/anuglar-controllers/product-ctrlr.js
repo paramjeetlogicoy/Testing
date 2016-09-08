@@ -1,7 +1,7 @@
 var productCtrlr = function($scope, $http, $rootScope){
 	
 	$scope.prices = [];
-	$scope.productId = $('#productId').val()
+	$scope.productId = $('#productId').val();
 	$scope.productSelected = {};
 	$scope.outofstock = false;
 	$scope.productStockStat = $('#productStockStat').val();
@@ -136,12 +136,12 @@ var productCtrlr = function($scope, $http, $rootScope){
 		},
 		function(resp){
 			if(resp.status == 403){
-				$scope.errorMsg  = "Your browser was idle for long. "
-					+"Please refresh the page and add the item to cart again.";
+				$scope.errorMsg  = "Your browser was idle for long. " + 
+					"Please refresh the page and add the item to cart again.";
 			}
 			else {
-				$scope.errorMsg  = "There was some error creating the order. "
-					+"Please try later. If problem persists, please call the customer care.";
+				$scope.errorMsg  = "There was some error creating the order. " + 
+					"Please try later. If problem persists, please call the customer care.";
 			}
 
 			$scope.addingToCart = false;
@@ -185,7 +185,7 @@ var productCtrlr = function($scope, $http, $rootScope){
 			activate : function(){
 				
 				var url = $img.find('img').attr('data-zoom');
-				if(url && url !=''){
+				if(url && url !==''){
 					
 					$img.zoom({
 						url : url,

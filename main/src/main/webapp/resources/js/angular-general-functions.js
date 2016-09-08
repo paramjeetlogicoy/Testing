@@ -5,12 +5,12 @@
 var appRunFns = function($http, $rootScope, $interval){
 	
 	//Set generic messages
-	$rootScope.errMsgPageRefresh = "There was some error processing your request." 
-		+ " Please refresh the page and try again.";
+	$rootScope.errMsgPageRefresh = "There was some error processing your request." + 
+		" Please refresh the page and try again.";
 	
 	//Set generic messages
-	$rootScope.errMsgContactSupport = "There was some error processing your request." 
-		+ " Please refresh the page and try again. If problem persists, please contact support.";
+	$rootScope.errMsgContactSupport = "There was some error processing your request." + 
+		" Please refresh the page and try again. If problem persists, please contact support.";
 	
 	//Add X-Requested-With to headers to detect Ajax calls
 	$http.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
@@ -31,13 +31,13 @@ var appRunFns = function($http, $rootScope, $interval){
     
     //Disclaimer
     var cookieVal = $.cookie('above21');
-    if(!cookieVal && $('#noLbDisclaimer').size()==0){
+    if(!cookieVal && $('#noLbDisclaimer').size()===0){
     	$('.lb-disclaimer-sm').modal();
     }
     $rootScope.saveDisclaimerSession = function(){
     	$.cookie('above21','accepted',{expires:30, path:'/'});
     	$('.lb-disclaimer-sm').modal('hide');
-    }
+    };
     
     
     //Correct the csrf param periodically.
@@ -70,7 +70,7 @@ var appRunFns = function($http, $rootScope, $interval){
     	})
     	.success(function(data){
     		$rootScope.rootCartCount = data.cartCount;
-    	})    	
+    	});    	
     });
     
     if($('.header-cart').size()>0)
@@ -96,7 +96,7 @@ var appRunFns = function($http, $rootScope, $interval){
     	$rootScope.gSearch = '';
     	$('.nav-search').slideDown(300, function(){
     		$(this).find('input').focus();
-    	})
+    	});
     };
     $rootScope.hideGlobalSearch = function(){
     	$('.nav-search').fadeOut(300);
@@ -114,10 +114,10 @@ appConfigs = function($httpProvider){
         function show(config) {
             if (!requests) {
             	try {
-            		if(config 
-            				&& (config.url.indexOf('/upload') > -1
-            					|| config.url.indexOf('hidepop') > -1
-            					|| config.params.hidepop)){ //No overlay for uploads
+            		if(config &&
+            				(config.url.indexOf('/upload') > -1 || 
+            					config.url.indexOf('hidepop') > -1 ||
+            					config.params.hidepop)){ //No overlay for uploads
             		}
             		else {
             			$rootScope.$broadcast("ajax-start");
@@ -173,8 +173,8 @@ remainingTime = function($interval) {
 			var now = new Date().getTime(),
 			et = endTime.getTime();
 			
-			if((et-now) > 0){
-				var mils = et-now,
+			if((et - now) > 0){
+				var mils = et - now,
 					seconds = Math.floor((mils / 1000) % 60),
 	            	minutes = Math.floor(((mils / (60000)) % 60)),
 	            	hours = Math.floor(((mils / (3600000)) % 24)),
@@ -209,5 +209,5 @@ remainingTime = function($interval) {
 		element.on('$destroy', function() {
 			$interval.cancel(stopTime);
 		});
-	}
+	};
 };

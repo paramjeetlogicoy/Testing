@@ -9,7 +9,7 @@ var uploadServiceFn = function($templateRequest, $compile){
 	
 	service.showGallery = function(scope){
 		//Show popup		
-		$templateRequest("/resources/ng-templates/admin/file-gallery.html")
+		$templateRequest("/resources/ng-templates/admin/file-gallery.html?v001")
 		.then(function(html){
 		      var template = angular.element(html);
 		      angular.element('body').addClass('noscroll').append(template);
@@ -60,7 +60,7 @@ var uploadCtrlr = function ($scope, $http, Upload, uploadService) {
 			'q' : $scope.search
 		}})
 		.success(function(data){
-			if(!data || data.length == 0){
+			if(!data || data.length === 0){
 				angular.element('.fgw-file-list>ul').unbind("scroll");
 			}
 			else
@@ -116,7 +116,7 @@ var uploadCtrlr = function ($scope, $http, Upload, uploadService) {
 		else{
 			alert('No files selected');
 		}
-	}
+	};
     
     // for multiple files:
     $scope.upload = function (files) {
@@ -140,7 +140,7 @@ var uploadCtrlr = function ($scope, $http, Upload, uploadService) {
 			            	resp.config.fileInfo.element.closest('.row').remove();
 			
 			           if($scope.sfiles && resp.data.results){
-			        	   $scope.sfiles.unshift(resp.data.results[0])
+			        	   $scope.sfiles.unshift(resp.data.results[0]);
 			           }
 			            
 			        },
@@ -176,5 +176,5 @@ var uploadCtrlr = function ($scope, $http, Upload, uploadService) {
 			 );
         }
       }
-    }
+    };
 };

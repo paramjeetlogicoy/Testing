@@ -15,13 +15,16 @@ module.exports = function(grunt) {
       },
 
         // when this task is run, lint the Gruntfile and all js files in src
-      build: ['Grunfile.js', 'src/main/webapp/resources/js/*.js']
+      build: ['Grunfile.js', ['src/main/webapp/resources/js/anuglar-controllers/*.js', 
+                              'src/main/webapp/resources/js/main.js',
+                              'src/main/webapp/resources/js/angular-general-functions.js',
+                              'src/main/webapp/resources/js/angular-common.js']]
     },
       
     // configure uglify to minify js files -------------------------------------    
     uglify: {
         options: {
-          banner: '/*<%= grunt.template.today("yyyy-mm-dd") %>*/\n',
+          banner: '/*<%= grunt.template.today("yyyy-mm-dd h:MM TT") %>*/\n',
           mangle: false,
           sourceMap: true
         },
@@ -46,7 +49,10 @@ module.exports = function(grunt) {
     watch: {
       // for scripts, run jshint and uglify 
       scripts: { 
-        files: 'src/main/webapp/resources/js/*.js', tasks: ['jshint', 'uglify'] 
+        files: ['src/main/webapp/resources/js/anuglar-controllers/*.js', 
+                'src/main/webapp/resources/js/main.js',
+                'src/main/webapp/resources/js/angular-general-functions.js',
+                'src/main/webapp/resources/js/angular-common.js'], tasks: ['jshint', 'uglify'] 
       } 
     }
   });

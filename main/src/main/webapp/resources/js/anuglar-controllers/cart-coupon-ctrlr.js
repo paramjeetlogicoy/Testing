@@ -43,7 +43,7 @@ var cartCouponCtrlr = function($scope, $http, $rootScope){
 			$scope.couponErrors = "Invalid promo code";
 		}
 
-	}
+	};
 
 
 	$scope.applyCoupon = function(){
@@ -115,7 +115,7 @@ var cartCouponCtrlr = function($scope, $http, $rootScope){
 			}
 		}
 		
-		if($scope.promos.length==0){
+		if($scope.promos.length===0){
 			m.promosAvailable = false;
 		}
 		else{

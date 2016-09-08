@@ -197,6 +197,7 @@ public class LoginController {
 						log.setDetails("user created.");
 						log.setDate(Calendar.getInstance().getTime());
 						log.setKey(userId);
+						log.setUser("System");
 						
 						logDao.save(log);						
 					}

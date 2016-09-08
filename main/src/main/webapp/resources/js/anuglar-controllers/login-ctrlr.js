@@ -23,7 +23,7 @@ var loginCtrlr = function($scope, $http){
 					location.href = resp.data.pending;
 				}
 				else if(resp.data.success){
-					if($('#redirectURL').val()!=''){
+					if($('#redirectURL').val()!==''){
 						location.href = $('#redirectURL').val();
 					}
 					else 
