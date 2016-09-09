@@ -37,6 +37,7 @@ import com.luvbrite.services.PostOrderMeta;
 import com.luvbrite.services.paymentgateways.SquareUp;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.Utility;
+import com.luvbrite.web.models.Address;
 import com.luvbrite.web.models.AttrValue;
 import com.luvbrite.web.models.CartOrder;
 import com.luvbrite.web.models.CartResponse;
@@ -758,11 +759,45 @@ public class CartController {
 				cus.setName(userDb.getFname() + " " + userDb.getLname());
 	
 				order.setCustomer(cus);
+				
+				//Check for prev delivery address and populate it into the order shipping address
+				Address a = cartLogics.getPrevShippingInfo(userDb.get_id());
+				if(a != null){
+					
+					if(order.getShipping() == null || 
+							order.getShipping().getAddress() == null ||
+							order.getShipping().getAddress().getAddress1().equals("")){
+						
+						if(order.getShipping() == null){
+							order.setShipping(new Shipping());
+						}
+						
+						order.getShipping().setAddress(a);
+					}
+				}
+				
+				else {
+
+					//Check for user billing address and populate it into the order shipping address
+					if(userDb.getBilling() != null &&
+							!userDb.getBilling().getAddress1().equals("")){
+						
+						if(order.getShipping() == null || 
+								order.getShipping().getAddress() == null ||
+								order.getShipping().getAddress().getAddress1().equals("")){
+							
+							if(order.getShipping() == null){
+								order.setShipping(new Shipping());
+							}
+							
+							order.getShipping().setAddress(userDb.getBilling());
+						}
+						
+					}
+					
+				}
+				
 				dao.save(order);
-				
-				
-				//Get prev order address details
-				cr.setPrevOrderAddress(cartLogics.getPrevShippingInfo(userDb.get_id()));
 			}
 		}
 		

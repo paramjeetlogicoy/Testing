@@ -5,7 +5,6 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 	m.order = {};	
 	m.ddprds = [];
 	m.user = {};
-	m.prevOrderAddress = null;
 	m.orderMin = 9999;
 	m.config = {};
 	m.sales = [];
@@ -153,9 +152,6 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 					
 					/*If we have customer info, set it to proper scope variable*/
 					m.user = resp.data.user?resp.data.user:{};
-					
-					/*If we have prev order address info set that*/
-					m.prevOrderAddress = resp.data.prevOrderAddress?resp.data.prevOrderAddress:null;
 					
 					/*General Control configurations*/
 					if(resp.data.config){			

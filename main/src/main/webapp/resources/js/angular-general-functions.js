@@ -37,7 +37,7 @@ var appRunFns = function($http, $rootScope, $interval){
     	$('.footer-disclaimer').remove();
     }
     $rootScope.saveDisclaimerSession = function(){
-    	$.cookie('above21','accepted',{expires:30, path:'/'});
+    	$.cookie('above21','accepted',{expires:60, path:'/'});
     	$('.footer-disclaimer').animate({opacity:0}, 1000, function(){
     		$(this).remove();
     	});
