@@ -280,7 +280,7 @@ public class CartLogics {
 	
 	public Address getPrevShippingInfo(long customerId){
 		
-		Address a = new Address();
+		Address a = null;
 		Query<Order> q = completedOrderdao.createQuery()
 				.field("customer._id").equal(customerId)
 				.order("-orderNumber").limit(1);
