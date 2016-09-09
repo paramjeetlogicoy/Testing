@@ -286,7 +286,8 @@ public class CartLogics {
 				.order("-orderNumber").limit(1);
 		
 		Order o = q.get();
-		if(o.getShipping() != null && 
+		if(o != null && 
+				o.getShipping() != null && 
 				o.getShipping().getAddress() != null){
 			
 			a = o.getShipping().getAddress();
