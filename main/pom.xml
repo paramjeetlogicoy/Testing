@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	
+
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.luvbrite</groupId>
 	<artifactId>main</artifactId>
@@ -37,7 +37,7 @@
 			<artifactId>spring-jdbc</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.thymeleaf</groupId>
 			<artifactId>thymeleaf-spring4</artifactId>
@@ -45,44 +45,44 @@
 		</dependency>
 
 		<!-- Spring Security -->
-	    <dependency>
-	        <groupId>org.springframework.security</groupId>
-	        <artifactId>spring-security-web</artifactId>
-	        <version>4.0.4.RELEASE</version>
-	    </dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>4.0.4.RELEASE</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
 			<version>4.0.4.RELEASE</version>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/org.springframework.batch/spring-batch-core -->
 		<dependency>
 			<groupId>org.springframework.batch</groupId>
 			<artifactId>spring-batch-core</artifactId>
 			<version>3.0.7.RELEASE</version>
 		</dependency>
-		
-		
+
+
 		<!-- Spring Context Support for Email -->
 		<!-- http://mvnrepository.com/artifact/org.springframework/spring-context-support -->
 		<dependency>
-		    <groupId>org.springframework</groupId>
-		    <artifactId>spring-context-support</artifactId>
-		    <version>3.2.0.RELEASE</version>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>3.2.0.RELEASE</version>
 		</dependency>
 		<!-- http://mvnrepository.com/artifact/javax.mail/mail -->
 		<dependency>
-		    <groupId>javax.mail</groupId>
-		    <artifactId>mail</artifactId>
-		    <version>1.4</version>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4</version>
 		</dependency>
 		<!-- Google Cloud Needs Third Party to Send emails. Using mailjet -->
-	    <dependency>
-	      <groupId>com.mailjet</groupId>
-	      <artifactId>mailjet-client</artifactId>
-	      <version>4.0.1</version>
-	    </dependency>				
+		<dependency>
+			<groupId>com.mailjet</groupId>
+			<artifactId>mailjet-client</artifactId>
+			<version>4.0.1</version>
+		</dependency>
 
 		<!-- Connection Pool for MySQL -->
 		<dependency>
@@ -154,29 +154,36 @@
 			<version>${servletapi.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<!-- Morphia -->
-          <dependency>
-              <groupId>org.mongodb.morphia</groupId>
-              <artifactId>morphia</artifactId>
-              <version>1.1.0</version>
-          </dependency>
-          
-          <!-- FileUpload -->
-          <dependency>
-          	<groupId>commons-fileupload</groupId>
-		    <artifactId>commons-fileupload</artifactId>
-		    <version>1.3.1</version>
-		  </dependency>
-          
-          <!-- Image Scaling -->
+		<dependency>
+			<groupId>org.mongodb.morphia</groupId>
+			<artifactId>morphia</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+
+		<!-- http://mvnrepository.com/artifact/org.postgresql/postgresql -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.4.1208.jre7</version>
+		</dependency>
+
+		<!-- FileUpload -->
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.3.1</version>
+		</dependency>
+
+		<!-- Image Scaling -->
 		<dependency>
 			<groupId>net.coobird</groupId>
 			<artifactId>thumbnailator</artifactId>
 			<version>[0.4, 0.5)</version>
 		</dependency>
-		
-		
+
+
 		<!-- Unirest -->
 		<dependency>
 			<groupId>com.mashape.unirest</groupId>
@@ -198,7 +205,7 @@
 			<artifactId>httpmime</artifactId>
 			<version>4.3.6</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
@@ -207,9 +214,9 @@
 
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
 		<dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-lang3</artifactId>
-		    <version>3.0.1</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.0.1</version>
 		</dependency>
 
 	</dependencies>
@@ -222,7 +229,7 @@
 				<finalName>ROOT</finalName>
 
 				<plugins>
-					
+
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
@@ -277,8 +284,8 @@
 							<source>1.7</source>
 							<target>1.7</target>
 						</configuration>
-					</plugin>	
-		 			<plugin>
+					</plugin>
+					<plugin>
 						<groupId>org.apache.tomcat.maven</groupId>
 						<artifactId>tomcat7-maven-plugin</artifactId>
 						<version>2.2</version>
@@ -291,7 +298,7 @@
 						</configuration>
 					</plugin>
 				</plugins>
-			</build>			
+			</build>
 
 		</profile>
 
@@ -304,7 +311,7 @@
 				<finalName>main</finalName>
 
 				<plugins>
-					
+
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
@@ -342,7 +349,7 @@
 							</execution>
 						</executions>
 					</plugin>
-					
+
 					<plugin>
 						<artifactId>maven-war-plugin</artifactId>
 						<version>2.6</version>
@@ -358,9 +365,9 @@
 							<source>1.7</source>
 							<target>1.7</target>
 						</configuration>
-					</plugin>	
+					</plugin>
 				</plugins>
-			</build>			
+			</build>
 
 		</profile>
 
