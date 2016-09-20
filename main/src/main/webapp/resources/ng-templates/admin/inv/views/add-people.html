@@ -1,0 +1,145 @@
+<section class="clearfix marg-b3 container">
+	<div class="col-sm-10">
+		<h3 class="marg-b3">OPERATORS</h3>
+
+		<div id="addOperator" type="add-operator-form" limit="100" editform></div>
+
+		<div class="marg-b3">
+			<table class="table table-hover">
+				<caption>All Operators.</caption>
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Operator Name</th>
+						<th>Username</th>
+						<th>Date Added</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="operator in operators">
+						<td>{{$index + 1}}</td>
+						<td>{{operator.operatorName}}</td>
+						<td>{{operator.userName}}</td>
+						<td>{{operator.dateAdded}}</td>
+						<td><a href="#" ng-click="editOperator($event)" ng-show="controlId<100"><span
+								class="glyphicon glyphicon-pencil"></span></a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</section>
+
+<div class="marg-b3 container"><hr /></div>
+
+<section class="clearfix marg-b3 container">
+	<div class="col-sm-10">
+		<h3 class="marg-b3">SHOPS</h3>
+
+		<div id="addShop" type="add-shop-form" limit="2999" editform></div>
+
+		<div class="marg-b3">
+			<table class="table table-hover">
+				<caption>All Shops</caption>
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Shop Name</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="shop in shops">
+						<td>{{shop.id}}</td>
+						<td>{{shop.shopName}}</td>
+						<td><a href="#" ng-click="editShop($event)" ng-show="controlId<2999"><span
+								class="glyphicon glyphicon-pencil"></span></a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</section>
+
+<div class="marg-b3 container"><hr /></div>
+
+<section class="clearfix marg-b3 container">
+	<div class="col-sm-10">
+		<h3 class="marg-b3">DRIVERS</h3>
+
+		<div id="addDriver" type="add-driver-form" limit="2999" editform></div>
+
+		<div class="marg-b3">
+			<table class="table table-hover">
+				<caption>All Drivers.</caption>
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Drive Name</th>
+						<th>Username</th>
+						<th>Phone</th>
+						<th>Date Added</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="driver in drivers">
+						<td>{{$index + 1}}</td>
+						<td>{{driver.driverName}}</td>
+						<td>{{driver.userName}}</td>
+						<td>{{driver.phoneNumber}}</td>
+						<td>{{driver.dateAdded}}</td>
+						<td><a href="#" ng-click="editDriver($event)" ng-show="controlId<2999"><span
+								class="glyphicon glyphicon-pencil"></span></a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</section>
+
+<div class="marg-b3 container"><hr /></div>
+
+
+<section class="marg-b3 container">
+	<div class="col-sm-12">
+		<h3 class="marg-b3">VENDORS</h3>
+		
+		<div id="addVendor" type="add-vendor-form" limit="2999" editform></div>
+
+
+		<div class="marg-b3">
+			<table class="table table-hover">
+				<caption>All Vendors.</caption>
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Vendor</th>
+						<th>Company</th>
+						<th>Address</th>
+						<th>Phone</th>
+						<th>Email</th>
+						<th>Website</th>
+						<th>Date Added</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="vendor in vendors">
+						<td>{{$index + 1}}</td>
+						<td>{{vendor.vendorName}}</td>
+						<td>{{vendor.company}}</td>
+						<td>{{vendor.address + ', ' + vendor.city + ' ' + vendor.state + ' - ' + vendor.zipcode}}</td>
+						<td>{{vendor.phone}}</td>
+						<td>{{vendor.email}}</td>
+						<td>{{vendor.website}}</td>
+						<td>{{vendor.dateAdded}}</td>
+						<td><a href="#" ng-click="editVendor($event)" ng-show="controlId<2999"><span
+								class="glyphicon glyphicon-pencil"></span></a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</section>

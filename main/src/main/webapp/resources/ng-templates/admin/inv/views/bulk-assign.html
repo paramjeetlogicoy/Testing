@@ -1,0 +1,95 @@
+<section class="clearfix marg-b3 container">
+	<div class="col-sm-6">
+		<h3 class="marg-b3">Move Packets to Shops</h3>
+		<div class="clearfix marg-b5">
+			<form class="form-horizontal" ng-submit="addPacket()">
+				<p class="bg-warning pad15" ng-show="!shopSelected.id">Please select a shop to start!</p>
+				<div class="form-group marg-b3">
+					<label class="col-sm-4 control-label">Select Shop</label>
+					<div class="col-sm-6">
+						<select class="form-control" ng-model="shopSelected"
+							ng-change="shopFilter()"
+							ng-options="shop.shopName for shop in shops">
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">Unit Code</label>
+					<div class="col-sm-6">
+						<input type="text" ng-model="packetCode" class="form-control" id="packetCode"
+							placeholder="BarCode ex: P37840980" />
+					</div>
+				</div>
+				<div class="form-group" ng-show="shopSelected.id">
+					<div class="col-sm-offset-4 col-sm-6">
+						<button type="submit" class="btn btn-info">{{btnTxt}}</button>
+					</div>
+				</div>
+			</form>
+		</div>
+		<h4 class="marg-b1">Newly added to this Shop</h4>	
+		<div class="marg-b5">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>SKU</th>
+						<th>Product</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="newpacket in newpackets | orderBy : '-sort'">
+						<td>{{$index + 1}}</td>
+						<td>{{newpacket.packetCode}}</td>
+						<td><em ng-show="!newpacket.productName">Updating</em>{{newpacket.productName}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<h4 class="marg-b1">Already in this Shop</h4>		
+		<div class="marg-b3 clearfix" ng-hide="pg.totalItems <= pg.itemsPerPage">
+			<div class="pull-left">
+				<uib-pagination total-items="pg.totalItems" ng-model="pg.currentPage"
+					previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+					last-text="&raquo;" items-per-page="pg.itemsPerPage"
+					class="pagination-sm" max-size="5" boundary-links="true"
+					rotate="true" ng-change="pageChanged()"></uib-pagination>
+			</div>
+			<div class="pull-left pad2 marg-t05 size12">{{pg.startCount}} -
+				{{pg.endCount}} of {{pg.totalItems}}</div>
+		</div>
+
+		<div class="marg-b3">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>SKU</th>
+						<th>Product</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="packet in packets">
+						<td>{{$index + 1}}</td>
+						<td>{{packet.packetCode}}</td>
+						<td>{{packet.productName}}</td>
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
+		
+		<div class="marg-b3 clearfix" ng-hide="pg.totalItems <= pg.itemsPerPage">
+			<div class="pull-left">
+				<uib-pagination total-items="pg.totalItems" ng-model="pg.currentPage"
+					previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+					last-text="&raquo;" items-per-page="pg.itemsPerPage"
+					class="pagination-sm" max-size="5" boundary-links="true"
+					rotate="true" ng-change="pageChanged()"></uib-pagination>
+			</div>
+			<div class="pull-left pad2 marg-t05 size12">{{pg.startCount}} -
+				{{pg.endCount}} of {{pg.totalItems}}</div>
+		</div>
+</div>
+</section>

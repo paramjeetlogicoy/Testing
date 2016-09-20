@@ -1,0 +1,173 @@
+<section class="marg-b3 container">
+	<div class="col-sm-12">
+		
+		<h3 class="marg-b3">SHOP INVENTORY</h3>
+		<div class="text-right marg-b2">
+			<a href="" ng-click="getLowInventoryCSV()">Products Low on Inventory - Download CSV <span
+			class="glyphicon glyphicon-new-window"></span></a>
+		</div>
+		<div class="marg-b2 well">
+			<div class="clearfix marg-b2">
+				<label class="pull-left marg-t1">Filter by Product:</label>
+				<div class="col-sm-3">
+					<input type="text" class="form-control" ng-model="productSearch"
+						placeholder="Search...">
+				</div>
+				
+				<label class="pull-left marg-t1">Date <small>(Inventory as on end of this day)</small>:</label>
+				<div class="col-sm-3">
+					<input type="date" class="form-control" ng-model="dateFilter"
+						placeholder="12/20/2015" ng-change="reload()">
+				</div>
+			</div>
+			<div class="clearfix">
+				<label class="pull-left marg-t1">Filter by Shop:</label>
+				<div class="col-sm-3">
+					<select class="form-control" ng-model="shopSelected"
+						ng-change="reload()" ng-options="shop.shopName for shop in shops">
+					</select>
+				</div>
+			</div>
+		</div>
+		
+		<div class="marg-b2">
+			<a ng-click="setTotal()" ng-if="!loading" class="btn btn-sm btn-info">Recalculate
+				Total</a> <a ng-click="loadData()" ng-if="!loading"
+				class="btn btn-sm btn-warning marg-l1"><span
+				class="glyphicon glyphicon-refresh"></span> Refresh Data</a>
+		</div>
+		
+		<div class="marg-b3">
+			<table class="table table-hover table-tbody-striped">
+				<caption>
+					Remaining  = Total - (Total Sold + Total Returned).<br />
+					<small>Barcoded, may be greater than purchased in some cases due to data entry error.</small>
+				</caption>
+				<thead>
+					<tr>
+						<th><a
+							ng-click="sortType = 'productId'; sortReverse = !sortReverse;">ID
+								<span ng-show="sortType == 'productId' && !sortReverse"
+								class="glyphicon size12 glyphicon-arrow-down"></span> <span
+								ng-show="sortType == 'productId' && sortReverse"
+								class="glyphicon size12 glyphicon-arrow-up"></span>
+						</a></th>
+						<th><a
+							ng-click="sortType = 'productName'; sortReverse = !sortReverse;">Product
+								<span ng-show="sortType == 'productName' && !sortReverse"
+								class="glyphicon size12 glyphicon-arrow-down"></span> <span
+								ng-show="sortType == 'productName' && sortReverse"
+								class="glyphicon size12 glyphicon-arrow-up"></span>
+						</a></th>
+						<th class="text-right"><a
+							ng-click="sortType = 'purchased'; sortReverse = !sortReverse;"><small>Purchased
+								<span ng-show="sortType == 'purchased' && !sortReverse"
+								class="glyphicon size12 glyphicon-arrow-down"></span> <span
+								ng-show="sortType == 'purchased' && sortReverse"
+								class="glyphicon size12 glyphicon-arrow-up"></span></small>
+						</a></th>
+						<th class="text-right"><a
+							ng-click="sortType = 'adjusted'; sortReverse = !sortReverse;"><small>Adjusted
+								<span ng-show="sortType == 'adjusted' && !sortReverse"
+								class="glyphicon size12 glyphicon-arrow-down"></span> <span
+								ng-show="sortType == 'adjusted' && sortReverse"
+								class="glyphicon size12 glyphicon-arrow-up"></span></small>
+						</a></th>
+						<th class="text-right blue1">Total <span
+							class="glyphicon size12 glyphicon-info-sign" tooltip="Purchased + Adjusted"></span></th>
+						<th class="text-right"><a
+							ng-click="sortType = 'inpackets'; sortReverse = !sortReverse;">BarCoded
+								<span ng-show="sortType == 'inpackets' && !sortReverse"
+								class="glyphicon size12 glyphicon-arrow-down"></span> <span
+								ng-show="sortType == 'inpackets' && sortReverse"
+								class="glyphicon size12 glyphicon-arrow-up"></span>
+						</a></th>
+						<th class="text-right"><a
+							ng-click="sortType = 'sold'; sortReverse = !sortReverse;">Sold
+								<span ng-show="sortType == 'sold' && !sortReverse"
+								class="glyphicon size12 glyphicon-arrow-down"></span> <span
+								ng-show="sortType == 'sold' && sortReverse"
+								class="glyphicon size12 glyphicon-arrow-up"></span>
+						</a></th>
+						<th class="text-right"><a
+							ng-click="sortType = 'returned'; sortReverse = !sortReverse;">Returned
+								<span ng-show="sortType == 'returned' && !sortReverse"
+								class="glyphicon size12 glyphicon-arrow-down"></span> <span
+								ng-show="sortType == 'returned' && sortReverse"
+								class="glyphicon size12 glyphicon-arrow-up"></span>
+						</a></th>
+						<!-- <th class="text-right">Packets Remaining</th> -->
+						<th class="text-right"><a
+							ng-click="sortType = 'remainingTotal'; sortReverse = !sortReverse;">Remaining
+								<span ng-show="sortType == 'remainingTotal' && !sortReverse"
+								class="glyphicon size12 glyphicon-arrow-down"></span> <span
+								ng-show="sortType == 'remainingTotal' && sortReverse"
+								class="glyphicon size12 glyphicon-arrow-up"></span>
+						</a><span class="glyphicon size12 glyphicon-info-sign"
+							tooltip="(Total Purchased + Total Adjusted) - (Total Sold + Total Returned)"></span></th>
+						<th class="text-right"><a
+							ng-click="sortType = 'inventoryCost'; sortReverse = !sortReverse;">Inv.
+								Cost <span ng-show="sortType == 'inventoryCost' && !sortReverse"
+								class="glyphicon size12 glyphicon-arrow-down"></span> <span
+								ng-show="sortType == 'inventoryCost' && sortReverse"
+								class="glyphicon size12 glyphicon-arrow-up"></span>
+						</a></th>
+					</tr>
+				</thead>
+				<tbody>
+				
+					<tr ng-if="loading">
+						<td colspan="10"><div class="text-center pad2">Loading...</div></td>
+					</tr>
+				
+				</tbody>	
+				<tbody ng-repeat="si in sis | filter:productSearch | orderBy:sortType:sortReverse">
+					
+					<tr>
+						<td>{{si.productId}}</td>
+						<td>{{si.productName}}</td>
+						<td class="text-right"><small class="grey7">{{si.purchased | number}} <span ng-if="si.flower">g</span></small></td>
+						<td class="text-right"><small class="grey7">{{si.adjusted | number}} <span ng-if="si.flower">g</span></small></td>
+						<td class="text-right">{{(si.purchased + si.adjusted) | number}} <span ng-if="si.flower">g</span></td>
+						<td class="text-right">{{si.inpackets | number}} <span ng-if="si.flower">g</span></td>
+						<td class="text-right">{{si.sold | number}} <span ng-if="si.flower">g</span></td>
+						<td class="text-right">{{si.returned | number}} <span ng-if="si.flower">g</span></td>
+						<!-- <td class="text-right">{{si.remainingPackets | number}}</td> -->
+						<td class="text-right">{{si.remainingTotal | number}} <span ng-if="si.flower">g</span></td>
+						<td class="text-right invcost" data-invcost="{{si.inventoryCost}}">{{si.inventoryCost | currency}}</td>
+					</tr>
+
+					<tr ng-if="$index>0 && ($index % 15)==0" class="blue1">
+						<th>ID</th>
+						<th>Product</th>
+						<th class="text-right"><small>Purchased</small></th>
+						<th class="text-right"><small>Adjusted</small></th>
+						<th class="text-right">Total <span
+							class="glyphicon size12 glyphicon-info-sign"
+							tooltip="Purchased + Adjusted"></span></th>
+						<th class="text-right">BarCoded</th>
+						<th class="text-right">Sold</th>
+						<th class="text-right">Returned</th>
+						<th class="text-right">Remaining <span
+							class="glyphicon size12 glyphicon-info-sign"
+							tooltip="Total - (Total Sold + Total Returned)"></span></th>
+						<th class="text-right">Inv. Cost</th>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr><th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th class="text-right">Total</th>
+						<th class="text-right" id="gTotal">{{grantTotal | currency}}</th>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+	</div>
+</section>

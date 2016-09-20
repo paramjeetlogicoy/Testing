@@ -1,0 +1,51 @@
+<section class="clearfix marg-b3 container">
+	<div class="col-sm-8">
+		
+		<h3 class="marg-b3">Inventory Alert Settings</h3>
+
+		<div class="marg-b2 well">
+			<div class="clearfix">
+				<label class="pull-left marg-t1">Filter:</label>
+				<div class="col-sm-3">
+					<input type="text" class="form-control" ng-model="productSearch"
+						placeholder="Search...">
+				</div>
+			</div>
+		</div>	
+		
+		<div class="marg-b5">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th rowspan="2">#</th>
+						<th rowspan="2">Product</th>
+						<th rowspan="2">Alert Status</th>
+						<th colspan="2" class="text-center">Warning Level</th>
+						<th rowspan="2"></th>
+					</tr>
+					<tr>
+						<th class="text-center">Amber</th>
+						<th class="text-center">Red</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="inv-alert-rows" ng-repeat="alert in alerts| filter:productSearch">
+						<td>{{$index + 1}}</td>
+						<td>{{alert.productName}}</td>
+						<td><div class="onoffswitch">
+								<input type="checkbox" name="onoffswitch"  id="myonoffswitch{{$index}}" ng-change="showSave()"
+									class="onoffswitch-checkbox" ng-model="alert.alertActive"> <label class="onoffswitch-label"
+									for="myonoffswitch{{$index}}"> <span class="onoffswitch-inner"></span>
+									<span class="onoffswitch-switch"></span>
+								</label>
+							</div></td>
+						<td><input type="number" class="form-control text-right" ng-model="alert.amberLevel" ng-change="showSave()" /></td>
+						<td><input type="number" class="form-control text-right" ng-model="alert.redLevel" ng-change="showSave()"/></td>
+						<td><a href="" ng-click="saveAlert()" title="Save Setting" class="inv-save-alert"><span
+								class="glyphicon glyphicon-floppy-disk"></span></a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>	
+</div>
+</section>

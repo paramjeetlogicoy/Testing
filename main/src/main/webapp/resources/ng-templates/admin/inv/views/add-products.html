@@ -1,0 +1,90 @@
+<section class="clearfix marg-b3 container">
+	<div class="col-sm-10">
+		<h3 class="marg-b3">PRODUCTS</h3>
+		<div type="add-product-form" limit="2999" editform></div>
+
+		<div class="marg-b2 well">
+			<h4 class="marg-t0">Filters</h4>
+			<div class="clearfix">
+				<label class="pull-left marg-t1">Category</label>
+				<div class="col-sm-2">
+					<select name="category" class="form-control"
+						ng-model="categoryFilterSelected" ng-change="reload()"
+						ng-options="category.categoryName for category in filterCategories">
+					</select>
+				</div>
+				<label class="pull-left marg-t1">Strain</label>
+				<div class="col-sm-2">
+					<select name="category" class="form-control"
+						ng-model="strainFilterSelected" ng-change="reload()"
+						ng-options="strain.strainName for strain in filterStrains">
+					</select>
+				</div>
+				<div class="col-sm-3">
+					<form class="input-group" tooltip="Search by product name" ng-submit="reload()">
+						<input type="text" class="form-control" ng-model="productSearch"
+							placeholder="Search product..."> <span
+							class="input-group-btn">
+							<button class="btn btn-default" type="submit">
+								<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+							</button>
+						</span>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div class="marg-b3 clearfix" ng-hide="pg.totalItems <= pg.itemsPerPage">
+			<div class="pull-left">
+				<uib-pagination total-items="pg.totalItems" ng-model="pg.currentPage"
+					previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+					last-text="&raquo;" items-per-page="pg.itemsPerPage"
+					class="pagination-sm" max-size="5" boundary-links="true"
+					rotate="true" ng-change="pageChanged()"></uib-pagination>
+			</div>
+			<div class="pull-left pad2 marg-t05 size12">{{pg.startCount}} -
+				{{pg.endCount}} of {{pg.totalItems}}</div>
+		</div>
+
+		<div class="marg-b3">
+			<table class="table table-hover">
+				<caption>All Products.</caption>
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Product</th>
+						<th>Nick Name</th>
+						<th>Category</th>
+						<th>Strain</th>
+						<th>Date Added</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="product in products">
+						<td>{{product.id}}</td>
+						<td>{{product.productName}}</td>
+						<td>{{product.nickName}}</td>
+						<td>{{product.categoryName}}</td>
+						<td>{{product.strainName}}</td>
+						<td>{{product.formattedDateAdded}}</td>
+						<td><a href="#" ng-click="editProduct($event)" ng-show="controlId<2999"><span
+								class="glyphicon glyphicon-pencil"></span></a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		
+		<div class="marg-b3 clearfix" ng-hide="pg.totalItems <= pg.itemsPerPage">
+			<div class="pull-left">
+				<uib-pagination total-items="pg.totalItems" ng-model="pg.currentPage"
+					previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+					last-text="&raquo;" items-per-page="pg.itemsPerPage"
+					class="pagination-sm" max-size="5" boundary-links="true"
+					rotate="true" ng-change="pageChanged()"></uib-pagination>
+			</div>
+			<div class="pull-left pad2 marg-t05 size12">{{pg.startCount}} -
+				{{pg.endCount}} of {{pg.totalItems}}</div>
+		</div>
+	</div>
+</section>

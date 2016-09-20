@@ -1,0 +1,30 @@
+<section class="clearfix marg-b3 container">
+	<div class="col-sm-6">
+		<h3 class="marg-b3">CATEGORIES</h3>
+		<div type="category-form" limit="2999" editform></div>
+
+		<div class="marg-b3">
+			<table class="table table-hover">
+				<caption>All Categories.</caption>
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Category Name</th>
+						<th>Date Added</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="category in categories">
+						<td>{{$index + 1}}</td>
+						<td>{{category.categoryName}}</td>
+						<td>{{category.formattedDateAdded}}</td>
+						<td><a href="#" ng-click="editCategory($event)"
+							ng-show="controlId<2999"><span
+								class="glyphicon glyphicon-pencil"></span></a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</section>

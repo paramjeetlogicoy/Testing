@@ -1,0 +1,98 @@
+<section class="clearfix marg-b3 container">
+	<div class="col-sm-8">
+		<div class="marg-b3" ng-show="successMsg">
+			<div class="alert alert-success  alert-dismissible" role="alert">
+				<button type="button" class="close" data-dismiss="alert"
+					aria-label="Close" ng-click="successMsg=''">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				{{successMsg}}
+			</div>
+		</div>
+		<div type="stock-form" limit="2999" editform></div>
+
+		<div class="marg-b5">
+
+			<div ng-show="stockInfoFound && pinfo.purchased">
+				<h4 class="text-primary">{{pinfo.productName}} - {{pinfo.productId}}</h4>
+				<table class="table table-condensed">
+					<thead>
+						<tr>
+							<th class="text-right">Purchased</th>
+							<th class="text-right">Sold</th>
+							<th class="text-right">Returned</th>
+							<th class="text-right">Remaining</th>
+							<th>&nbsp;</th>
+							<th class="text-right pc20">Actual</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="text-right">{{pinfo.purchased | number}} <span
+								ng-if="pinfo.flower">g</span></td>
+							<td class="text-right">{{pinfo.sold | number}} <span
+								ng-if="pinfo.flower">g</span></td>
+							<td class="text-right">{{pinfo.returned | number}} <span
+								ng-if="pinfo.flower">g</span></td>
+							<td class="text-right">{{pinfo.remainingTotal | number}} <span
+								ng-if="pinfo.flower">g</span></td>
+							<td>&nbsp;</td>
+							<td class="text-right"><input type="number" step="any"
+								class="form-control text-right actuals" ng-model="pinfo.actual"
+								placeholder="Enter Actuals" ng-change="calculateDiff()" /></td>
+
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div ng-show="!stockInfoFound && productSelected.id">
+				<div class="alert alert-warning" role="alert">
+					Couldn't find any information on the current stock <strong
+						ng-if="productSelected.productName">{{productSelected.productName}}</strong>.
+				</div>
+			</div>
+			<div ng-show="!stockInfoFound && !productSelected.id">
+				<div class="alert alert-danger" role="alert">
+					<strong ng-if="productCode">{{productCode}}</strong>: Not a valid
+					product .
+				</div>
+			</div>
+
+			<div ng-show="difference!=0">
+				<hr />
+
+				<div class="clearfix">
+					<div class="pull-right">
+						<button type="button" class="btn btn-success" ng-click="saveAdj()">SAVE</button>
+					</div>
+					<div class="pull-right marg-r2 pc20">
+						<label>Unit Price</label> <input class="form-control"
+							type="number" step="any" ng-model="price" required
+							placeholder="Enter Unit Price" list="prices" />
+						<datalist id="prices">
+							<option ng-repeat="price in prices" value="{{price}}" />
+						</datalist>
+					</div>
+					<div ng-show="!pinfo.flower" class="pull-right marg-r2 pc20">
+						<label>Item Weight</label> <input class="form-control"
+							type="number" step="any" ng-model="weight"
+							placeholder="Enter Unit Weight" list="weights" />
+						<datalist id="weights">
+							<option ng-repeat="wt in weights" value="{{wt}}" />
+						</datalist>
+					</div>
+					<div class="pull-right marg-r2">
+						<label>Reason for Adjustment</label>
+						<textarea class="form-control" placeholder="Reason for Adjustment"
+							ng-model="adjRsn"></textarea>
+					</div>
+					<div class="pull-right marg-r2">
+						<label>Difference</label>
+						<h3 class="text-right">{{difference | number}}</h3>
+					</div>
+				</div>
+				<hr />
+			</div>
+		</div>
+	</div>
+</section>

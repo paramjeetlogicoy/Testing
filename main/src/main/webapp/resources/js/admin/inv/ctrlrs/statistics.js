@@ -1,9 +1,9 @@
-var statsCtrlr = function($scope, $http, $filter, $uibModal, $rootScope){
+var statsCtrlr = function($scope, $http, $filter, $uibModal, $rootScope, currentUser){
 
 	$rootScope.rootPage = "Statistics";
 	
 	/**Hide the edit controls as per user access*/
-	$scope.controlId = $rootScope.globals.currentUser?$rootScope.globals.currentUser.ctrlid:0;	
+	$scope.controlId = currentUser.ctrlid;	
 	$scope.accessGranted = false;
 	
 	if($scope.controlId>100) return;	

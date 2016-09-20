@@ -178,6 +178,11 @@ public class ControlConfig {
             datetime = f2.lastModified();
             d = new Date(datetime);
             md.setJsDate(sdf.format(d));
+			
+            File f3 = new File(contextPath + "resources/js/admin/inv/admin-comb.min.js");
+            datetime = f3.lastModified();
+            d = new Date(datetime);
+            md.setAdminInvJsDate(sdf.format(d));
             
             System.out.println("ModifiedDate called");
 		}

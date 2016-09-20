@@ -76,50 +76,16 @@ globalResolve = {
  * Scroll to the bottom to see it being attached to the App.
  */ 
 var 
-defaultCtrlr = function($scope, $http, $filter, $sanitize){
-};
+defaultCtrlr = function(){};
 
-app.config(['$routeProvider',
-    function($routeProvider) {
-      $routeProvider.
-      	when('/purchases', {
-	         templateUrl: '/resources/ng-templates/admin/inv/views/purchases.html'+versionCtrl,
-	         controller: 'addPurchaseCtrl',
-	         resolve : {
-	        	 currentUser : globalResolve.currentUser
-	        }
-	    }).
-        
-        when('/packets', {
-            templateUrl: '/resources/ng-templates/admin/inv/views/packets.html'+versionCtrl,
-            controller: 'addPacketCtrl',
-	         resolve : {
-	        	 driverMode:function () {
-	        		 return false;
-	        	 },
-	        	 currentUser : globalResolve.currentUser
-	         }
-	    }).
-	    
-	    when('/settings/stats', {
-	         templateUrl: '/resources/ng-templates/admin/inv/views/stats.html'+versionCtrl,
-	         controller: 'statsCtrl',
-	         resolve : {
-	        	 currentUser : globalResolve.currentUser
-	        }
-	    }).
-	    
-	    when('', {
-	         templateUrl: '/resources/ng-templates/empty.html',
-	         controller: 'defaultRouteCtrl'
-	    });
-}])
+app
 
-
+// function defined in routing.js
+.config(['$routeProvider', inventoryRouter])
 
 //below fns are defined in angular-general-functions.js
-.config(appConfigs)
-.run(appRunFns) 
+.config(['$httpProvider', appConfigs])
+.run(['$http', '$rootScope', '$interval', appRunFns]) 
 //end fns defined in angular-general-functions.js
 
 .run(function ($rootScope, $location, $http) {
@@ -156,6 +122,85 @@ app.config(['$routeProvider',
         //toggle the menu back
         $('button.navbar-toggle').not('.collapsed').click();
     });
+    
+    
+    /**Print Barcode Control**/
+    $rootScope.addToBCQueue = function(newBcs){
+    	var cq = {};
+		cq.date = new Date();
+		cq.printed = false;
+		cq.bcs = [];
+    	
+    	if(!$rootScope.aq.length) {
+    		$rootScope.aq.push(cq);
+    	}
+    	
+    	var cqExists = false;
+    	for(var i=0;i<$rootScope.aq.length; i++){
+    		if(!$rootScope.aq[i].printed){
+    			cq = $rootScope.aq[i];
+    			cqExists = true;
+    			break;
+    		}
+    	}
+    	
+    	if(!cqExists){
+    		$rootScope.aq.unshift(cq);
+    	}
+    	
+		newBcs.forEach(function(x){
+			cq.bcs.push(x);
+		});
+
+		//Save it back to localStorage
+		localStorage.setItem('lbBarcodeInfo', JSON.stringify($rootScope.aq));
+		$rootScope.toggleView = true;
+    };
+    
+    $rootScope.printFromBCQueue = function(){
+    	var skipCols = 0,
+    	cq = this.q;
+    	if(this.pblSkipRows){
+    		skipCols += (this.pblSkipRows)*4;
+    	}
+    	if(this.pblSkipCols){
+    		skipCols += this.pblSkipCols;
+    	}
+    	
+    	if(cq.bcs && cq.bcs.length>0){
+    		cq.date = new Date();
+    		cq.printed = true;
+    		
+    		//Save it back to localStorage
+    		localStorage.setItem('lbBarcodeInfo', JSON.stringify($rootScope.aq));
+    		$rootScope.toggleView = false;
+    		
+    		window.location = 'apps/getlabelsku?codes=' 
+				+ encodeURIComponent(cq.bcs)
+				+ '&s=' + skipCols;
+    	}
+    };
+    
+    $rootScope.pblSkipRows = 0;
+    $rootScope.pblSkipCols = 0;
+    $rootScope.toggleView = false;
+    
+    $rootScope.aq = [];
+    $rootScope.cq = {};
+    var initBarcodeCtrl = function(){
+    	var barcodeInfo = JSON.parse(localStorage.getItem("lbBarcodeInfo"));
+    	if(barcodeInfo && barcodeInfo.length>0){
+    		
+    		if(barcodeInfo.length>=4){
+    			$rootScope.aq = barcodeInfo.splice(0,4);
+    		}
+    		
+    		else{
+    			$rootScope.aq = barcodeInfo;
+    		}
+    	}
+    };
+    initBarcodeCtrl();
 })
 
 .filter('abs', function () {
@@ -176,8 +221,22 @@ app.config(['$routeProvider',
 })
 
 .controller('defaultRouteCtrl', defaultCtrlr)
-.controller('addPurchaseCtrl', addPurchaseCtrlr)
-.controller('addPacketCtrl', addPacketCtrlr)
-.controller('ModalSalesInfoCtrl', ModalSalesInfoCtrlr)
-.controller('statsCtrl', statsCtrlr);
+.controller('addPurchaseCtrl', ['$scope', '$http', '$filter', '$rootScope', '$uibModal', 'currentUser', addPurchaseCtrlr])
+.controller('addPacketCtrl', ['$scope', '$http', '$routeParams', 'driverMode', '$uibModal', '$rootScope', 'currentUser', addPacketCtrlr])
+.controller('addPplCtrl', ['$scope', '$http', '$filter', '$rootScope', '$compile', 'currentUser', addPplCtrlr])
+.controller('addProductsCtrl', ['$scope', '$http', '$rootScope', '$filter', 'currentUser', addProductsCtrlr])
+.controller('addStrainsCtrl', ['$scope', '$http', '$filter', '$rootScope', 'currentUser', addStrainsCtrlr])
+.controller('addCategoryCtrl', ['$scope', '$http', '$filter', '$rootScope', 'currentUser', addCategoryCtrlr])
+.controller('addBoxInvCtrl', ['$scope', '$http', '$routeParams', 'currentUser', addBoxInvCtrlr])
+.controller('shopInvCtrl', ['$scope', '$http', '$rootScope', '$filter', 'currentUser', shopInvCtrlr])
+.controller('statsCtrl', ['$scope', '$http', '$filter', '$uibModal', '$rootScope', 'currentUser', statsCtrlr])
+.controller('returnsCtrl',['$scope', '$http', '$rootScope', 'currentUser', returnsCtrlr])
+.controller('bulkAssignCtrl',['$scope', '$http', '$rootScope', 'currentUser', bulkAssignCtrlr])
+.controller('barCodeCtrl',['$scope', '$http', '$rootScope', 'currentUser', barCodeCtrlr])
+.controller('logCtrl',['$scope', '$http', '$rootScope', 'currentUser', logCtrlr])
+.controller('invAlertCtrl',['$scope', '$http', '$rootScope', 'currentUser', invAlertCtrlr])
+.controller('miscReportCtrl',['$scope', '$http', '$rootScope', 'currentUser', miscReportCtrlr])
+.controller('stockTakeCtrl',['$scope', '$http', '$rootScope', '$timeout', 'currentUser', stockTakeCtrlr])
+
+.controller('ModalSalesInfoCtrl', ['$scope', '$uibModalInstance', 'modalScope', '$http', '$filter', '$rootScope', ModalSalesInfoCtrlr]);
 

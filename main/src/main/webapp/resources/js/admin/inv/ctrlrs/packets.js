@@ -1,7 +1,7 @@
 /**
  * 
  */
-var addPacketCtrlr = function($scope, $http, $routeParams, driverMode, $uibModal, currentUser, $rootScope){
+var addPacketCtrlr = function($scope, $http, $routeParams, driverMode, $uibModal, $rootScope, currentUser){
 	
 	$rootScope.rootPage = "Packets";
 

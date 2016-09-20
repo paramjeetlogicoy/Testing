@@ -1,0 +1,75 @@
+<section class="clearfix marg-b3 container">
+	<div class="col-sm-12" ng-show="accessGranted">
+		<h3 class="marg-b3">Log</h3>
+		<div class="marg-b5 row">
+			<label class="pull-left marg-t1">Filter By</label>
+			<div class="col-sm-2">
+				<select class="form-control" ng-model="driverSelected"
+					ng-change="driverFilter()"
+					ng-options="driver.driverName for driver in drivers">
+				</select>
+			</div>
+			<div class="col-sm-2">
+				<select class="form-control" ng-model="operatorSelected"
+					ng-change="operatorFilter()"
+					ng-options="operator.operatorName for operator in operators">
+				</select>
+			</div>
+			<div class="col-sm-2">
+				<select class="form-control" ng-model="actionObjSelected"
+					ng-change="reload()"
+					ng-options="actionObj.label for actionObj in actionObjs">
+				</select>
+			</div>
+		</div>
+		
+		<div class="marg-b3 clearfix" ng-hide="pg.totalItems <= pg.itemsPerPage">
+			<div class="pull-left">
+				<uib-pagination total-items="pg.totalItems" ng-model="pg.currentPage"
+					previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+					last-text="&raquo;" items-per-page="pg.itemsPerPage"
+					class="pagination-sm" max-size="5" boundary-links="true"
+					rotate="true" ng-change="pageChanged()"></uib-pagination>
+			</div>
+			<div class="pull-left pad2 marg-t05 size12">{{pg.startCount}} -
+				{{pg.endCount}} of {{pg.totalItems}}</div>
+		</div>
+		<div class="marg-b3">
+			<table class="table table-hover table-striped">
+				<thead>
+					<tr>
+						<th class=""><span tooltip="Could be a Driver or an Operator">Action By</span> <a href="" title="sort" ng-click="sortCol('actionby',$event)"><span
+								class="glyphicon glyphicon-sort" aria-hidden="true"></span></a></th>
+						<th>Action On <a href="" title="sort" ng-click="sortCol('actionon',$event)"><span
+								class="glyphicon glyphicon-sort" aria-hidden="true"></span></a></th>
+						<th>Item Id</th>
+						<th>Date <a href="" title="sort" ng-click="sortCol('date',$event)" class="sdir-desc"><span
+								class="glyphicon glyphicon-sort" aria-hidden="true"></span></a></th>
+						<th>Details</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="log in logs">
+						<td class="capitalize">{{log.operatorName}}</td>
+						<td class="capitalize">{{log.actionOn}}</td>
+						<td class="text-right">{{log.itemId}}</td>
+						<td>{{log.date}}</td>
+						<td class="pc50">{{log.actionDetails}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		
+		<div class="marg-b3 clearfix" ng-hide="pg.totalItems <= pg.itemsPerPage">
+			<div class="pull-left">
+				<uib-pagination total-items="pg.totalItems" ng-model="pg.currentPage"
+					previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+					last-text="&raquo;" items-per-page="pg.itemsPerPage"
+					class="pagination-sm" max-size="5" boundary-links="true"
+					rotate="true" ng-change="pageChanged()"></uib-pagination>
+			</div>
+			<div class="pull-left pad2 marg-t05 size12">{{pg.startCount}} -
+				{{pg.endCount}} of {{pg.totalItems}}</div>
+		</div>
+	</div>
+</section>

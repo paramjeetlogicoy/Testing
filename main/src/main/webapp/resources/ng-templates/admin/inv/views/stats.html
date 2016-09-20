@@ -130,9 +130,9 @@
 							</tr>
 							<tr ng-show="sTotalAmount">
 								<td colspan="6" class="text-right"><span
-									class="marg-r2 grey9">Tip Total: {{dasTipTotal |
+									class="marg-r2 grey7">Tip Total: {{dasTipTotal |
 										currency}}</span><span
-									class="marg-r2 grey9">Comm. Total: {{dasCommTotal |
+									class="marg-r2 grey7">Comm. Total: {{dasCommTotal |
 										currency}}</span><strong>Total: {{sTotalAmount | currency}}</strong></td>
 							</tr>
 						</tbody>
@@ -228,11 +228,11 @@
 							<tr>
 								<td colspan="8">
 									<div class="marg-b3 text-right">
-									<span class="marg-r2 grey9">Total Orders:
+									<span class="marg-r2 grey7">Total Orders:
 											{{orStat.ostat.length}}</span>
-										<span class="marg-r2 grey9">Original Order Total:
+										<span class="marg-r2 grey7">Original Order Total:
 											{{orStat.originalAmountTotal | currency}}</span><span
-											class="marg-r2 grey9">Tip Total: {{orStat.tipTotal |
+											class="marg-r2 grey7">Tip Total: {{orStat.tipTotal |
 											currency}}</span> <strong>Total: {{orStat.amount |
 											currency}}</strong>
 									</div>
@@ -334,7 +334,7 @@
 									<td class="text-right">{{psStat.spData[0].sellingPrice |
 										currency}}</td>
 									<td class="text-right">{{(psStat.spData[0].profit) | currency}}</td>
-									<td class="text-right"><small class="grey9">{{(psStat.spData[0].profit) * 100 / psStat.spData[0].sellingPrice
+									<td class="text-right"><small class="grey7">{{(psStat.spData[0].profit) * 100 / psStat.spData[0].sellingPrice
 										| number:0}}%</small></td>
 								</tr>
 								<tr ng-repeat="spData in psStat.spData" ng-hide="$first">
@@ -343,12 +343,12 @@
 									<td class="text-right">{{spData.purchasePrice | currency}}</td>
 									<td class="text-right">{{spData.sellingPrice | currency}}</td>
 									<td class="text-right">{{spData.profit | currency}}</td>
-									<td class="text-right"><small class="grey9">{{(spData.profit) * 100 / spData.sellingPrice | number:0}}%</small></td>
+									<td class="text-right"><small class="grey7">{{(spData.profit) * 100 / spData.sellingPrice | number:0}}%</small></td>
 								</tr>
 								<tr>
 									<td class="text-right"></td>
-									<td class="text-right"><small class="grey9">{{psStat.purchaseTotal | currency}}</small></td>
-									<td class="text-right"><small class="grey9">{{psStat.sellingTotal | currency}}</small></td>
+									<td class="text-right"><small class="grey7">{{psStat.purchaseTotal | currency}}</small></td>
+									<td class="text-right"><small class="grey7">{{psStat.sellingTotal | currency}}</small></td>
 									<td class="text-right"><strong>{{psStat.total | currency}}</strong></td>
 									<td class="text-right"><strong>{{(psStat.total) * 100 / psStat.sellingTotal
 										| number:0}}%</strong></td>
@@ -360,8 +360,8 @@
 								</tr>
 								<tr>
 									<td class="text-right" colspan="2"><strong>Total</strong></td>
-									<td class="text-right"><small class="grey9">{{psStatPTotal | currency}}</small></td>
-									<td class="text-right"><small class="grey9">{{psStatSTotal | currency}}</small></td>
+									<td class="text-right"><small class="grey7">{{psStatPTotal | currency}}</small></td>
+									<td class="text-right"><small class="grey7">{{psStatSTotal | currency}}</small></td>
 									<td class="text-right"><strong>{{psStatTotal | currency}}</strong></td>
 									<td class="text-right"><strong>{{(psStatTotal) * 100 / psStatSTotal
 										| number:0}}%</strong></td>

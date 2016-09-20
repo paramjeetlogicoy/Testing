@@ -1,0 +1,47 @@
+<section class="marg-b3">
+	<div class="col-sm-12">
+		<div class="marg-b5 row">
+			<label class="pull-left marg-t1">Box Name</label>
+			<div class="col-sm-3">
+				<select class="form-control" ng-model="boxSelected"
+					ng-change="boxChange()"
+					ng-options="box.boxName for box in boxes">
+				</select>
+			</div>
+			<label class="pull-left marg-t1">Item Type</label>
+			<div class="col-sm-3">
+				<select class="form-control" ng-model="itemSelected"
+					ng-change="getboxInventory()"
+					ng-options="item.label for item in items">
+				</select>
+			</div>
+		</div>
+
+		<h3 class="marg-b3">DRIVER BOX INVENTORY</h3>
+
+		<div class="marg-b3">
+			<table class="table table-hover table-striped">
+				<thead>
+					<tr>
+						<th>Box</th>
+						<th>Product</th>
+						<th>Strain</th>
+						<th># of Bags</th>
+						<th>Weight/bag</th>
+						<th>Price/bag</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="boxInv in boxInvs">
+						<td>{{boxInv.boxName}}</td>
+						<td>{{boxInv.productName}}</td>
+						<td>{{boxInv.strainName}}</td>
+						<td>{{boxInv.bagCount}}</td>
+						<td>{{boxInv.weightPerBag}}</td>
+						<td>{{boxInv.pricePerBag}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</section>

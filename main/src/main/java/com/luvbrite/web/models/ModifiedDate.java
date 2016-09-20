@@ -4,6 +4,7 @@ public class ModifiedDate {
 	
 	private String cssDate = "";
 	private String jsDate = "";
+	private String adminInvJsDate = "";
 	
 	public String getCssDate() {
 		return cssDate;
@@ -16,5 +17,11 @@ public class ModifiedDate {
 	}
 	public void setJsDate(String jsDate) {
 		this.jsDate = jsDate;
+	}
+	public String getAdminInvJsDate() {
+		return adminInvJsDate;
+	}
+	public void setAdminInvJsDate(String adminInvJsDate) {
+		this.adminInvJsDate = adminInvJsDate;
 	}
 }

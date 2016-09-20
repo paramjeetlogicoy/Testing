@@ -1,0 +1,59 @@
+<section class="clearfix marg-b3 container">
+	<div class="col-sm-8">
+		<div type="return-form" limit="2999" editform></div>
+		
+		<h4 class="marg-b1">Returned Items</h4>	
+		<div class="marg-b3 clearfix" ng-hide="pg.totalItems <= pg.itemsPerPage">
+			<div class="pull-left">
+				<uib-pagination total-items="pg.totalItems" ng-model="pg.currentPage"
+					previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+					last-text="&raquo;" items-per-page="pg.itemsPerPage"
+					class="pagination-sm" max-size="5" boundary-links="true"
+					rotate="true" ng-change="pageChanged()"></uib-pagination>
+			</div>
+			<div class="pull-left pad2 marg-t05 size12">{{pg.startCount}} -
+				{{pg.endCount}} of {{pg.totalItems}}</div>
+		</div>
+		
+		<div class="marg-b5">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Barcode</th>
+						<th>Product</th>
+						<th>Reason</th>
+						<th>Date Added</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="return in returns">
+						<td>{{$index + 1}}</td>
+						<td>{{return.packetCode}}</td>
+						<td>{{return.productName}}</td>
+						<td>{{return.reason}}</td>
+						<td>{{return.dateAdded}}</td>
+						<td><a href=""
+							ng-click="removeReturn()" title="Delete Return"  
+							ng-show="controlId<2999 && return.id"><span
+								class="glyphicon glyphicon-remove-sign"></span></a>
+								</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>	
+		
+		<div class="marg-b3 clearfix" ng-hide="pg.totalItems <= pg.itemsPerPage">
+			<div class="pull-left">
+				<uib-pagination total-items="pg.totalItems" ng-model="pg.currentPage"
+					previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+					last-text="&raquo;" items-per-page="pg.itemsPerPage"
+					class="pagination-sm" max-size="5" boundary-links="true"
+					rotate="true" ng-change="pageChanged()"></uib-pagination>
+			</div>
+			<div class="pull-left pad2 marg-t05 size12">{{pg.startCount}} -
+				{{pg.endCount}} of {{pg.totalItems}}</div>
+		</div>
+</div>
+</section>

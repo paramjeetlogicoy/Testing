@@ -1,0 +1,86 @@
+<section class="marg-b3 packets-section container">
+	<div class="col-sm-12">
+		
+		<h3 class="marg-b3">All SKUs entered under Miscellaneous</h3>
+
+		<div ng-show="alertTxt">
+			<div class="alert alert-danger alert-dismissible marg-b2"
+				role="alert">
+				<button type="button" class="close" aria-label="Close"
+					ng-click="alertTxt=''">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				{{alertTxt}}
+			</div>
+		</div>
+
+		<div class="marg-b5 well">
+			<h5>Filter Units</h5>
+			<div class="clearfix">
+				<div class="col-sm-3">
+					<form tooltip="Search by Product" ng-submit="reload()"
+						class="input-group">
+						<input type="text" class="form-control"
+							placeholder="Search Products.." ng-model="sku" /> <span
+							class="input-group-btn">
+							<button class="btn btn-info" type="submit">
+								<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+							</button>
+						</span>
+					</form>
+				</div>
+			</div>
+		</div>
+		
+		<div class="marg-b3 clearfix" ng-hide="pg.totalItems <= pg.itemsPerPage">
+			<div class="pull-left">
+				<uib-pagination total-items="pg.totalItems" ng-model="pg.currentPage"
+					previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+					last-text="&raquo;" items-per-page="pg.itemsPerPage"
+					class="pagination-sm" max-size="5" boundary-links="true"
+					rotate="true" ng-change="pageChanged()"></uib-pagination>
+			</div>
+			<div class="pull-left pad2 marg-t05 size12">{{pg.startCount}} -
+				{{pg.endCount}} of {{pg.totalItems}}</div>
+		</div>
+
+		<div class="marg-b3">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th class="hidden-xs">#</th>
+						<th>SKU</th>
+						<th>Product<a href="" title="sort" ng-click="sortCol('product',$event)"><span
+								class="glyphicon glyphicon-sort" aria-hidden="true"></span></a></th>
+						<th class="text-right hidden-xs">Sold Price<a href="" title="sort" ng-click="sortCol('sprice',$event)"><span
+								class="glyphicon glyphicon-sort" aria-hidden="true"></span></a></th>
+						<th>Sale Date<a href="" title="sort" ng-click="sortCol('date',$event)" class="sdir-desc"><span
+								class="glyphicon glyphicon-sort" aria-hidden="true"></span></a></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="packet in packets">
+						<td class="hidden-xs">{{$index + 1}}</td>
+						<td>{{packet.packetCode}}</td>
+						<td>{{packet.productName}}</td>
+						<td class="text-right hidden-xs">{{packet.sellingPrice | currency}}</td>
+						<td>{{packet.dateSold}}</td>
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
+		
+		<div class="marg-b3 clearfix" ng-hide="pg.totalItems <= pg.itemsPerPage">
+			<div class="pull-left">
+				<uib-pagination total-items="pg.totalItems" ng-model="pg.currentPage"
+					previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+					last-text="&raquo;" items-per-page="pg.itemsPerPage"
+					class="pagination-sm" max-size="5" boundary-links="true"
+					rotate="true" ng-change="pageChanged()"></uib-pagination>
+			</div>
+			<div class="pull-left pad2 marg-t05 size12">{{pg.startCount}} -
+				{{pg.endCount}} of {{pg.totalItems}}</div>
+		</div>
+	</div>
+</section>

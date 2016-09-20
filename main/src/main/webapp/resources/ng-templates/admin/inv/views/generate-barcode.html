@@ -1,0 +1,101 @@
+<section class="clearfix marg-b3 container">
+	<h3 class="marg-b3">Generate SKU Barcodes</h3>
+	<div class="col-sm-6">
+		<div class="clearfix marg-b1">
+
+			<form class="form-horizontal" ng-submit="generatePDF()">
+				<div class="form-group">
+					<label class="col-sm-4 control-label">Starting Number</label>
+					<div class="col-sm-6">
+						<div class="input-group">
+							<span class="input-group-addon">{{barcodePrefix}}</span> <input
+								type="text" ng-model="startingNumber" class="form-control" />
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">Number of Sheets</label>
+					<div class="col-sm-6">
+						<input type="text" ng-model="noOfSheets" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-4 col-sm-6">
+						<button type="submit" class="btn btn-info">GENERATE</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</section>
+
+<section class="clearfix marg-b3 container">
+	<h3 class="marg-b3">
+		Generate Product Barcodes <small>(This barcodes are for
+			internal uses)</small>
+	</h3>
+	<div class="col-sm-6">
+		<div class="clearfix marg-b1">
+			<div class="marg-b2">
+				<blockquote>
+					<small>If you need to skip few columns before starting the
+						bar codes. Please enter the number of columns to be skipped in the
+						below box.</small>
+				</blockquote>
+				<div class="row">
+					<div class="col-sm-5">
+						<div class="input-group input-group-sm">
+							<span class="input-group-addon">SKIP</span> <input type="number"
+								ng-model="skip" class="form-control" /> <span
+								class="input-group-addon">CELLS</span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="marg-b3">
+				<button type="button" class="btn btn-info btn-sm"
+					ng-click="generateAllPrdBarcodes()">Generate Barcodes for
+					all products</button>
+			</div>
+			<hr />
+			<blockquote>
+				<small>For creating barcodes for a limited number of
+					product, select products from the list below.</small>
+			</blockquote>
+			<form class="form-horizontal">
+				<div class="form-group">
+					<label class="col-sm-4 control-label">Product</label>
+					<div class="col-sm-6">
+						<select class="form-control" ng-model="prodSelected"
+							ng-options="product.productName for product in products"
+							tooltip="Select Product" ng-change="addObjs()"></select>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div ng-show="prodList.length">
+			<h5>Selected Products</h5>
+			<ul class="products-list marg-b2 well">
+				<li ng-repeat="item in prodList">{{item.productName}} <a
+					href="" ng-click="removeObj()"><span
+						class="glyphicon glyphicon-remove-sign"></span></a></li>
+			</ul>
+			<div class="row">
+
+				<div class="col-sm-5">
+					<div class="input-group input-group-sm">
+						<span class="input-group-addon">SKIP</span> <input type="number"
+							ng-model="skip" class="form-control" /> <span
+							class="input-group-addon">CELLS</span>
+					</div>
+				</div>
+			</div>
+			<div class="marg-t1">
+				<button type="button" class="btn btn-primary btn-sm"
+					ng-click="generatePrdBarcodes()">Generate Barcodes for
+					above list</button>
+			</div>
+		</div>
+	</div>
+</section>
