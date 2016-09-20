@@ -1,0 +1,176 @@
+<div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+			aria-label="Close" ng-click="cancel()">
+			<span aria-hidden="true">&times;</span>
+		</button>
+		
+		<small class="pull-right marg-r2 blue1" ng-if="locked">
+			<span class="glyphicon glyphicon-lock"></span> Sale Closed
+		</small>
+		
+		<h4 class="modal-title">Sales Details</h4>
+	</div>
+	
+	<div class="modal-body">
+		
+		<div class="clearfix small">
+			<a href="" ng-click="getPrevSales()" class="pull-left"
+				ng-show="prevSalesId!=0"><span
+				class="glyphicon glyphicon-arrow-left"></span> Prev</a> <a href=""
+				ng-click="getNextSales()" class="pull-right"
+				ng-show="nextSalesId!=0">Next <span
+				class="glyphicon glyphicon-arrow-right"></span></a>
+		</div>
+
+		<div class="marg-b1">
+			<dl class="dl-horizontal">
+				<dt>Client:</dt>
+				<dd>{{ms.clientName}}</dd>
+				
+				<dt>&nbsp;</dt>
+				<dd>&nbsp;</dd>
+				
+				<dt>Sales ID:</dt>
+				<dd>{{ms.salesId}}</dd>
+				<dt>Sales Date:</dt>
+				<dd>
+					<span ng-show='!dateEdit'>{{ms.dateFinished}} <a href=""
+						class="glyphicon glyphicon-pencil marg-l1"
+						ng-show='(ms.source=="dispatch" || ms.source=="report") && !locked'
+						aria-hidden="true" ng-click="editDate()"></a></span> <span
+						ng-show='dateEdit' class="form-inline form-group-sm"><input
+						type="datetime-local" class="form-control"
+						ng-model="newFinishDate" /><a href=""
+						class="glyphicon glyphicon-floppy-disk marg-l1" aria-hidden="true"
+						ng-click="saveDate()"></a> <a href=""
+						class="glyphicon glyphicon-remove marg-l1" aria-hidden="true"
+						ng-click="dateEdit=false"></a></span>
+				</dd>
+				<dt>Driver:</dt>
+				<dd>{{ms.driverName}}</dd>
+				<dt>Arrival Time:</dt>
+				<dd>{{ms.dateArrived}}</dd>
+				<dt>Payment Mode:</dt>
+				<dd>
+					<span ng-show='!pmtModeEdit'>{{ms.paymentMode}} <a href=""
+						class="glyphicon glyphicon-pencil marg-l1"
+						ng-show='(ms.source=="dispatch" || ms.source=="report") && !locked'
+						aria-hidden="true" ng-click="editPmtMode()"></a></span> <span
+						ng-show='pmtModeEdit' class="form-inline form-group-sm"> <select
+						ng-model="pmtModeSelected" class="form-control"
+						ng-options="pmtMode.label for pmtMode in pmtModes">
+					</select><a href="" class="glyphicon glyphicon-floppy-disk marg-l1"
+						aria-hidden="true" ng-click="savePmtMode()"></a> <a href=""
+						class="glyphicon glyphicon-remove marg-l1" aria-hidden="true"
+						ng-click="pmtModeEdit=false"></a>
+					</span>
+					<code ng-show="ms.paymentMode=='Split'" class="marg-l2">
+						<span ng-hide="splitEdit"><span
+							ng-repeat="amount in ms.splitAmount.split('/')"><span
+								ng-if="$index==0">Cash:</span><span ng-if="$index==1">Credit
+									Card:</span><span ng-if="$index==2">Paypal:</span>{{amount | currency}}
+						</span><a href="" class="glyphicon glyphicon-pencil marg-l1"
+							ng-show='(ms.source=="dispatch" || ms.source=="report") && !locked'
+							aria-hidden="true" ng-click="newSplit=ms.splitAmount; splitEdit=true"></a></span> <span
+							ng-show="splitEdit" class="form-inline form-group-sm"><input
+							type="text" ng-model="newSplit" class="form-control"
+							tooltip="Cash / Credit card / Paypal" /> <a href=""
+							class="glyphicon glyphicon-floppy-disk marg-l1" aria-hidden="true"
+							ng-click="saveSplitAmt()"></a> <a href=""
+							class="glyphicon glyphicon-remove marg-l1" aria-hidden="true"
+							ng-click="splitEdit=false"></a></span>
+					</code>
+				</dd>				
+				<dt>Tip:</dt>
+				<dd>
+					<span ng-show='!tipEdit'>{{ms.tip | currency}} <a href=""
+						class="glyphicon glyphicon-pencil marg-l1"
+						ng-show='(ms.source=="dispatch" || ms.source=="report") && !locked'
+						aria-hidden="true" ng-click="editTip()"></a>
+					</span> <span ng-show='tipEdit' class="form-inline form-group-sm"><input
+						type="number" class="form-control" ng-model="newTip" /><a href=""
+						class="glyphicon glyphicon-floppy-disk marg-l1" aria-hidden="true"
+						ng-click="saveTip()"></a> <a href=""
+						class="glyphicon glyphicon-remove marg-l1" aria-hidden="true"
+						ng-click="tipEdit=false"></a></span>
+				</dd>
+				<dt>Commission:</dt>
+				<dd>{{(totals - ms.tip) *
+					ms.commissionPercent / 100 | currency }} ({{ms.commissionPercent}}%)</dd>
+				<dt>Distance Traveled:</dt>
+				<dd>
+					{{ms.distInMiles | number:1}} mi. <a href=""
+						tooltip="Recalculate Distance"
+						class="glyphicon glyphicon-repeat marg-l1"
+						ng-show='(ms.source=="dispatch" || ms.source=="report") && !locked'
+						aria-hidden="true" ng-click="distRecal()"></a>
+				</dd>
+				<dt>Additional Info:</dt>
+				<dd>{{ms.additionalInfo}}</dd>
+			</dl>
+
+			<div class="marg-b1 text-right" ng-if="!locked">
+				<div id="addOperator" type="sale-info-btns" limit="3999" editform></div>
+			</div>
+
+			<div>
+				<table class="table table-hover">
+					<caption>
+						All Packets under this Sales ID.
+					</caption>
+					<thead>
+						<tr>
+							<th class="hidden-xs">#</th>
+							<th>PacketID</th>
+							<th>Product</th>
+							<th class="hidden-xs">Weight</th>
+							<th class="text-right">Price</th>
+							<th class="text-right">Selling Price</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="packet in packets">
+							<td class="hidden-xs">{{$index + 1}}</td>
+							<td><span ng-if="packet.packetCode.indexOf('>>')!=-1">
+									{{packet.packetCode.split('>>')[0]}}</span><span
+								ng-if="packet.packetCode.indexOf('>>')==-1">
+									{{packet.packetCode}}</span> <a href="" title="Remove Item"
+								ng-click="removeItem()" ng-show="controlId<2999 && !locked"><small
+									class="glyphicon glyphicon-trash"></small></a></td>
+							<td>{{packet.productName}}</td>
+							<td class="hidden-xs">{{packet.weightInGrams}}</td>
+							<td class="text-right">{{packet.markedPrice | currency}}</td>
+							<td class="text-right">{{packet.sellingPrice | currency}}</td>
+						</tr>
+						<tr ng-show="adjustment">
+							<td class="hidden-xs"></td>
+							<td>{{adjustment.code}}</td>
+							<td><input type="text" ng-model="adjustment.reason"
+								class="form-control adjustmentReason"
+								placeholder="Brief description" /></td>
+							<td class="hidden-xs"></td>
+							<td class="text-right"><input type="text"
+								ng-model="adjustment.amount"
+								class="form-control w50p text-right pull-right" /></td>
+							<td><a href="" class="glyphicon glyphicon-floppy-disk"
+								aria-hidden="true" ng-click="saveAdjustment()"></a></td>
+						</tr>
+						<tr ng-show="ms.tip>0">
+							<td class="hidden-xs"></td>
+							<td></td>
+							<td>Tip</td>
+							<td class="hidden-xs"></td>
+							<td class="text-right"></td>
+							<td class="text-right">{{ms.tip | currency}}</td>
+						</tr>
+						<tr>
+							<td colspan="6" ng-show="packets.length>0" class="text-right"><strong>Total:</strong>
+								{{totals | currency}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

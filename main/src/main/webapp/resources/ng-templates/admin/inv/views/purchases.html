@@ -1,0 +1,113 @@
+<section class="marg-b3 container">
+	<div class="col-sm-12">
+		<h3 class="marg-b3">PURCHASES</h3>
+
+		<div type="purchase-form" limit="999" editform></div>
+		
+
+		<div class="marg-b2 well">
+			<h4 class="marg-t0">Filters</h4>
+			<div class="clearfix">
+				<label class="pull-left marg-t1">Vendors</label>
+				<div class="col-sm-2">
+					<select name="vendor" class="form-control"
+						ng-model="vendorFilterSelected" ng-change="reload()"
+						ng-options="vendor.vendorName for vendor in filterVendors">
+					</select>
+				</div>
+				<div class="col-sm-3">
+					<form class="input-group" tooltip="Search by product name" ng-submit="reload()">
+						<input type="text" class="form-control" ng-model="productSearch"
+							placeholder="Search product..."> <span
+							class="input-group-btn">
+							<button class="btn btn-default" type="submit">
+								<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+							</button>
+						</span>
+					</form>
+				</div>
+				<div class="col-sm-3">
+					<form class="input-group" tooltip="Search by SKU code" ng-submit="reload()">
+						<input type="text" class="form-control" ng-model="sku"
+							placeholder="Search SKU..."> <span
+							class="input-group-btn">
+							<button class="btn btn-info" type="submit">
+								<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+							</button>
+						</span>
+					</form>
+				</div>
+			</div>
+		</div>
+		
+		<div class="marg-b3 clearfix" ng-hide="pg.totalItems <= pg.itemsPerPage">
+			<div class="pull-left">
+				<uib-pagination total-items="pg.totalItems" ng-model="pg.currentPage"
+					previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+					last-text="&raquo;" items-per-page="pg.itemsPerPage"
+					class="pagination-sm" max-size="5" boundary-links="true"
+					rotate="true" ng-change="pageChanged()"></uib-pagination>
+			</div>
+			<div class="pull-left pad2 marg-t05 size12">{{pg.startCount}} -
+				{{pg.endCount}} of {{pg.totalItems}}</div>
+		</div>
+		
+		<div class="marg-b3">
+			<table class="table table-hover">
+				<caption>All Purchases.</caption>
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Product<a href="" title="sort" ng-click="sortCol('product',$event)"><span
+								class="glyphicon glyphicon-sort" aria-hidden="true"></span></a></th>
+						<th>Condition<a href="" title="sort" ng-click="sortCol('condition',$event)"><span
+								class="glyphicon glyphicon-sort" aria-hidden="true"></span></a></th>
+						<th class="text-right">Quantity<a href="" title="sort" ng-click="sortCol('qty',$event)"><span
+								class="glyphicon glyphicon-sort" aria-hidden="true"></span></a></th>
+						<th class="text-right">Weight<a href="" title="sort" ng-click="sortCol('weight',$event)"><span
+								class="glyphicon glyphicon-sort" aria-hidden="true"></span></a></th>
+						<th class="text-right">Price<a href="" title="sort" ng-click="sortCol('price',$event)"><span
+								class="glyphicon glyphicon-sort" aria-hidden="true"></span></a></th>
+						<th>Vendor<a href="" title="sort" ng-click="sortCol('vendor',$event)"><span
+								class="glyphicon glyphicon-sort" aria-hidden="true"></span></a></th>
+						<th>Purchase Date<a href="" title="sort" ng-click="sortCol('date',$event)"><span
+								class="glyphicon glyphicon-sort" aria-hidden="true"></span></a></th>
+						<th>Comments</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="purchase in purchases" ng-class="(purchase.growthCondition=='Adjustment')?'inactive':''">
+						<td>{{purchase.id}}</td>
+						<td>{{purchase.productName}}</td>
+						<td>{{purchase.growthCondition}}</td>
+						<td class="text-right">{{purchase.quantity}}</td>
+						<td class="text-right">{{purchase.weightInGrams}} gms</td>
+						<td class="text-right">{{purchase.unitPrice | currency}}</td>
+						<td>{{purchase.vendorName}}</td>
+						<td>{{purchase.dateAdded | date : 'MM/dd/yyyy'}}</td>
+						<td class="col-xs-2">{{purchase.operatorComments}}</td>
+						<td><a href="#" ng-click="editPurchase($event)"
+							ng-show="controlId<999"><span
+								class="glyphicon glyphicon-pencil"></span></a> <a
+							ng-hide="purchase.growthCondition=='Adjustment'"
+							href="#packets?p={{purchase.id}}" title="Make Units"><span
+								class="glyphicon glyphicon-equalizer"></span></a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		
+		<div class="marg-b3 clearfix" ng-hide="pg.totalItems <= pg.itemsPerPage">
+			<div class="pull-left">
+				<uib-pagination total-items="pg.totalItems" ng-model="pg.currentPage"
+					previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+					last-text="&raquo;" items-per-page="pg.itemsPerPage"
+					class="pagination-sm" max-size="5" boundary-links="true"
+					rotate="true" ng-change="pageChanged()"></uib-pagination>
+			</div>
+			<div class="pull-left pad2 marg-t05 size12">{{pg.startCount}} -
+				{{pg.endCount}} of {{pg.totalItems}}</div>
+		</div>
+	</div>
+</section>

@@ -1,0 +1,14 @@
+<div class="clearfix view-edit-form">
+	<form class="form-inline pull-right" ng-submit="addClient()">
+		<div class="form-group">
+			<label class="sr-only">Client Name <sup></sup></label> <input
+				type="text" class="form-control" placeholder="Client Name"
+				ng-model="clientName" required> <input type="hidden"
+				ng-model="currentClientId">
+		</div>
+		<button type="submit" class="btn btn-info">{{clientBtnText}}</button>
+		<a class="btn btn-danger" href="#" ng-click="cancelClientEdit($event)"
+			ng-show="clientBtnText=='SAVE'"><span
+			class="glyphicon glyphicon-remove"></span></a>
+	</form>
+</div>

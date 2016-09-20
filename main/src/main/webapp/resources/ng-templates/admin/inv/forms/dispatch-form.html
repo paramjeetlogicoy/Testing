@@ -1,0 +1,31 @@
+<div class="view-edit-form">
+	<form class="form-inline" ng-submit="addDispatch()">
+		<div class="form-group">
+			<input type="text"
+				ng-model="clientNameSelected" placeholder="Client Name"
+				typeahead="clientName for clientName in getClientNames($viewValue)"
+				typeahead-loading="loadingClientNames" class="form-control">
+			<i ng-show="loadingClientNames" class="glyphicon glyphicon-refresh"></i>
+
+		</div>
+		<div class="form-group">
+			<input min="1" max="99"  
+				type="number" required class="form-control" placeholder="priority" 
+				name="priority" ng-model="priority" tooltip="Priority: Any number from 1 to 99. 1 being the highest priority.">
+		</div>
+		<div class="form-group">
+			<input ng-focus="autoPopDate()" 
+				type="datetime-local" required class="form-control"
+				name="dateCalled" ng-model="dateCalled" tooltip="Date-Time Called">
+		</div>
+		<div class="form-group">
+			<textarea class="form-control"
+				name="additionalInfo" ng-model="additionalInfo" tooltip="Any additional note about this call."></textarea>
+		</div>
+		
+		<button type="submit" class="btn btn-info">{{dispatchBtnText}}</button>
+		<a class="btn btn-danger" href="#" ng-click="cancelEdit($event)"
+			ng-show="dispatchBtnText=='SAVE'"><span
+			class="glyphicon glyphicon-remove"></span></a>
+	</form>
+</div>

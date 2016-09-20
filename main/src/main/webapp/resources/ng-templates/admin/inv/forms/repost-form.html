@@ -1,0 +1,19 @@
+<div class="view-edit-form">
+	<form method="post" action="/inventory/apps/p-ordermeta">
+		<div class="form-group">
+			<label>Webhook Deliver ID</label> <input type="text"
+				class="form-control" name="deliveryid" />
+		</div>
+		<div class="form-group">
+			<label>Order Meta Data</label>
+			<textarea class="form-control" name="ordermeta" rows="5"></textarea>
+		</div>
+		<div class="checkbox">
+			<label> <input type="checkbox" name="fromdb" /> Post from DB
+				(Please provide the delivery id in the 'Webhook Deliver ID' field
+				above.)
+			</label>
+		</div>
+		<button type="submit" class="btn btn-info">Submit</button>
+	</form>
+</div>

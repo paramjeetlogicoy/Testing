@@ -1,0 +1,196 @@
+<section class="marg-b3 packets-section container">
+	<div class="col-sm-12">
+		
+		<h3 class="marg-b3" ng-if="purchaseId">UNITS FOR PURCHASE ORDER {{purchaseId}}</h3>
+		<h3 class="marg-b3" ng-if="!purchaseId">UNIT INVENTORY</h3>
+
+		<div class="marg-b3 well" ng-if="purchaseId">
+			<h4 class="black">Purchase order details:</h4>
+			<hr />
+			<dl class="dl-horizontal">
+				<dt>Product:</dt>
+				<dd>
+					{{pd.productName}} <small class="marg-l1">(<code>Condition:</code>{{pd.condition}},
+						<code>Category:</code>{{pd.categoryName}}, <code>Strain:</code>{{pd.strainName}}
+						)
+					</small>
+				</dd>
+				<dt>Vendor:</dt>
+				<dd>{{pd.vendorName}}</dd>
+				<dt>Purchased On:</dt>
+				<dd>{{pd.purchaseDate}}</dd>
+
+				<dt>&nbsp;</dt>
+				<dd>&nbsp;</dd>
+
+				<dt>Total Purchase:</dt>
+				<dd><span ng-show="pd.flower">{{pd.purchased}} gms.</span><span ng-show="!pd.flower">{{pd.purchaseCount}} ct.</span></dd>
+				<dt>Total Packed:</dt>
+				<dd><span ng-show="pd.flower">{{pd.inpackets}} gms.</span><span ng-show="!pd.flower">{{pd.packetCount}} ct.</span></dd>
+				<dt>Total Sold:</dt>
+				<dd><span ng-show="pd.flower">{{pd.sold}} gms.</span><span ng-show="!pd.flower">{{pd.soldCount}} ct.</span></dd>
+				<dt>Total Adjusted:</dt>
+				<dd><span ng-show="pd.flower">{{pd.adjusted}} gms.</span><span ng-show="!pd.flower">{{pd.adjusted}} ct.</span></dd>
+				<dt tooltip="TotalPurchased + Total Adjusted - TotalSold">Total Remaining:</dt>
+				<dd><span ng-show="pd.flower">{{pd.remainingTotal}} gms.</span><span ng-show="!pd.flower">{{pd.remainingCount}} ct.</span></dd>
+			</dl>
+		</div>
+
+		<div ng-show="alertTxt">
+			<div class="alert alert-danger alert-dismissible marg-b2"
+				role="alert">
+				<button type="button" class="close" aria-label="Close"
+					ng-click="alertTxt=''">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				{{alertTxt}}
+			</div>
+		</div>
+
+		<div class="marg-b5 well">
+			<h5>Filter Units</h5>
+			<div class="clearfix">
+				<label class="pull-left marg-t1">Shop Name</label>
+				<div class="col-sm-2">
+					<select class="form-control" ng-model="shopSelected1"
+						ng-change="reload()" ng-options="shop.shopName for shop in shops1">
+					</select>
+				</div>
+				<label class="pull-left marg-t1">Item Type</label>
+				<div class="col-sm-2">
+					<select class="form-control" ng-model="itemSelected"
+						ng-change="reload()" ng-options="item.label for item in items">
+					</select>
+				</div>
+
+				<div class="col-sm-3">
+					<form tooltip="Search by SKU code" ng-submit="reload()"
+						class="input-group">
+						<input type="text" class="form-control"
+							placeholder="Search SKU..." ng-model="sku" /> <span
+							class="input-group-btn">
+							<button class="btn btn-info" type="submit">
+								<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+							</button>
+						</span>
+					</form>
+				</div>
+			</div>
+		</div>
+		
+		<div class="marg-b3 well" ng-show="purchaseId">
+			<a class="btn btn-xs btn-warning" href=""
+				ng-click="showBulkForm = true">Bulk Update</a>
+			<div ng-show="showBulkForm">
+				<form class="form-inline form-group-sm" ng-submit="bulkUpdate()">
+					<label class="control-label">Update all SKU prices to </label> <input
+						type="number" step="any" class="form-control" ng-model="bulkPrice"
+						required /> <label class="control-label"> WHERE weight =
+					</label> <input type="number" step="any" class="form-control"
+						ng-model="bulkWt" required />
+					<button type="submit" class="btn btn-success btn-sm">UPDATE</button>
+				</form>
+			</div>
+		</div>
+
+		<div class="marg-b3 well" ng-show="purchaseId">
+			<h4 class="marg-t0">Bulk Add</h4>
+			<div>
+				<form class="form-inline form-group-sm" ng-submit="bulkAdd()">
+					<label class="control-label">Create </label> <input type="number"
+						step="1" min="1" class="form-control marg-r1"
+						ng-model="bulkAddCount" required /> <label class="control-label">packets
+						with price = </label> <input type="number" step="any"
+						class="form-control marg-r1" ng-model="bulkAddPrice" required />
+					<label class="control-label"> and weight = </label> <input
+						type="number" step="any" class="form-control marg-r1"
+						ng-model="bulkAddWt" required />
+					<button type="submit" class="btn btn-success btn-sm">CREATE</button>
+				</form>
+			</div>
+		</div>
+
+		<div class="marg-b5" ng-show="driverMode">
+			<a class="btn btn-primary" href="#/sales-driver">Dispatches assigned to me</a>
+		</div>
+
+		<div type="packet-form" limit="2999" editform></div>
+		
+		<div class="marg-b3 clearfix" ng-hide="pg.totalItems <= pg.itemsPerPage">
+			<div class="pull-left">
+				<uib-pagination total-items="pg.totalItems" ng-model="pg.currentPage"
+					previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+					last-text="&raquo;" items-per-page="pg.itemsPerPage"
+					class="pagination-sm" max-size="5" boundary-links="true"
+					rotate="true" ng-change="pageChanged()"></uib-pagination>
+			</div>
+			<div class="pull-left pad2 marg-t05 size12">{{pg.startCount}} -
+				{{pg.endCount}} of {{pg.totalItems}}</div>
+		</div>
+
+		<div class="marg-b3">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th class="hidden-xs">#</th>
+						<th>SKU</th>
+						<th>Product<a href="" title="sort" ng-click="sortCol('product',$event)"><span
+								class="glyphicon glyphicon-sort" aria-hidden="true"></span></a></th>
+						<th class="text-right">Weight<a href="" title="sort" ng-click="sortCol('weight',$event)"><span
+								class="glyphicon glyphicon-sort" aria-hidden="true"></span></a></th>
+						<th class="text-right">List Price<a href="" title="sort" ng-click="sortCol('price',$event)"><span
+								class="glyphicon glyphicon-sort" aria-hidden="true"></span></a></th>
+						<th class="text-right hidden-xs">Sold Price<a href="" title="sort" ng-click="sortCol('sprice',$event)"><span
+								class="glyphicon glyphicon-sort" aria-hidden="true"></span></a></th>
+						<th ng-hide="driverMode">Shop<a href="" title="sort" ng-click="sortCol('shop',$event)"><span
+								class="glyphicon glyphicon-sort" aria-hidden="true"></span></a></th>
+						<th>Sale Date<a href="" title="sort" ng-click="sortCol('date',$event)"><span
+								class="glyphicon glyphicon-sort" aria-hidden="true"></span></a></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="packet in packets" title="{{packet.returnReason==''?'':packet.returnReason}}" class="{{packet.returnDetailsId==0?'':'danger returned'}}">
+						<td class="hidden-xs">{{$index + 1}}</td>
+						<td>{{packet.packetCode}}</td>
+						<td>{{packet.productName}}</td>
+						<td class="text-right">{{packet.weightInGrams}} gms.</td>
+						<td class="text-right">{{packet.markedPrice | currency}}</td>
+						<td class="text-right hidden-xs">{{packet.sellingPrice | currency}}</td>
+						<td ng-hide="driverMode">{{packet.shopName}}</td>
+						<td>{{packet.dateSold}}</td>
+						<td><a href="" ng-click="editPacket()"
+							ng-show="controlId<2999" ng-if="!packet.dateSold" title="Edit Unit"><span
+								class="glyphicon glyphicon-pencil"></span></a> <a href=""
+							ng-click="assignShop()" ng-if="!packet.dateSold"
+							ng-show="controlId<2999" title="Assign/Change Shop"><span
+								class="glyphicon glyphicon-inbox"></span></a> <a href=""
+							ng-click="getSalesDetails()" title="Get Sales Info"
+							ng-show="controlId<100" ng-if="packet.dateSold"><span
+								class="glyphicon glyphicon-list-alt"></span></a> <a href=""
+							ng-click="deletePacket()" title="Delete Unit" ng-if="!packet.dateSold" 
+							><span
+								class="glyphicon glyphicon-remove-sign"></span></a> <a href=""
+							ng-click="getLabel()" title="Generate Label" ng-if="!packet.dateSold && controlId<2999" 
+							><span
+								class="glyphicon glyphicon-barcode"></span></a>
+								</td>
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
+		
+		<div class="marg-b3 clearfix" ng-hide="pg.totalItems <= pg.itemsPerPage">
+			<div class="pull-left">
+				<uib-pagination total-items="pg.totalItems" ng-model="pg.currentPage"
+					previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+					last-text="&raquo;" items-per-page="pg.itemsPerPage"
+					class="pagination-sm" max-size="5" boundary-links="true"
+					rotate="true" ng-change="pageChanged()"></uib-pagination>
+			</div>
+			<div class="pull-left pad2 marg-t05 size12">{{pg.startCount}} -
+				{{pg.endCount}} of {{pg.totalItems}}</div>
+		</div>
+	</div>
+</section>

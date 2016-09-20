@@ -1,0 +1,30 @@
+<div class="view-edit-form marg-b5">
+	<form class="form-inline" ng-submit="addProduct()">
+		<div class="form-group">
+			<label class="sr-only">Product Name <sup></sup></label> <input
+				type="text" class="form-control" name="productName"
+				placeholder="Product Name" ng-model="productName" required>
+		</div>
+		<div class="form-group">
+			<label class="sr-only">Nick Name</label> <input type="text"
+				class="form-control" name="nickName" placeholder="Nick Name"
+				ng-model="nickName">
+		</div>
+		<div class="form-group">
+			<label class="sr-only">Category Name <sup></sup></label> <select
+				name="category" class="form-control" ng-model="categorySelected"
+				ng-options="category.categoryName for category in categories">
+			</select>
+		</div>
+		<div class="form-group">
+			<label class="sr-only">Strain Name <sup></sup></label> <select
+				name="category" class="form-control" ng-model="strainSelected"
+				ng-options="strain.strainName for strain in strains">
+			</select>
+		</div>
+		<button type="submit" class="btn btn-info">{{productBtnText}}</button>
+		<a class="btn btn-danger" href="#" ng-click="cancelEdit($event)"
+			ng-show="productBtnText=='SAVE'"><span
+			class="glyphicon glyphicon-remove"></span></a>
+	</form>
+</div>

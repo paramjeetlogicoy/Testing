@@ -1,0 +1,14 @@
+<div class="clearfix view-edit-form">
+	<form class="form-inline pull-right" ng-submit="addCategory()">
+		<div class="form-group">
+			<label class="sr-only">Category Name <sup></sup></label> <input
+				type="text" class="form-control" placeholder="Category Name"
+				ng-model="categoryName" required> <input type="hidden"
+				ng-model="currentCategoryId">
+		</div>
+		<button type="submit" class="btn btn-info">{{btnText}}</button>
+		<a class="btn btn-danger" href="#" ng-click="cancelEdit($event)"
+			ng-show="btnText=='SAVE'"><span
+			class="glyphicon glyphicon-remove"></span></a>
+	</form>
+</div>

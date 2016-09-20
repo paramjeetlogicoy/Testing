@@ -1,0 +1,117 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org" ng-app="invApp">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Inventory / {{rootPage}}</title>
+<meta th:include="fragments/admin/layout::fragment-head" />
+<script th:inline="javascript" type="text/javascript">
+/*<![CDATA[*/
+    var _globalUserId = /*[[${userId}]]*/ 0;
+/*]]>*/
+</script>
+</head>
+<body th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
+	<div class="admin-container" th:with="superAdmin=${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_INV_ADMIN')},admin=${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_ADMIN')}">
+		<div th:replace="fragments/admin/layout::fragment-header"></div>
+		<div th:replace="fragments/admin/layout::fragment-subnav"></div>
+		<div class="container-fluid" ng-controller="defaultRouteCtrl">
+			<div class="app-container ng-cloak">
+				<hr />
+				<div class="collapse navbar-collapse" id="navbar-collapse-1">
+					<ul class="nav navbar-nav">
+						<li class="dropdown dropdown-hover"
+							th:if="${superAdmin}"><a href="#"
+							class="dropdown-toggle" target="_self" data-toggle="dropdown"
+							role="button" aria-expanded="false">Products<span
+								class="caret"></span>
+						</a>
+							<ul class="dropdown-menu" role="menu">
+								<li><a href="#/products/add-products">Add Products</a></li>
+								<li><a href="#/products/add-strains">Add Strains</a></li>
+								<li><a href="#/products/add-categories">Add Categories</a></li>
+							</ul></li>
+						<li><a href="#/add-people"
+							th:if="${superAdmin}">People &amp; Shops</a></li>
+						<li><a href="#/purchases"
+							th:if="${superAdmin}">Purchases</a></li>
+						<li class="dropdown dropdown-hover driver-hidden"
+							th:if="${superAdmin}"><a
+							class="dropdown-toggle" data-toggle="dropdown" role="button"
+							aria-expanded="false">Inventory<span class="caret"></span>
+						</a>
+							<ul class="dropdown-menu" role="menu">
+								<li><a
+									href="#/inventory/shop-inventory">Shop Inventory</a></li>
+								<!-- <li><a href="#/inventory/box-inventory">Box
+										Inventory</a></li> -->
+								<li><a
+									href="#/inventory/inv-alert-settings">Alert Setting</a></li>
+								<li><a href="#/inventory/take-stock">Take
+										Stock</a></li>
+								<li><a href="#/inventory/misc">Misc.
+										Report</a></li>
+							</ul></li>
+						<!-- <li><a href="#/packets">Packets</a></li> -->
+
+						<li><a href="#/sales">Dispatch</a></li>
+
+						<li class="dropdown dropdown-hover"
+							th:if="${superAdmin}"><a href="#"
+							class="dropdown-toggle" target="_self" data-toggle="dropdown"
+							role="button" aria-expanded="false"><span
+								class="glyphicon glyphicon-cog" aria-hidden="true"></span><span
+								class="caret"></span> </a>
+							<ul class="dropdown-menu" role="menu">
+								<li><a href="#/settings/barcodes"
+									title="Generate Barcodes"><span
+										class="glyphicon glyphicon-barcode" aria-hidden="true"></span>
+										Generate Barcodes</a></li>
+								<li><a
+									href="#/settings/bulk-shop-assign"
+									title="Move packets to a Shop"><span
+										class="glyphicon glyphicon-inbox" aria-hidden="true"></span>
+										Bulk Move</a></li>
+								<li><a href="#/settings/logs"
+									title="Tracking Log"><span
+										class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+										Tracking Logs</a></li>
+								<li><a href="#/settings/stats"
+									title="Statistic"><span
+										class="glyphicon glyphicon-dashboard" aria-hidden="true"></span>
+										Statistics</a></li>
+								<li><a href="#/returns"
+									title="All Units"><span class="glyphicon glyphicon-copy"
+										aria-hidden="true"></span> Returns</a></li>
+								<li><a href="#/packets"
+									title="All Units"><span class="glyphicon glyphicon-leaf"
+										aria-hidden="true"></span> All Units</a></li>
+							</ul></li>
+					</ul>
+				</div>				
+				
+				<hr />
+				
+				<div ng-view=""></div>
+				
+			</div>
+		</div>
+
+		<div th:replace="fragments/admin/layout::fragment-footer"></div>
+		<div th:include="fragments/admin/layout::fragment-foot(angular=true)"></div>
+		<script type="text/javascript" th:if="superAdmin">var isSuperAdmin = function(){return true;};</script>
+		<script type="text/javascript" th:unless="superAdmin">var isSuperAdmin = function(){return false;};</script>
+	</div>
+	
+	<script	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAkFB_q0sw9ruZsOnY9-TF0cuMfMLG4DI0&amp;libraries=visualization"></script>
+	<script type="text/javascript"	src="https://www.gstatic.com/charts/loader.js"></script>
+		
+	<script src="/resources/js/lib/cdn/ui-bootstrap-tpls-1.2.1.min.js"></script>
+	<script src="/resources/js/admin/inv/ctrlrs/statistics.js"></script>
+	<script src="/resources/js/admin/inv/ctrlrs/sales-info.js"></script>
+	<script src="/resources/js/admin/inv/ctrlrs/packets.js"></script>
+	<script src="/resources/js/admin/inv/ctrlrs/purchases.js"></script>
+	<script src="/resources/js/admin/inv/main.js"></script>
+</body>
+</html>

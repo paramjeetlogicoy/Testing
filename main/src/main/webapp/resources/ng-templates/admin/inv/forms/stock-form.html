@@ -1,0 +1,25 @@
+<div class="view-edit-form marg-b3">
+	<h3 class="marg-b3">Scan Product barcode</h3>
+	<form class="form-horizontal" ng-submit="getStock()">
+		<div class="form-group">
+			<label class="col-sm-4 control-label">Product Code</label>
+			<div class="col-sm-8 rel">
+				<div class="input-group">
+					<input type="text" ng-model="productCode" class="form-control"
+						id="productCode" placeholder="Enter Product Name"
+						ng-change="getProducts()" autocomplete="off" /> <span class="input-group-btn">
+						<button class="btn btn-info" type="submit">
+							<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+						</button>
+					</span>
+				</div>
+				<ul class="prompt-options" ng-show="searchOn">
+					<li ng-repeat="po in filteredPos = (pos | filter:productCode)"><a href=""
+						ng-click="selectThisProduct()">{{po.productName}}</a>
+					</li>
+					<li ng-hide="filteredPos.length"><em class="mute">No Products Found</em></li>
+				</ul>
+			</div>
+		</div>
+	</form>
+</div>

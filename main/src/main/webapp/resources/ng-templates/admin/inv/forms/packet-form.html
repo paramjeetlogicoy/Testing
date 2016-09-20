@@ -1,0 +1,26 @@
+
+<div class="view-edit-form" ng-show="purchaseId || packetBtnText=='SAVE'">
+	<form class="form-inline" ng-submit="addPacket()">
+		<div class="form-group marg-b1">
+			<label class="sr-only">SKU/Bar code</label> <input type="text"
+				class="form-control packetID" name="packetID" ng-model="packetCode"
+				placeholder="SKU/Bar code" required>
+		</div>
+		<div class="form-group marg-b1">
+			<label class="sr-only">Weight</label> <input type="text"
+				class="form-control" name="weight" placeholder="Weight in grams"
+				ng-model="weightInGrams" required tooltip="Weight in grams">
+		</div>
+		<div class="form-group marg-b1">
+			<label class="sr-only">Price</label> <input type="text"
+				class="form-control" name="price" placeholder="Price"
+				ng-model="markedPrice" required  tooltip="List Price">
+		</div>
+		<div class="form-group marg-b1">
+			<button type="submit" class="btn btn-info">{{packetBtnText}}</button>
+			<a class="btn btn-danger" href="#" ng-click="cancelEdit($event)" tooltip="Cancel"
+				ng-show="packetBtnText=='SAVE'"><span
+				class="glyphicon glyphicon-remove"></span></a>
+		</div>
+	</form>
+</div>

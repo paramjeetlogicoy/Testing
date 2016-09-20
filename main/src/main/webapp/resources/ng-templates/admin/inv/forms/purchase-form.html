@@ -1,0 +1,69 @@
+
+<div class="view-edit-form marg-b5">
+	<h5>Add Purchase</h5>
+	<form class="form-inline" ng-submit="addPurchase()">
+		<div class="form-group marg-b1">
+			<label class="sr-only">Product Name <sup></sup></label> <select
+				name="category" class="form-control" ng-model="prodSelected"
+				ng-options="product.productName for product in products" tooltip="Select Product"></select>
+		</div>
+		<div class="form-group marg-b1 hide">
+			<label class="sr-only">Growth Condition</label> <input type="text"
+				tooltip="Growth Condition: Outdoor, Indoor, etc."
+				class="form-control" name="condition" placeholder="condition"
+				ng-model="growthCondition">
+		</div>
+		<div class="form-group marg-b1">
+			<label class="sr-only">Quantity <sup></sup></label> <input
+				type="text" class="form-control" name="quantity"
+				placeholder="Quantity" ng-model="quantity" required 
+				tooltip="Total Quantity. For flowers put 1.">
+		</div>
+		<div class="form-group marg-b1">
+			<label class="sr-only">Weight <sup></sup></label> <input type="text"
+				class="form-control" name="weight" placeholder="weight in grams per unit"
+				ng-model="weightInGrams" 
+				tooltip="Weight in grams. For flowers put total purchase weight in grams. 1lb is 453.6gms">
+		</div>
+		<div class="form-group marg-b1">
+			<label class="sr-only">Price <sup></sup></label> <input type="text"
+				class="form-control" name="price" placeholder="whole sale price per unit"
+				ng-model="unitPrice" required 
+				tooltip="Unit price. For flowers its the purchase price per gram">
+		</div>
+		<div class="form-group marg-b1">
+			<label class="sr-only">Vendor <sup></sup></label><select tooltip="Select Vendor"
+				name="category" class="form-control" ng-model="vendorSelected"
+				ng-options="vendor.vendorName for vendor in vendors"></select>
+		</div>
+		<div class="form-group marg-b1">
+			<label class="sr-only">Purchase Date <sup></sup></label> <input
+				type="date" class="form-control" name="purchaseDate" tooltip="Purchase date"
+				placeholder="Purchase Date" ng-model="dateAdded" required>
+		</div>
+<!-- 		<div class="form-group marg-b1">
+			<label class="sr-only">Purchase Code/Bar Code</label><input type="text"
+				class="form-control" name="purchaseCode" placeholder="Purchase Code/Bar Code"
+				ng-model="purchaseCode">
+		</div> -->
+		<div class="form-group marg-b1">
+			<label class="sr-only">Comments</label>
+			<textarea class="form-control" name="comments" placeholder="Comments"
+				ng-model="operatorComments"></textarea>
+		</div>
+		<div class="form-group marg-b1">
+			<button type="submit" class="btn btn-info">{{purchaseBtnText}}</button>
+			<a class="btn btn-danger" href="#" ng-click="cancelEdit($event)"
+				ng-show="purchaseBtnText=='SAVE'"><span
+				class="glyphicon glyphicon-remove"></span></a>
+
+		</div>
+	</form>
+	<hr />
+	<div>
+		<a href="" ng-click="addAdjustment()">Add Adjustment <span
+			class="glyphicon glyphicon-new-window"></span></a> <span class="marg-l2 marg-r2">|</span> <a
+			href="#/purchase-reports">Purchase Reports <span
+			class="glyphicon glyphicon-new-window"></span></a>
+	</div>
+</div>

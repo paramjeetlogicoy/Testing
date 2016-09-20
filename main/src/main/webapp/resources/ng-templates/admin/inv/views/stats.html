@@ -1,0 +1,400 @@
+<section class="marg-b3">
+	<div class="col-sm-12">
+		<div class="charts-container">
+			<div class="">
+				<button class="btn btn-xs" ng-click="toggleChartView()">Show/Hide
+					Chart</button>
+			</div>
+			<div class="marg-b2">
+				<div id="chart_div_sales_dashboard" class="charts"
+					ng-show="showChart">
+					<h5>Sales Data for last 6 months</h5>
+					<div id="div_sales_chart"></div>
+					<div id="div_count_chart"></div>
+					<h5>Filter</h5>
+					<div id="div_sales_control"></div>
+				</div>
+			</div>
+			<div class="marg-b2">
+				<div id="chart_div_count" class="charts" ng-show="showChart"></div>
+			</div>
+			<div class="marg-b2">
+				<div class="row" ng-show="showChart">
+					<div class="col-sm-6">
+						<div id="div_msales_chart" class="charts"></div>
+					</div>
+					<div class="col-sm-6">
+						<div id="div_mcount_chart" class="charts"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="statFilterTab">
+		
+			<div class="marg-b3 well">
+				<h5 class="marg-t0">Filters</h5>
+				<div class="row marg-b2 form-group-sm">
+					<div class="col-sm-3">
+						<label class="size12">Start Date</label><input type="date" class="form-control"
+							ng-model="startDate" ng-change="saveDate('stsDate')" />
+					</div>
+					<div class="col-sm-3">
+						<label class="size12">End Date</label><input type="date" class="form-control"
+							ng-model="endDate" ng-change="saveDate('steDate')" />
+					</div>
+					<div class="col-sm-3">
+						<label class="size12">Driver Name</label> <select class="form-control"
+							ng-model="driverSelected" ng-change="getDriverStat()"
+							ng-options="driver.driverName for driver in drivers">
+						</select>
+					</div>
+				</div>
+				<a class="btn btn-info btn-xs" ng-click="getStat()">GET STAT</a>
+			</div>
+
+
+			<div ng-show="alertTxt">
+				<div class="alert alert-danger alert-dismissible marg-b2"
+					role="alert">
+					<button type="button" class="close" aria-label="Close"
+						ng-click="alertTxt=''">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					{{alertTxt}}
+				</div>
+			</div>
+
+			<div class="marg-b1 clearfix"><div class="col-sm-6">
+				<span class="pull-left marg-r2 marg-t1">Date Range:</span>
+				<pre>{{startDate | date:'MM/dd/yyyy' }} - {{endDate | date:'MM/dd/yyyy'}}</pre>
+			</div></div>
+		</div>
+		<div class="marg-b5"><uib-tabset>
+			<uib-tab heading="Quick Stats" select="tabChange()">			
+				<div class="col-sm-7">
+					<div class="marg-b2 marg-t1 text-danger"><em>Week starts from Monday and Ends on Sunday</em></div>
+					<table class="table multiTbodies">
+						<thead>
+							<tr>
+								<th></th>
+								<th>Type</th>
+								<th class="text-right">Order Count</th>
+								<th class="text-right">Amount</th>
+							</tr>
+						</thead>
+						<tbody ng-repeat="stat in stats">
+							<tr ng-if="stat.ostat.length==0">
+								<td><strong>{{stat.name}}</strong></td>
+								<td></td>
+								<td class="text-right">0</td>
+								<td class="text-right">$0.00</td>
+							</tr>
+							<tr ng-if="stat.ostat.length>0">
+								<td rowspan="{{stat.ostat.length + 1}}"><strong>{{stat.name}}</strong></td>
+								<td><strong><em>Total</em></strong></td>
+								<td class="text-right"><strong><em>{{stat.mode}}</em></strong></td>
+								<td class="text-right"><strong><em>{{stat.amount | currency}}</em></strong></td>
+							</tr>
+							<tr ng-repeat="sstat in stat.ostat">
+								<td>{{sstat.mode}}</td>
+								<td class="text-right">{{sstat.countF}}</td>
+								<td class="text-right">{{sstat.amount | currency}}</td>	
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</uib-tab>
+    		<uib-tab heading="Driver Stats" select="tabChange()">
+				<div class="marg-t1 clearfix">
+					<div class="col-sm-8" ng-show="das.length>0">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Driver</th>
+									<th>Payment Mode</th>
+									<th class="text-right">Distance</th>
+									<th class="text-right">Tip</th>
+									<th class="text-right">Commission</th>
+									<th class="text-right">Amount</th>
+								</tr>
+							</thead>
+						<tbody>
+							<tr ng-repeat="da in das">
+								<td>{{da.name}}</td>
+								<td>{{da.mode}}</td>
+								<td class="text-right">{{da.distance | number:1}} mi</td>
+								<td class="text-right">{{da.tip | currency}}</td>
+								<td class="text-right">{{da.commission | currency}}</td>
+								<td class="text-right">{{da.amount | currency}}</td>
+							</tr>
+							<tr ng-show="sTotalAmount">
+								<td colspan="6" class="text-right"><span
+									class="marg-r2 grey9">Tip Total: {{dasTipTotal |
+										currency}}</span><span
+									class="marg-r2 grey9">Comm. Total: {{dasCommTotal |
+										currency}}</span><strong>Total: {{sTotalAmount | currency}}</strong></td>
+							</tr>
+						</tbody>
+					</table>
+					</div>
+					
+					<div class="col-sm-7" ng-show="dStats.length>0">
+		
+						<table class="table multiTbodies">
+							<thead>
+								<tr>
+									<th>Driver</th>
+									<th class="text-right">Product</th>
+									<th class="text-right">Count</th>
+									<th class="text-right">Amount</th>
+								</tr>
+							</thead>
+							<tbody ng-repeat="dStat in dStats">
+								<tr>
+									<td rowSpan="{{dStat.ostat.length}}">{{dStat.name}}
+										({{dStat.mode}})</td>
+									<td class="text-right">{{dStat.ostat[0].label}}</td>
+									<td class="text-right">{{dStat.ostat[0].count}}</td>
+									<td class="text-right">{{dStat.ostat[0].amount | currency}}</td>
+								</tr>
+								<tr ng-repeat="ostat in dStat.ostat" ng-hide="$first">
+									<td class="text-right">{{ostat.label}}</td>
+									<td class="text-right">{{ostat.count}}</td>
+									<td class="text-right">{{ostat.amount | currency}}</td>
+								</tr>
+								<tr>
+									<td colspan="5" class="text-right"><div class="marg-b3">
+											<strong>Total: {{dStat.amount | currency}}</strong>
+										</div></td>
+								</tr>
+							</tbody>
+						</table>			
+					
+					</div>
+				</div>    		
+    		</uib-tab>
+		    <uib-tab heading="Order Breakdown" select="tabChange()">
+		    	<div class="marg-t1 clearfix">
+					<div class="col-sm-12" ng-show="orStats.length>0">
+					<table class="table multiTbodies">
+						<thead>
+							<tr>
+								<th>Date</th>
+								<th>Customer</th>
+								<th>Driver</th>
+								<th class="text-right">Item Count</th>
+								<th class="text-right">Original Order Amount</th>
+								<th class="text-right">Actual Order Amount</th>
+								<th class="text-right">Tip</th>
+								<th class="text-right">Payment Type</th>
+							</tr>
+						</thead>
+						<tbody ng-repeat="orStat in orStats">
+							<tr>
+								<td rowSpan="{{orStat.ostat.length}}">{{orStat.name}} <br />
+									<br /> <span
+									ng-if="controlId == 1 || controlId == 2 || controlId == 5 || controlId == 7"><span
+										ng-if="orStat.ostat[0].status=='open'"><a href=""
+											class="btn btn-primary btn-xs"
+											ng-click="closeOpenBatch('closesales')">Close Batch</a></span> <span
+										ng-if="orStat.ostat[0].status=='locked'"><a href=""
+											class="btn btn-danger btn-xs"
+											ng-click="closeOpenBatch('reopensales')">Re-open Batch</a></span></span>
+								</td>
+								<td>{{1}}. {{orStat.ostat[0].label}} <a href=""
+									ng-click="getSalesDetails()" title="Get Sales Info"><span
+										class="glyphicon glyphicon-stats"></span></a></td>
+								<td>{{orStat.ostat[0].extra1}}</td>
+								<td class="text-right">{{orStat.ostat[0].count}}</td>
+								<td class="text-right">{{orStat.ostat[0].originalTotal |
+									currency}}</td>
+								<td class="text-right">{{orStat.ostat[0].amount |
+									currency}}</td>
+								<td class="text-right">{{orStat.ostat[0].tip | currency}}</td>
+								<td class="text-right">{{orStat.ostat[0].mode}}</td>
+							</tr>
+							<tr ng-repeat="ostat in orStat.ostat" ng-hide="$first">
+								<td>{{$index + 1}}. {{ostat.label}} <a href="" ng-click="getSalesDetails()"
+									title="Get Sales Info"><span
+										class="glyphicon glyphicon-stats"></span></a></td>
+								<td>{{ostat.extra1}}</td>
+								<td class="text-right">{{ostat.count}}</td>
+								<td class="text-right">{{ostat.originalTotal | currency}}</td>
+								<td class="text-right">{{ostat.amount | currency}}</td>
+								<td class="text-right">{{ostat.tip | currency}}</td>
+								<td class="text-right">{{ostat.mode}}</td>
+							</tr>
+							<tr>
+								<td colspan="8">
+									<div class="marg-b3 text-right">
+									<span class="marg-r2 grey9">Total Orders:
+											{{orStat.ostat.length}}</span>
+										<span class="marg-r2 grey9">Original Order Total:
+											{{orStat.originalAmountTotal | currency}}</span><span
+											class="marg-r2 grey9">Tip Total: {{orStat.tipTotal |
+											currency}}</span> <strong>Total: {{orStat.amount |
+											currency}}</strong>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+				</div>		    	   
+		    	
+		    	</div>
+		    
+		    </uib-tab>
+			<uib-tab heading="Top Selling Products" select="tabChange()">
+		    	<div class="marg-t1 clearfix">
+					<div class="col-sm-7" ng-show="pStats.length>0">
+						<table class="table">
+							<caption>Top 50 products based on sales.</caption>
+							<thead>
+								<tr>
+									<th>Product</th>
+									<th class="text-right"><a class="sortables"
+								ng-click="sortField = 'mode'; sortReverse = !sortReverse; getCoupons();">Item Count
+									<span ng-show="sortField == 'mode'"><i
+										ng-show="!sortReverse" class="glyphicon size12 glyphicon-arrow-down"></i> <i
+										ng-show="sortReverse" class="glyphicon size12 glyphicon-arrow-up"></i></span> 
+							</a></th>
+									<th class="text-right"><a class="sortables"
+								ng-click="sortField = 'amount'; sortReverse = !sortReverse; getCoupons();">Amount
+									<span ng-show="sortField == 'amount'"><i
+										ng-show="!sortReverse" class="glyphicon size12 glyphicon-arrow-down"></i> <i
+										ng-show="sortReverse" class="glyphicon size12 glyphicon-arrow-up"></i></span>
+							</a></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="pStat in pStats | orderBy : sortField : sortReverse">
+									<td>{{pStat.name}}</td>
+									<td class="text-right">{{pStat.mode}}</td>
+									<td class="text-right">{{pStat.amount | currency}}</td>
+								</tr>
+							</tbody>
+						</table>			
+					
+					</div>		    	   
+		    	
+		    	</div>
+			</uib-tab>
+			
+			<uib-tab heading="Top Purchasers" select="tabChange()">
+		    	<div class="marg-t1 clearfix">
+					<div class="col-sm-7" ng-show="cStats.length>0">
+						<table class="table">
+							<caption>Top Purchasers based on sales.</caption>
+							<thead>
+								<tr>
+									<th>Customer Name</th>
+									<th class="text-right">Item Count</th>
+									<th class="text-right">Amount</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="cStat in cStats">
+									<td>{{cStat.name}}</td>
+									<td class="text-right">{{cStat.mode}}</td>
+									<td class="text-right">{{cStat.amount | currency}}</td>
+								</tr>
+							</tbody>
+						</table>			
+					
+					</div>		    	   
+		    	
+		    	</div>
+			</uib-tab>
+			
+			<uib-tab heading="Profit Sales Stat" select="tabChange()">
+				<div class="marg-t1 clearfix">
+					<div class="col-sm-7" ng-show="psStats.length>0">
+						<table class="table">
+							<caption>Profit Sales Stat.</caption>
+							<thead>
+								<tr>
+									<th>Date/Period</th>
+									<th>Category</th>
+									<th class="text-right">Purchase Price</th>
+									<th class="text-right">Selling Price</th>
+									<th class="text-right">Profit</th>
+									<th class="text-right">%</th>
+								</tr>
+							</thead>
+							<tbody ng-repeat="psStat in psStats">
+								<tr>
+									<td
+										rowSpan="{{psStat.spData.length+1}}">{{psStat.date}}</td>
+									<td><span ng-if="psStat.spData[0].flower">Flowers</span><span
+										ng-if="!psStat.spData[0].flower">Others</span></td>
+									<td class="text-right">{{psStat.spData[0].purchasePrice |
+										currency}}</td>
+									<td class="text-right">{{psStat.spData[0].sellingPrice |
+										currency}}</td>
+									<td class="text-right">{{(psStat.spData[0].profit) | currency}}</td>
+									<td class="text-right"><small class="grey9">{{(psStat.spData[0].profit) * 100 / psStat.spData[0].sellingPrice
+										| number:0}}%</small></td>
+								</tr>
+								<tr ng-repeat="spData in psStat.spData" ng-hide="$first">
+									<td><span ng-if="spData.flower">Flowers</span><span
+										ng-if="!spData.flower">Others</span></td>
+									<td class="text-right">{{spData.purchasePrice | currency}}</td>
+									<td class="text-right">{{spData.sellingPrice | currency}}</td>
+									<td class="text-right">{{spData.profit | currency}}</td>
+									<td class="text-right"><small class="grey9">{{(spData.profit) * 100 / spData.sellingPrice | number:0}}%</small></td>
+								</tr>
+								<tr>
+									<td class="text-right"></td>
+									<td class="text-right"><small class="grey9">{{psStat.purchaseTotal | currency}}</small></td>
+									<td class="text-right"><small class="grey9">{{psStat.sellingTotal | currency}}</small></td>
+									<td class="text-right"><strong>{{psStat.total | currency}}</strong></td>
+									<td class="text-right"><strong>{{(psStat.total) * 100 / psStat.sellingTotal
+										| number:0}}%</strong></td>
+								</tr>
+							</tbody>
+							<tbody ng-show="psStatTotal">
+								<tr>
+									<td colspan="5">&nbsp;</td>
+								</tr>
+								<tr>
+									<td class="text-right" colspan="2"><strong>Total</strong></td>
+									<td class="text-right"><small class="grey9">{{psStatPTotal | currency}}</small></td>
+									<td class="text-right"><small class="grey9">{{psStatSTotal | currency}}</small></td>
+									<td class="text-right"><strong>{{psStatTotal | currency}}</strong></td>
+									<td class="text-right"><strong>{{(psStatTotal) * 100 / psStatSTotal
+										| number:0}}%</strong></td>
+								</tr>
+							</tbody>
+						</table>
+	
+					</div>
+	
+				</div>
+			</uib-tab> 
+			
+			<uib-tab heading="Delivery Heatmap" select="tabChange()">
+				<div class="marg-t1 clearfix">
+					<div class="marg-b2">
+						<button type="button" class="btn btn-primary"
+							ng-click="loadHeatMap()">Load Map</button>
+					</div>
+					
+					<small>Deliveries (upto a max of 1000) with in the above
+						date range is used to plot the maps.</small>
+					<div class="marg-b1" ng-if="hm.avgDistance>0">
+						Average distance travelled : <strong>{{hm.avgDistance |
+							number:1}} mi</strong>
+					</div>
+	
+					<h4>Heat Map</h4>
+					<div id="heatMapWrapper" class="marg-b3"></div>
+					
+					<h4>Marker Map</h4>
+					<div id="markerMapWrapper" class="marg-b3"></div>
+				</div>
+			</uib-tab>
+		</uib-tabset></div>		
+	</div>
+</section>

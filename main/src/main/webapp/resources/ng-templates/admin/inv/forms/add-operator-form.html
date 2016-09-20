@@ -1,0 +1,24 @@
+<div class="clearfix view-edit-form">
+	<form class="form-inline" ng-submit="addOperator()">
+		<div class="form-group">
+			<label class="sr-only">Operator Name <sup></sup></label> <input
+				type="text" class="form-control" placeholder="Operator Name"
+				ng-model="operatorName" required> <input type="hidden"
+				ng-model="currentOperatorId">
+		</div>
+		<div class="form-group">
+			<label class="sr-only">User Name <sup></sup></label> <input
+				type="text" class="form-control" placeholder="User Name"
+				ng-model="opsUserName" required>
+		</div>
+		<div class="form-group">
+			<label class="sr-only">Password <sup></sup></label> <input
+				type="password" class="form-control" placeholder="Password"
+				ng-model="opsPassword" ng-required="opsBtnText=='ADD'">
+		</div>
+		<button type="submit" class="btn btn-info">{{opsBtnText}}</button>
+		<a class="btn btn-danger" href="#"
+			ng-click="cancelOperatorEdit($event)" ng-show="opsBtnText=='SAVE'"><span
+			class="glyphicon glyphicon-remove"></span></a>
+	</form>
+</div>

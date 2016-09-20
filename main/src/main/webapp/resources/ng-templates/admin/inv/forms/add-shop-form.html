@@ -1,0 +1,14 @@
+<div class="clearfix view-edit-form">
+	<form class="form-inline" ng-submit="addShop()">
+		<div class="form-group">
+			<input
+				type="text" class="form-control" placeholder="Shop Name"  tooltip="Shop Name"
+				ng-model="shopName" required> <input type="hidden"
+				ng-model="currentShopId">
+		</div>
+		<button type="submit" class="btn btn-info">{{shopBtnText}}</button>
+		<a class="btn btn-danger" href="#" ng-click="cancelShopEdit($event)"
+			ng-show="shopBtnText=='SAVE'"><span
+			class="glyphicon glyphicon-remove"></span></a>
+	</form>
+</div>

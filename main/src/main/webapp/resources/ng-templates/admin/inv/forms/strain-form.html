@@ -1,0 +1,15 @@
+
+<div class="clearfix view-edit-form">
+	<form class="form-inline pull-right" ng-submit="addStrain()">
+		<div class="form-group">
+			<label class="sr-only">Strain Name <sup></sup></label> <input
+				type="text" class="form-control" placeholder="Strain Name"
+				ng-model="strainName" required> <input type="hidden"
+				ng-model="currentStrainId">
+		</div>
+		<button type="submit" class="btn btn-info">{{btnText}}</button>
+		<a class="btn btn-danger" href="#" ng-click="cancelEdit($event)"
+			ng-show="btnText=='SAVE'"><span
+			class="glyphicon glyphicon-remove"></span></a>
+	</form>
+</div>

@@ -1,0 +1,29 @@
+<div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+			aria-label="Close" ng-click="cancel()">
+			<span aria-hidden="true">&times;</span>
+		</button>
+		<h4 class="modal-title">Move to a Shop</h4>
+	</div>
+	<div class="modal-body">
+		<div class="marg-b1">
+			<form class="form-horizontal">
+				<div class="form-group">
+					<label class="col-sm-3 control-label">Shop Name</label>
+					<div class="col-sm-6">
+						<select
+						name="shop" class="form-control" ng-model="shopSelected" 
+						ng-options="shop.shopName for shop in shops">
+					</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-3 col-sm-6">
+						<button type="submit" class="btn btn-info" ng-click="ok()">MOVE</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

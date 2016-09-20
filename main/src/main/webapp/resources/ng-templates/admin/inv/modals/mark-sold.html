@@ -1,0 +1,141 @@
+<div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+			aria-label="Close" ng-click="cancel()">
+			<span aria-hidden="true">&times;</span>
+		</button>
+		<h4 class="modal-title">MARK SOLD</h4>
+	</div>
+	<div class="modal-body">
+		<div class="marg-b2">
+			<form class="form-inline" ng-submit="addPacket()">
+				<input type="hidden" ng-model="packetId" />
+				<div class="form-group marg-b1">
+					<label class="sr-only">Packet ID/Bar code</label><input type="text"
+						class="form-control packetID"
+						typeahead="packetCode for packetCode in getPackets($viewValue)"
+						typeahead-loading="loadingPacketCodes" class="form-control"
+						typeahead-on-select="packetCodeChange()"
+						placeholder="Packet ID/Bar code" ng-model="packetCode" required>
+					<i ng-show="loadingPacketCodes" class="glyphicon glyphicon-refresh"></i>
+				</div>
+				<div class="form-group marg-b1">
+					<label class="sr-only">Price</label> <input type="text" disabled="disabled"
+						class="form-control" placeholder="Price" ng-model="sellingPrice" ng-focus="sellingPriceFocus()">
+				</div>
+				<div class="form-group marg-b1" ng-show="sellingPrice==''">
+					<a class="btn btn-success" ng-click="packetCodeChange()">$</a>
+				</div>
+				<div class="form-group marg-b1">
+					<button type="submit" class="btn btn-info">ADD TO THIS SALE</button>
+				</div>
+			</form>
+		</div>
+
+		<div ng-show="alertTxt">
+			<div class="alert alert-danger alert-dismissible marg-b1" role="alert">
+				<button type="button" class="close"	aria-label="Close" ng-click="alertTxt=''">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				{{alertTxt}}
+			</div>
+		</div>
+
+		<div class="marg-b3">
+			<table class="table table-hover">
+				<caption>
+					All Packets under this sale.
+				</caption>
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>PacketID</th>
+						<th>Price</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					
+					<tr ng-repeat="packet in soldPackets">
+						<td>{{$index + 1}}</td>
+						<td>{{packet.packetCode}}</td>
+						<td>{{packet.sellingPrice | currency}}</td>
+						<td><a href="" ng-click="removePacket()"><span
+								class="glyphicon glyphicon-remove"></span></a></td>
+					</tr>
+					
+					<tr ng-repeat="item in miscItems">
+						<td>{{$index + 1 + soldPackets.length}}</td>
+						<td>{{item.itemDesc}}</td>
+						<td>{{item.itemPrice | currency}}</td>
+						<td><a href="" ng-click="removeItem()"><span
+								class="glyphicon glyphicon-remove"></span></a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="marg-b2">
+			<form class="form-inline" ng-submit="saveMiscItem()"
+				ng-show="showMiscAdd">
+				<input type="text" class="form-control"
+					placeholder="Brief Description" ng-model="itemDesc" required><input
+					type="text" class="form-control marg-l1" placeholder="0.00"
+					ng-model="itemPrice" required>
+				<button type="submit" class="btn btn-success btn-xs">ADD</button>
+			</form>
+			<button type="submit" class="btn btn-warning btn-xs"
+				ng-click="addMiscItem()" ng-hide="showMiscAdd">ADD MISC
+				ITEM</button>
+		</div>
+		
+		<div class="marg-b2">
+			<h6>Apply Discounts</h6>
+			<button type="button" class="btn btn-primary btn-xs"
+				ng-click="addPromo('PROMOKIVA',-10)">Off Hour Kiva</button>
+			<button type="button" class="btn btn-danger btn-xs"
+				ng-click="addPromo('PROMODBLDN',-10)">$10 Double Down</button>
+			<button type="button" class="btn btn-info btn-xs"
+				ng-click="addPromo('PROMODBLDN',-20)">$20 Double Down</button>
+			<button type="button" class="btn btn-primary btn-xs"
+				ng-click="addPromo('PROMOCPN',-10)">Loyalist Reward $10</button>
+			<button type="button" class="btn btn-danger btn-xs"
+				ng-click="addCrtsyPromo()">Courtesy Discount</button>
+		</div>
+		
+		<div class="marg-b2" ng-show="soldPackets.length>0 || miscItems.length>0">	
+
+			<form class="form-inline" ng-submit="saveSold()">
+				<input type="hidden" ng-model="packetId" />
+				<div class="form-group pad1">
+					<label>Tip</label> <input type="number" step="0.5"
+						class="form-control" ng-model="ms.tip" ng-change="findTotal()" />
+				</div>
+				<div class="form-group pad1">
+					<label>Total Price</label>
+					<p class="form-control-static">{{(totalPrice * (1 -
+						totalDiscount/100)) | currency}}</p>
+				</div>
+				<div class="form-group pad1">
+					<label>Payment Mode</label> <select ng-model="pmtModeSelected"
+						class="form-control"
+						ng-options="pmtMode.label for pmtMode in pmtModes">
+					</select>
+				</div>
+				<div class="form-group pad1"
+					ng-show="pmtModeSelected.label=='Split'">
+					<label>Split Details</label> <input type="text"
+						placeholder="cash/credit/paypal" class="form-control"
+						ng-model="ms.splitDetails" />
+				</div>
+				<div class="form-group pad1">
+					<label>Finish Time</label> <input type="datetime-local"
+						class="form-control" ng-model="dateFinished"
+						ng-focus="setDateTime()" required />
+				</div>
+				<div class="form-group pad1">
+					<button type="submit" class="btn btn-info">SAVE</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

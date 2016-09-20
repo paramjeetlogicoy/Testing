@@ -1,0 +1,29 @@
+<div class="clearfix view-edit-form">
+	<form class="form-inline" ng-submit="addDriver()">
+		<div class="form-group">
+			<input
+				type="text" class="form-control" placeholder="Driver Name"  tooltip="Driver Name"
+				ng-model="driverName" required> <input type="hidden"
+				ng-model="currentDriverId">
+		</div>
+		<div class="form-group">
+			<input
+				type="text" class="form-control" placeholder="User Name"  tooltip="Username for signin"
+				ng-model="driverUserName" required>
+		</div>
+		<div class="form-group">
+			<input
+				type="password" class="form-control" placeholder="Password"  tooltip="Password"
+				ng-model="driverPassword" ng-required="driverBtnText=='ADD'">
+		</div>
+		<div class="form-group">
+			<input
+				type="text" class="form-control" placeholder="Phone"  tooltip="Phone# for text updates"
+				ng-model="phoneNumber" >
+		</div>
+		<button type="submit" class="btn btn-info">{{driverBtnText}}</button>
+		<a class="btn btn-danger" href="#" ng-click="cancelDriverEdit($event)"
+			ng-show="driverBtnText=='SAVE'"><span
+			class="glyphicon glyphicon-remove"></span></a>
+	</form>
+</div>

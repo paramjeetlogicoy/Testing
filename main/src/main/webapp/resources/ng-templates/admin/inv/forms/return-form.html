@@ -1,0 +1,27 @@
+<div class="view-edit-form">
+	<h3 class="marg-b3">Scan returned item barcode</h3>
+	<form class="form-horizontal" ng-submit="addReturn()">
+		<div class="form-group">
+			<label class="col-sm-4 control-label">Unit Code</label>
+			<div class="col-sm-6">
+				<input type="text" ng-model="packetCode" class="form-control"
+					id="packetCode" placeholder="BarCode ex: P37840980" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-4 control-label">Reason</label>
+			<div class="col-sm-6">
+				<input type="text" ng-model="reason" class="form-control"
+					list="reasonDataList" />
+				<datalist id="reasonDataList">
+					<option ng-repeat="reason in reasons" value="{{reason}}"></option>
+				</datalist>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-offset-4 col-sm-6">
+				<button type="submit" class="btn btn-info">{{btnTxt}}</button>
+			</div>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,14 @@
+<div class="clearfix view-edit-form">
+	<form class="form-inline" ng-submit="addBox()">
+		<div class="form-group">
+			<input
+				type="text" class="form-control" placeholder="Box Name"  tooltip="Box Name"
+				ng-model="boxName" required> <input type="hidden"
+				ng-model="currentBoxId">
+		</div>
+		<button type="submit" class="btn btn-info">{{boxBtnText}}</button>
+		<a class="btn btn-danger" href="#" ng-click="cancelBoxEdit($event)"
+			ng-show="boxBtnText=='SAVE'"><span
+			class="glyphicon glyphicon-remove"></span></a>
+	</form>
+</div>
