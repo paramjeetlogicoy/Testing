@@ -27,6 +27,7 @@ public class Order {
 	private String source = "";
 	
 	private Date date;
+	private OrderDispatchInfo dispatch;
 	
 	public long get_id() {
 		return _id;
@@ -99,5 +100,11 @@ public class Order {
 	}
 	public void setShipping(Shipping shipping) {
 		this.shipping = shipping;
+	}
+	public OrderDispatchInfo getDispatch() {
+		return dispatch;
+	}
+	public void setDispatch(OrderDispatchInfo dispatch) {
+		this.dispatch = dispatch;
 	}
 }
