@@ -1,7 +1,7 @@
-var shopInvCtrlr = function($scope, $http, $rootScope, $filter, currentUser){
+var shopInvCtrlr = function($scope, $http, $rootScope, $filter){
 
 	$rootScope.rootPage = "Shop Inventory";
-	$scope.controlId = currentUser.ctrlid;
+	$scope.controlId = _luvbriteGlobalOpsId;
 	
 	$scope.sis = [];
 	$scope.grantTotal = 0;

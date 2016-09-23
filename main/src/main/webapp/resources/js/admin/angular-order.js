@@ -73,7 +73,7 @@ defaultCtrlr = function($scope, $http, $filter, $rootScope, $sanitize, ordDtlSer
 	 * Order Details Fns
 	 **/
 	
-	$scope.showDetails = function(){
+	$scope.showDetails = function() {
 		ordDtlService.orderNumber = this.o.orderNumber;
 		
 		ordDtlService.nextPrevNumbers = $scope.orders.map(function(x){return x.orderNumber;}); 
@@ -84,21 +84,22 @@ defaultCtrlr = function($scope, $http, $filter, $rootScope, $sanitize, ordDtlSer
 	
 	
 	
-	/** Dispatch Fns **/
-
+	/** 
+	 * Dispatch Fns 
+	 **/
 	
-	$scope.getSalesDetails=function(){
+	$scope.getSalesDetails = function() {
 
 		if(!this.o.dispatch || this.o.dispatch.salesId==0) return;
-		
-		$rootScope.globals = { currentUser : null};
 		
 		var nextPrevDispatches = [];
 		$scope.orders.forEach(function(x){
 			if(x.dispatch && x.dispatch.salesId!=0) nextPrevDispatches.push(x.dispatch.salesId);
 		});
 		
-		var salesId = this.o.dispatch.salesId;
+		var salesId = this.o.dispatch.salesId,
+		orderNumber = this.o.orderNumber;
+		
 		$http.get('/inventory/apps/listdispatches?id='+salesId).then(function(resp){
 			var data = resp.data;
 			if(data.success){
@@ -138,7 +139,8 @@ defaultCtrlr = function($scope, $http, $filter, $rootScope, $sanitize, ordDtlSer
 			    			  source:'dispatch',
 			    			  nextPrevDispatches:nextPrevDispatches,
 			    			  distInMiles:distInMiles,
-			    			  status:status
+			    			  status:status,
+			    			  orderNumber:orderNumber
 			    			 };
 			    	  }
 			      }
@@ -179,19 +181,45 @@ defaultCtrlr = function($scope, $http, $filter, $rootScope, $sanitize, ordDtlSer
 	    });
 	
 	    modalInstance.result.then(
-	    	function (modalScope) {
-				
-				//update mongoDB order and then update postgres				
-/*				$.post('/inventory/apps/updatedispatch', {id:modalScope.itemId, di:modalScope.driverSelected.id,
-							mode:'assigndrv', opsid:_luvbriteGlobalOpsId},
-					function(data){
-						if(!data.success) alert(data.message);
-					}
-				);*/
+	    	function (ms) {
+	    		
+	    		$http.post('/admin/order/json/updatedriver', {'driver' : ms.order.dispatch.driverName, 'salesId' : ms.order._id })
+	    		.then(function(resp){
+	    			
+	    			var data = resp.data;
+	    			if(data.success) {
+	    							
+	    				$.post('/inventory/apps/updatedispatch', 
+	    						{
+	    					id:ms.order.dispatch.salesId,
+	    					di:ms.driverId,
+	    					mode:'assigndrv', 
+	    					opsid:_luvbriteGlobalOpsId
+	    					},
+	    					function(data){
+	    						if(data.success){
+	    		    				_lbFns.pSuccess('Order assigned to ' + ms.order.dispatch.driverName);
+	    						}
+	    						else{
+	    							alert(data.message);
+	    						}
+	    					}
+	    				);
+	    				
+	    			}
+	    			else{
+	    				
+	    				$scope.pageLevelError = data.message;
+	    			}				
+	    		},
+	    		function(){
+	    			$scope.errorMsg  = "There was some error updating the driver. "
+	    					+"Please contact G.";
+	    		});	
 	    		
 	    	},
-	    	function(){
-	    	}
+	    	
+	    	function(){}
 	    );	
 	};
 	
@@ -204,8 +232,19 @@ defaultCtrlr = function($scope, $http, $filter, $rootScope, $sanitize, ordDtlSer
 			$http.get('/admin/orders/json/getsalesid/'+this.o.orderNumber).then(function(resp){
 				var data = resp.data;
 				if(data.success){
-					currentOrder = data.results[0];		
+					currentOrder = data.results[0];	
+					
+					for(var i=0;i<$scope.orders.length;i++){
+						if($scope.orders[i]._id === currentOrder._id){
+							$scope.orders[i] = currentOrder;
+							break;
+						}						
+					}
+					
 					assignDriverFn(currentOrder);
+				}
+				else{
+					$scope.pageLevelError = data.message;
 				}
 			});
 			
@@ -217,46 +256,159 @@ defaultCtrlr = function($scope, $http, $filter, $rootScope, $sanitize, ordDtlSer
 			
 	};
 	
-	
-	$scope.cancelDispatch=function($event){
-	
-		var currentDispatchId = this.dispatch.id;
-		var cancellationReason = this.dispatch.cancellationReason;
+	var cancelDispatchFn = function(orderId, reason, salesId){
 		
 	    var modalInstance = $uibModal.open({
 	      templateUrl: '/resources/ng-templates/admin/inv/modals/cancel-reason.html'+versionCtrl,
 	      controller: 'ModalGenericCtrl',
 	      backdrop : 'static',
 	      resolve: {
-	    	modalScope: function () {
-	        	return {reason:cancellationReason, itemId:currentDispatchId};
+	    	ms: function () {
+	        	return {reason:reason, orderId:orderId, salesId:salesId};
 	        }
 	      }
 	    });
 	
 	    modalInstance.result.then(
-	    	function (modalScope) {
-				for(var i=0;i<$scope.dispatches.length;i++){
-					if($scope.dispatches[i].id==modalScope.itemId){
-						$scope.dispatches[i].cancellationReason = modalScope.reason;
-						$scope.dispatches[i].paymentMode = 'Cancelled - '+modalScope.reason;
-						break;
-					}
-				}
-				
-				$.post('apps/updatedispatch', {id:modalScope.itemId, reason:modalScope.reason,
-							mode:'cancelled', opsid:_luvbriteGlobalOpsId},
-					function(data){
-						if(!data.success) alert(data.message);
-					}
-				);
-	    		$scope.currentDispatchId = 0;
+	    	function (ms) {
+	    		
+	    		$http.post('/admin/order/json/savestatus', {'_id' : ms.orderId, 'status' : 'cancelled', 'dispatch' : { 'comments' : ms.reason} })
+	    		.then(function(resp){
+	    			
+	    			var data = resp.data;
+	    			if(data.success) {
+	    				
+	    				for(var i=0;i<$scope.orders.length;i++){
+	    					if($scope.orders[i]._id === ms.orderId){						
+	    						$scope.orders[i].status = 'cancelled';
+	    						$scope.orders[i].dispatch.comments = ms.reason;
+	    						break;
+	    					}						
+	    				}
+	    							
+	    				$.post('/inventory/apps/updatedispatch', 
+	    						{
+	    					id:ms.salesId,
+	    					reason:ms.reason,
+	    					mode:'cancelled', 
+	    					opsid:_luvbriteGlobalOpsId
+	    					},
+	    					function(data){
+	    						if(data.success){
+	    		    				_lbFns.pSuccess('Order is cancelled. Cancellation notification send to customer');
+	    						}
+	    						else{
+	    							alert(data.message);
+	    						}
+	    					}
+	    				);
+	    				
+	    			}
+	    			else{
+	    				
+	    				$scope.pageLevelError = data.message;
+	    			}				
+	    		},
+	    		function(){
+	    			$scope.errorMsg  = "There was some error updating the status. "
+	    					+"Please contact G.";
+	    		});	
 	    		
 	    	},
-	    	function(){
-	    		$scope.currentDispatchId = 0;
-	    	}
+	    	function(){}
 	    );		
+	};
+	
+	$scope.cancelDispatch = function(){
+		
+		var currentOrder = this.o;
+		if(currentOrder.dispatch==null || currentOrder.dispatch.salesId==0){
+			
+			//getSalesId
+			$http.get('/admin/orders/json/getsalesid/'+this.o.orderNumber).then(function(resp){
+				var data = resp.data;
+				if(data.success){
+					currentOrder = data.results[0];	
+					
+					for(var i=0;i<$scope.orders.length;i++){
+						if($scope.orders[i]._id === currentOrder._id){
+							$scope.orders[i] = currentOrder;
+							break;
+						}						
+					}
+					
+					cancelDispatchFn(currentOrder._id, currentOrder.dispatch.comments, currentOrder.dispatch.salesId);
+				}
+				else{
+					$scope.pageLevelError = data.message;
+				}
+			});
+			
+		}
+		
+		else{
+			cancelDispatchFn(currentOrder._id, currentOrder.dispatch.comments, currentOrder.dispatch.salesId);
+		}
+	};
+	
+	
+	var markSoldFn = function(order){
+		
+	    var modalInstance = $uibModal.open({
+		      templateUrl: '/resources/ng-templates/admin/inv/modals/mark-sold.html'+versionCtrl,
+		      controller: 'ModalMarkSoldCtrl',
+		      backdrop : 'static',
+		      resolve: {
+		    	  ms: function () {	    		  
+		    		  return {itemId:order.dispatch.salesId, tip:0, order:order};
+		    	  }
+		      }
+		    });
+		
+		    modalInstance.result.then(
+		    	function (ms) {	
+					
+					for(var i=0;i<$scope.orders.length;i++){
+						if($scope.orders[i]._id === ms.order._id){
+							$scope.orders[i] = currentOrder;
+							break;
+						}						
+					}		    		
+		    	},
+		    	function(){}
+		    );
+	};
+	
+	$scope.markSold = function(){
+		
+		var currentOrder = this.o;
+		if(currentOrder.dispatch==null || currentOrder.dispatch.salesId==0){
+			
+			//getSalesId
+			$http.get('/admin/orders/json/getsalesid/'+this.o.orderNumber).then(function(resp){
+				var data = resp.data;
+				if(data.success){
+					currentOrder = data.results[0];	
+					
+					for(var i=0;i<$scope.orders.length;i++){
+						if($scope.orders[i]._id === currentOrder._id){
+							$scope.orders[i] = currentOrder;
+							break;
+						}						
+					}
+					
+					markSoldFn(currentOrder);
+				}
+				else{
+					$scope.pageLevelError = data.message;
+				}
+			});
+			
+		}
+		
+		else{
+			markSoldFn(currentOrder);
+		}
 	};
 };
 
@@ -273,5 +425,7 @@ ordApp
 //This is defined in angular-orderdetails-service.js
 .controller('ordDtlsCtrlr', ordDtlsCtrlr)
 .controller('ModalSalesInfoCtrl', ['$scope', '$uibModalInstance', 'modalScope', '$http', '$filter', '$rootScope', ModalSalesInfoCtrlr])
-.controller('ModalAssignDrvInstanceCtrl', ['$scope', '$uibModalInstance', 'drivers', 'order', ModalAssignDrvInstanceCtrlr]);
+.controller('ModalAssignDrvInstanceCtrl', ['$scope', '$uibModalInstance', 'drivers', 'order', ModalAssignDrvInstanceCtrlr])
+.controller('ModalGenericCtrl', ['$scope', '$uibModalInstance', 'ms', ModalGenericCtrlr])
+.controller('ModalMarkSoldCtrl', ['$scope', '$uibModalInstance', 'ms', '$http', '$filter', ModalMarkSoldCtrlr]);
 

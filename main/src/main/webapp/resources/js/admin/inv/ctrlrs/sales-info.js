@@ -1,6 +1,6 @@
-var ModalSalesInfoCtrlr = function ($scope, $uibModalInstance, modalScope, $http, $filter, $rootScope){
+var ModalSalesInfoCtrlr = function ($scope, $uibModalInstance, modalScope, $http, $filter){
 
-	$scope.controlId = $rootScope.globals.currentUser?$rootScope.globals.currentUser.ctrlid:0;	
+	$scope.controlId = _lbGlobalCDNPath;	
 
 	$scope.ms = modalScope;
 	$scope.totals = 0;

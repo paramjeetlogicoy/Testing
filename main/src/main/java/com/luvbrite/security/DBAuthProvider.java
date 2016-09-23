@@ -97,6 +97,7 @@ public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 					boolean enabled = false;
 					if(dbUser.isActive()) enabled = true;
 					
+					int invOpsId = 0;
 					String userRole = dbUser.getRole();		
 					List<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
 					
@@ -104,11 +105,15 @@ public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 						if(userRole.equals("admin")){
 							authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 							authorities.add(new SimpleGrantedAuthority("ROLE_EDIT"));
+							
+							invOpsId = dbUser.getInvOpsId();
 						}
 						else if(userRole.equals("adminInv")){
 							authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 							authorities.add(new SimpleGrantedAuthority("ROLE_EDIT"));
 							authorities.add(new SimpleGrantedAuthority("ROLE_INV_ADMIN"));
+							
+							invOpsId = dbUser.getInvOpsId();
 						}
 						else if(userRole.equals("customer"))
 							authorities.add(new SimpleGrantedAuthority("ROLE_CUSTOMER"));
@@ -120,7 +125,7 @@ public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 					else
 						authorities.add(new SimpleGrantedAuthority("ROLE_NONE"));
 					
-					currUser = new UserDetailsExt(actualUsername, dbUser.get_id(), enabled, authorities);
+					currUser = new UserDetailsExt(actualUsername, dbUser.get_id(), invOpsId, enabled, authorities);
 					
 				}
 

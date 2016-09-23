@@ -8,6 +8,18 @@
 	</div>
 	<div class="modal-body">
 		<div class="marg-b2">
+			<div><u>Items in the Order</u></div>
+			<ul>
+				<li ng-repeat="item in ms.order.lineItems"><strong>{{item.qty}}</strong>
+					<span ng-if="item.type=='item'">{{item.name}}<span
+						ng-if="item.specs">, <span ng-repeat="spec in item.specs">
+								<strong>{{spec.attr}}</strong>: <span>{{spec.value}}</span>
+						</span></span>
+				</span></li>
+			</ul>
+		</div>
+		
+		<div class="marg-b2">
 			<form class="form-inline" ng-submit="addPacket()">
 				<input type="hidden" ng-model="packetId" />
 				<div class="form-group marg-b1">
@@ -104,7 +116,7 @@
 		
 		<div class="marg-b2" ng-show="soldPackets.length>0 || miscItems.length>0">	
 
-			<form class="form-inline" ng-submit="saveSold()">
+			<form class="form-inline form-sm" ng-submit="saveSold()">
 				<input type="hidden" ng-model="packetId" />
 				<div class="form-group pad1">
 					<label>Tip</label> <input type="number" step="0.5"
@@ -126,11 +138,6 @@
 					<label>Split Details</label> <input type="text"
 						placeholder="cash/credit/paypal" class="form-control"
 						ng-model="ms.splitDetails" />
-				</div>
-				<div class="form-group pad1">
-					<label>Finish Time</label> <input type="datetime-local"
-						class="form-control" ng-model="dateFinished"
-						ng-focus="setDateTime()" required />
 				</div>
 				<div class="form-group pad1">
 					<button type="submit" class="btn btn-info">SAVE</button>

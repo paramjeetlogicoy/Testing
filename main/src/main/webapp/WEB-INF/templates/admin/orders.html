@@ -92,6 +92,15 @@
 								<div class="orange1 size16">
 									<strong>{{o.total | currency}}</strong>
 								</div>
+						
+								<div class="marg-b05" ng-if="o.dispatch.comments">
+									<mark class="mark-green em">{{o.dispatch.comments}}</mark>
+								</div>
+						
+								<div class="marg-b05" ng-if="o.notes.deliveryNotes">
+									<mark class="mark-yellow em">{{o.notes.deliveryNotes}}</mark>
+								</div>
+						
 								<div>
 									<strong>Address</strong>: <a
 										href="http://maps.google.com/?q={{o.shipping.address.address1}},{{o.shipping.address.city}}-{{o.shipping.address.zip}}"
@@ -152,7 +161,9 @@
 	</div>
 	
 
+	<script src="/resources/js/admin/inv/ctrlrs/mark-sold.js"></script>
 	<script src="/resources/js/admin/inv/ctrlrs/assign-driver.js"></script>
+	<script src="/resources/js/admin/inv/ctrlrs/generic-modal.js"></script>
 	<script src="/resources/js/admin/inv/ctrlrs/sales-info.js"></script>
 	<script src="/resources/js/admin/angular-orderdetails-service.js"></script>
 	<script src="/resources/js/admin/angular-order.js"></script>

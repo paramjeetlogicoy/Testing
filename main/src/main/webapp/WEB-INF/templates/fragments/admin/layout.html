@@ -28,6 +28,13 @@
 
 <link href="/resources/css/admin.css" rel="stylesheet" />
 
+<script th:inline="javascript" type="text/javascript" th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
+/*<![CDATA[*/
+    var _globalUserId = /*[[${sc.authentication.principal.id}]]*/ '';
+    var _luvbriteGlobalOpsId = /*[[${sc.authentication.principal.invOpsId}]]*/ '';
+/*]]>*/
+</script>
+
 <script th:inline="javascript" type="text/javascript">
 /*<![CDATA[*/
     var _lbGlobalCDNPath = /*[[${_lbGlobalCDNPath}]]*/ '';

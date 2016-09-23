@@ -1,6 +1,5 @@
 //Create a random number for version control and avoid caching
-var  _luvbriteGlobalOpsId = 0,
-versionCtrl = "?v" + Math.random(),
+var versionCtrl = "?v" + Math.random(),
 _globalPmtModes = [{label:'Cash',value:'Cash'},{label:'Credit Card',value:'Credit Card'},{label:'Paypal',value:'Paypal'},{label:'Split',value:'Split'}],
 
 sortColFns = function($scope, param, e){
@@ -35,35 +34,22 @@ var app = angular.module(
 
 globalResolve = {
 	
-	currentUser : function($q, $rootScope, $http){
+	currentUser : function($q, $rootScope){
 		var deferred = $q.defer();
 		
-		if($rootScope.globals && $rootScope.globals.currentUser){
-			_luvbriteGlobalOpsId = $rootScope.globals.currentUser.ctrlid;
-			deferred.resolve($rootScope.globals.currentUser);
-		}
-		else{
+		if(!$rootScope.globals || 
+				!$rootScope.globals.currentUser || 
+				!$rootScope.globals.currentUser.ctrlid || 
+				$rootScope.globals.currentUser.ctrlid == 0){
 			
-			$http.get('/inventory/apps/getopid', {params : { 'mid' : _globalUserId}}).success(function(data){
-				if(data.success){
-					_luvbriteGlobalOpsId = data.op.id;
-
-					$rootScope.globals = {
-			                currentUser: {
-			                    username: data.op.userName,
-			                    opsname : data.op.operatorName,
-			                    ctrlid : data.op.id
-			                }
-			            };
-					
-					deferred.resolve($rootScope.globals.currentUser);
-				}
-				else{
-					deferred.reject();
-				}
-			});
+			$rootScope.globals = {
+					currentUser: {
+	                    ctrlid : _luvbriteGlobalOpsId
+	                }
+	       };
 		}
 		
+		deferred.resolve($rootScope.globals.currentUser);
 		return deferred.promise;
 	}
 };
@@ -221,22 +207,22 @@ app
 })
 
 .controller('defaultRouteCtrl', defaultCtrlr)
-.controller('addPurchaseCtrl', ['$scope', '$http', '$filter', '$rootScope', '$uibModal', 'currentUser', addPurchaseCtrlr])
-.controller('addPacketCtrl', ['$scope', '$http', '$routeParams', 'driverMode', '$uibModal', '$rootScope', 'currentUser', addPacketCtrlr])
-.controller('addPplCtrl', ['$scope', '$http', '$filter', '$rootScope', '$compile', 'currentUser', addPplCtrlr])
-.controller('addProductsCtrl', ['$scope', '$http', '$rootScope', '$filter', 'currentUser', addProductsCtrlr])
-.controller('addStrainsCtrl', ['$scope', '$http', '$filter', '$rootScope', 'currentUser', addStrainsCtrlr])
-.controller('addCategoryCtrl', ['$scope', '$http', '$filter', '$rootScope', 'currentUser', addCategoryCtrlr])
-.controller('addBoxInvCtrl', ['$scope', '$http', '$routeParams', 'currentUser', addBoxInvCtrlr])
-.controller('shopInvCtrl', ['$scope', '$http', '$rootScope', '$filter', 'currentUser', shopInvCtrlr])
-.controller('statsCtrl', ['$scope', '$http', '$filter', '$uibModal', '$rootScope', 'currentUser', statsCtrlr])
-.controller('returnsCtrl',['$scope', '$http', '$rootScope', 'currentUser', returnsCtrlr])
-.controller('bulkAssignCtrl',['$scope', '$http', '$rootScope', 'currentUser', bulkAssignCtrlr])
-.controller('barCodeCtrl',['$scope', '$http', '$rootScope', 'currentUser', barCodeCtrlr])
-.controller('logCtrl',['$scope', '$http', '$rootScope', 'currentUser', logCtrlr])
-.controller('invAlertCtrl',['$scope', '$http', '$rootScope', 'currentUser', invAlertCtrlr])
-.controller('miscReportCtrl',['$scope', '$http', '$rootScope', 'currentUser', miscReportCtrlr])
-.controller('stockTakeCtrl',['$scope', '$http', '$rootScope', '$timeout', 'currentUser', stockTakeCtrlr])
+.controller('addPurchaseCtrl', ['$scope', '$http', '$filter', '$rootScope', '$uibModal', addPurchaseCtrlr])
+.controller('addPacketCtrl', ['$scope', '$http', '$routeParams', 'driverMode', '$uibModal', '$rootScope', addPacketCtrlr])
+.controller('addPplCtrl', ['$scope', '$http', '$filter', '$rootScope', '$compile', addPplCtrlr])
+.controller('addProductsCtrl', ['$scope', '$http', '$rootScope', '$filter', addProductsCtrlr])
+.controller('addStrainsCtrl', ['$scope', '$http', '$filter', '$rootScope', addStrainsCtrlr])
+.controller('addCategoryCtrl', ['$scope', '$http', '$filter', '$rootScope', addCategoryCtrlr])
+.controller('addBoxInvCtrl', ['$scope', '$http', '$routeParams', addBoxInvCtrlr])
+.controller('shopInvCtrl', ['$scope', '$http', '$rootScope', '$filter', shopInvCtrlr])
+.controller('statsCtrl', ['$scope', '$http', '$filter', '$uibModal', '$rootScope', statsCtrlr])
+.controller('returnsCtrl',['$scope', '$http', '$rootScope', returnsCtrlr])
+.controller('bulkAssignCtrl',['$scope', '$http', '$rootScope', bulkAssignCtrlr])
+.controller('barCodeCtrl',['$scope', '$http', '$rootScope', barCodeCtrlr])
+.controller('logCtrl',['$scope', '$http', '$rootScope', logCtrlr])
+.controller('invAlertCtrl',['$scope', '$http', '$rootScope', invAlertCtrlr])
+.controller('miscReportCtrl',['$scope', '$http', '$rootScope', miscReportCtrlr])
+.controller('stockTakeCtrl',['$scope', '$http', '$rootScope', '$timeout', stockTakeCtrlr])
 
 .controller('ModalSalesInfoCtrl', ['$scope', '$uibModalInstance', 'modalScope', '$http', '$filter', '$rootScope', ModalSalesInfoCtrlr]);
 

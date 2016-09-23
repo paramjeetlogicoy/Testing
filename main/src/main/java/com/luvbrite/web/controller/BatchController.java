@@ -104,7 +104,9 @@ public class BatchController {
 	@RequestMapping(value = "/onetime/update-dispatch-cancelled")
 	public @ResponseBody String updateDispatchCancelled() throws Exception{
 		
-		String query = "SELECT ds.id, ds.cancellation_reason, ooi.order_number::numeric AS order_number "
+		String query = "SELECT ds.id, ds.cancellation_reason, ds.status, "
+				+ "ooi.order_number::numeric AS order_number "
+				
 				+ "FROM dispatch_sales_info ds "
 					+ " JOIN online_order_info ooi ON ooi.dispatch_sales_id = ds.id "
 				
@@ -145,6 +147,7 @@ public class BatchController {
 						}
 						
 						d.setComments(comments);
+						d.setLockStatus(rs.getString("status"));
 						o.setDispatch(d);
 						
 						//Set order status to Cancelled
@@ -182,7 +185,9 @@ public class BatchController {
 	@RequestMapping(value = "/onetime/update-dispatch-info")
 	public @ResponseBody String updateDispatchNew() throws Exception{
 		
-		String query = "SELECT ds.id, ds.date_finished, d.driver_name, ooi.order_number::numeric AS order_number "
+		String query = "SELECT ds.id, ds.date_finished, ds.status, "
+				+ "d.driver_name, ooi.order_number::numeric AS order_number "
+				
 				+ "FROM dispatch_sales_info ds "
 					+ "JOIN online_order_info ooi ON ooi.dispatch_sales_id = ds.id "
 					+ "LEFT JOIN drivers d ON d.id = ds.driver_id "
@@ -226,7 +231,8 @@ public class BatchController {
 						
 						d.setDateFinished(dateFinished);
 						d.setDriver(driverName);
-						d.setSalesId(salesId);	
+						d.setSalesId(salesId);
+						d.setLockStatus(rs.getString("status"));	
 						
 						o.setDispatch(d);
 						

@@ -1,7 +1,7 @@
-var addStrainsCtrlr = function($scope, $http, $filter, $rootScope, currentUser){
+var addStrainsCtrlr = function($scope, $http, $filter, $rootScope){
 	
 	$rootScope.rootPage = "Strains";	
-	$scope.controlId = currentUser.ctrlid;
+	$scope.controlId = _luvbriteGlobalOpsId;
 	
 	$scope.currentStrainId = 0;
 	$scope.btnText = 'ADD';

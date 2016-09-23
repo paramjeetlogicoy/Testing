@@ -1,7 +1,7 @@
-var addProductsCtrlr = function($scope, $http, $rootScope, $filter, currentUser){
+var addProductsCtrlr = function($scope, $http, $rootScope, $filter){
 	
 	$rootScope.rootPage = "Products";
-	$scope.controlId = currentUser.ctrlid;
+	$scope.controlId = _luvbriteGlobalOpsId;
 	
 	$scope.productBtnText = 'ADD';
 	$scope.currentProductId = 0;

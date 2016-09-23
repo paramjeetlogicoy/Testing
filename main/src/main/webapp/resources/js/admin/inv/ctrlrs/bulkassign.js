@@ -1,7 +1,7 @@
-var bulkAssignCtrlr = function($scope, $http, $rootScope, currentUser){
+var bulkAssignCtrlr = function($scope, $http, $rootScope){
 
 	$rootScope.rootPage = "Bulk Assign";
-	$scope.controlId = currentUser.ctrlid;
+	$scope.controlId = _luvbriteGlobalOpsId;
 	
 	if($scope.controlId>100) return;	
 	

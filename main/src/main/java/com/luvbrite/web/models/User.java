@@ -13,6 +13,7 @@ public class User {
 	@Id
 	private long _id;
 	private int orderCount;
+	private int invOpsId;
 	
 	private double moneySpent;
 	
@@ -144,5 +145,11 @@ public class User {
 	}
 	public void setGender(String gender) {
 		this.gender = gender;
+	}
+	public int getInvOpsId() {
+		return invOpsId;
+	}
+	public void setInvOpsId(int invOpsId) {
+		this.invOpsId = invOpsId;
 	}
 }

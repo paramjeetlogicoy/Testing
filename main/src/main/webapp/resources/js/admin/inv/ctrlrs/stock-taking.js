@@ -1,7 +1,7 @@
-var stockTakeCtrlr = function($scope, $http, $rootScope, $timeout, currentUser){
+var stockTakeCtrlr = function($scope, $http, $rootScope, $timeout){
 
 	$rootScope.rootPage = "Stock";
-	$scope.controlId = currentUser.ctrlid;
+	$scope.controlId = _luvbriteGlobalOpsId;
 	
 	if($scope.controlId>100) return;	
 	

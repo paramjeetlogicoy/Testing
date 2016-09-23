@@ -100,8 +100,8 @@ public class OrdersController {
 	
 
 	@RequestMapping(value = "/json/savestatus")
-	public @ResponseBody GenericResponse saveStatus(@RequestBody Order order, @AuthenticationPrincipal 
-			UserDetailsExt user){	
+	public @ResponseBody GenericResponse saveStatus(@RequestBody Order order, //Only part of the order obj is available here. Use with caution
+			@AuthenticationPrincipal UserDetailsExt user){	
 
 		GenericResponse r = new GenericResponse();
 		if(order.getStatus().trim().equals("")){
@@ -115,6 +115,16 @@ public class OrdersController {
 				String prevStatus = orderDb.getStatus();
 				
 				orderDb.setStatus(order.getStatus());
+				
+				if(order.getDispatch() != null && 
+						!order.getDispatch().getComments().equals("")){
+					
+					orderDb.getDispatch().setComments(order.getDispatch().getComments());
+				}
+				
+				if(order.getStatus().equals("delivered")){
+					orderDb.getDispatch().setDateFinished(Calendar.getInstance().getTime());
+				}
 				
 				/**
 				 * Here we are saving only the status.
@@ -142,7 +152,9 @@ public class OrdersController {
 					logger.error(Exceptions.giveStackTrace(e));
 				}
 				
-				if(order.getStatus().equals("cancelled")){
+				
+				if(order.getStatus().equals("cancelled") && 
+						!prevStatus.equals("cancelled")) {
 
 					/* Post Meta if required */
 					try {							
@@ -188,6 +200,56 @@ public class OrdersController {
 		return r;		
 	}
 	
+	@RequestMapping(value = "/json/updatedriver")
+	public @ResponseBody GenericResponse updatedriver(@RequestBody OrderDispatchInfo dispatch, @AuthenticationPrincipal 
+			UserDetailsExt user){	
+
+		GenericResponse r = new GenericResponse();
+		if(dispatch == null || dispatch.getDriver().equals("")){
+			r.setMessage("No driver info found.");			
+		}
+		else{
+			
+			//In this case SalesId field will have the order Id
+			Order orderDb = dao.get(dispatch.getSalesId());
+			if(orderDb != null){		
+				
+				if(orderDb.getDispatch() != null && 
+						orderDb.getDispatch().getLockStatus().equals("locked") ){
+					
+					r.setMessage("Order Locked. No further update possible!");
+				}
+				
+				else {
+					
+					OrderDispatchInfo d = new OrderDispatchInfo();
+					if(orderDb.getDispatch() != null){
+						d = orderDb.getDispatch();
+					}
+					
+					d.setDriver(dispatch.getDriver());
+					
+					orderDb.setDispatch(d);
+					
+					/**
+					 * Here we are saving only the driverName.
+					 * Remaining information is same as that 
+					 * pulled from DB
+					 **/			
+					dao.save(orderDb);				
+		
+					
+					r.setSuccess(true);
+				}
+			}
+			
+			else {
+				r.setMessage("Invalid orderId in salesId field");
+			}
+		}
+		return r;		
+	}
+	
 
 	@RequestMapping(value = "/{orderNumber}")
 	public String admin(@PathVariable long orderNumber, ModelMap model){	
@@ -211,7 +273,8 @@ public class OrdersController {
 		try {
 			
 			tcon = ds.getConnection();			
-			pst = tcon.prepareStatement("SELECT ds.id, ds.date_finished, d.driver_name "
+			pst = tcon.prepareStatement("SELECT ds.id, ds.date_finished, ds.cancellation_reason, ds.status, "
+					+ "d.driver_name "
 				+ "FROM dispatch_sales_info ds "
 					+ "JOIN online_order_info ooi ON ooi.dispatch_sales_id = ds.id "
 					+ "LEFT JOIN drivers d ON d.id = ds.driver_id "
@@ -225,6 +288,9 @@ public class OrdersController {
 				
 				String driverName = rs.getString("driver_name")==null ? "No Driver" : rs.getString("driver_name");
 				Date dateFinished = rs.getTimestamp("date_finished")==null ? null : rs.getTimestamp("date_finished");
+				String cancellationReason = rs.getString("cancellation_reason");
+				String lockStatus = rs.getString("status");
+				
 				long salesId = rs.getLong("id");
 				
 				Order o = dao.findOne("orderNumber", orderNumber);				
@@ -235,15 +301,25 @@ public class OrdersController {
 						d = o.getDispatch();
 					}
 					
-					// If there is no dateFinished, there is a chance that order was 
-					// not processed and hence may not have a driver assigned!
-					if(dateFinished!=null) {
+					
+					if(cancellationReason != null && 
+							!cancellationReason.equals("")){
+						
+						//The order was cancelled, so update fields accordingly
+						d.setComments(cancellationReason);
+					}
+					
+					// If dateFinished has valid value, then the order was processed.
+					// Update the driver name and datefinished 
+					
+					else if(dateFinished!=null) {
 						d.setDriver(driverName);
 						d.setDateFinished(dateFinished);
 						
 						o.setStatus("delivered");
 					}
 										
+					d.setLockStatus(lockStatus);
 					d.setSalesId(salesId);
 					
 					o.setDispatch(d);

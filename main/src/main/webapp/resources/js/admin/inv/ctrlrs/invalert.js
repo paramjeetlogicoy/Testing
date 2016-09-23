@@ -1,7 +1,7 @@
-var invAlertCtrlr = function($scope, $http, $rootScope, currentUser){
+var invAlertCtrlr = function($scope, $http, $rootScope){
 
 	$rootScope.rootPage = "Inv Alert";
-	$scope.controlId = currentUser.ctrlid;
+	$scope.controlId = _luvbriteGlobalOpsId;
 	
 	if($scope.controlId>100) return;	
 	

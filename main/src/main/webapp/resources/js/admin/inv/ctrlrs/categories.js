@@ -1,7 +1,7 @@
-var addCategoryCtrlr = function($scope, $http, $filter, $rootScope, currentUser){
+var addCategoryCtrlr = function($scope, $http, $filter, $rootScope){
 
 	$rootScope.rootPage = "Categories";
-	$scope.controlId = currentUser.ctrlid;
+	$scope.controlId = _luvbriteGlobalOpsId;
 	
 	$scope.currentCategoryId = 0;
 	$scope.btnText = 'ADD';

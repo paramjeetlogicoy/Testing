@@ -1,8 +1,8 @@
 var
-addPurchaseCtrlr = function($scope, $http, $filter, $rootScope, $uibModal, currentUser){
+addPurchaseCtrlr = function($scope, $http, $filter, $rootScope, $uibModal){
 	
 	$rootScope.rootPage = "Purchases";
-	$scope.controlId = currentUser.ctrlid;
+	$scope.controlId = _luvbriteGlobalOpsId;
 	$scope.purchaseBtnText = 'ADD';
 	$scope.currentPurchaseId = 0;
 	

@@ -6,11 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Inventory / {{rootPage}}</title>
 <meta th:include="fragments/admin/layout::fragment-head" />
-<script th:inline="javascript" type="text/javascript">
-/*<![CDATA[*/
-    var _globalUserId = /*[[${userId}]]*/ 0;
-/*]]>*/
-</script>
 </head>
 <body th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
 	<div class="admin-container" th:with="superAdmin=${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_INV_ADMIN')},admin=${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_ADMIN')}">

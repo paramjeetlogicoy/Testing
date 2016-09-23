@@ -7,7 +7,7 @@ var ModalAssignDrvInstanceCtrlr = function ($scope, $uibModalInstance, drivers, 
 	  $scope.ok = function () {
 		  $scope.order.dispatch.driverName = $scope.driverSelected.driverName;
 		  
-		  var sendBack = {order:$scope.order};
+		  var sendBack = {order:$scope.order, driverId:$scope.driverSelected.id};
 		  $uibModalInstance.close(sendBack);
 	  };
 

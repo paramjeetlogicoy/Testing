@@ -1,10 +1,10 @@
 /**
  * 
  */
-var addPplCtrlr = function($scope, $http, $filter, $rootScope, $compile, currentUser){
+var addPplCtrlr = function($scope, $http, $filter, $rootScope, $compile){
 	
 	$rootScope.rootPage = "People &amp; Shops";
-	$scope.controlId = currentUser.ctrlid;
+	$scope.controlId = _luvbriteGlobalOpsId;
 	
 	if($scope.controlId>100) return;
 	

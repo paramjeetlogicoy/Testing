@@ -9,7 +9,8 @@
 			<span class="glyphicon glyphicon-lock"></span> Sale Closed
 		</small>
 		
-		<h4 class="modal-title">Sales Details</h4>
+		<h4 class="modal-title">Sales Details (Order# <span class="orange1">{{ms.orderNumber}}</span> Sales#
+			<span class="blue1">{{ms.salesId}}</span>)</h4>
 	</div>
 	
 	<div class="modal-body">
@@ -26,13 +27,7 @@
 		<div class="marg-b1">
 			<dl class="dl-horizontal">
 				<dt>Client:</dt>
-				<dd>{{ms.clientName}}</dd>
-				
-				<dt>&nbsp;</dt>
-				<dd>&nbsp;</dd>
-				
-				<dt>Sales ID:</dt>
-				<dd>{{ms.salesId}}</dd>
+				<dd>{{ms.clientName}}</dd>				
 				<dt>Sales Date:</dt>
 				<dd>
 					<span ng-show='!dateEdit'>{{ms.dateFinished}} <a href=""
@@ -115,7 +110,7 @@
 			<div>
 				<table class="table table-hover">
 					<caption>
-						All Packets under this Sales ID.
+						All SKUs under this Sales.
 					</caption>
 					<thead>
 						<tr>

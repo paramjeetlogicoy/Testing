@@ -1,7 +1,7 @@
-var returnsCtrlr = function($scope, $http, $rootScope, currentUser){
+var returnsCtrlr = function($scope, $http, $rootScope){
 
 	$rootScope.rootPage = "Returns";
-	$scope.controlId = currentUser.ctrlid;
+	$scope.controlId = _luvbriteGlobalOpsId;
 	
 	if($scope.controlId>100) return;	
 	

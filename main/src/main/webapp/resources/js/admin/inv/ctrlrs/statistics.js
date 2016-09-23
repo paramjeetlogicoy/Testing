@@ -1,9 +1,9 @@
-var statsCtrlr = function($scope, $http, $filter, $uibModal, $rootScope, currentUser){
+var statsCtrlr = function($scope, $http, $filter, $uibModal, $rootScope){
 
 	$rootScope.rootPage = "Statistics";
 	
 	/**Hide the edit controls as per user access*/
-	$scope.controlId = currentUser.ctrlid;	
+	$scope.controlId = _luvbriteGlobalOpsId;	
 	$scope.accessGranted = false;
 	
 	if($scope.controlId>100) return;	

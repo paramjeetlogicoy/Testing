@@ -1,7 +1,7 @@
-var addBoxInvCtrlr = function($scope, $http, $routeParams, currentUser){
+var addBoxInvCtrlr = function($scope, $http, $routeParams){
 
 	$rootScope.rootPage = "Box Inventory";
-	$scope.controlId = currentUser.ctrlid;
+	$scope.controlId = _luvbriteGlobalOpsId;
 	
 	$scope.currentboxId = 0;
 	$scope.boxInvs = [];

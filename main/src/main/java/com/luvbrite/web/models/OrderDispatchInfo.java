@@ -10,6 +10,7 @@ public class OrderDispatchInfo {
 	private Date dateFinished;
 	private String comments = "";
 	private long salesId = 0l;
+	private String lockStatus = "";
 	
 	public String getDriver() {
 		return driver;
@@ -34,5 +35,11 @@ public class OrderDispatchInfo {
 	}
 	public void setSalesId(long salesId) {
 		this.salesId = salesId;
+	}
+	public String getLockStatus() {
+		return lockStatus;
+	}
+	public void setLockStatus(String lockStatus) {
+		this.lockStatus = lockStatus;
 	}
 }

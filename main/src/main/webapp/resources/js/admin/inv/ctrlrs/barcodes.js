@@ -1,7 +1,7 @@
-var barCodeCtrlr = function($scope, $http, $rootScope, currentUser){
+var barCodeCtrlr = function($scope, $http, $rootScope){
 
 	$rootScope.rootPage = "Bar Codes";
-	$scope.controlId = currentUser.ctrlid;
+	$scope.controlId = _luvbriteGlobalOpsId;
 	
 	if($scope.controlId>100) return;	
 	

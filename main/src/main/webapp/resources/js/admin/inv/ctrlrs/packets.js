@@ -1,11 +1,11 @@
 /**
  * 
  */
-var addPacketCtrlr = function($scope, $http, $routeParams, driverMode, $uibModal, $rootScope, currentUser){
+var addPacketCtrlr = function($scope, $http, $routeParams, driverMode, $uibModal, $rootScope){
 	
 	$rootScope.rootPage = "Packets";
 
-	$scope.controlId = currentUser.ctrlid;
+	$scope.controlId = _luvbriteGlobalOpsId;
 	
 	if($scope.controlId>100) return;
 	

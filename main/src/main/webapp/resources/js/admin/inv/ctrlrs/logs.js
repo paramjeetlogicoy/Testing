@@ -1,7 +1,7 @@
-var logCtrlr = function($scope, $http, $rootScope, currentUser){
+var logCtrlr = function($scope, $http, $rootScope){
 
 	$rootScope.rootPage = "Tracking Logs";
-	$scope.controlId = currentUser.ctrlid;
+	$scope.controlId = _luvbriteGlobalOpsId;
 	
 	if($scope.controlId>100) return;	
 	
