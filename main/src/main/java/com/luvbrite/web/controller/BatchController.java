@@ -3,7 +3,6 @@ package com.luvbrite.web.controller;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +17,7 @@ import com.luvbrite.dao.UserDAO;
 import com.luvbrite.services.EmailService;
 import com.luvbrite.web.models.Email;
 import com.luvbrite.web.models.Order;
+import com.luvbrite.web.models.OrderDispatchInfo;
 import com.luvbrite.web.models.RecoExpiry;
 import com.luvbrite.web.models.User;
 import com.zaxxer.hikari.HikariDataSource;
@@ -101,52 +101,70 @@ public class BatchController {
 	}
 
 	
-	@RequestMapping(value = "/onetime/update-dispatch-info")
-	public @ResponseBody String updateDispatch() throws Exception{
+	@RequestMapping(value = "/onetime/update-dispatch-cancelled")
+	public @ResponseBody String updateDispatchCancelled() throws Exception{
 		
-		String query = "SELECT ds.*, d.driver_name "
+		String query = "SELECT ds.id, ds.cancellation_reason, ooi.order_number::numeric AS order_number "
 				+ "FROM dispatch_sales_info ds "
-					+ "LEFT JOIN drivers d ON d.id = ds.driver_id"
+					+ " JOIN online_order_info ooi ON ooi.dispatch_sales_id = ds.id "
 				
-				+ "WHERE ds.id = "
-				+ "(SELECT dispatch_sales_id FROM online_order_info WHERE order_number = ?)";
+				+ "WHERE ds.cancellation_reason "
+					+ "NOT IN ('', 'Order updated. New dispatch created and this one is cancelled', "
+					+ "'Duplicate', 'DUPLICATE', 'copy', 'duplicate', 'c', 'C')";
 		
 		Connection tcon = null;
 		PreparedStatement pst = null;
 		ResultSet rs = null;	
 		
-		String driverName = "";
-		Date dateFinished = null;
+		String comments = "";
+		long orderNumber = 0;
+		
+		int counter = 0;
 		
 		try {
 			
 			tcon = ds.getConnection();			
-			List<Order> orders = orderDao.find().asList();
-			if(orders != null && orders.size() > 0){
+			pst = tcon.prepareStatement(query);
+			rs = pst.executeQuery();
+			while(rs.next()){
+				comments = rs.getString("cancellation_reason");
+				orderNumber = rs.getLong("order_number");
 				
-				for(Order o: orders){
+				Order o = orderDao.findOne("orderNumber", orderNumber);
+				if(o != null &&
+						(o.getDispatch() == null || o.getDispatch().getDateFinished() == null)){
 					
-					pst = tcon.prepareStatement(query);
-					pst.setString(1, o.getOrderNumber()+"");
-					
-					rs = pst.executeQuery();
-					if(rs.next()){
-						
-						driverName = rs.getString("driver_name")==null ? "No Driver" : rs.getString("driver_name");
-						dateFinished = rs.getTimestamp("date_finished")==null ? null : rs.getTimestamp("date_finished");
+					if(o.getStatus().equals("delivered")){
+						System.out.println("Order already marked delivered. ordernumber " + orderNumber);
 					}
-					
 					else {
-						System.out.println("No dispatch_sales_info found for ordernumber " + o.getOrderNumber());
+						
+						OrderDispatchInfo d = new OrderDispatchInfo();
+						if(o.getDispatch() != null){
+							d = o.getDispatch();
+						}
+						
+						d.setComments(comments);
+						o.setDispatch(d);
+						
+						//Set order status to Cancelled
+						o.setStatus("cancelled");
+						
+						orderDao.save(o);
+						
+						counter++;
 					}
-					
-				}				
+				}
+				
 			}
 			
-			if(rs!=null){rs.close();rs=null;}
-			if(pst!=null){pst.close();pst=null;}
-			
+			rs.close();rs=null;
+			pst.close();pst=null;			
 			tcon.close();tcon=null;
+
+			System.out.println("************************");
+			System.out.println(counter + " orders updated.");
+			System.out.println("************************");
 			
 		}catch(Exception e){
 			e.printStackTrace();
@@ -159,4 +177,91 @@ public class BatchController {
 		
 		return "layout";
 	}
+
+	
+	@RequestMapping(value = "/onetime/update-dispatch-info")
+	public @ResponseBody String updateDispatchNew() throws Exception{
+		
+		String query = "SELECT ds.id, ds.date_finished, d.driver_name, ooi.order_number::numeric AS order_number "
+				+ "FROM dispatch_sales_info ds "
+					+ "JOIN online_order_info ooi ON ooi.dispatch_sales_id = ds.id "
+					+ "LEFT JOIN drivers d ON d.id = ds.driver_id "
+				
+				+ "WHERE ds.date_finished IS NOT NULL "
+					+ "AND ds.cancellation_reason = ''";
+		
+		Connection tcon = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;	
+		
+		String driverName = "";
+		Date dateFinished = null;
+		
+		long salesId = 0, 
+				orderNumber = 0;
+		
+		int counter = 0;
+		
+		try {
+			
+			tcon = ds.getConnection();	
+			pst = tcon.prepareStatement(query);	
+			rs = pst.executeQuery();
+			while(rs.next()){
+				
+				driverName = rs.getString("driver_name")==null ? "No Driver" : rs.getString("driver_name");
+				dateFinished = rs.getTimestamp("date_finished")==null ? null : rs.getTimestamp("date_finished");
+				salesId = rs.getLong("id");
+				orderNumber = rs.getLong("order_number");
+				
+				if(dateFinished!=null){
+					
+					Order o = orderDao.findOne("orderNumber", orderNumber);					
+					if(o!=null) {
+						
+						OrderDispatchInfo d = new OrderDispatchInfo();
+						if(o.getDispatch() != null){
+							d = o.getDispatch();
+						}
+						
+						d.setDateFinished(dateFinished);
+						d.setDriver(driverName);
+						d.setSalesId(salesId);	
+						
+						o.setDispatch(d);
+						
+						//Set order status to Delivered
+						o.setStatus("delivered");
+						
+						orderDao.save(o);
+						
+						counter++;				
+					}
+					
+					else {
+						System.out.println("No mongo order found for ordernumber " + orderNumber);
+					}
+				}
+			}
+			
+			rs.close();rs=null;
+			pst.close();pst=null;			
+			tcon.close();tcon=null;
+
+			System.out.println("************************");
+			System.out.println(counter + " orders updated.");
+			System.out.println("************************");
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		finally{
+			try{if(rs!=null)rs.close();}catch(Exception e){}
+			try{if(pst!=null)pst.close();}catch(Exception e){}
+			try{if(tcon!=null)tcon.close();}catch(Exception e){}
+		}
+		
+		return "layout";
+	}
+
 }

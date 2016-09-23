@@ -249,6 +249,53 @@ nav#pagination-nav{
     }
 }
 
+/* Orders */
+.order-disp-actions{
+	.text-right;
+	.marg-b1;
+
+	max-width: 300px;
+
+	a+a{
+		margin-left: 10px;	
+	}
+}
+
+.cancelled-td{
+	.rel;
+	overflow: hidden;
+}
+
+.cancelled-ribbon{
+	display:none;
+
+	-webkit-transform:rotate(45deg);
+	-ms-transform:rotate(-90deg);
+	-moz-transform:rotate(-90deg);
+
+	position:absolute;
+	right:-30px;
+	width:60px;
+	height:60px;
+	background-color:red;
+	top:-30px;
+
+	&:after{
+		content:'Cancelled';
+		position:absolute;
+		color:white;
+		top:47px;
+		font-size:8px;
+		left:12px;
+	}
+
+	.cancelled-td &{
+		display:block;
+	}
+
+}
+
+
 /*Order Details*/
 .pop-gallery.ord-dtls-gallery{
 	background: transparent;
