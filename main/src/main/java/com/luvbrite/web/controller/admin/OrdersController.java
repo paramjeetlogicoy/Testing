@@ -1,7 +1,12 @@
 package com.luvbrite.web.controller.admin;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -26,8 +31,10 @@ import com.luvbrite.web.models.Email;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Log;
 import com.luvbrite.web.models.Order;
+import com.luvbrite.web.models.OrderDispatchInfo;
 import com.luvbrite.web.models.ResponseWithPg;
 import com.luvbrite.web.models.UserDetailsExt;
+import com.zaxxer.hikari.HikariDataSource;
 
 
 @Controller
@@ -47,6 +54,9 @@ public class OrdersController {
 	
 	@Autowired
 	private PostOrderMeta postOrderMeta;
+	
+	@Autowired
+	private HikariDataSource ds;
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public String mainPage(ModelMap model){		
@@ -184,6 +194,89 @@ public class OrdersController {
 		model.addAttribute("orderNumber", orderNumber);
 		
 		return "admin/order/details";		
+	}
+	
+
+	@RequestMapping(value = "/json/getsalesid/{orderNumber}")
+	public @ResponseBody GenericResponse getSalesId(@PathVariable long orderNumber){
+		
+		GenericResponse gr = new GenericResponse();
+		gr.setSuccess(false);
+		gr.setMessage("");
+		
+		Connection tcon = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		
+		try {
+			
+			tcon = ds.getConnection();			
+			pst = tcon.prepareStatement("SELECT ds.id, ds.date_finished, d.driver_name "
+				+ "FROM dispatch_sales_info ds "
+					+ "JOIN online_order_info ooi ON ooi.dispatch_sales_id = ds.id "
+					+ "LEFT JOIN drivers d ON d.id = ds.driver_id "
+				
+				+ "WHERE ooi.order_number = ? "
+					+ "ORDER BY ds.id DESC LIMIT 1");
+			
+			pst.setString(1, orderNumber+"");
+			rs = pst.executeQuery();
+			if(rs.next()){
+				
+				String driverName = rs.getString("driver_name")==null ? "No Driver" : rs.getString("driver_name");
+				Date dateFinished = rs.getTimestamp("date_finished")==null ? null : rs.getTimestamp("date_finished");
+				long salesId = rs.getLong("id");
+				
+				Order o = dao.findOne("orderNumber", orderNumber);				
+				if(o!=null) {
+					
+					OrderDispatchInfo d = new OrderDispatchInfo();
+					if(o.getDispatch() != null){
+						d = o.getDispatch();
+					}
+					
+					// If there is no dateFinished, there is a chance that order was 
+					// not processed and hence may not have a driver assigned!
+					if(dateFinished!=null) {
+						d.setDriver(driverName);
+						d.setDateFinished(dateFinished);
+						
+						o.setStatus("delivered");
+					}
+										
+					d.setSalesId(salesId);
+					
+					o.setDispatch(d);
+					
+					dao.save(o);
+					
+					List<Order> os = new ArrayList<Order>();
+					os.add(o);					
+					gr.setResults(os);
+					
+					gr.setSuccess(true);
+				}	
+			}
+			
+			else{
+				
+				gr.setMessage("No order found on the inventory end!");
+			}
+			
+			rs.close();rs=null;		
+			pst.close();pst=null;
+			tcon.close();tcon=null;
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		finally{
+			try{if(rs!=null)rs.close();}catch(Exception e){}
+			try{if(pst!=null)pst.close();}catch(Exception e){}
+			try{if(tcon!=null)tcon.close();}catch(Exception e){}
+		}
+		
+		return gr;		
 	}
 	
 

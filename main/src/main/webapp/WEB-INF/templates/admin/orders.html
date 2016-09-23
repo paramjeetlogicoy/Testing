@@ -48,23 +48,41 @@
 				<table class="table table-striped">
 					<thead>
 						<tr>
-							<th class="col-xs-6 col-sm-3"><a class="sortables"
+							<th class="col-xs-12 col-sm-3"><a class="sortables"
 								ng-click="sortType = 'orderNumber'; sortReverse = !sortReverse; getOrders();">Order
 									<span ng-show="sortType == 'orderNumber'"><i
 										ng-show="!sortReverse" class="fa fa-caret-down"></i> <i
 										ng-show="sortReverse" class="fa fa-caret-up"></i></span> <i
 									ng-show="sortType != 'orderNumber'" class="fa fa-sort"></i>
 							</a></th>
-							<th class="col-xs-6 col-sm-9">Items</th>
+							<th class="hidden-xs col-sm-9">Items</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr ng-repeat="o in orders">
-							<td><div class="marg-b05">
+							<td ng-class="o.status=='cancelled'?'cancelled-td':''">
+								<span class="cancelled-ribbon"></span>
+								<div class="order-disp-actions visible-xs">
+									<a href="" ng-click="assignDriver()"
+										ng-if="o.status!='cancelled'" title="Assign/Change Driver"><span
+										class="glyphicon glyphicon-user"></span></a> <a href=""
+										ng-click="cancelDispatch()" ng-if="o.status!='delivered'"
+										title="Mark Cancelled"><span
+										class="glyphicon glyphicon-ban-circle"></span></a> <a href=""
+										ng-click="getSalesDetails()" ng-if="o.status=='delivered'"
+										title="Get Sales Info"><span
+										class="glyphicon glyphicon-list-alt"></span></a> <a href=""
+										ng-if="o.status!='cancelled' &amp;&amp; o.status!='delivered'"
+										title="Mark Sold"><span class="glyphicon glyphicon-usd"
+										ng-click="markSold()"></span></a>
+								</div>
+
+								<div class="marg-b05">
 									<a href="" ng-click="showDetails()" class="accent">{{o.orderNumber}}</a>
 									<a href="/admin/order/{{o.orderNumber}}" target="_blank"><i
-										class="fa fa-external-link" aria-hidden="true"></i></a> by
-									{{o.customer.name}} (<a target="_blank"
+										class="fa fa-external-link hidden-xs" aria-hidden="true"></i></a>
+									by {{o.shipping.address.firstName}}
+									{{o.shipping.address.lastName}} (<a target="_blank"
 										href="/admin/users/#/details/{{o.customer._id}}">{{o.customer.email}}</a>)
 								</div>
 								<div>
@@ -73,11 +91,52 @@
 								</div>
 								<div class="orange1 size16">
 									<strong>{{o.total | currency}}</strong>
-								</div></td>
-							<td>
-								<div ng-repeat="item in o.lineItems">
-									<span ng-if="item.type=='item'">{{item.name}}</span>
 								</div>
+								<div>
+									<strong>Address</strong>: <a
+										href="http://maps.google.com/?q={{o.shipping.address.address1}},{{o.shipping.address.city}}-{{o.shipping.address.zip}}"
+										target="_blank">{{o.shipping.address.address1}}
+										{{o.shipping.address.address2}} {{o.shipping.address.city}},
+										{{o.shipping.address.zip}}</a>
+								</div>
+								<div class="order-disp-phone">
+									<strong>Phone</strong>: <a href="tel:{{dispatch.ooi.phone}}">{{o.shipping.address.phone}}</a>
+								</div>
+
+								<div class="visible-xs">
+									<strong>Items:</strong>
+									<ol class="styled">
+										<li ng-repeat="item in o.lineItems"><span
+											ng-if="item.type=='item'">{{item.name}}, Qty:-
+												{{item.qty}}<span ng-if="item.specs">, <span
+													ng-repeat="spec in item.specs"> <strong>{{spec.attr}}</strong>:
+														<span>{{spec.value}}</span>
+												</span></span>
+										</span></li>
+									</ol>
+								</div>
+							</td>
+
+							<td class="hidden-xs">
+								<div class="order-disp-actions">
+									<a href="" ng-click="assignDriver()"
+										ng-if="o.status!='cancelled'" title="Assign/Change Driver"><span
+										class="glyphicon glyphicon-user"></span></a> <a href=""
+										ng-click="cancelDispatch()" ng-if="o.status!='delivered'"
+										title="Mark Cancelled"><span
+										class="glyphicon glyphicon-ban-circle"></span></a> <a href=""
+										ng-click="getSalesDetails()" ng-if="o.status=='delivered'"
+										title="Get Sales Info"><span
+										class="glyphicon glyphicon-list-alt"></span></a> <a href=""
+										ng-if="o.status!='cancelled' &amp;&amp; o.status!='delivered'"
+										title="Mark Sold"><span class="glyphicon glyphicon-usd"
+										ng-click="markSold()"></span></a>
+								</div>
+
+								<ol class="styled">
+									<li ng-repeat="item in o.lineItems"><span
+										ng-if="item.type=='item'">{{item.name}}</span></li>
+								</ol>
 							</td>
 						</tr>
 					</tbody>
@@ -92,6 +151,9 @@
 		<div th:include="fragments/admin/layout::fragment-foot(angular=true)"></div>
 	</div>
 	
+
+	<script src="/resources/js/admin/inv/ctrlrs/assign-driver.js"></script>
+	<script src="/resources/js/admin/inv/ctrlrs/sales-info.js"></script>
 	<script src="/resources/js/admin/angular-orderdetails-service.js"></script>
 	<script src="/resources/js/admin/angular-order.js"></script>
 	<script type="text/javascript">
