@@ -102,20 +102,22 @@
 								</div>
 						
 								<div>
-									<strong>Address</strong>: <a
+									<span><i class="fa fa-globe"
+										aria-hidden="true"></i></span> <a
 										href="http://maps.google.com/?q={{o.shipping.address.address1}},{{o.shipping.address.city}}-{{o.shipping.address.zip}}"
 										target="_blank">{{o.shipping.address.address1}}
 										{{o.shipping.address.address2}} {{o.shipping.address.city}},
 										{{o.shipping.address.zip}}</a>
 								</div>
 								<div class="order-disp-phone">
-									<strong>Phone</strong>: <a href="tel:{{dispatch.ooi.phone}}">{{o.shipping.address.phone}}</a>
+									<span><i class="fa fa-phone-square"
+										aria-hidden="true"></i></span> <a href="tel:{{dispatch.ooi.phone}}">{{o.shipping.address.phone}}</a>
 								</div>
 
 								<div class="visible-xs">
 									<strong>Items:</strong>
 									<ol class="styled">
-										<li ng-repeat="item in o.lineItems"><span
+										<li ng-repeat="item in o.lineItems"><span 
 											ng-if="item.type=='item'">{{item.name}}, Qty:-
 												{{item.qty}}<span ng-if="item.specs">, <span
 													ng-repeat="spec in item.specs"> <strong>{{spec.attr}}</strong>:

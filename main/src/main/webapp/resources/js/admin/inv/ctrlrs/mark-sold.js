@@ -240,20 +240,20 @@ var ModalMarkSoldCtrlr = function ($scope, $uibModalInstance, ms, $http, $filter
 			o.lineItems.forEach(function(li){
 				
 				if(li.type == 'coupon'){
-					$scope.addPromo('PROMOCPN', li.price);
+					$scope.addPromo('PROMOCPN', -1*li.price);
 				}
 				
 				else if(li.type == 'item' && li.promo){
 					
 					if(li.promo == 'doubledownoffer'){
-						$scope.addPromo('PROMODBLDN', li.cost);
+						$scope.addPromo('PROMODBLDN', -1*li.cost);
 					}
 					else if(li.promo == 'offhourpromo'){
-						$scope.addPromo('PROMOKIVA', li.cost);
+						$scope.addPromo('PROMOKIVA', -1*li.cost);
 						
 					}
 					else if(li.promo == 'firsttimepatient'){
-						//$scope.addPromo('PROMOCPN', li.cost);						
+						//$scope.addPromo('PROMOCPN', -1*li.cost);						
 					}					
 				}
 				
