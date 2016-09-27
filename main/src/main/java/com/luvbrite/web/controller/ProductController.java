@@ -141,4 +141,14 @@ public class ProductController {
 	public @ResponseBody List<Price> price(@PathVariable long productId){			
 		return priceDao.findPriceByProduct(productId);		
 	}
+	
+
+	@RequestMapping(value = "/json/getspecialprds")
+	public @ResponseBody List<Product> specials(){	
+		List<String> cats = new ArrayList<>();
+		cats.add("Special");
+		cats.add("Super Special");
+		
+		return prdDao.createQuery().retrievedFields(true, "name", "url").field("categories").in(cats).asList();
+	}
 }
