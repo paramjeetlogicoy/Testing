@@ -105,6 +105,15 @@
 												<td style="text-align: right;">-$<span
 													th:text="${#numbers.formatDecimal(((ol.cost-ol.price)*ol.qty), 1, 'COMMA', 2, 'POINT')}"></span></td>
 											</tr>
+
+											<tr th:each="ol:*{lineItems}"
+												th:if="${ol.type=='item' and ol.promo=='s'}">
+												<td colspan="2">
+													<div th:text="|${ol.name} (Sale)|"></div>
+												</td>
+												<td style="text-align: right;">-$<span
+													th:text="${#numbers.formatDecimal(((ol.cost-ol.price)*ol.qty), 1, 'COMMA', 2, 'POINT')}"></span></td>
+											</tr>
 											
 											<tr>
 												<td colspan="2" style="text-align: right; color: #557da1;"><strong>Total</strong></td>
