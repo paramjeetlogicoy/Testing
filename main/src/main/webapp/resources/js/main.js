@@ -82,7 +82,7 @@ _lbFns = {
 },
 _lbUrls = {
 	'addtocart' : '/cart/add',	
-	'getprdprice' : '/products/json/',	
+	'getprd' : '/products/json/',	
 	'allprds' : '/products/json/prod-cat',
 	'catprds' : '/category/listproducts/',
 	'getcartcount' : '/cart/getCount',

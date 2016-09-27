@@ -44,7 +44,7 @@
 }
 </style>
 </head>
-<body ng-app="lbApp">
+<body ng-app="lbApp" ng-controller="homeCtrlr">
 	<div th:replace="fragments/layout::fragment-google-analytics"></div>
 	<div th:replace="fragments/layout::fragment-header"></div>
 	<div class="homepage-container">
@@ -253,13 +253,22 @@
 							1.5g extra for free!
 						</div>
 						<div class="marg-b2">
-							<p>
-								<strong>To be More Specific</strong>: The following are now
-								available in 5g.
-							</p>
-							<div class="marg-l1">
-								Durban Poison - @ $45 per 5g<br /> Master Kush - @ $50 per 5g
+							<div ng-if="fiveGramSpecials &amp;&amp; fiveGramSpecials.length">
+								<p>
+									<strong>To be More Specific</strong>: The following are now
+									available in 5g.
+								</p>
+								<div class="marg-l1">
+									<div ng-repeat="fgs in fiveGramSpecials">
+										<a href="/product/{{fgs.url}}" target="_blank">{{fgs.name}}
+											- {{fgs.priceRange}}</a>
+									</div>
+								</div>
 							</div>
+							<p ng-if="!fiveGramSpecials || !fiveGramSpecials.length">
+								<strong>Apologies</strong>: We don't have any 5g products in
+								stock right now!
+							</p>
 						</div>
 
 					</div>

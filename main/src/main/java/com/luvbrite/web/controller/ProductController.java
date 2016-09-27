@@ -151,4 +151,10 @@ public class ProductController {
 		
 		return prdDao.createQuery().retrievedFields(true, "name", "url").field("categories").in(cats).asList();
 	}
+	
+
+	@RequestMapping(value = "/json/get5gspecials")
+	public @ResponseBody List<Product> fiveGramSpecials(){
+		return prdDao.createQuery().retrievedFields(true, "name", "url", "priceRange").field("categories").equal("5g Specials").asList();
+	}
 }

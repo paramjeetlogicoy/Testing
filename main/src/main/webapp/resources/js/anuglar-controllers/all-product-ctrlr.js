@@ -37,7 +37,7 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 				if(variation){
 					
 					//Variable product, get prices					
-					$http.get(_lbUrls.getprdprice + $scope.currentPid + '/price', {
+					$http.get(_lbUrls.getprd + $scope.currentPid + '/price', {
 						params : { 
 							'hidepop' : true  //tells the config not to show the loading popup
 						}
