@@ -27,7 +27,7 @@
 	      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	    <![endif]-->
 
-<link th:href="@{/resources/css/main.css(v=${@ModifiedDate.cssDate})}"
+<link th:href="@{/resources/css/main.css(v=${@modifiedDate.cssDate})}"
 	href="/resources/css/main.css" rel="stylesheet" />
 <script th:inline="javascript" type="text/javascript">
 /*<![CDATA[*/
@@ -256,7 +256,7 @@
 	<div th:fragment="fragment-scripts(angular)">
 		<!-- <script src="/resources/js/main.js"></script> -->
 		<script th:if="${angular}"
-			th:src="@{/resources/js/comb.min.js(v=${@ModifiedDate.jsDate})}"
+			th:src="@{/resources/js/comb.min.js(v=${@modifiedDate.jsDate})}"
 			src="/resources/js/comb.min.js?v002"></script>
 
 
