@@ -719,6 +719,7 @@ catCtrlrs = function($scope, $http, $filter){
 		$scope.btnText = 'ADD';
 		$scope.catName = '';
 		$scope.catDesc = '';
+		$scope.catUrl = '';
 		$scope.catParent = {_id:0, name:'No Parent'}
 		
 		$scope.addCategoryForm.$setPristine();
@@ -739,7 +740,13 @@ catCtrlrs = function($scope, $http, $filter){
 		}
 		
 		return cat;
-	};	
+	};
+	
+	
+	$scope.nameChange = function(){		
+		if($scope.catUrl != '')
+			$scope.catUrl = $scope.catName.toLowerCase().replace(/\s+/g,"-");
+	};
 	
 	
 	$scope.editCat = function(){
@@ -747,6 +754,7 @@ catCtrlrs = function($scope, $http, $filter){
 		$scope.categoryId = this.c._id;
 		$scope.btnText = 'SAVE';
 		$scope.catName = this.c.name;
+		$scope.catUrl = this.c.url;
 		$scope.catDesc = this.c.description;
 		$scope.catParent = $scope.getParent(this.c.parent);
 		
@@ -787,7 +795,8 @@ catCtrlrs = function($scope, $http, $filter){
 		
 		if($scope.btnText == 'ADD'){
 			
-			var cat = {'_id':0, 'name': $scope.catName};
+			var cat = {'_id':0, 'name': $scope.catName, 'url' : $scope.catUrl};
+			
 			if($scope.catDesc != '') cat.description = $scope.catDesc;
 			if($scope.catParent._id != 0) cat.parent = $scope.catParent._id;
 			
@@ -810,7 +819,7 @@ catCtrlrs = function($scope, $http, $filter){
 		
 		else {
 			
-			var cat = {'_id':$scope.categoryId, 'name': $scope.catName};
+			var cat = {'_id':$scope.categoryId, 'name': $scope.catName, 'url' : $scope.catUrl};
 			if($scope.catDesc != '') cat.description = $scope.catDesc;
 			if($scope.catParent._id != 0) cat.parent = $scope.catParent._id;
 			
