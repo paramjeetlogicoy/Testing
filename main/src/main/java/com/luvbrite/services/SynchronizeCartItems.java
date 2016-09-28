@@ -15,6 +15,7 @@ import com.luvbrite.utils.Exceptions;
 import com.luvbrite.web.models.CartOrder;
 import com.luvbrite.web.models.Log;
 import com.luvbrite.web.models.OrderLineItemCart;
+import com.luvbrite.web.models.Price;
 import com.luvbrite.web.models.Product;
 
 /**
@@ -79,7 +80,7 @@ public class SynchronizeCartItems {
 					if(lis != null){
 						boolean itemChanged = false;
 						String couponCode = "";
-						StringBuilder logDetails = new StringBuilder().append("Product changed detected. ");
+						StringBuilder logDetails = new StringBuilder().append("Product change detected. ");
 						
 						List<OrderLineItemCart> deletedLis = new ArrayList<OrderLineItemCart>();
 						
@@ -121,6 +122,9 @@ public class SynchronizeCartItems {
 								
 								/*
 								 *If the product is not variable. update the price changes 
+								 *
+								 *If the product is variable, price are stored in price collection
+								 *and is synced during changes to that (another method below). 
 								 **/
 								if(!variableProduct){
 									
@@ -174,6 +178,165 @@ public class SynchronizeCartItems {
 									lis.remove(dli);
 								}
 							}
+							
+							/*If there was an itemChange and couponCode was present, reapply coupon*/
+							if(!"".equals(couponCode)){
+								couponManager.reapplyCoupon(couponCode, co, false);
+							}
+							
+							/*Recalculate order summary*/
+							cartLogics.calculateSummary(co);							
+							logDetails.append("order total recalculated.");
+							
+							
+							/*Update the cart order*/
+							cartDao.save(co);
+							
+
+							
+							
+							/**
+							 * Update Log
+							 * */
+							try {
+								
+								Log log = new Log();
+								log.setCollection("cartorders");
+								log.setDetails(logDetails.toString());
+								log.setDate(Calendar.getInstance().getTime());
+								log.setKey(co.get_id());
+								log.setUser("System");
+								
+								logDao.save(log);					
+							}
+							catch(Exception e){
+								logger.error(Exceptions.giveStackTrace(e));
+							}
+						}
+					}						
+				}
+				
+				
+				
+			}
+			
+			else{
+				response = "No update performed. Product is null";
+			}
+			
+			
+		} catch (Exception e){
+			response = e.getMessage();
+			logger.error(Exceptions.giveStackTrace(e));
+		}
+		
+		
+		System.out.println("SynchronizeCartItems.sync - " 
+				+ processCounter + " cartOrders processed. " 
+				+ updateCounter + " cartOrders updated.");
+		
+		
+		return response;
+	}
+	
+	public String sync(Price price){
+		
+		String response = "";
+		
+		int updateCounter = 0,
+				processCounter = 0;
+		
+		try {
+			
+			if(price!=null){
+				
+				long productId = price.getProductId();
+				long priceId = price.get_id();
+				boolean variationOutOfStock = false;
+				
+				/*If product is outofstock*/
+				if(price.getStockStat().equals("outofstock")) variationOutOfStock = true;	
+				
+				Query<CartOrder> q = cartDao.createQuery();
+				q.filter("lineItems.pid", productId).filter("lineItems.vid", priceId);
+				
+				List<CartOrder> cos = q.asList();
+				for(CartOrder co : cos){
+					
+					processCounter++;
+					
+					List<OrderLineItemCart> lis = co.getLineItems();
+					if(lis != null){
+						boolean itemChanged = false;
+						String couponCode = "";
+						StringBuilder logDetails = new StringBuilder().append("Price change detected. ");
+						
+						for(OrderLineItemCart li : lis){
+							
+							/* Make sure the lineItem is specific to current product and variation*/
+							if(li.getProductId() == productId && 
+									li.getVariationId() == priceId){ 
+								
+								if(variationOutOfStock 
+										&& li.isInstock()) {
+
+									li.setInstock(false);
+									itemChanged = true;
+									
+									logDetails.append("Item with " + productId + ":" + priceId + " updated to outofstock");
+								}
+								
+								/*Product is in stock, but lineItem says it's out-of-stock*/
+								else if(!variationOutOfStock && !li.isInstock()){
+									li.setInstock(true);
+									itemChanged = true;
+									
+									logDetails.append("Item with " + productId + ":" + priceId + " updated to instock");
+								}
+								
+									
+								/*The item is currently on sale, and prices doesn't match,  
+								 *update the cart to be on sale*/
+								if(price.getSalePrice()!=0){
+
+									if(li.getPrice() != price.getSalePrice()){											
+										li.setPrice(price.getSalePrice());
+										li.setCost(price.getRegPrice());
+										
+										itemChanged = true;
+										
+										logDetails.append("Item with " + productId + ":" + priceId + ", price updated");
+									}
+								}
+
+								/* The item is currently NOT on sale, and prices doesn't match, 
+								 * update the cart price to regular price*/
+								else{
+
+									if(li.getPrice() != price.getRegPrice()){											
+										li.setPrice(price.getRegPrice());
+										li.setCost(price.getRegPrice());
+										
+										itemChanged = true;
+										
+										logDetails.append("Item with " + productId + ":" + priceId + ", price updated");
+									}
+								}
+							}	
+							
+							
+							
+							/*Check if there is any coupon applied to that order*/
+							if(li.getType().equals("coupon")){
+								couponCode = li.getName();
+							}
+						}
+						
+						
+						/*If any line item was changed*/
+						if(itemChanged){
+							
+							updateCounter++;
 							
 							/*If there was an itemChange and couponCode was present, reapply coupon*/
 							if(!"".equals(couponCode)){

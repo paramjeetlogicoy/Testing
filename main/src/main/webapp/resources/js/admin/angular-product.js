@@ -605,16 +605,16 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 					lowerPrice = e.salePrice;
 				}
 				
-				else if(e.regPrice && e.regPrice < lowerPrice){
+				else if(e.regPrice && e.regPrice <= lowerPrice){
 					lowerPrice = e.regPrice;
 				}
 				
 
-				else if(e.salePrice && e.salePrice > higherPrice){
+				if(e.salePrice && e.salePrice >= higherPrice){
 					higherPrice = e.salePrice;
 				}
 				
-				else if(e.regPrice && e.regPrice > higherPrice){
+				else if(e.regPrice && e.regPrice >= higherPrice){
 					higherPrice = e.regPrice;
 				}
 				
