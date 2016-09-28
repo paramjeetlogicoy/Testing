@@ -57,6 +57,75 @@ defaultCtrlr = function($scope, $http, $filter){
 			}
 		});
 	};
+	
+	$scope.products = [];
+	$scope.productsSelected = [];
+	$scope.loadProductList = function(){
+		$http
+		.get('/admin/products/json/all')
+		.then(function(resp){$scope.products = resp.data;});
+	};
+	$scope.loadProductList();
+	
+	$scope.selectProduct = function(){
+		var present = false;
+		for(var i=0;i<$scope.productsSelected.length;i++){
+			if($scope.productsSelected[i]._id == $scope.productSelect._id){
+				present = true;
+				break;
+			}
+		}
+		
+		if(!present){
+			$scope.productsSelected.push($scope.productSelect);
+		}
+		
+		$scope.productSelect = "";
+	};
+	
+	$scope.removeProduct = function(){
+		for(var i=0;i<$scope.productsSelected.length;i++){
+			if($scope.productsSelected[i]._id == this.ps._id){
+				$scope.productsSelected.splice(i,1);
+				break;
+			}
+		}
+	};
+	
+	$scope.updateDiscount = function(){
+		
+		$scope.pageLevelError = '';
+		if($scope.discountPercentage < 0 || $scope.productsSelected.length == 0){
+			if($scope.discountPercentage < 0){
+				$scope.pageLevelError = 'Invalid Discount';
+			}
+			else {
+				$scope.pageLevelError = 'Please select products';
+			}
+			return false;
+		}
+		
+		var selectedProducts = $scope.productsSelected.map(function(product){
+			return product._id;
+		});
+		
+
+		$http.post('/admin/ctrls/discountcontrol', 
+				{'attr':$scope.discountPercentage, 'value' : selectedProducts.join()})
+		.then(function(resp){
+			var data = resp.data;
+			if(data.success){
+				_lbFns.pSuccess('Discounts Applied\n' + data.message);
+				
+				$scope.discountPercentage = 0;
+				$scope.productsSelected = [];
+				
+			}
+			else{
+				alert(data.message);
+			}
+		});
+	};
     
 };
 
