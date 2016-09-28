@@ -101,7 +101,7 @@ public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 					List<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
 					
 					if(userRole!=null && enabled){
-						if(userRole.equals("admin")){
+						if(userRole.equals("admin") || userRole.equals("adminInv")){
 							authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 							authorities.add(new SimpleGrantedAuthority("ROLE_EDIT"));
 						}
