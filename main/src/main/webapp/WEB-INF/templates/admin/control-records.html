@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Control Records</title>
+<meta th:include="fragments/admin/layout::fragment-head" />
+</head>
+<body ng-app="controlRecordApp" th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
+	<div class="admin-container">
+		<div th:replace="fragments/admin/layout::fragment-header"></div>
+		<div th:replace="fragments/admin/layout::fragment-subnav"></div>
+		<div class="container-fluid" ng-controller="defaultRouteCtrl">
+		
+			<div class="page-level-alert ng-cloak">
+				<div class="alert alert-danger alert-dismissible" role="alert"
+					ng-show="pageLevelError">
+					<button type="button" class="close" data-dismiss="alert"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<span ng-bind-html="pageLevelError"></span>
+				</div>
+			</div>
+			
+			<div class="orders-container ng-cloak"
+				th:if="${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_ADMIN')}">
+
+				<div class="marg-b3">
+					<a href="" class="btn btn-warning btn-sm" ng-click="reloadConfig()"><i
+						class="fa fa-plus"></i> Reload Config</a>
+				</div>
+
+				<div class="marg-b3">
+					<table class="table table-striped">
+						<caption>All Control Records</caption>
+						<thead>
+							<tr>
+								<th>Type</th>
+								<th>Details</th>
+								<th>Params</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="r in records">
+								<td>{{r._id}}</td>
+								<td>{{r.details}}</td>
+								<td><form name="valueForm{{$index}}">
+										<ul class="control-params-holder">
+											<li ng-repeat="p in r.params">{{p.attr}} : <input
+												type="text" ng-model="p.value" class="form-control" /></li>
+
+										</ul>
+										<a href="" class="btn btn-xs btn-success"
+											ng-show="!valueForm{{$index}}.$pristine"
+											ng-click="saveCtrlRecord()">SAVE</a>
+									</form></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<hr />
+
+				<div class="marg-b6" ng-init="showCtrl=true">
+					<div class="marg-b3">
+						<a href="" class="btn btn-info btn-sm"
+							ng-click="showCtrl=!showCtrl"><i class="fa fa-plus"></i> <span
+							ng-if="!showCtrl">Show Discount Control</span><span
+							ng-if="showCtrl">Hide Discount Control</span></a>
+					</div>
+
+					<div ng-show="showCtrl">
+						<form name="discountControlForm" class="form-horizontal"
+							ng-submit="updateDiscount()">
+							<div class="form-group">
+								<label class="col-sm-3">Discount Percentage</label>
+								<div class="col-sm-3">
+									<div class="input-group">
+										<input type="number" step="1" ng-model="discountPercentage"
+											class="form-control" placeholder="" required="true" /> <span
+											class="input-group-addon">%</span>
+									</div>
+									<p class="help-block em small">Use 0 discount to clear off
+										the discounts!</p>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-3">Select Products</label>
+								<div class="col-sm-3">
+									<input type="text" ng-model="productSelect"
+										uib-typeahead="p as p.name for p in products | filter : {name : $viewValue}"
+										typeahead-loading="loadingProducts"
+										typeahead-on-select="selectProduct()" class="form-control"
+										placeholder="Type the product name to filter" /><i ng-show="loadingProducts"
+										class="glyphicon glyphicon-refresh"></i>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-sm-6 col-sm-offset-3">
+									<div class="label-container">
+										<div>
+											<em>Products Selected</em>
+										</div>
+										<span class="label label-info"
+											ng-repeat="ps in productsSelected | orderBy : name">{{ps.name}}
+											<a class="fa fa-times" ng-click="removeProduct()"
+											title="remove" href=""></a>
+										</span>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-sm-3 col-sm-offset-3">
+									<button type="submit" class="btn btn-success"
+										ng-disabled="discountControlForm.$invalid || productsSelected.length == 0">UPDATE</button>
+								</div>
+							</div>
+
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div th:replace="fragments/admin/layout::fragment-footer"></div>
+		<div th:include="fragments/admin/layout::fragment-foot(angular=true)"></div>
+	</div>
+	
+	<script src="/resources/js/admin/angular-control-records.js"></script>
+	<script type="text/javascript">
+		$('.nav-control-records').addClass('active');
+	</script>
+</body>
+</html>

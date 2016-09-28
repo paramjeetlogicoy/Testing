@@ -27,7 +27,7 @@
 	      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	    <![endif]-->
 
-<link th:href="@{/resources/css/main.css(v=${@ModifiedDate.cssDate})}"
+<link th:href="@{/resources/css/main.css(v=${@modifiedDate.cssDate})}"
 	href="/resources/css/main.css" rel="stylesheet" />
 <script th:inline="javascript" type="text/javascript">
 /*<![CDATA[*/
@@ -108,6 +108,7 @@
 					<li><a href="/category/flowers">FLOWERS</a></li>
 					<li><a href="/category/edibles">EDIBLES</a></li>
 					<li><a href="/category/concentrates">CONCENTRATES</a></li>
+					<li><a href="/category/specials">SPECIALS</a></li>
 					<li><a href="/category/tinctures">TINCTURES</a></li>
 					<li><a href="/category/pre-rolls">PRE-ROLLS</a></li>
 					<li><a href="/category/gear">ACCESSORIES</a></li>
@@ -135,6 +136,8 @@
 					<li><a href="/category/concentrates">CONCENTRATES</a></li>
 					<li><a href="/category/pre-rolls">PRE-ROLLS</a></li>
 					<li><a href="/category/gear">ACCESSORIES</a></li>
+					<li><a href="/category/specials">SPECIALS<i class="fa fa-star star"
+							aria-hidden="true"></i></a></li>
 				</ul>
 			</div>
 		</nav>
@@ -256,7 +259,7 @@
 	<div th:fragment="fragment-scripts(angular)">
 		<!-- <script src="/resources/js/main.js"></script> -->
 		<script th:if="${angular}"
-			th:src="@{/resources/js/comb.min.js(v=${@ModifiedDate.jsDate})}"
+			th:src="@{/resources/js/comb.min.js(v=${@modifiedDate.jsDate})}"
 			src="/resources/js/comb.min.js?v002"></script>
 
 

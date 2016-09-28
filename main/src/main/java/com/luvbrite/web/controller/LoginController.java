@@ -24,9 +24,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.luvbrite.dao.LogDAO;
 import com.luvbrite.dao.PasswordResetDAO;
 import com.luvbrite.dao.UserDAO;
+import com.luvbrite.services.ControlConfigService;
 import com.luvbrite.services.EmailService;
 import com.luvbrite.utils.Exceptions;
-import com.luvbrite.web.models.ControlOptions;
 import com.luvbrite.web.models.Email;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Log;
@@ -44,7 +44,7 @@ public class LoginController {
 	private UserDAO dao;
 	
 	@Autowired
-	private ControlOptions controlOptions;
+	private ControlConfigService ccs;
 	
 	@Autowired
 	private PasswordResetDAO pwdresetDAO;
@@ -228,7 +228,7 @@ public class LoginController {
 					}
 					
 					
-					if(!controlOptions.isDev()){
+					if(!ccs.getcOps().isDev()){
 
 						/* Email Admin */
 						try {

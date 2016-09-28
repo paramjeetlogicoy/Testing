@@ -175,6 +175,12 @@
 												<div class="pull-right text-right">{{(item.cost -
 													item.price)* -item.qty | currency}}</div>
 											</div>
+											<div class="clearfix" ng-repeat="item in o.lineItems"
+												ng-if="item.type=='item' && item.promo == 's'">
+												<div class="pull-left">{{item.name + ' (Sale)' }}</div>
+												<div class="pull-right text-right">{{(item.cost -
+													item.price)* -item.qty | currency}}</div>
+											</div>
 										</td>
 									</tr>
 

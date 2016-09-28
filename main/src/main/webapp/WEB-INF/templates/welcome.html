@@ -29,9 +29,12 @@
 .localbox-slider.item a.btn{right:0;bottom:20%;}
 .britebox-slider.item {background-image: url(https://lbrit.co/static/imgs/sliders/brite-box-temp.jpg);background-color:white !important;background-position:62% 50%;}
 .britebox-slider.item button.btn{right:0;bottom:5px;}
+.edipuredeal-slider{background-image: url(https://lbrit.co/static/imgs/sliders/gummy-banner.jpg);background-color:white !important;}
+.lionking-slider{background-image: url(https://lbrit.co/static/imgs/sliders/lionking-comingsoon-xs.jpg);background-color:#64386b !important;}
+.edipuredeal-slider.item>a {display:block;height:100%;}
 @media (min-width: 768px){	
 	.carousel-inner .mx300{max-width:768px;}
-	
+	.lionking-slider{background-image: url(https://lbrit.co/static/imgs/sliders/lionking-comingsoon.jpg);}
 	.endofeight-slider.item button.btn {bottom:100px;right:19%;}
 	.offhouroffer-slider.item button.btn {bottom:70px}
 	.doubledown-slider.item button.btn {bottom:25px;right:20%;font-size:12px;}
@@ -40,9 +43,12 @@
 	.britebox-slider.item {background-position:50% 50%;}
 	.britebox-slider.item button.btn{right:10%;bottom: 15px;}
 }
+@media (min-width: 1200px){	
+	.lionking-slider{background-image: url(https://lbrit.co/static/imgs/sliders/lionking-comingsoon-lg.jpg);}
+}
 </style>
 </head>
-<body ng-app="lbApp">
+<body ng-app="lbApp" ng-controller="homeCtrlr">
 	<div th:replace="fragments/layout::fragment-google-analytics"></div>
 	<div th:replace="fragments/layout::fragment-header"></div>
 	<div class="homepage-container">
@@ -90,7 +96,14 @@
 			<!-- Wrapper for slides -->
 			<div class="carousel-inner" role="listbox">
 
-				<div class="newarrivals-slider item active">
+				<div class="edipuredeal-slider item active">
+					<a href="/category/edipure">&nbsp;</a>
+				</div>
+
+				<div class="lionking-slider item">
+				</div>
+
+				<div class="newarrivals-slider item">
 					<a href="/category/new-arrivals" class="btn btn-sm btn-lb">TAKE
 						A PEAK</a>
 				</div>
@@ -247,13 +260,22 @@
 							1.5g extra for free!
 						</div>
 						<div class="marg-b2">
-							<p>
-								<strong>To be More Specific</strong>: The following are now
-								available in 5g.
-							</p>
-							<div class="marg-l1">
-								Durban Poison - @ $45 per 5g<br /> Master Kush - @ $50 per 5g
+							<div ng-if="fiveGramSpecials &amp;&amp; fiveGramSpecials.length">
+								<p>
+									<strong>To be More Specific</strong>: The following are now
+									available in 5g.
+								</p>
+								<div class="marg-l1">
+									<div ng-repeat="fgs in fiveGramSpecials">
+										<a href="/product/{{fgs.url}}" target="_blank">{{fgs.name}}
+											- {{fgs.priceRange}}</a>
+									</div>
+								</div>
 							</div>
+							<p ng-if="!fiveGramSpecials || !fiveGramSpecials.length">
+								<strong>Apologies</strong>: We don't have any 5g products in
+								stock right now!
+							</p>
 						</div>
 
 					</div>
