@@ -78,7 +78,6 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 	$scope.params = $routeParams;
 	$scope.errorMsg = '';
 	$scope.p = {};
-	$scope.roles = ["customer","admin","adminInv"];
 	$scope.statuses = [true,false];
 	$scope.mode = mode; //Mode will be 'new' while adding a user, and 'edit', if editing a user.
 	$scope.userId = $scope.params.userId;
@@ -261,8 +260,8 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 		 * the server. Once Id is generated, we switch back to edit mode by
 		 * calling the edit URL 
 		 **/
-		if($scope.mode == 'new'){
-			
+		if($scope.mode == 'new'){			
+			$scope.u.role = 'customer';
 			$http.post('/admin/users/json/create', $scope.u)
 			.success(function(resp){
 				if(resp.success){

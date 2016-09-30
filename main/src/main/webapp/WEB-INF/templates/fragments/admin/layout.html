@@ -71,14 +71,26 @@
 	</header>
 
 	<div th:fragment="fragment-subnav" class="container-fluid">
-		<ul class="nav nav-pills admin-subnav">
+		<ul class="nav nav-pills admin-subnav"
+			th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
 			<li class="nav-orders"><a href="/admin/orders/">Orders</a></li>
 			<li class="nav-users"><a href="/admin/users/">Users</a></li>
-			<li class="nav-products"><a href="/admin/products/">Products</a></li>
-			<li class="nav-coupons"><a href="/admin/coupons/">Coupons</a></li>
-			<li class="nav-articles"><a href="/admin/articles/">Articles</a></li>
-			<li class="nav-control-records"><a href="/admin/ctrls/">Control Records</a></li>
-			<li class="nav-articles"><a href="/admin/inv/">Inventory</a></li>
+			<li
+				th:if="${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_EDIT')}"
+				class="nav-products"><a href="/admin/products/">Products</a></li>
+			<li
+				th:if="${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_EDIT')}"
+				class="nav-coupons"><a href="/admin/coupons/">Coupons</a></li>
+			<li
+				th:if="${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_EDIT')}"
+				class="nav-articles"><a href="/admin/articles/">Articles</a></li>
+			<li
+				th:if="${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_SUPER_ADMIN')}"
+				class="nav-control-records"><a href="/admin/ctrls/">Control
+					Records</a></li>
+			<li
+				th:if="${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_INV_ADMIN')}"
+				class="nav-articles"><a href="/admin/inv/">Inventory</a></li>
 		</ul>
 	</div>
 

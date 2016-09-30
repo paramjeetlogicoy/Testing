@@ -3,6 +3,7 @@ package com.luvbrite.config;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
+import org.springframework.security.web.authentication.rememberme.CookieTheftException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -22,6 +23,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public String handleException(HttpServletRequest request, Exception ex){
         logger.error(Exceptions.giveStackTrace(ex));
+        
+        if(ex instanceof CookieTheftException){
+        	return "redirect:/login";
+        }
         
         return "generic-error";
     }
