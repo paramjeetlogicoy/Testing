@@ -38,12 +38,6 @@ public class SynchronizeCartItems {
 	private CartOrderDAO cartDao;
 	
 	@Autowired
-	private CartLogics cartLogics;
-	
-	@Autowired
-	private CouponManager couponManager;
-	
-	@Autowired
 	private LogDAO logDao;
 	
 	public String sync(Product product){
@@ -78,8 +72,8 @@ public class SynchronizeCartItems {
 					
 					List<OrderLineItemCart> lis = co.getLineItems();
 					if(lis != null){
+						
 						boolean itemChanged = false;
-						String couponCode = "";
 						StringBuilder logDetails = new StringBuilder().append("Product change detected. ");
 						
 						List<OrderLineItemCart> deletedLis = new ArrayList<OrderLineItemCart>();
@@ -116,7 +110,7 @@ public class SynchronizeCartItems {
 									deletedLis.add(li);
 									itemChanged = true;
 									
-									logDetails.append("Item with " + productId + " deleted!");
+									logDetails.append("Item with " + productId + " removed from order id " + co.get_id());
 								}
 								
 								
@@ -135,6 +129,7 @@ public class SynchronizeCartItems {
 										if(li.getPrice() != product.getSalePrice()){											
 											li.setPrice(product.getSalePrice());
 											li.setCost(product.getPrice());
+											li.setPromo("s");
 											
 											itemChanged = true;
 											
@@ -149,6 +144,7 @@ public class SynchronizeCartItems {
 										if(li.getPrice() != product.getPrice()){											
 											li.setPrice(product.getPrice());
 											li.setCost(product.getPrice());
+											li.setPromo("");
 											
 											itemChanged = true;
 											
@@ -157,13 +153,6 @@ public class SynchronizeCartItems {
 									}
 								}
 							}	
-							
-							
-							
-							/*Check if there is any coupon applied to that order*/
-							if(li.getType().equals("coupon")){
-								couponCode = li.getName();
-							}
 						}
 						
 						
@@ -173,20 +162,19 @@ public class SynchronizeCartItems {
 							updateCounter++;
 							
 							/*Delete any items if required*/
-							if(deletedLis != null && deletedLis.size()>0){
+							if(deletedLis != null && !deletedLis.isEmpty()){
 								for(OrderLineItemCart dli : deletedLis){
 									lis.remove(dli);
 								}
 							}
 							
-							/*If there was an itemChange and couponCode was present, reapply coupon*/
-							if(!"".equals(couponCode)){
-								couponManager.reapplyCoupon(couponCode, co, false);
-							}
 							
-							/*Recalculate order summary*/
-							cartLogics.calculateSummary(co);							
-							logDetails.append("order total recalculated.");
+							
+							/**    ---- NOTE ----
+							 *  
+							 * Coupons are re-applied every time the cart loads and 
+							 * totals are recalculated, so no need to do it again here! 
+							 **/
 							
 							
 							/*Update the cart order*/
@@ -239,7 +227,8 @@ public class SynchronizeCartItems {
 		return response;
 	}
 	
-	public String sync(Price price){
+	
+	public String sync(List<Price> prices){
 		
 		String response = "";
 		
@@ -248,110 +237,144 @@ public class SynchronizeCartItems {
 		
 		try {
 			
-			if(price!=null){
+			if(prices!=null && !prices.isEmpty()){
+			
+				long productId = prices.get(0).getProductId();
 				
-				long productId = price.getProductId();
-				long priceId = price.get_id();
-				boolean variationOutOfStock = false;
-				
-				/*If product is outofstock*/
-				if(price.getStockStat().equals("outofstock")) variationOutOfStock = true;	
-				
-				Query<CartOrder> q = cartDao.createQuery();
-				q.filter("lineItems.pid", productId).filter("lineItems.vid", priceId);
-				
-				List<CartOrder> cos = q.asList();
+				/**Get all the items in the cart for this product*/
+				List<CartOrder> cos = cartDao.createQuery().filter("lineItems.pid", productId).asList();
 				for(CartOrder co : cos){
 					
 					processCounter++;
 					
 					List<OrderLineItemCart> lis = co.getLineItems();
 					if(lis != null){
+						
 						boolean itemChanged = false;
-						String couponCode = "";
-						StringBuilder logDetails = new StringBuilder().append("Price change detected. ");
+						StringBuilder logDetails = new StringBuilder().append("Price change detected.");
+						
+						List<OrderLineItemCart> deletedLis = new ArrayList<OrderLineItemCart>();
+
+						
+						/** Check if the variationIds in lineItem matches the _id of each price in prices.
+						 *	
+						 *	if there are not match, that means that price line is not there anymore, delete the li
+						 *	if there is a match, run through the logic to match the lineItem to the most recent price. 
+						 **/
 						
 						for(OrderLineItemCart li : lis){
 							
-							/* Make sure the lineItem is specific to current product and variation*/
-							if(li.getProductId() == productId && 
-									li.getVariationId() == priceId){ 
+							/* Make sure the lineItem is specific to current product */
+							if(li.getProductId() == productId) {
 								
-								if(variationOutOfStock 
-										&& li.isInstock()) {
-
-									li.setInstock(false);
-									itemChanged = true;
-									
-									logDetails.append("Item with " + productId + ":" + priceId + " updated to outofstock");
-								}
+								boolean priceActive = false;
+								Price currVariation = null;
+								long varitionId = li.getVariationId();
 								
-								/*Product is in stock, but lineItem says it's out-of-stock*/
-								else if(!variationOutOfStock && !li.isInstock()){
-									li.setInstock(true);
-									itemChanged = true;
-									
-									logDetails.append("Item with " + productId + ":" + priceId + " updated to instock");
-								}
-								
-									
-								/*The item is currently on sale, and prices doesn't match,  
-								 *update the cart to be on sale*/
-								if(price.getSalePrice()!=0){
-
-									if(li.getPrice() != price.getSalePrice()){											
-										li.setPrice(price.getSalePrice());
-										li.setCost(price.getRegPrice());
+								/* Check if the variationId still matches an Active Price */
+								for(Price price : prices){
+									if(varitionId==price.get_id()){
 										
-										itemChanged = true;
-										
-										logDetails.append("Item with " + productId + ":" + priceId + ", price updated");
+										priceActive = true;
+										currVariation = price;
+										break;
 									}
 								}
+								
+								/* If matches, run through logic */
+								if(priceActive) {
+									
+									boolean variationOutOfStock = false;
+									long priceId = currVariation.get_id();
+									
+									/*If this variation is outofstock*/
+									if(currVariation.getStockStat().equals("outofstock")) variationOutOfStock = true;	
+									
+									if(variationOutOfStock 
+											&& li.isInstock()) {
 
-								/* The item is currently NOT on sale, and prices doesn't match, 
-								 * update the cart price to regular price*/
+										li.setInstock(false);
+										itemChanged = true;
+
+										logDetails.append("Item with " + productId + ":" + priceId + " updated to outofstock");
+									}
+										
+									/*variation is in stock, but lineItem says it's out-of-stock*/
+									else if(!variationOutOfStock && !li.isInstock()){
+										li.setInstock(true);
+										itemChanged = true;
+										
+										logDetails.append("Item with " + productId + ":" + priceId + " updated to instock");
+									}
+										
+											
+									/*The item is currently on sale, and prices doesn't match,  
+									 *update the cart to be on sale*/
+									if(currVariation.getSalePrice()!=0){
+
+										if(li.getPrice() != currVariation.getSalePrice()){											
+											li.setPrice(currVariation.getSalePrice());
+											li.setCost(currVariation.getRegPrice());
+											li.setPromo("s");
+											
+											itemChanged = true;
+											
+											logDetails.append("Item with " + productId + ":" + priceId + ", price updated");
+										}
+									}
+
+									/* The item is currently NOT on sale, and prices doesn't match, 
+									 * update the cart price to regular price*/
+									else{
+
+										if(li.getPrice() != currVariation.getRegPrice()){											
+											li.setPrice(currVariation.getRegPrice());
+											li.setCost(currVariation.getRegPrice());
+											li.setPromo("");
+											
+											itemChanged = true;
+											
+											logDetails.append("Item with " + productId + ":" + priceId + ", price updated");
+										}
+									}
+								}								
+
+								/* If doesn't match, mark for deletion */
 								else{
-
-									if(li.getPrice() != price.getRegPrice()){											
-										li.setPrice(price.getRegPrice());
-										li.setCost(price.getRegPrice());
-										
-										itemChanged = true;
-										
-										logDetails.append("Item with " + productId + ":" + priceId + ", price updated");
-									}
-								}
-							}	
+									
+									deletedLis.add(li);
+									itemChanged = true;
+								}	
+								
 							
+							}//Matching productId to lineItem.pid. No need to do anything in the else case! 	
 							
-							
-							/*Check if there is any coupon applied to that order*/
-							if(li.getType().equals("coupon")){
-								couponCode = li.getName();
-							}
+														
 						}
 						
-						
-						/*If any line item was changed*/
+						/* We have run through all lineItem for that cartOrder, lets do necessary deletes and updates */
 						if(itemChanged){
 							
 							updateCounter++;
 							
-							/*If there was an itemChange and couponCode was present, reapply coupon*/
-							if(!"".equals(couponCode)){
-								couponManager.reapplyCoupon(couponCode, co, false);
+							/*Delete any items if required*/
+							if(deletedLis != null && !deletedLis.isEmpty()){
+								for(OrderLineItemCart dli : deletedLis){
+									lis.remove(dli);
+									logDetails.append("Item with " + dli.getProductId() + ":" + dli.getVariationId() + ", removed from order id " + co.get_id());
+								}
 							}
 							
-							/*Recalculate order summary*/
-							cartLogics.calculateSummary(co);							
-							logDetails.append("order total recalculated.");
 							
+							
+							/**    ---- NOTE ----
+							 *  
+							 * Coupons are re-applied every time the cart loads and 
+							 * totals are recalculated, so no need to do it again here! 
+							 **/
 							
 							/*Update the cart order*/
 							cartDao.save(co);
-							
-
 							
 							
 							/**
@@ -372,15 +395,13 @@ public class SynchronizeCartItems {
 								logger.error(Exceptions.giveStackTrace(e));
 							}
 						}
-					}						
+						
+					}
 				}
-				
-				
-				
 			}
 			
 			else{
-				response = "No update performed. Product is null";
+				response = "No update performed. prices obj is null";
 			}
 			
 			

@@ -258,15 +258,15 @@ public class ControlRecordController {
 										 varitaionPrdsCount++;
 										 
 										 priceDao.save(price);
+									 }
 
 
-										 /* Sync CartItems */
-										 try {
-											 syncCart.sync(price);				
-										 }
-										 catch(Exception e){
-											 logger.error(Exceptions.giveStackTrace(e));
-										 }
+									 /* Sync CartItems */
+									 try {
+										 syncCart.sync(prices);				
+									 }
+									 catch(Exception e){
+										 logger.error(Exceptions.giveStackTrace(e));
 									 }
 									 
 									 
