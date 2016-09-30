@@ -129,6 +129,7 @@ public class SynchronizeCartItems {
 										if(li.getPrice() != product.getSalePrice()){											
 											li.setPrice(product.getSalePrice());
 											li.setCost(product.getPrice());
+											li.setPromo("s");
 											
 											itemChanged = true;
 											
@@ -143,6 +144,7 @@ public class SynchronizeCartItems {
 										if(li.getPrice() != product.getPrice()){											
 											li.setPrice(product.getPrice());
 											li.setCost(product.getPrice());
+											li.setPromo("");
 											
 											itemChanged = true;
 											
@@ -313,6 +315,7 @@ public class SynchronizeCartItems {
 										if(li.getPrice() != currVariation.getSalePrice()){											
 											li.setPrice(currVariation.getSalePrice());
 											li.setCost(currVariation.getRegPrice());
+											li.setPromo("s");
 											
 											itemChanged = true;
 											
@@ -327,6 +330,7 @@ public class SynchronizeCartItems {
 										if(li.getPrice() != currVariation.getRegPrice()){											
 											li.setPrice(currVariation.getRegPrice());
 											li.setCost(currVariation.getRegPrice());
+											li.setPromo("");
 											
 											itemChanged = true;
 											
