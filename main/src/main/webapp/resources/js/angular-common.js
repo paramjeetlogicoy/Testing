@@ -32,6 +32,7 @@ var lbApp = angular.module(
 	.controller('cartReviewCtrlr',   ['$scope', '$http', '$rootScope', cartReviewCtrlr])
 	
 .controller('localBoxCtrlr', ['$scope', '$http', '$rootScope', localBoxCtrlr])
+.controller('homeCtrlr', ['$scope', '$http', '$rootScope', homeCtrlr])
 
 // This directive is implemented in angular-general-functions.js
 .directive('remainingTime', ['$interval', remainingTime]);

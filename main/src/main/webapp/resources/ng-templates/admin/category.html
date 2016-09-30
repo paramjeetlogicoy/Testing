@@ -19,13 +19,19 @@
 				</div>
 
 				<div class="add-category marg-b2">
-					<form class="form-inline view-edit-form pad1" name="addCategoryForm"
-						ng-submit="saveCategory()">
+					<form class="form-inline view-edit-form pad1"
+						name="addCategoryForm" ng-submit="saveCategory()">
 						<div class="form-group form-group-sm"
 							ng-class="{ 'has-error has-feedback' : addCategoryForm.name.$invalid && !addCategoryForm.name.$pristine }">
 							<input type="text" class="form-control" ng-model="catName"
-								uib-tooltip="Parent Name" placeholder="Category Name"
-								name="name" required="required" />
+								uib-tooltip="Category Name" placeholder="Category Name"
+								ng-blur="nameChange()" name="name" required="required" />
+						</div>
+						<div class="form-group form-group-sm"
+							ng-class="{ 'has-error has-feedback' : addCategoryForm.url.$invalid && !addCategoryForm.url.$pristine }">
+							<input type="text" class="form-control" ng-model="catUrl"
+								uib-tooltip="Category URL" placeholder="Category URL" name="url"
+								required="required" />
 						</div>
 						<div class="form-group form-group-sm">
 							<select ng-options="cat.name for cat in selCats"
@@ -65,14 +71,15 @@
 											ng-show="sortReverse" class="fa fa-caret-up"></i></span>
 											<i ng-show="sortType != 'name'" class="fa fa-sort"></i>
 								</a></th>
-								<th class="col-sm-3"><a class="sortables"
+								<th class="col-sm-2"><a class="sortables"
 									ng-click="sortType = 'parent'; sortReverse = !sortReverse;">
 										Parent <span ng-show="sortType == 'parent'"><i
 											ng-show="!sortReverse" class="fa fa-caret-down"></i> <i
 											ng-show="sortReverse" class="fa fa-caret-up"></i></span>
 											<i ng-show="sortType != 'parent'" class="fa fa-sort"></i>
 								</a></th>
-								<th class="col-sm-4">Description</th>
+								<th class="col-sm-2">Url</th>
+								<th class="col-sm-3">Description</th>
 								<th class="col-sm-1"></th>
 							</tr>
 						</thead>
@@ -82,6 +89,7 @@
 								<td>{{c.name}}</td>
 								<td>{{ (c.parent && c.parent!=0)? getParentCat(c.parent) :
 									' - '}}</td>
+								<td>{{c.url}}</td>
 								<td>{{c.description}}</td>
 								<td><a href="" ng-click="editCat()" title="Edit Category"><i
 										class="fa fa-pencil"></i></a><a class="marg-l1" href=""

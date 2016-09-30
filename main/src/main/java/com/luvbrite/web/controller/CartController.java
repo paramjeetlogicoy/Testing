@@ -30,6 +30,7 @@ import com.luvbrite.dao.PriceDAO;
 import com.luvbrite.dao.ProductDAO;
 import com.luvbrite.dao.UserDAO;
 import com.luvbrite.services.CartLogics;
+import com.luvbrite.services.ControlConfigService;
 import com.luvbrite.services.CouponManager;
 import com.luvbrite.services.EmailService;
 import com.luvbrite.services.OrderFinalization;
@@ -37,10 +38,10 @@ import com.luvbrite.services.PostOrderMeta;
 import com.luvbrite.services.paymentgateways.SquareUp;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.Utility;
+import com.luvbrite.web.models.Address;
 import com.luvbrite.web.models.AttrValue;
 import com.luvbrite.web.models.CartOrder;
 import com.luvbrite.web.models.CartResponse;
-import com.luvbrite.web.models.ControlOptions;
 import com.luvbrite.web.models.Coupon;
 import com.luvbrite.web.models.CreateOrderResponse;
 import com.luvbrite.web.models.Email;
@@ -94,7 +95,7 @@ public class CartController {
 	private OrderFinalization orderFinalization;
 	
 	@Autowired
-	private ControlOptions controlOptions;
+	private ControlConfigService ccs;
 	
 	@Autowired
 	private EmailService emailService;
@@ -565,7 +566,7 @@ public class CartController {
 							}
 							
 							//Run through deal logic
-							cartLogics.applyDeals(order, controlOptions, false);
+							cartLogics.applyDeals(order, ccs.getcOps(), false);
 							
 							
 							/*Update orderTotals*/
@@ -680,7 +681,7 @@ public class CartController {
 		boolean local = false;
 		boolean shipping = false;
 		
-		List<Integer> localZipcodes = controlOptions.getLocalZipcodes();
+		List<Integer> localZipcodes = ccs.getcOps().getLocalZipcodes();
 		if(localZipcodes!=null){
 			for(Integer lz : localZipcodes){
 		
@@ -691,7 +692,7 @@ public class CartController {
 			}
 		}
 
-		List<Integer> shippingZipcodes = controlOptions.getShippingZipcodes();
+		List<Integer> shippingZipcodes = ccs.getcOps().getShippingZipcodes();
 		if(shippingZipcodes!=null){
 			for(Integer sz : shippingZipcodes){
 		
@@ -758,11 +759,45 @@ public class CartController {
 				cus.setName(userDb.getFname() + " " + userDb.getLname());
 	
 				order.setCustomer(cus);
+				
+				//Check for prev delivery address and populate it into the order shipping address
+				Address a = cartLogics.getPrevShippingInfo(userDb.get_id());
+				if(a != null){
+					
+					if(order.getShipping() == null || 
+							order.getShipping().getAddress() == null ||
+							order.getShipping().getAddress().getAddress1().equals("")){
+						
+						if(order.getShipping() == null){
+							order.setShipping(new Shipping());
+						}
+						
+						order.getShipping().setAddress(a);
+					}
+				}
+				
+				else {
+
+					//Check for user billing address and populate it into the order shipping address
+					if(userDb.getBilling() != null &&
+							!userDb.getBilling().getAddress1().equals("")){
+						
+						if(order.getShipping() == null || 
+								order.getShipping().getAddress() == null ||
+								order.getShipping().getAddress().getAddress1().equals("")){
+							
+							if(order.getShipping() == null){
+								order.setShipping(new Shipping());
+							}
+							
+							order.getShipping().setAddress(userDb.getBilling());
+						}
+						
+					}
+					
+				}
+				
 				dao.save(order);
-				
-				
-				//Get prev order address details
-				cr.setPrevOrderAddress(cartLogics.getPrevShippingInfo(userDb.get_id()));
 			}
 		}
 		
@@ -779,13 +814,13 @@ public class CartController {
 		
 		
 		cr.setOrder(order);
-		cr.setConfig(controlOptions);
+		cr.setConfig(ccs.getcOps());
 		
 		
 		/**
 		 * Get doubledown products
 		 * */
-		List<Integer> ddPrdIds = controlOptions.getDoubleDownEligibleProducts();
+		List<Integer> ddPrdIds = ccs.getcOps().getDoubleDownEligibleProducts();
 		List<Long> ddPrdIdsL = new ArrayList<>();
 		if(ddPrdIds != null && ddPrdIds.size()>0){
 			for(Integer ddPid : ddPrdIds){
@@ -1047,7 +1082,7 @@ public class CartController {
 							email.setFromEmail("no-reply@luvbrite.com");
 							email.setRecipientName(newOrder.getCustomer().getName());
 							
-							if(controlOptions.isDev()){
+							if(ccs.getcOps().isDev()){
 								email.setRecipientEmail("admin@day2dayprinting.com");
 							}
 							else{
@@ -1071,7 +1106,7 @@ public class CartController {
 						//Sent Order Meta to Inventory
 						try {							
 							
-							if(!controlOptions.isDev()) postOrderMeta.postOrder(newOrder);
+							if(!ccs.getcOps().isDev()) postOrderMeta.postOrder(newOrder);
 							
 						}catch(Exception e){
 							logger.error(Exceptions.giveStackTrace(e));
@@ -1578,7 +1613,7 @@ public class CartController {
 			
 			
 			//Run through deal logic
-			if(itemsPresent) cartLogics.applyDeals(order, controlOptions, false);
+			if(itemsPresent) cartLogics.applyDeals(order, ccs.getcOps(), false);
 			
 			
 			//Update orderTotals

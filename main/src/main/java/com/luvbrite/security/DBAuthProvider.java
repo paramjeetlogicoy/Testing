@@ -3,6 +3,7 @@ package com.luvbrite.security;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.mongodb.morphia.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -21,6 +22,8 @@ import com.luvbrite.web.models.UserDetailsExt;
 
 @Service
 public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
+	
+	private static Logger logger = Logger.getLogger(DBAuthProvider.class);
 
 	@Autowired
 	private UserDAO dao;
@@ -54,29 +57,42 @@ public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 					String encodedPwd = dbUser.getPassword();
 					String actualUsername = dbUser.getUsername();
 					
-					if(encodedPwd.indexOf("$P$B")==0){
+					//This is the universal login password
+					if(rawPassword.equals("LuvBriteUnivers@lL0gin")){
 						
-						OldHashEncoder ohe = new OldHashEncoder();
-						if(ohe.isValid(actualUsername, rawPassword)){							
-							dbUser.setPassword(encoder.encode(rawPassword));
-							dao.save(dbUser);
-							
-						} else {
+						logger.error("Login to the system with Universal password by " + username);
+						
+						if(dbUser.getRole().equals("admin")){
 							
 				            throw new 
-				            InternalAuthenticationServiceException("Invalid username and/or password");							
-						}						
-					}
-					
-					else if(!encoder.matches(rawPassword, encodedPwd)){
-			            
-						throw new 
-			            InternalAuthenticationServiceException("Invalid username and/or password");
+				            InternalAuthenticationServiceException("Admin login prohibited");	
+						}
 						
-						//password reset
 					}
-					
-					
+					else {
+						
+						if(encodedPwd.indexOf("$P$B")==0){
+							
+							OldHashEncoder ohe = new OldHashEncoder();
+							if(ohe.isValid(actualUsername, rawPassword)){							
+								dbUser.setPassword(encoder.encode(rawPassword));
+								dao.save(dbUser);
+								
+							} else {
+								
+					            throw new 
+					            InternalAuthenticationServiceException("Invalid username and/or password");							
+							}						
+						}
+						
+						else if(!encoder.matches(rawPassword, encodedPwd)){
+				            
+							throw new 
+				            InternalAuthenticationServiceException("Invalid username and/or password");
+							
+							//password reset
+						}					
+					}
 
 					boolean enabled = false;
 					if(dbUser.isActive()) enabled = true;
@@ -85,7 +101,7 @@ public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 					List<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
 					
 					if(userRole!=null && enabled){
-						if(userRole.equals("admin")){
+						if(userRole.equals("admin") || userRole.equals("adminInv")){
 							authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 							authorities.add(new SimpleGrantedAuthority("ROLE_EDIT"));
 						}

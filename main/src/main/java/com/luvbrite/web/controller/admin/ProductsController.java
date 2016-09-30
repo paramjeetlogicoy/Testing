@@ -315,11 +315,23 @@ public class ProductsController {
 			priceDao.deleteByQuery(priceDao.createQuery()
 					.field("pid").equal(prices.get(0).getProductId()));
 			
+
 			
 			//Add new prices 
 			for(Price p : prices){
 				priceDao.save(p);
 			}	
+			
+			
+			/**
+			 * Sync corrects price changes, stock status changes and any priceline deletions 
+			 * */
+			try {
+				syncCart.sync(prices);				
+			}
+			catch(Exception e){
+				logger.error(Exceptions.giveStackTrace(e));
+			}
 			
 			
 			

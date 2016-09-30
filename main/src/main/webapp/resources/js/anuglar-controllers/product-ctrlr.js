@@ -16,7 +16,7 @@ var productCtrlr = function($scope, $http, $rootScope){
 	
 	$scope.getProductPrice = function(){
 		
-		$http.get(_lbUrls.getprdprice + $scope.productId + '/price', {
+		$http.get(_lbUrls.getprd + $scope.productId + '/price', {
 			params : { 
 				'hidepop' : true  //tells the config not to show the loading popup
 			}

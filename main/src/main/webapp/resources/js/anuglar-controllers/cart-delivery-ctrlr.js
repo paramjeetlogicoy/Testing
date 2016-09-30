@@ -413,25 +413,5 @@ var cartDeliveryCtrlr = function($scope, $http, $rootScope, $filter, $timeout){
 			if(!addressApiInit)
 				$scope.mapsInit();
 		}
-		
-		else if(m.user && m.prevOrderAddress){		
-			setUpDeliveryTimes();
-			initAddressVars();
-			
-			m.order.shipping.address = m.prevOrderAddress;
-			
-			if(!addressApiInit)
-				$scope.mapsInit();
-		}
-		
-		else if(m.user && m.user.billing){		
-			setUpDeliveryTimes();
-			initAddressVars();
-			
-			m.order.shipping.address = m.user.billing;
-			
-			if(!addressApiInit)
-				$scope.mapsInit();
-		}
 	})();
 };
