@@ -7,16 +7,20 @@
 <title>All Orders</title>
 <meta th:include="fragments/admin/layout::fragment-head" />
 </head>
-<body ng-app="orderApp">
+<body ng-app="orderApp"
+			th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
 	<div class="admin-container">
 		<div th:replace="fragments/admin/layout::fragment-header"></div>
 		<div th:replace="fragments/admin/layout::fragment-subnav"></div>
-		<div class="container-fluid" ng-controller="defaultRouteCtrl">
+		
+		<div class="container-fluid" ng-controller="defaultRouteCtrl"
+			th:if="${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_ADMIN')}">
+			
 			<div class="orders-container ng-cloak">
 
 				<div class="marg-b3">
-					<a href="" class="btn btn-warning btn-sm"><i
-						class="fa fa-plus"></i> NEW ORDER</a>
+					<a href="" class="btn btn-warning btn-sm"><i class="fa fa-plus"></i>
+						NEW ORDER</a>
 				</div>
 
 				<div class="marg-b1">
@@ -44,7 +48,7 @@
 				</div>
 
 				<div th:replace="fragments/admin/layout::fragment-pagination"></div>
-				
+
 				<table class="table table-striped">
 					<thead>
 						<tr>
@@ -60,8 +64,8 @@
 					</thead>
 					<tbody>
 						<tr ng-repeat="o in orders">
-							<td ng-class="o.status=='cancelled'?'cancelled-td':''">
-								<span class="cancelled-ribbon"></span>
+							<td ng-class="o.status=='cancelled'?'cancelled-td':''"><span
+								class="cancelled-ribbon"></span>
 								<div class="order-disp-actions visible-xs">
 									<a href="" ng-click="assignDriver()"
 										ng-if="o.status!='cancelled'" title="Assign/Change Driver"><span
@@ -92,32 +96,31 @@
 								<div class="orange1 size16">
 									<strong>{{o.total | currency}}</strong>
 								</div>
-						
+
 								<div class="marg-b05" ng-if="o.dispatch.comments">
 									<mark class="mark-green em">{{o.dispatch.comments}}</mark>
 								</div>
-						
+
 								<div class="marg-b05" ng-if="o.notes.deliveryNotes">
 									<mark class="mark-yellow em">{{o.notes.deliveryNotes}}</mark>
 								</div>
-						
+
 								<div>
-									<span><i class="fa fa-globe"
-										aria-hidden="true"></i></span> <a
+									<span><i class="fa fa-globe" aria-hidden="true"></i></span> <a
 										href="http://maps.google.com/?q={{o.shipping.address.address1}},{{o.shipping.address.city}}-{{o.shipping.address.zip}}"
 										target="_blank">{{o.shipping.address.address1}}
 										{{o.shipping.address.address2}} {{o.shipping.address.city}},
 										{{o.shipping.address.zip}}</a>
 								</div>
 								<div class="order-disp-phone">
-									<span><i class="fa fa-phone-square"
-										aria-hidden="true"></i></span> <a href="tel:{{dispatch.ooi.phone}}">{{o.shipping.address.phone}}</a>
+									<span><i class="fa fa-phone-square" aria-hidden="true"></i></span>
+									<a href="tel:{{dispatch.ooi.phone}}">{{o.shipping.address.phone}}</a>
 								</div>
 
 								<div class="visible-xs">
 									<strong>Items:</strong>
 									<ol class="styled">
-										<li ng-repeat="item in o.lineItems"><span 
+										<li ng-repeat="item in o.lineItems"><span
 											ng-if="item.type=='item'">{{item.name}}, Qty:-
 												{{item.qty}}<span ng-if="item.specs">, <span
 													ng-repeat="spec in item.specs"> <strong>{{spec.attr}}</strong>:
@@ -125,8 +128,7 @@
 												</span></span>
 										</span></li>
 									</ol>
-								</div>
-							</td>
+								</div></td>
 
 							<td class="hidden-xs">
 								<div class="order-disp-actions">
@@ -154,7 +156,7 @@
 				</table>
 
 				<div th:replace="fragments/admin/layout::fragment-pagination"></div>
-				
+
 			</div>
 		</div>
 

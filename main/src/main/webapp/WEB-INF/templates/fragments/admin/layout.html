@@ -32,6 +32,7 @@
 /*<![CDATA[*/
     var _globalUserId = /*[[${sc.authentication.principal.id}]]*/ '';
     var _luvbriteGlobalOpsId = /*[[${sc.authentication.principal.invOpsId}]]*/ '';
+    var _globalUserName = /*[[${sc.authentication.principal.username}]]*/ '';
 /*]]>*/
 </script>
 
@@ -90,7 +91,7 @@
 					Records</a></li>
 			<li
 				th:if="${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_INV_ADMIN')}"
-				class="nav-articles"><a href="/admin/inv/">Inventory</a></li>
+				class="nav-inventory"><a href="/admin/inv/">Inventory</a></li>
 		</ul>
 	</div>
 

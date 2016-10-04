@@ -1,6 +1,7 @@
 package com.luvbrite.web.models;
 
 import java.util.Date;
+import java.util.List;
 
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
@@ -38,6 +39,9 @@ public class User {
 	
 	private Date dob;
 	private String gender;
+	
+	private List<Memo> memos;
+	
 	public long get_id() {
 		return _id;
 	}
@@ -151,5 +155,11 @@ public class User {
 	}
 	public void setInvOpsId(int invOpsId) {
 		this.invOpsId = invOpsId;
+	}
+	public List<Memo> getMemos() {
+		return memos;
+	}
+	public void setMemos(List<Memo> memos) {
+		this.memos = memos;
 	}
 }

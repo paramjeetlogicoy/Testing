@@ -307,7 +307,28 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 				}
 			});	
 		}
-	};	
+	};
+	
+	$scope.newMemo = '';
+	$scope.addMemo = function(){
+		
+		if(!$scope.u.memos) $scope.u.memos = [];
+		$scope.u.memos.push({
+			'memo': $scope.newMemo,
+			'date': new Date().getTime(),
+			'user' : _globalUserName
+		});
+		
+		$scope.saveUserGeneric(function(resp){
+			if(resp.success){
+				$scope.user.$setPristine();
+				_lbFns.pSuccess('Memo updated');				
+			}
+			else{
+				$scope.errorMsg = resp.message;
+			}
+		});	
+	};
 	
 	$scope.initalize = function(){
 		$scope.errorMsg = '';

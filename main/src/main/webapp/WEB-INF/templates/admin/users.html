@@ -7,12 +7,13 @@
 <title>All Users</title>
 <meta th:include="fragments/admin/layout::fragment-head" />
 </head>
-<body ng-app="userApps">
+<body ng-app="userApps"
+			th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
 	<div class="admin-container">
 		<div th:replace="fragments/admin/layout::fragment-header"></div>
 		<div th:replace="fragments/admin/layout::fragment-subnav"></div>
-		<div class="rel ng-cloak" 
-			ng-controller="defaultRouteCtrl">
+		<div class="rel ng-cloak" ng-controller="defaultRouteCtrl"
+			th:if="${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_ADMIN')}">
 
 
 			<div class="page-level-alert">
@@ -97,19 +98,31 @@
 					<tbody>
 						<tr ng-repeat="u in users" ng-class="u.active?'':'warning'">
 							<td>{{u._id}}</td>
-							<td><div><a href="#/details/{{u._id}}">{{u.fname}}
-									{{u.lname}}</a><a ng-hide="u.fname || u.lname"
-								href="#/details/{{u._id}}">no name</a></div>
+							<td><div>
+									<a href="#/details/{{u._id}}">{{u.fname}} {{u.lname}}</a><a
+										ng-hide="u.fname || u.lname" href="#/details/{{u._id}}">no
+										name</a>
+								</div>
 								<div class="visible-xs">
-									<div><em>Username:</em> {{u.username}}</div>
-									<div><em>Email:</em> {{u.email}}</div>
-									<div><em>Joining Date:</em> {{u.dateRegistered | date:"MM/dd/yyyy h:mm a"}}</div>
-									<div><em>Role:</em> {{u.role}}</div>
-								
+									<div>
+										<em>Username:</em> {{u.username}}
+									</div>
+									<div>
+										<em>Email:</em> {{u.email}}
+									</div>
+									<div>
+										<em>Joining Date:</em> {{u.dateRegistered | date:"MM/dd/yyyy
+										h:mm a"}}
+									</div>
+									<div>
+										<em>Role:</em> {{u.role}}
+									</div>
+
 								</div></td>
 							<td class="hidden-xs">{{u.username}}</td>
 							<td class="hidden-xs">{{u.email}}</td>
-							<td class="hidden-xs">{{u.dateRegistered | date:"MM/dd/yyyy h:mm a"}}</td>
+							<td class="hidden-xs">{{u.dateRegistered | date:"MM/dd/yyyy
+								h:mm a"}}</td>
 							<td class="hidden-xs">{{u.role}}</td>
 						</tr>
 					</tbody>

@@ -8,13 +8,17 @@
 <meta th:include="fragments/admin/layout::fragment-head" />
 </head>
 <body th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
-	<div class="admin-container" th:with="superAdmin=${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_INV_ADMIN')},admin=${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_ADMIN')}">
+	<div class="admin-container"
+		th:with="superAdmin=${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_INV_ADMIN')},admin=${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_ADMIN')}">
+
 		<div th:replace="fragments/admin/layout::fragment-header"></div>
 		<div th:replace="fragments/admin/layout::fragment-subnav"></div>
-		<div class="container-fluid" ng-controller="defaultRouteCtrl">
+
+		<div class="container-fluid" ng-controller="defaultRouteCtrl"
+			th:if="${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_INV_ADMIN')}">
 			<div class="app-container ng-cloak">
 				<hr />
-				
+
 				<div class="container">
 					<div class="collapse navbar-collapse" id="navbar-collapse-1">
 						<ul class="nav navbar-nav">
@@ -79,13 +83,14 @@
 				</div>
 
 				<hr />
-				
+
 				<div ng-view=""></div>
-				
+
 			</div>
 		</div>
-		
-		<div class="printBcLater ng-cloak fix small" ng-show="aq &amp;&amp; aq.length"
+
+		<div class="printBcLater ng-cloak fix small"
+			ng-show="aq &amp;&amp; aq.length"
 			ng-class="{'showplmn' : toggleView}">
 			<div class="text-right">
 				<button type="button" ng-click="toggleView=!toggleView">
@@ -140,14 +145,14 @@
 				</table>
 
 			</div>
-		</div>		
+		</div>
 
 		<div th:replace="fragments/admin/layout::fragment-footer"></div>
 		<div th:include="fragments/admin/layout::fragment-foot(angular=true)"></div>
 		<script type="text/javascript" th:if="superAdmin">var isSuperAdmin = function(){return true;};</script>
 		<script type="text/javascript" th:unless="superAdmin">var isSuperAdmin = function(){return false;};</script>
 	</div>
-	
+
 	<script	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAkFB_q0sw9ruZsOnY9-TF0cuMfMLG4DI0&amp;libraries=visualization"></script>
 	<script type="text/javascript"	src="https://www.gstatic.com/charts/loader.js"></script>		
 	<script src="/resources/js/lib/cdn/ui-bootstrap-tpls-1.2.1.min.js"></script>
@@ -155,5 +160,8 @@
 	<script
 		th:src="@{/resources/js/admin/inv/admin-comb.min.js(v=${@modifiedDate.adminInvJsDate})}"
 		src="/resources/js/admin/inv/admin-comb.min.js?v002"></script>
+	<script type="text/javascript">
+		$('.nav-inventory').addClass('active');
+	</script>
 </body>
 </html>

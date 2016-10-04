@@ -313,6 +313,28 @@
 							</div>
 
 
+
+							<h4>Memos</h4>
+							<div class="form-group form-group-sm">
+								<div class="pad-h2">
+									<textarea class="form-control marg-b1" ng-model="newMemo"
+										name="newMemo"></textarea>
+									<div class="text-right">
+										<button type="button" class="btn btn-info btn-xs"
+											ng-disabled="!newMemo" ng-click="addMemo()">Add
+											Memo</button>
+									</div>
+								</div>
+							</div>
+							<div class="form-group form-group-sm memo-holder lb-scrollbar">
+								<div class="text-right size13 well pad1" ng-repeat="memo in u.memos | orderBy :'-date'"
+									class="blockquote-reverse">
+									<div>{{memo.memo}}</div>
+									<em class="size11">- {{memo.date | date:'MMM d, y h:mm a'}} by {{memo.user}}</em>
+								</div>
+							</div>
+
+
 							<div class="form-group form-group-sm">
 								<div class="col-sm-7 col-sm-offset-4">
 									<button type="submit" class="btn btn-success"

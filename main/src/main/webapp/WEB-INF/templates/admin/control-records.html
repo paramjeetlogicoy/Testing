@@ -25,7 +25,7 @@
 			</div>
 			
 			<div class="orders-container ng-cloak"
-				th:if="${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_ADMIN')}">
+				th:if="${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_SUPER_ADMIN')}">
 
 				<div class="marg-b3">
 					<a href="" class="btn btn-warning btn-sm" ng-click="reloadConfig()"><i
