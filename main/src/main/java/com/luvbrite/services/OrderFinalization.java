@@ -138,7 +138,9 @@ public class OrderFinalization {
 			//Check if it off hour
 			Calendar now = Calendar.getInstance();
 			int hour = now.get(Calendar.HOUR_OF_DAY);
-			if((hour >= 23) || (hour <= 10)){
+			int minute = now.get(Calendar.MINUTE);
+			
+			if((hour == 22 && minute >= 29) || (hour >= 23) || (hour <= 10)){
 				
 				//Add the new item
 				OrderLineItemCart newItem = new OrderLineItemCart();
