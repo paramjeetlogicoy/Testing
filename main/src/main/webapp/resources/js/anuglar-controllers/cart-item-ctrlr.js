@@ -11,8 +11,10 @@ var cartItemCtrlr = function($scope, $http, $rootScope, $timeout){
 			return;
 		}
 		
-		var currHour = (new Date()).getHours();		
-		if(currHour >= 23 || currHour < 11){ 
+		var now = new Date();
+		var currHour = now.getHours();
+		var currMin = now.getMinutes();
+		if((currHour===22 && currMin >= 29) || currHour >= 23 || currHour < 11){ 
 			$scope.itsOffHour = true;
 		}  
 		else{

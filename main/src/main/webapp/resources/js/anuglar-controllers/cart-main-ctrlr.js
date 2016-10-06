@@ -105,8 +105,8 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		
 		//OrderMin Check (it doesnt apply to orders placed by orders@luvbrite.com [_id = 29])
-		if(m.order.total >= m.orderMin || 
-				(m.user && (m.user._id == 29 || m.user._id == 1))){
+		if(m.order.total && (m.order.total >= m.orderMin || 
+				(m.user && (m.user._id == 29 || m.user._id == 1)))){
 			
 			m.orderAboveOrderMin = true;
 			
@@ -213,7 +213,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		$scope.ivm = $scope.$new();
 				
-		$templateRequest("/resources/ng-templates/cart/item.html")
+		$templateRequest("/resources/ng-templates/cart/item.html?v001")
 		.then(function(html){
 		      var template = angular.element(html);
 		      angular.element('#itemCtrlr')
