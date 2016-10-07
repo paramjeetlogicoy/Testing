@@ -341,7 +341,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		$scope.rvm = $scope.$new();
 				
-		$templateRequest("/resources/ng-templates/cart/review.html?v0001")
+		$templateRequest("/resources/ng-templates/cart/review.html?v006")
 		.then(function(html){
 		      var template = angular.element(html);
 		      angular.element('#reviewCtrlr')
