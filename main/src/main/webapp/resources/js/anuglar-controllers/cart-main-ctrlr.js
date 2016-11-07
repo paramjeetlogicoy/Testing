@@ -306,7 +306,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		$scope.pvm = $scope.$new();
 			
-		$templateRequest("/resources/ng-templates/cart/payment.html?v0002")
+		$templateRequest("/resources/ng-templates/cart/payment.html?v0003")
 		.then(function(html){
 		      var template = angular.element(html);
 		      angular.element('#paymentCtrlr')
@@ -341,7 +341,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		$scope.rvm = $scope.$new();
 				
-		$templateRequest("/resources/ng-templates/cart/review.html?v007")
+		$templateRequest("/resources/ng-templates/cart/review.html?v0008")
 		.then(function(html){
 		      var template = angular.element(html);
 		      angular.element('#reviewCtrlr')

@@ -69,8 +69,8 @@ public class BatchController {
 		Email email = new Email();
 		email.setEmailTemplate("reco-expiry");
 		email.setFromEmail("no-reply@luvbrite.com");
-		email.setRecipientEmail("payam@luvbrite.com");
-		email.setRecipientName("Payam");
+		email.setRecipientEmail("reco_expiry_notice@luvbrite.com");
+		email.setRecipientName("Reco Expiry");
 		email.setSubject("Recommendation Expiry");
 		email.setEmailInfo("recommendation expiry info");
 		email.setEmail(rc);
