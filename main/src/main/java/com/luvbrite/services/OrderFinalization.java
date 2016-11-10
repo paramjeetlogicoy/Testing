@@ -146,7 +146,7 @@ public class OrderFinalization {
 				OrderLineItemCart newItem = new OrderLineItemCart();
 				newItem.setTaxable(false);
 				newItem.setType("item");
-				newItem.setName("Kiva chocolate (Offhour Promo)");
+				newItem.setName("Kiva Milk or Dark Chocolate (Offhour Promo)");
 				newItem.setPromo("offhourpromo");
 				newItem.setProductId(11825);
 				newItem.setVariationId(0);
