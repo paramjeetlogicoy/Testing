@@ -174,7 +174,7 @@ remainingTime = function($interval) {
 
 		// used to update the UI
 		function updateTime() {
-			if(endTime==null) return;
+			if(endTime===null) return;
 			
 			var now = new Date().getTime(),
 			et = endTime.getTime();

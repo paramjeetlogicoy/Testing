@@ -1,6 +1,8 @@
 package com.luvbrite.services;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.mongodb.morphia.query.Query;
@@ -106,21 +108,84 @@ public class CartLogics {
 	
 	
 	
+	public Map<String, Boolean> availableDeals(CartOrder order, ControlOptions cOps){
+		
+		Map<String, Boolean> dealStat = new HashMap<>();
+		
+		try {
+			
+			boolean firstTimepatient = false;
+			
+			
+			/**
+			 * Run the order through eligibility check
+			 * */
+			
+			//First BriteBoxcheck
+			if(order.getCustomer() != null && 
+					order.getCustomer().get_id() != 0){
+				
+				if(firstOrderCheck(order.getCustomer().get_id())
+						.equalsIgnoreCase("Y")){
+					firstTimepatient = true;					
+				}
+			}			
+			dealStat.put("firstTimepatient", firstTimepatient);
+			
+			//Promocode and double down
+			boolean couponPresent = false;
+			boolean doubleDownApplied = false;
+			List<OrderLineItemCart> items = order.getLineItems();
+			if(items != null){
+				for(OrderLineItemCart item : items){					
+					if(item.getPromo() != null){
+						
+						if("p".equals(item.getPromo()))
+								couponPresent = true;
+						
+						if("doubledownoffer".equals(item.getPromo()))
+							doubleDownApplied = true;
+							
+					}
+				}
+			}			
+			dealStat.put("couponPresent", couponPresent);
+			dealStat.put("doubleDownApplied", doubleDownApplied);
+			
+			
+		} catch (Exception e){
+			logger.error(Exceptions.giveStackTrace(e));
+		}	
+		
+		return dealStat;
+	}
+	
+	
+	
 	public void applyDeals(CartOrder order, ControlOptions cOps, boolean saveOrder){
 		
 		try {
 
+			
+			if(order == null) return;
 
-			double doubleDownAmt = cOps.getDoubleDown(),
-					offerAmt = cOps.getDoubleDownOfferValue(),
+			
+			
+			double doubleDownThresholdAmt = cOps.getDoubleDown(),
+					doubleDownOfferAmt = cOps.getDoubleDownOfferValue(),
 					total = 0d;
 			
 			boolean orderChanged = false,
-					couponPresent = false;
+					couponPresent = false,
+					doubleDownWasPresent = false,
+					briteBoxEligible = false,
+					briteBoxPresent = false;
 			
-			int eligibleItemIndex = -1;
+			int index = -1,
+				eligibleItemIndex = -1,
+				briteBoxIndex = -1;
 			
-			List<Integer> pids = cOps.getDoubleDownEligibleProducts();
+			List<Integer> doubleDownEligibleProducts = cOps.getDoubleDownEligibleProducts();
 			
 			
 			/**
@@ -136,112 +201,158 @@ public class CartLogics {
 			 * removal process because items with doubledown offer
 			 * has to be removed in all cases.
 			 * */
-			if(order!=null){
+		
 
-				/*Find the total to see if the item is eligible*/
-				List<OrderLineItemCart> items = order.getLineItems();
-				if(items != null){
-					for(OrderLineItemCart item : items){
+			/*Find the total to see if the item is eligible*/
+			List<OrderLineItemCart> items = order.getLineItems();
+			if(items != null){
+				for(OrderLineItemCart item : items){
+					
+					index++;
+					
+					if( item.getPromo() != null 
+							&& "doubledownoffer".equals(item.getPromo()) ){
 						
-						if( item.getPromo() != null 
-								&& "doubledownoffer".equals(item.getPromo()) ){
-							
-							item.setPromo("");
-							item.setPrice(item.getCost());
-							
-							orderChanged = true;
-														
+						doubleDownWasPresent = true;
+						
+						item.setPromo("");
+						item.setPrice(item.getCost());
+						
+						orderChanged = true;
+													
+					}
+					
+					if( item.getPromo() != null 
+							&& "p".equals(item.getPromo()) ){
+						
+						couponPresent = true;
+					}
+					
+					
+					if(item.getType().equals("item") && item.isInstock()){
+						
+						if(item.getProductId() == 11839){
+							briteBoxPresent = true;
+							briteBoxIndex = index;
 						}
 						
-						if( item.getPromo() != null 
-								&& "p".equals(item.getPromo()) ){
-							
-							couponPresent = true;
+						double itemPrice = item.getPrice();
+						if(itemPrice > 0d){
+							total += (itemPrice*item.getQty());								
 						}
+						
 					}
 				}
 			}
 			
 			
-			/**
-			 * Run the order through eligibility check
-			 * */
+			if(!couponPresent && !doubleDownWasPresent){
+				//First BriteBoxcheck
+				if(order.getCustomer() != null && 
+						order.getCustomer().get_id() != 0 && 
+						total >= 75d){
+					
+					if(firstOrderCheck(order.getCustomer().get_id())
+							.equalsIgnoreCase("Y")){
+						briteBoxEligible = true;					
+					}
+				}
+				
+				
+				if(briteBoxEligible && !briteBoxPresent){
+					
+					//Add the new item
+					OrderLineItemCart newItem = new OrderLineItemCart();
+					newItem.setTaxable(false);
+					newItem.setType("item");
+					newItem.setName("Brite Box");
+					newItem.setPromo("firsttimepatient");
+					newItem.setProductId(11839);
+					newItem.setVariationId(0);
+					newItem.setQty(1);
+					newItem.setCost(50d);
+					newItem.setPrice(0d);
+					newItem.setImg("/products/brite-box-img.jpg");
+
+					List<OrderLineItemCart> olic = order.getLineItems();
+					olic.add(newItem);
+					order.setLineItems(olic);
+					
+					orderChanged = true;
+					briteBoxPresent = true;
+				}
+			}
 			
-			if(order!=null && doubleDownAmt > 0d 
-					&& !couponPresent
-					&& pids.size() > 0 && offerAmt > 0d){
+			
+			if(!briteBoxEligible && briteBoxPresent){
 				
+				//Removed Item
+				List<OrderLineItemCart> olic = order.getLineItems();
+				olic.remove(briteBoxIndex);
 				
-				/*Find the total to see if the item is eligible*/
-				List<OrderLineItemCart> items = order.getLineItems();
-				if(items != null){
-					for(OrderLineItemCart item : items){
-						
-						if(item.getType().equals("item") && item.isInstock()){
+				orderChanged = true;	
+				briteBoxPresent = false;			
+			}
+			
+			
+			/*Item is eligible for double down when order total is >= doubleDownAmt*/
+			
+			if(doubleDownThresholdAmt > 0d 				&&  
+				doubleDownOfferAmt > 0d  				&&
+				doubleDownEligibleProducts.size() > 0 	&&
+				!couponPresent 							&&  
+				!briteBoxPresent						&&  
+				total >= doubleDownThresholdAmt) {				
+
+				double eligibleTotal = 0d;
+				index = -1;
+
+				for(OrderLineItemCart item : items){
+					
+					index++;
+
+					if( item.getType().equals("item") 
+							&& item.isInstock()
+							&& doubleDownEligibleProducts
+								.contains(Long.valueOf(item.getProductId()).intValue()) ){
+
+						double itemPrice = item.getPrice();
+						if(itemPrice > 0d){
 							
-							double itemPrice = item.getPrice();
-							if(itemPrice > 0d){
-								total += (itemPrice*item.getQty());								
+							
+							/*Check to see if the order qualifies for doubledown even if  
+							 *this item (1 qty) is removed */
+							if((total - itemPrice) >= doubleDownThresholdAmt){
+								/*It qualifies*/
+
+								eligibleTotal = itemPrice;	
+								eligibleItemIndex = index;
+
+								break;
 							}
 							
+							/* else keep looking for more items */	
+							
 						}
+						
 					}
 				}
 				
 				
-				/*Item is eligible for double down when order total is >= doubleDownAmt*/
-				if(total >= doubleDownAmt){
-
-					double eligibleTotal = 0d;
-					int index = -1;
-
-					for(OrderLineItemCart item : items){
-						
-						index++;
-
-						if( item.getType().equals("item") 
-								&& item.isInstock()
-								&& pids.contains(Long.valueOf(item.getProductId()).intValue()) ){
-
-							double itemPrice = item.getPrice();
-							if(itemPrice > 0d){
-								
-								
-								/*Check to see if the order qualifies for doubledown even if  
-								 *this item (1 qty) is removed */
-								if((total - itemPrice) >= doubleDownAmt){
-									/*It qualifies*/
-
-									eligibleTotal = itemPrice;	
-									eligibleItemIndex = index;
-
-									break;
-								}
-								
-								/* else keep looking for more items */	
-								
-							}
-							
-						}
-					}
+				if(eligibleTotal > 0 && eligibleItemIndex > -1){
 					
-					
-					if(eligibleTotal > 0 && eligibleItemIndex > -1){
-						
-						if(eligibleTotal < offerAmt)
-							offerAmt = eligibleTotal;
+					if(eligibleTotal < doubleDownOfferAmt)
+						doubleDownOfferAmt = eligibleTotal;
 
-						OrderLineItemCart item = items.get(eligibleItemIndex);
-						
-						double newPrice = item.getPrice() - ( offerAmt/item.getQty() );
-						
-						item.setPrice(newPrice);
-						item.setPromo("doubledownoffer");	
-						
-						orderChanged = true;
-					}
-				}
-				
+					OrderLineItemCart item = items.get(eligibleItemIndex);
+					
+					double newPrice = item.getPrice() - ( doubleDownOfferAmt/item.getQty() );
+					
+					item.setPrice(newPrice);
+					item.setPromo("doubledownoffer");	
+					
+					orderChanged = true;
+				}				
 			}
 			
 			

@@ -178,26 +178,6 @@ public class OrderFinalization {
 			
 			String response = cartLogics.firstOrderCheck(co.getCustomer().get_id());
 			if(response.equals("Y")){
-				
-				//Add the new item
-				OrderLineItemCart newItem = new OrderLineItemCart();
-				newItem.setTaxable(false);
-				newItem.setType("item");
-				newItem.setName("Brite Box");
-				newItem.setPromo("firsttimepatient");
-				newItem.setProductId(11839);
-				newItem.setVariationId(0);
-				newItem.setQty(1);
-				newItem.setCost(50d);
-				newItem.setPrice(0d);
-				newItem.setImg("/products/brite-box-img.jpg");
-
-				List<OrderLineItemCart> olic = co.getLineItems();
-				olic.add(newItem);
-				co.setLineItems(olic);
-				
-				//Update orderTotals
-				cartLogics.calculateSummary(co);
 
 				OrderNotes notes = co.getNotes();
 				if(notes == null) notes = new OrderNotes();

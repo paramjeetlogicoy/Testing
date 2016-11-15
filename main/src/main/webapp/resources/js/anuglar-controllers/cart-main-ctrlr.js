@@ -244,7 +244,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		$scope.cvm = $scope.$new();
 			
-		$templateRequest("/resources/ng-templates/cart/coupon.html")
+		$templateRequest("/resources/ng-templates/cart/coupon.html?" + Math.random())
 		.then(function(html){
 		      var template = angular.element(html);
 		      angular.element('#couponCtrlr')
