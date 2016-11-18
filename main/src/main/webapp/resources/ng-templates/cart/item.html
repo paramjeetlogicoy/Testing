@@ -7,51 +7,6 @@
 			Minimum order value should should be <strong>{{m.orderMin|currency}}</strong>
 		</div>
 
-		<div
-			ng-if="m.orderAboveOrderMin && m.doubleDownActive && !m.couponApplied">
-			<div class="alert alert-success text-center"
-				ng-if="!m.doubleDownEligible">
-				<h4>Don't Forget!</h4>
-				<div>
-					Receive the opportunity to select a
-					<strong>FREE</strong> when you <strong>DOUBLE
-						DOWN</strong>. <a href="" data-toggle="modal"
-						data-target="#doubleDownModal" class="inherit u">Offer details.</a>
-				</div>
-			</div>
-
-			<div ng-if="m.doubleDownEligible && !m.doubleDownApplied"
-				class="marg-b2 border-b">
-				<div class="alert alert-success text-center">
-					<h4>
-						DOUBLE DOWN OFFER <a href=""
-							data-toggle="modal" data-target="#doubleDownModal"
-							class="inherit marg-l1"><i class="fa fa-info-circle"
-							aria-hidden="true"></i></a>
-					</h4>
-					<h5 class="marg-b0">Congratulations, You are eligible to
-						select a free gift</h5>
-				</div>
-
-				<div class="marg-b2 size13">Choose one of the following
-					products to be added to your order. Item selected will be received
-					through the same method/location specified in your order's delivery
-					details. Cancelling or changing order specifications prior to or
-					post order confirmation may result in forfeiture of selected gift.</div>
-
-				<ul class="cart-doubledown text-center">
-					<li ng-repeat="prd in m.ddprds"><a href=""
-						ng-href="{{'/product/' + prd.url}}"><img
-							ng-if="prd.featuredImg"
-							ng-src="{{lbGlobalCDNPath + prd.featuredImg.replace('.jpg','-150x150.jpg')}}"
-							class="fit" /> <small>{{prd.name}}</small> </a> <span><a
-							href="" ng-click="addDoubleDown()" class="btn btn-xs btn-lb">ADD
-								TO CART</a></span></li>
-				</ul>
-
-			</div>
-		</div>
-
 
 		<div class="cart-details-body">
 			<ul>
@@ -93,6 +48,248 @@
 			</ul>
 		</div>
 		<!-- .cart-details-body ends -->
+
+	</div>
+
+
+
+	<div class="cart-details"
+		ng-hide="m.emptyCart || !m.orderAboveOrderMin">
+		<h4 class="cart-steps">Step2: Promotions</h4>
+
+		<div class="mx600 marg-b3">
+			<div ng-if="!m.user._id">
+				<div class="marg-t2 well well-sm">
+					Have a coupon code? Looking for available promotions? Please <a
+						href="/login?ret=/cart">Log In</a> to your account.
+				</div>
+			</div>
+
+			<div ng-if="m.user._id">
+
+				<div class="border-b pad-b1 marg-b3" ng-if="m.offersApplied">
+					<div class="applied-coupons marg-b2">
+						<h5>Promotions Applied</h5>
+						<div class="marg-l1" ng-repeat="item in m.sales">
+							<em class="green1">{{item.name}} (-{{item.price |
+								currency}})</em>
+						</div>
+						<div class="marg-l1" ng-repeat="item in m.order.lineItems"
+							ng-if="item.type=='coupon'">
+							<em>Promocode <span class="green1">{{item.name}}
+									(-{{item.price | currency}})</span> <a href=""
+								ng-click="removeCoupon()" title="Remove Coupon"><i
+									class="fa fa-trash-o marg-l1" aria-hidden="true"></i></a></em>
+						</div>
+					</div>
+				</div>
+				
+
+				<div ng-show="m.showPromoTab">
+					<div class="marg-b2">
+						<h5 class="marg-b05">Congratulations, you are available for
+							select one of these promos.</h5>
+						<div ng-if="m.offersApplied" class="size13 grey3">
+							<strong>Note:</strong> <em>Applying any of the available
+								promotion, will remove already applied promos</em>
+						</div>
+					</div>
+
+
+
+					<div class="cart-promo-options"
+						ng-show="m.briteBoxEligible && (m.order.total >= m.briteBoxThreshold)"
+						ng-class="{'promoSelected' : m.promoOptions == 'firsttimepatient'}">
+
+						<label class="fa-label"><input type="radio"
+							name="promoOptions" ng-model="m.promoOptions"
+							value="firsttimepatient" /><i class="fa fa-circle-o"
+							aria-hidden="true"></i> First time patient gift - Britebox - $50
+							value.</label>
+
+						<div class="cart-promo-details">
+							<div class="cart-offers-bb">
+								<div class="row">
+									<div class="col-sm-4 m-marg-b2">
+										<img class="fit"
+											src="https://lbrit.co/static/imgs/uploads/2016/02/new-brite-box-t.png"
+											alt="welcome-kit" />
+									</div>
+									<div class="col-sm-8">
+										<h4>Congratulation!</h4>
+										<div class="marg-b2">
+											Your first donation meets the $75 goal, earning you our
+											exclusive Brite Box. <a href="" class="u"
+												ng-click="addbriteBox()">Apply</a>
+										</div>
+									</div>
+								</div>
+
+
+								<div class="marg-t1">
+									<em class="marg-l1 size13" ng-if="m.doubleDownApplied">(Double
+										down promotion will be removed)</em> <em class="marg-l1 size13"
+										ng-if="m.couponApplied && m.appliedCouponCode">(Coupon
+										'{{m.appliedCouponCode}}' will be removed)</em>
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+
+
+					<div class="cart-promo-options"
+						ng-show="m.doubleDownEligible && (m.order.total >= m.config.doubleDown)"
+						ng-class="{'promoSelected' : m.promoOptions == 'doubledown'}">
+
+						<label class="fa-label"><input type="radio"
+							name="promoOptions" ng-model="m.promoOptions" value="doubledown" /><i
+							class="fa fa-circle-o" aria-hidden="true"></i> Double Down - $20
+							Value</label>
+
+						<div class="cart-promo-details"
+							ng-if="m.doubleDownEligible && !m.doubleDownApplied"
+							class="marg-b2">
+							<div class="text-center">
+								<h4>
+									DOUBLE DOWN OFFER <a href="" data-toggle="modal"
+										data-target="#doubleDownModal" class="inherit marg-l1"><i
+										class="fa fa-info-circle" aria-hidden="true"></i></a>
+								</h4>
+								<h5>Congratulations, You are eligible to select a free gift</h5>
+							</div>
+
+							<div class="marg-b2 size12 grey7">Choose one of the
+								following products to be added to your order. Item selected will
+								be received through the same method/location specified in your
+								order's delivery details. Cancelling or changing order
+								specifications prior to or post order confirmation may result in
+								forfeiture of selected gift.</div>
+
+							<ul class="cart-doubledown text-center">
+								<li ng-repeat="prd in m.ddprds"><a href=""
+									ng-href="{{'/product/' + prd.url}}"><img
+										ng-if="prd.featuredImg"
+										ng-src="{{lbGlobalCDNPath + prd.featuredImg.replace('.jpg','-150x150.jpg')}}"
+										class="fit" /> <small>{{prd.name}}</small> </a> <span><a
+										href="" ng-click="addDoubleDown()" class="btn btn-xs btn-lb">ADD
+											TO CART</a></span></li>
+							</ul>
+
+							<div class="text-center marg-t1">
+								<em class="marg-l1 size13"
+									ng-if="m.couponApplied && m.appliedCouponCode">(Coupon
+									'{{m.appliedCouponCode}}' will be removed)</em> <em
+									class="marg-l1 size13" ng-if="m.briteBoxApplied">(Britebox
+									will be removed)</em>
+							</div>
+						</div>
+					</div>
+
+					<div class="cart-promo-options" ng-show="m.promosAvailable"
+						ng-class="{'promoSelected' : m.promoOptions == 'loyalist'}">
+						<label class="fa-label"><input type="radio"
+							name="promoOptions" ng-model="m.promoOptions" value="loyalist" /><i
+							class="fa fa-circle-o" aria-hidden="true"></i> Use my coupons</label>
+
+						<div class="cart-promo-details">
+							<div class="marg-l1" ng-repeat="promo in promos">
+								<strong class="orange1">{{promo}}</strong> <a href=""
+									ng-click="useThisCoupon()">Use</a> <em class="marg-l1 size13"
+									ng-if="m.doubleDownApplied">(Double down promotion will be
+									removed)</em> <em class="marg-l1 size13"
+									ng-if="m.couponApplied && m.appliedCouponCode">(Coupon
+									'{{m.appliedCouponCode}}' will be removed)</em><em
+									class="marg-l1 size13" ng-if="m.briteBoxApplied">(Britebox
+									will be removed)</em>
+							</div>
+
+						</div>
+					</div>
+
+					<div class="cart-promo-options" ng-hide="m.couponApplied"
+						ng-class="{'promoSelected' : m.promoOptions == 'coupon'}">
+						<label class="fa-label"><input type="radio"
+							name="promoOptions" ng-model="m.promoOptions" value="coupon" /><i
+							class="fa fa-circle-o" aria-hidden="true"></i> Apply another
+							promo code or coupon</label>
+
+						<div class="cart-promo-details">
+							<h6>Add Gift or Promo Code</h6>
+							<form ng-submit="applyCoupon()" name="promoForm"
+								class="cart-promo-form">
+								<div class="input-group input-group-sm">
+									<input type="text" class="form-control"
+										placeholder="Enter promo code" ng-model="couponCode" /><span
+										class="input-group-btn">
+										<button class="btn btn-sm btn-lb" type="submit">Apply</button>
+									</span>
+								</div>
+							</form>
+
+							<div class="pad-t2" ng-show="couponErrors">
+								<div class="alert alert-warning marg-b0" role="alert">
+									<span ng-bind-html="couponErrors"></span>
+								</div>
+							</div>
+
+							<div class="marg-t1">
+								<em class="marg-l1 size13" ng-if="m.doubleDownApplied">(Double
+									down promotion will be removed)</em> <em class="marg-l1 size13"
+									ng-if="m.couponApplied && m.appliedCouponCode">(Coupon
+									'{{m.appliedCouponCode}}' will be removed)</em> <em
+									class="marg-l1 size13" ng-if="m.briteBoxApplied">(Britebox
+									will be removed)</em>
+							</div>
+						</div>
+					</div>
+
+					<div class="cart-promo-options"
+						ng-class="{'promoSelected' : m.promoOptions == 'nopromo'}">
+						<label class="fa-label"><input type="radio"
+							name="promoOptions" ng-model="m.promoOptions" value="nopromo" /><i
+							class="fa fa-circle-o" aria-hidden="true"></i> No change</label>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+
+		<div ng-if="m.orderAboveOrderMin">
+
+			<div class="alert alert-info text-center"
+				ng-if="m.briteBoxEligible && (m.order.total < m.briteBoxThreshold)">
+				<div class="row">
+					<div class="col-sm-4 m-marg-b2">
+						<img class="fit"
+							src="https://lbrit.co/static/imgs/uploads/2016/02/new-brite-box-t.png"
+							alt="welcome-kit" />
+					</div>
+					<div class="col-sm-8">
+						<h5>Congratulation! You're {{(m.briteBoxThreshold - m.order.total) |
+							currency}} away from qualifying for a "Brite Box"!</h5>
+						<div class="marg-b2">Seeing as this is your first order with
+							us, you qualify for our first time patient gift &ndash; the
+							"Brite Box"! <a href="" data-toggle="modal"
+						data-target="#britebox" class="inherit u">Offer
+						details.</a></div>
+					</div>
+				</div>
+			</div>
+		
+			<div class="alert alert-info text-center"
+				ng-if="m.doubleDownEligible && (m.order.total < m.config.doubleDown)">
+				<h5>Double Down Offer!</h5>
+				<div>
+					You're {{(m.config.doubleDown - m.order.total) | currency}} away
+					from an opportunity to select a <strong>FREE</strong> item when you
+					<strong>double down</strong>! <a href="" data-toggle="modal"
+						data-target="#doubleDownModal" class="inherit u">Offer
+						details.</a>
+				</div>
+			</div>
+		</div>
 
 	</div>
 </div>

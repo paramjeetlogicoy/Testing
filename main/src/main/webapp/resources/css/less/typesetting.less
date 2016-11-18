@@ -434,6 +434,26 @@ a.inherit{
   text-decoration: none;
 }
 
+label.fa-label:extend(.marg-b1,.pointer){
+  .fa {
+    .size18;
+    .rel;
+    .marg-r(.5);
+
+    top: 2px;
+  }
+  
+  >input {
+    display: none;
+    outline: none;
+
+    &:checked+.fa:before {
+      content: "\f192";
+      .green1;
+    }
+  }
+}
+ 
 .btn-lb{
     color:white;
     background-color: #4AB740;
