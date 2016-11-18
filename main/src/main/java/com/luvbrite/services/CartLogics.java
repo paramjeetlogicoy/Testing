@@ -96,7 +96,7 @@ public class CartLogics {
 				
 				
 				order.setSubTotal(subTotal);
-				order.setTotal(total);	
+				order.setTotal(total);
 			}
 			
 			
@@ -288,7 +288,9 @@ public class CartLogics {
 			}
 			
 			
-			if(doubleDownItemIndex != -1 && total < doubleDownThresholdAmt){
+			if(doubleDownItemIndex != -1 && 
+					(total < doubleDownThresholdAmt || doubleDownThresholdAmt == 0)){
+				
 				OrderLineItemCart item = items.get(doubleDownItemIndex);
 				
 				item.setPrice(item.getCost());
@@ -318,7 +320,7 @@ public class CartLogics {
 	
 	public String firstOrderCheck(long customerId){
 		
-		String response = "Y";
+		String response = "";
 		
 		Query<Order> q = completedOrderdao.createQuery()
 				.field("status").notEqual("cancelled")

@@ -1,6 +1,7 @@
 var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 	var m = this,
-	deliveryLoaded = false;
+	deliveryLoaded = false,	
+	cmcVersion = 'v0001'; //Math.random();
 	
 	m.order = {};	
 	m.ddprds = [];
@@ -90,7 +91,8 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 									item.promo == 'doubledownoffer' || 
 									item.promo == 'firsttimepatient')){
 						
-						var productName = item.name.length>15?item.name.substr(0,15)+'...':item.name,
+						//var productName = item.name.length>15?item.name.substr(0,15)+'...':item.name,
+						var productName = item.name,
 						discount = (item.cost - item.price)*item.qty;
 						
 						
@@ -159,17 +161,29 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		}
 		
 		
+/*		console.log("1" + (m.briteBoxEligible && (m.order.total >= m.briteBoxThreshold)));
+		console.log("2" + (m.doubleDownEligible && (m.order.total >= m.config.doubleDown)));
+		console.log("3" + m.promosAvailable);
+		console.log("4" + !m.couponApplied);*/
 		
 		//Promotab
-		if(m.order.total > m.orderMin &&
-			(m.order.total >= m.briteBoxThreshold || 
-			m.order.total >= m.config.doubleDown || 
-			!m.couponApplied)){
+		if((m.briteBoxEligible && (m.order.total >= m.briteBoxThreshold)) || 
+			(m.doubleDownEligible && (m.order.total >= m.config.doubleDown)) || 
+			(m.promosAvailable && !m.couponApplied) || 
+			!m.couponApplied){
 			
 			m.showPromoTab = true;
 		}
 		else{
 			m.showPromoTab = false;
+		}
+		
+		
+		//Set Britebox as the default if no offers are applied and its firsttime patient.
+		if(!m.doubleDownApplied && 
+				!m.couponApplied && 
+				!m.briteBoxApplied && m.availableDeals.firstTimepatient){
+			m.promoOptions = 'firsttimepatient';
 		}
 		
 		
@@ -261,7 +275,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		$scope.ivm = $scope.$new();
 				
-		$templateRequest("/resources/ng-templates/cart/item.html?" + Math.random())
+		$templateRequest("/resources/ng-templates/cart/item.html?" + cmcVersion)
 		.then(function(html){
 		      var template = angular.element(html);
 		      angular.element('#itemCtrlr')
@@ -292,7 +306,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		$scope.cvm = $scope.$new();
 			
-		$templateRequest("/resources/ng-templates/cart/coupon.html?" + Math.random())
+		$templateRequest("/resources/ng-templates/cart/coupon.html?" + cmcVersion)
 		.then(function(html){
 		      var template = angular.element(html);
 		      angular.element('#couponCtrlr')
@@ -319,7 +333,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		$scope.dvm = $scope.$new();
 				
-		$templateRequest("/resources/ng-templates/cart/delivery.html")
+		$templateRequest("/resources/ng-templates/cart/delivery.html?" + cmcVersion)
 		.then(function(html){
 		      var template = angular.element(html);
 		      angular.element('#deliveryCtrlr')
@@ -354,7 +368,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		$scope.pvm = $scope.$new();
 			
-		$templateRequest("/resources/ng-templates/cart/payment.html?v0003")
+		$templateRequest("/resources/ng-templates/cart/payment.html?" + cmcVersion)
 		.then(function(html){
 		      var template = angular.element(html);
 		      angular.element('#paymentCtrlr')
@@ -389,7 +403,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		$scope.rvm = $scope.$new();
 				
-		$templateRequest("/resources/ng-templates/cart/review.html?v0008")
+		$templateRequest("/resources/ng-templates/cart/review.html?" + cmcVersion)
 		.then(function(html){
 		      var template = angular.element(html);
 		      angular.element('#reviewCtrlr')

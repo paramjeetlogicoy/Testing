@@ -452,8 +452,8 @@ public class CartController {
 
 		CreateOrderResponse r = new CreateOrderResponse();
 		r.setSuccess(false);
-		double doubleDownThresholdAmt = ccs.getcOps().getDoubleDown(),
-				doubleDownOfferAmt = ccs.getcOps().getDoubleDownOfferValue();
+		/*double doubleDownThresholdAmt = ccs.getcOps().getDoubleDown(),
+				doubleDownOfferAmt = ccs.getcOps().getDoubleDownOfferValue();*/
 		
 		//System.out.println("orderIdS:" + orderIdS + ";");
 		
@@ -520,11 +520,14 @@ public class CartController {
 									 * threshold then we will update the quantity by 1
 									 * */
 									
-									//If we discount the item and it goes below threshold, then increase quantity 
-									if( (order.getTotal() - doubleDownOfferAmt) < doubleDownThresholdAmt){
-										item.setQty(item.getQty()+1);
-									}
+									//Scrapped the above/below logic for now
 									
+									//If we discount the item and it goes below threshold, then increase quantity 
+									/*if( (order.getTotal() - doubleDownOfferAmt) < doubleDownThresholdAmt){
+										item.setQty(item.getQty()+1);
+									}*/
+									
+									item.setQty(item.getQty()+1);
 									item.setPromo("doubledownoffer");
 									
 									itemFound = true;						
@@ -957,13 +960,18 @@ public class CartController {
 								.field("pid").equal(ddPid)
 								.filter("stockStat", "instock")
 								.filter("regPrice", 20)
-								.retrievedFields(true, "_id")
+								.retrievedFields(true, "_id", "variation")
 								.asList();
 						
 						if(prices!=null){
 							for(Price p : prices){
 								
 								ddp.setVid(p.get_id());
+								
+								try{									
+									ddp.setVariationName(p.getVariation().get(0).getAttr());	
+									ddp.setVariationValue(p.getVariation().get(0).getValue());									
+								}catch(Exception e){}
 								
 								ddps.add(ddp);
 							}

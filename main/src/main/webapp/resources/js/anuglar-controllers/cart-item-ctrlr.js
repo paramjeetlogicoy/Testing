@@ -291,6 +291,9 @@ var cartItemCtrlr = function($scope, $http, $rootScope, $timeout){
 
 	};
 	
+	$scope.clearCouponErrorMsg = function(){
+		$scope.couponErrors = '';
+	};
 	
 	$scope.useThisCoupon = function(){
 		if(this.promo){

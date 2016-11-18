@@ -9,6 +9,8 @@ public class DoubleDownProducts {
 	private String name;
 	private String url;
 	private String featuredImg;
+	private String variationName;
+	private String variationValue;
 	
 	public long get_id() {
 		return _id;
@@ -39,5 +41,17 @@ public class DoubleDownProducts {
 	}
 	public void setFeaturedImg(String featuredImg) {
 		this.featuredImg = featuredImg;
+	}
+	public String getVariationName() {
+		return variationName;
+	}
+	public void setVariationName(String variationName) {
+		this.variationName = variationName;
+	}
+	public String getVariationValue() {
+		return variationValue;
+	}
+	public void setVariationValue(String variationValue) {
+		this.variationValue = variationValue;
 	}
 }
