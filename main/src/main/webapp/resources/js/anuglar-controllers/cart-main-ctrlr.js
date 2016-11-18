@@ -15,6 +15,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 	
 	m.cartData = null;
 	m.ccErrors = '';
+	m.promoOptions = '';
 
 	$scope.pageLevelAlert='';
 	
@@ -23,6 +24,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 	
 	m.promosAvailable = false;
 	m.couponApplied = true;  //Only refers to coupons
+	m.appliedCouponCode = "";
 	m.offersApplied = false; //Refers to all kinds of offers
 	m.orderAboveOrderMin = false;
 	m.emptyCart = true;
@@ -34,16 +36,26 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 	m.doubleDownApplied = false;
 	m.doubleDownEligible = false;
 	
+	m.briteBoxApplied = false;
+	m.briteBoxEligible = false;
+	m.briteBoxThreshold = 75;
+	m.availableDeals = {};
+	
+	m.showPromoTab = true;
+	
 	
 	/* When ever there is a change in m.order, this function needs to be called 
 	 * most of the logic control flags are set here. */
 	m.processOrder = function(){
 		
-		m.sales = [];		
+		m.sales = [];	
+		m.appliedCouponCode = "";	
+		m.promoOptions = '';
 		
 		var couponApplied = false,
 			offersApplied = false,
 			doubleDownApplied = false,
+			briteBoxApplied = false,
 			emptyCart = true;
 		
 		
@@ -63,6 +75,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 					
 					if(item.type=='coupon'){					
 						couponApplied = true;
+						m.appliedCouponCode = item.name;
 					}
 					
 					
@@ -73,7 +86,9 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 					
 					
 					if(item.type=='item' && 
-							(item.promo == 's' || item.promo == 'doubledownoffer')){
+							(item.promo == 's' || 
+									item.promo == 'doubledownoffer' || 
+									item.promo == 'firsttimepatient')){
 						
 						var productName = item.name.length>15?item.name.substr(0,15)+'...':item.name,
 						discount = (item.cost - item.price)*item.qty;
@@ -82,6 +97,12 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 						if(item.promo == 'doubledownoffer'){
 							productName = 'Double Down Offer';
 							doubleDownApplied = true;
+						}
+						
+						
+						if(item.promo == 'firsttimepatient'){
+							productName = 'First Time Patient';
+							briteBoxApplied = true;
 						}
 						
 							
@@ -102,6 +123,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		m.couponApplied = couponApplied;
 		m.offersApplied = offersApplied;
 		m.emptyCart = emptyCart;
+		m.briteBoxApplied = briteBoxApplied;
 		
 		
 		//OrderMin Check (it doesnt apply to orders placed by orders@luvbrite.com [_id = 29])
@@ -120,13 +142,36 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		
 		//DoubleDown Check
-		if(m.doubleDownActive && 
-				m.order.total >= m.config.doubleDown){
+		if(m.doubleDownActive && !m.doubleDownApplied){
 			m.doubleDownEligible = true;
 		}
 		else {
 			m.doubleDownEligible = false;
-		}		
+		}	
+		
+		
+		//BriteBox check
+		if(m.availableDeals.firstTimepatient && !m.briteBoxApplied){
+			m.briteBoxEligible = true;
+		}
+		else {
+			m.briteBoxEligible = false;
+		}
+		
+		
+		
+		//Promotab
+		if(m.order.total > m.orderMin &&
+			(m.order.total >= m.briteBoxThreshold || 
+			m.order.total >= m.config.doubleDown || 
+			!m.couponApplied)){
+			
+			m.showPromoTab = true;
+		}
+		else{
+			m.showPromoTab = false;
+		}
+		
 		
 		
 		if(m.cartPage && m.emptyCart){			
@@ -169,6 +214,9 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 							m.ddprds = resp.data.ddPrds;
 						}
 					}	
+					
+					if(resp.data.availableDeals)
+						m.availableDeals = resp.data.availableDeals;
 					
 
 					if(m.order){ 
@@ -213,7 +261,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		$scope.ivm = $scope.$new();
 				
-		$templateRequest("/resources/ng-templates/cart/item.html?v0001")
+		$templateRequest("/resources/ng-templates/cart/item.html?" + Math.random())
 		.then(function(html){
 		      var template = angular.element(html);
 		      angular.element('#itemCtrlr')

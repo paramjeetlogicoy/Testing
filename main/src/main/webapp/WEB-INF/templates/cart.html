@@ -82,49 +82,7 @@
 	
 	<div class="modalholder">		
 		<div th:replace="fragments/layout::fragment-doubledownmodal"></div>
-
-		<div class="modal fade" id="briteboxupsell" tabindex="-1"
-			role="dialog">
-			<div class="modal-dialog" role="document">
-			
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-						<h3 class="modal-title">Would you like to have a Brite Box?</h3>
-					</div>
-
-					<div class="modal-body">
-						<div class="pad2">
-							<img class="fit"
-								src="https://lbrit.co/static/imgs/uploads/2016/02/new-brite-box-t.png"
-								alt="welcome-kit" />
-						</div>
-						<div class="marg-b2">Congratulation! Since this is your
-							first order you are eligible to get a "Brite Box" for free. All
-							you need is to have your order total $75 or more. Brite Box will
-							be added to your order automatically once you place the order.</div>
-
-						<div class="small">
-							<p>
-								Please refer to our <a href="https://www.luvbrite.com/">home
-									page</a> for more details about this offer.
-							</p>
-						</div>
-
-					</div>
-
-					<div class="modal-footer">
-						<button class="btn btn-success" data-dismiss="modal"
-							aria-label="Close">I want to see more products to buy</button>
-						<button class="btn btn-warning" type="button" ng-click="ok()">Place
-							my order. I don't need the brite box.</button>
-					</div>
-				</div>
-			</div>
-		</div>
+		<div th:replace="fragments/layout::fragment-briteboxmodal"></div>
 	</div>
 </body>
 </html>

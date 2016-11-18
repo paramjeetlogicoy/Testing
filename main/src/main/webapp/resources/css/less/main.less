@@ -1462,11 +1462,11 @@ nav#pagination-nav{
 		}
 	}
 }
-.cart-offers-bb{
+/*.cart-offers-bb{
 	border: 2px solid #008002;
     border-radius: 3px;
     color: #2E7D32;
-}
+}*/
 .cart-totals:extend(.marg-b3, .pad-v3, .pad-h4, .bg-white){
 	.cart-summary{
 		td,th{
@@ -1560,6 +1560,9 @@ nav#pagination-nav{
 }
 
 .cart-promo-form{
+
+	max-width: 300px;
+
 	.input-group{
 		width: 100%;
 	}
@@ -1615,6 +1618,20 @@ nav#pagination-nav{
     @media(min-width:1230px){
     	width:380px;
     }
+}
+
+.cart-promo-details{ 
+	display: none;
+    padding: 10px;
+    margin: 0 0 30px 25px;
+    border: 4px solid #008002;
+    border-radius: 4px;
+}
+.cart-promo-options{
+
+	&.promoSelected {
+		.cart-promo-details{ display: block;}
+	}
 }
 
 /*Confirmation Page*/
