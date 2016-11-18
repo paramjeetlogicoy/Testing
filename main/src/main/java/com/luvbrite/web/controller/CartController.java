@@ -949,12 +949,6 @@ public class CartController {
 				
 				if(prd != null){
 					
-					DoubleDownProducts ddp = new DoubleDownProducts();
-					ddp.set_id(prd.get_id());
-					ddp.setFeaturedImg(prd.getFeaturedImg());
-					ddp.setName(prd.getName());
-					ddp.setUrl(prd.getUrl());
-					
 					if(prd.isVariation()){
 						List<Price> prices = priceDao.createQuery()
 								.field("pid").equal(ddPid)
@@ -965,6 +959,12 @@ public class CartController {
 						
 						if(prices!=null){
 							for(Price p : prices){
+								
+								DoubleDownProducts ddp = new DoubleDownProducts();
+								ddp.set_id(prd.get_id());
+								ddp.setFeaturedImg(prd.getFeaturedImg());
+								ddp.setName(prd.getName());
+								ddp.setUrl(prd.getUrl());
 								
 								ddp.setVid(p.get_id());
 								
@@ -978,6 +978,12 @@ public class CartController {
 						}
 					}
 					else{
+						
+						DoubleDownProducts ddp = new DoubleDownProducts();
+						ddp.set_id(prd.get_id());
+						ddp.setFeaturedImg(prd.getFeaturedImg());
+						ddp.setName(prd.getName());
+						ddp.setUrl(prd.getUrl());
 						
 						ddp.setVid(0);
 						ddps.add(ddp);
