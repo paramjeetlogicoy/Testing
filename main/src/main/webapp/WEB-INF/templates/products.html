@@ -78,7 +78,7 @@
 
 									<div class="tocart">
 										<div class="text-center size16 marg-b1">
-											Price: <strong th:if="${product.priceRange}" th:text="${product.priceRange}"></strong><span
+											Price: <strong th:if="${product.priceRange}" th:text="${#strings.listSplit(product.priceRange,' - ').get(0)}"></strong><span
 												th:unless="${product.priceRange}"><strong
 												th:text="${'$' + #numbers.formatDecimal(product.price,0,2)}"></strong></span>
 										</div>
