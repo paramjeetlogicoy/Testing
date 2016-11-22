@@ -1192,6 +1192,41 @@ nav#pagination-nav{
     }
 }
 
+@-webkit-keyframes glowing {
+  0% { -webkit-box-shadow: 0 0 3px #d43f3a; }
+  50% { -webkit-box-shadow: 0 0 30px #d43f3a; }
+  100% { -webkit-box-shadow: 0 0 3px #d43f3a; }
+}
+
+@-moz-keyframes glowing {
+  0% { -moz-box-shadow: 0 0 3px #d43f3a; }
+  50% { -moz-box-shadow: 0 0 30px #d43f3a; }
+  100% { -moz-box-shadow: 0 0 3px #d43f3a; }
+}
+
+@-o-keyframes glowing {
+  0% { box-shadow: 0 0 3px #d43f3a; }
+  50% { box-shadow: 0 0 30px #d43f3a; }
+  100% { box-shadow: 0 0 3px #d43f3a; }
+}
+
+@keyframes glowing {
+  0% { box-shadow: 0 0 3px #d43f3a; }
+  50% { box-shadow: 0 0 30px #d43f3a; }
+  100% { box-shadow: 0 0 3px #d43f3a; }
+}
+
+.glowingicon {
+    top: 95px;
+    left: 390px;
+    outline: none !important;
+	
+	-webkit-animation: glowing 1500ms infinite;
+	-moz-animation: glowing 1500ms infinite;
+	-o-animation: glowing 1500ms infinite;
+	animation: glowing 1500ms infinite;
+}
+
 /* Single Product Page */
 .prdpage-img-container:extend(.marg-b2,.automarg){
 	max-width:600px;
