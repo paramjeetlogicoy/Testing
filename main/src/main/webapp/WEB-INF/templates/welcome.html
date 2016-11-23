@@ -21,27 +21,32 @@
 <style type="text/css">
 .newarrivals-slider{background-image: url(https://lbrit.co/static/imgs/sliders/new-arrivals-offer-v1.jpg);background-color:white !important;}
 .endofeight-slider{background-image: url(https://lbrit.co/static/imgs/sliders/end-of-eigth-offer-new.jpg)}
-.endofeight-slider.item button.btn {bottom: 37px;right:0;}
+.endofeight-slider.item button.btn {bottom: 37px;right:0;width: auto;margin-left: 0;left: auto;}
 .offhouroffer-slider{background-image: url(https://lbrit.co/static/imgs/sliders/off-hour-offer.jpg)}
 .doubledown-slider{background-image: url(https://lbrit.co/static/imgs/sliders/double-down-offer-v1.jpg);background-color:white !important;}
-.doubledown-slider.item button.btn {bottom:5px;right:0;font-size:10px;}
+.doubledown-slider.item button.btn {bottom:5px;right:0;font-size:10px;left:auto;}
 .localbox-slider{background-image: url(https://lbrit.co/static/imgs/sliders/local-box-banner.jpg);}
 .localbox-slider.item a.btn{right:0;bottom:20%;}
 .britebox-slider.item {background-image: url(https://lbrit.co/static/imgs/sliders/brite-box-temp.jpg);background-color:white !important;background-position:62% 50%;}
 .britebox-slider.item button.btn{right:0;bottom:5px;}
 .junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix-home-xs.jpg);background-color:black !important;}
-.junglemix-slider a{background-color: #fb6a00;border-color: #ea680a;bottom: 20px !important;}
+.junglemix-slider a,
+.cybermonday-slider button{background-color: #fb6a00;border-color: #ea680a}
+.junglemix-slider a{bottom: 20px !important}
 .lionking-slider{background-image: url(https://lbrit.co/static/imgs/sliders/lionking-slider-xs.jpg);background-color:#00a3c6 !important;}
-.lionking-slider a{right:50% !important;margin-right:-45px;font-size:12px;}
+.lionking-slider a{font-size:12px;}
+.cybermonday-slider{background-image: url(https://lbrit.co/static/imgs/sliders/cybermonday-xs.jpg);background-color:#60c873 !important;}
 @media (min-width: 768px){	
 	.carousel-inner .mx300{max-width:768px;}
 	
 	.junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix-home-sm.jpg?v001);}
-	.junglemix-slider a{padding: 10px 30px;bottom: 30px !important;right: 45% !important;}
+	.junglemix-slider a{padding: 10px 30px;bottom: 30px !important;width: 160px !important;margin-left: -80px !important;}
 	.lionking-slider{background-image: url(https://lbrit.co/static/imgs/sliders/lionking-slider-sm.jpg);}
 	.lionking-slider a{width:140px;margin-right:-70px;font-size:14px;}
+	.cybermonday-slider{background-image: url(https://lbrit.co/static/imgs/sliders/cybermonday.jpg)}
+	.cybermonday-slider button{padding:10px 0}
 
-	.endofeight-slider.item button.btn {bottom:100px;right:19%;}
+	.endofeight-slider.item button.btn {bottom:100px;right:19%;width: auto;margin-left: 0;left: auto;}
 	.offhouroffer-slider.item button.btn {bottom:70px}
 	.doubledown-slider.item button.btn {bottom:25px;right:20%;font-size:12px;}
 	.localbox-slider.item a.btn{right:19%;;bottom:25%;}
@@ -64,6 +69,10 @@
 
 			<!-- Wrapper for slides -->
 			<div class="carousel-inner" role="listbox">
+
+				<!-- <div class="cybermonday-slider item active">
+					<button data-toggle="modal" data-target="#endOfEightModal" class="btn btn-xs btn-warning">VIEW DETAILS</button>
+				</div> -->
 
 				<div class="junglemix-slider item active">
 					<a href="/product/jungle-mix-10-gram-special" class="btn btn-warning">FEELING WILD</a>
@@ -130,7 +139,7 @@
 					class="mx400 marg-b3 no-outline"><img class="fit"
 					src="https://lbrit.co/static/imgs/uploads/2016/02/new-brite-box-t.png"
 					alt="welcome-kit" /></a>
-				<button class="glowingicon btn btn-danger btn-xs abs"  data-toggle="modal" data-target="#briteboxnotice">Notice</button>
+
 				<div class="size18 marg-b3">
 					<em>Show some luv by signing up and we'll return the gesture</em>
 				</div>
