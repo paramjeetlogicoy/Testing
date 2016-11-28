@@ -1,7 +1,7 @@
 var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 	var m = this,
 	deliveryLoaded = false,	
-	cmcVersion = 'v0001'; //Math.random();
+	cmcVersion = 'v0002'; //Math.random();
 	
 	m.order = {};	
 	m.ddprds = [];
@@ -17,6 +17,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 	m.cartData = null;
 	m.ccErrors = '';
 	m.promoOptions = '';
+	m.couponCode = '';
 
 	$scope.pageLevelAlert='';
 	

@@ -253,9 +253,9 @@ var cartItemCtrlr = function($scope, $http, $rootScope, $timeout){
 	$scope.applyCoupon = function(){
 
 		$scope.couponErrors = '';
-
-		if($scope.couponCode){
-			$http.get(_lbUrls.cart + 'applycoupon/' + $scope.couponCode,{
+		console.log("m.couponCode - " +m.couponCode);
+		if(m.couponCode){
+			$http.get(_lbUrls.cart + 'applycoupon/' + m.couponCode,{
 				params : {
 					'hidepop' : true,
 					'oid' : m.order._id
@@ -265,7 +265,7 @@ var cartItemCtrlr = function($scope, $http, $rootScope, $timeout){
 					function(resp){
 						if(resp.data && resp.data.success){
 							_lbFns.pSuccess('Promocode applied');
-							$scope.couponCode = '';
+							m.couponCode = '';
 
 							m.order = resp.data.order;
 							m.processOrder();
@@ -297,7 +297,7 @@ var cartItemCtrlr = function($scope, $http, $rootScope, $timeout){
 	
 	$scope.useThisCoupon = function(){
 		if(this.promo){
-			$scope.couponCode = this.promo;
+			m.couponCode = this.promo;
 			$scope.applyCoupon();
 		}
 	};
