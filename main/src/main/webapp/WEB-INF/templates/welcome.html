@@ -20,22 +20,29 @@
 
 <style type="text/css">
 .newarrivals-slider{background-image: url(https://lbrit.co/static/imgs/sliders/new-arrivals-offer-v1.jpg);background-color:white !important;}
-.endofeight-slider{background-image: url(https://lbrit.co/static/imgs/sliders/end-of-eigth-offer.jpg)}
-.endofeight-slider.item button.btn {bottom: 37px;right:0;}
+.endofeight-slider{background-image: url(https://lbrit.co/static/imgs/sliders/end-of-eigth-offer-new.jpg)}
+.endofeight-slider.item button.btn {bottom: 37px;right:0;width: auto;margin-left: 0;left: auto;}
 .offhouroffer-slider{background-image: url(https://lbrit.co/static/imgs/sliders/off-hour-offer.jpg)}
 .doubledown-slider{background-image: url(https://lbrit.co/static/imgs/sliders/double-down-offer-v1.jpg);background-color:white !important;}
-.doubledown-slider.item button.btn {bottom:5px;right:0;font-size:10px;}
+.doubledown-slider.item button.btn {bottom:5px;right:0;font-size:10px;left:auto;}
 .localbox-slider{background-image: url(https://lbrit.co/static/imgs/sliders/local-box-banner.jpg);}
 .localbox-slider.item a.btn{right:0;bottom:20%;}
 .britebox-slider.item {background-image: url(https://lbrit.co/static/imgs/sliders/brite-box-temp.jpg);background-color:white !important;background-position:62% 50%;}
 .britebox-slider.item button.btn{right:0;bottom:5px;}
-.edipuredeal-slider{background-image: url(https://lbrit.co/static/imgs/sliders/gummy-banner.jpg);background-color:white !important;}
-.lionking-slider{background-image: url(https://lbrit.co/static/imgs/sliders/lionking-comingsoon-xs.jpg);background-color:#64386b !important;}
-.edipuredeal-slider.item>a {display:block;height:100%;}
+.junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix-home-xs.jpg);background-color:black !important;}
+.junglemix-slider a{background-color: #fb6a00;border-color: #ea680a}
+.junglemix-slider a{bottom: 20px !important}
+.lionking-slider{background-image: url(https://lbrit.co/static/imgs/sliders/lionking-slider-xs.jpg);background-color:#00a3c6 !important;}
+.lionking-slider a{font-size:12px;}
 @media (min-width: 768px){	
 	.carousel-inner .mx300{max-width:768px;}
-	.lionking-slider{background-image: url(https://lbrit.co/static/imgs/sliders/lionking-comingsoon.jpg);}
-	.endofeight-slider.item button.btn {bottom:100px;right:19%;}
+	
+	.junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix-home-sm.jpg?v001);}
+	.junglemix-slider a{padding: 10px 30px;bottom: 30px !important;width: 160px !important;margin-left: -80px !important;}
+	.lionking-slider{background-image: url(https://lbrit.co/static/imgs/sliders/lionking-slider-sm.jpg);}
+	.lionking-slider a{width:140px;margin-right:-70px;font-size:14px;}
+
+	.endofeight-slider.item button.btn {bottom:100px;right:19%;width: auto;margin-left: 0;left: auto;}
 	.offhouroffer-slider.item button.btn {bottom:70px}
 	.doubledown-slider.item button.btn {bottom:25px;right:20%;font-size:12px;}
 	.localbox-slider.item a.btn{right:19%;;bottom:25%;}
@@ -44,7 +51,8 @@
 	.britebox-slider.item button.btn{right:10%;bottom: 15px;}
 }
 @media (min-width: 1200px){	
-	.lionking-slider{background-image: url(https://lbrit.co/static/imgs/sliders/lionking-comingsoon-lg.jpg);}
+	.junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix-home.jpg);}
+	.lionking-slider{background-image: url(https://lbrit.co/static/imgs/sliders/lionking-slider.jpg);}
 }
 </style>
 </head>
@@ -53,54 +61,17 @@
 	<div th:replace="fragments/layout::fragment-header"></div>
 	<div class="homepage-container">
 
-		<div class="home-britebox">
-			<div>
-				<h1>FEEL THE LUV</h1>
-				<a href="" data-toggle="modal" data-target="#britebox"
-					class="mx400 marg-b3 no-outline"><img class="fit"
-					src="https://lbrit.co/static/imgs/uploads/2016/02/new-brite-box-t.png"
-					alt="welcome-kit" /></a>
-
-				<div class="size18 marg-b3">
-					<em>Show some luv by signing up and we'll return the gesture</em>
-				</div>
-				<div class="row marg-b3">
-					<div class="col-sm-8 pad-d-r0 marg-b2">
-						<div class="brite-bullets">
-							<span>1</span>The <strong>first online</strong> order of every
-							new membership that totals $75 or more comes with a <strong>"BRITE
-								BOX"</strong> containing samples of our medicines.<strong> <br />
-								<em>Click image above for details</em></strong>
-						</div>
-
-						<div class="brite-bullets">
-							<span>2</span>New members automatically receive a virtual
-							Loyalist Rewards card with a <strong>$100 value</strong> to be
-							used on future online orders.<strong> <br /> <em>Click
-									the card image for details</em></strong>
-						</div>
-					</div>
-					<div class="col-sm-4 text-center text-d-right">
-						<a class="no-outline" href="" data-toggle="modal"
-							data-target="#briteboxuse"><img class="fit home-loyalistcard"
-							src="https://lbrit.co/static/imgs/uploads/2015/04/loyalist-card.png"
-							alt="loyalist-card" /></a>
-					</div>
-				</div>
-
-			</div>
-		</div>
-
 		<div id="home-sliders" class="home-carousel carousel slide" data-ride="carousel">
 
 			<!-- Wrapper for slides -->
 			<div class="carousel-inner" role="listbox">
 
-				<div class="edipuredeal-slider item active">
-					<a href="/category/edipure">&nbsp;</a>
+				<div class="junglemix-slider item active">
+					<a href="/product/jungle-mix-10-gram-special" class="btn btn-warning">FEELING WILD</a>
 				</div>
 
 				<div class="lionking-slider item">
+					<a href="/product/lion-king" class="btn btn-primary">SHOP NOW</a>
 				</div>
 
 				<div class="newarrivals-slider item">
@@ -153,6 +124,44 @@
 			</a>
 		</div>
 
+		<div class="home-britebox">
+			<div class="rel">
+				<h1>FEEL THE LUV</h1>
+				<a href="" data-toggle="modal" data-target="#britebox"
+					class="mx400 marg-b3 no-outline"><img class="fit"
+					src="https://lbrit.co/static/imgs/uploads/2016/02/new-brite-box-t.png"
+					alt="welcome-kit" /></a>
+
+				<div class="size18 marg-b3">
+					<em>Show some luv by signing up and we'll return the gesture</em>
+				</div>
+				<div class="row marg-b3">
+					<div class="col-sm-8 pad-d-r0 marg-b2">
+						<div class="brite-bullets">
+							<span>1</span>The <strong>first online</strong> order of every
+							new membership that totals $75 or more comes with a <strong>"BRITE
+								BOX"</strong> containing samples of our medicines.<strong> <br />
+								<em>Click image above for details</em></strong>
+						</div>
+
+						<div class="brite-bullets">
+							<span>2</span>New members automatically receive a virtual
+							Loyalist Rewards card with a <strong>$100 value</strong> to be
+							used on future online orders.<strong> <br /> <em>Click
+									the card image for details</em></strong>
+						</div>
+					</div>
+					<div class="col-sm-4 text-center text-d-right">
+						<a class="no-outline" href="" data-toggle="modal"
+							data-target="#briteboxuse"><img class="fit home-loyalistcard"
+							src="https://lbrit.co/static/imgs/uploads/2015/04/loyalist-card.png"
+							alt="loyalist-card" /></a>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
 		<div class="home-categories">
 			<div class="hc-flowers">
 				<h2><a href="/category/flowers">FLOWERS</a></h2>
@@ -193,9 +202,7 @@
 				</ul>
 
 			</div>
-			<hr />
 			<div class="hc-topicals">
-				<h2><a href="/category/topicals">TOPICALS</a></h2>
 				<ul class="row">
 					<li class="col-sm-3"></li>
 					<li class="col-sm-3"><a href="/category/topicals"><span
@@ -240,6 +247,7 @@
 	
 	<div class="modalholder">		
 		<div th:replace="fragments/layout::fragment-doubledownmodal"></div>
+		<div th:replace="fragments/layout::fragment-briteboxmodal"></div>
 
 		<div class="modal fade" id="endOfEightModal" tabindex="-1"
 			role="dialog">
@@ -296,37 +304,8 @@
 					</div>
 					<div class="modal-body">
 						<div class="marg-b2">When you order during off hours (11:00
-							PM - 11:00 AM PST) a 60mg Kiva Milk Chocolate will be added to
+							PM - 11:00 AM PST) a 60mg Kiva Dark or Milk Chocolate will be added to
 							your order for FREE!</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="modal fade" id="britebox" tabindex="-1"
-			role="dialog">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-						<h3 class="modal-title">Brite Box</h3>
-					</div>
-					<div class="modal-body">
-						<h4>What to expect:</h4>
-						<div class="marg-b2">
-							<ul class="styled">
-								<li>One (1) Baked Bees Medicated Honey with a generous 60mg
-									of tender loving THC.</li>
-								<li>One (1) Premium Keif Roll: This little guy (or not so
-									little) packs in 1.5g of some of our top shelf hybrid medicine.</li>
-								<li>Three (3) Flower Samples: You'll get 0.35g of each of
-									our smoking hot Indica, Sativa, and Hybrid strains.</li>
-							</ul>
-						</div>
-						<div class="marg-b2 small">Note: Offer only valid for donations $75 or above.</div>
 					</div>
 				</div>
 			</div>
@@ -349,6 +328,58 @@
 							Loyalist Rewards card. The $100 will be available through your
 							new online account as a $10 coupon which can be used for 10
 							future online orders.</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="modal fade" id="briteboxnotice" tabindex="-1"
+			role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h3 class="modal-title">Important Notice</h3>
+					</div>
+					<div class="modal-body">
+						<div class="marg-b2">Due to high demand, we have run out of
+							the Baked Bees medicated honey. Until further notice, we will be
+							substituting the honey with a 60mg kiva chocolate. Thank you for
+							understanding.</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="modal fade" id="cyberlionmodal" tabindex="-1"
+			role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h3 class="modal-title text-center">Get 10 grams of our Lion
+							King OG for $100!</h3>
+					</div>
+					<div class="modal-body text-center pad-t2">
+						<div class="marg-b3 size16 pad-t2">
+							Use promocode
+							<kbd>cyberlion</kbd>
+							at checkout.
+						</div>
+						<div class="marg-b2">
+							<small>*Cannot be combined with any other promotion or
+								discount, except the "Off Hour Kiva Promo".</small>
+						</div>
+						<div>
+							<a href="/product/lion-king-10g-special" class="btn btn-warning">Shop
+								Now</a>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -105,10 +105,10 @@
 				<div class="navbar-collapse collapse" id="xs-navbar">
 					<ul class="nav navbar-nav visible-xs-block">
 					<li><a href="/products">ALL PRODUCTS</a></li>
+					<li><a href="/category/specials">SPECIALS</a></li>
 					<li><a href="/category/flowers">FLOWERS</a></li>
 					<li><a href="/category/edibles">EDIBLES</a></li>
 					<li><a href="/category/concentrates">CONCENTRATES</a></li>
-					<li><a href="/category/specials">SPECIALS</a></li>
 					<li><a href="/category/tinctures">TINCTURES</a></li>
 					<li><a href="/category/pre-rolls">PRE-ROLLS</a></li>
 					<li><a href="/category/gear">ACCESSORIES</a></li>
@@ -131,13 +131,13 @@
 			<div class="container">
 				<ul class="nav hidden-xs nav-justified">
 					<li><a href="/products">ALL PRODUCTS</a></li>
+					<li><a href="/category/specials">SPECIALS<i class="fa fa-star star"
+							aria-hidden="true"></i></a></li>
 					<li><a href="/category/flowers">FLOWERS</a></li>
 					<li><a href="/category/edibles">EDIBLES</a></li>
 					<li><a href="/category/concentrates">CONCENTRATES</a></li>
 					<li><a href="/category/pre-rolls">PRE-ROLLS</a></li>
 					<li><a href="/category/gear">ACCESSORIES</a></li>
-					<li><a href="/category/specials">SPECIALS<i class="fa fa-star star"
-							aria-hidden="true"></i></a></li>
 				</ul>
 			</div>
 		</nav>
@@ -366,19 +366,58 @@
 
 							<div class="small">
 								<strong>TERMS &amp; CONDITIONS</strong>
-								<p>In order to qualify, the donation that is being doubled
-									must be valued at $50 or greater, meaning that the overall
-									order total should be $100 or greater. If an item is
-									removed/cancelled from the order brining the total below $100,
-									the free patient-selected gift will be forfeited. This offer
-									cannot be combined with other coupons or discounts, and is
-									valid while supplies last.</p>
+								<p>
+									In order to qualify, the donation that is being doubled must be
+									valued at $50 or greater, meaning that the overall order total
+									should be $100 or greater. If an item is removed/cancelled from
+									the order brining the total below $100, the free
+									patient-selected gift will be forfeited. This offer cannot be
+									combined with other coupons or discounts, and is valid while
+									supplies last. <span class="orange1">Cannot be combined
+										with other offers.</span>
+								</p>
 							</div>
 
 						</div>
 					</div>
 				</div>
 			</div>
+		</div>
+		
+		<div th:fragment="fragment-briteboxmodal">		
+			<div class="modal fade" id="britebox" tabindex="-1"
+				role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<h3 class="modal-title">Brite Box</h3>
+						</div>
+						<div class="modal-body">
+							<h4>What to expect:</h4>
+							<div class="marg-b2">
+								<ul class="styled">
+									<li>One (1) Baked Bees Medicated Honey with a generous
+										60mg of tender loving THC.</li>
+									<li>One (1) Premium Keif Roll: This little guy (or not so
+										little) packs in 1.5g of some of our top shelf hybrid medicine.</li>
+									<li>Three (3) Flower Samples: You'll get 0.35g of each of
+										our smoking hot Indica, Sativa, and Hybrid strains.</li>
+								</ul>
+							</div>
+							<div class="marg-b2 small">
+								Note: Offer only valid for donations $75 or above. Applies to
+								first time customers only.
+								<span class="orange1">Cannot be combined with other offers.</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
 		</div>
 
 	</div>

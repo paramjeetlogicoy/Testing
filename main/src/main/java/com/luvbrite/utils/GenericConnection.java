@@ -6,9 +6,13 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.apache.log4j.Logger;
+
 
 public class GenericConnection {
-
+	
+	private static Logger logger = Logger.getLogger(GenericConnection.class);
+	
 	public GenericConnection() {}
 
 	public String contactService(String inputString, URL url, boolean SysOut) throws Exception{		
@@ -46,7 +50,7 @@ public class GenericConnection {
 			
 		} catch (Exception e) {
 			System.out.println("Error sending data to server");
-			e.printStackTrace();
+			logger.error(Exceptions.giveStackTrace(e));
 		} finally {						
 			if(outputStream != null){
 				outputStream.close();

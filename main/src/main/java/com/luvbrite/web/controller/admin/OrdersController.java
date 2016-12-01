@@ -89,6 +89,34 @@ public class OrdersController {
 	}
 	
 
+	@RequestMapping(value = "/repost-to-inventory/{orderNumber}")
+	public @ResponseBody GenericResponse repost(@PathVariable long orderNumber){	
+		
+		GenericResponse r = new GenericResponse();
+		
+		Order o =  dao.findOne("orderNumber", orderNumber);
+		if(o != null){
+			
+			//Sent Order Meta to Inventory
+			try {				
+				postOrderMeta.postOrder(o);		
+				
+				r.setSuccess(true);
+				r.setMessage("Posted");
+				
+			}catch(Exception e){
+				logger.error(Exceptions.giveStackTrace(e));
+				r.setMessage("Post failed");
+			}
+		}
+		else {
+			r.setMessage("No order found");
+		}
+		
+		return r;
+	}
+	
+
 	@RequestMapping(value = "/json/savestatus")
 	public @ResponseBody GenericResponse saveStatus(@RequestBody Order order, @AuthenticationPrincipal 
 			UserDetailsExt user){	

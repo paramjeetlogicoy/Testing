@@ -69,8 +69,8 @@ public class BatchController {
 		Email email = new Email();
 		email.setEmailTemplate("reco-expiry");
 		email.setFromEmail("no-reply@luvbrite.com");
-		email.setRecipientEmail("payam@luvbrite.com");
-		email.setRecipientName("Payam");
+		email.setRecipientEmail("reco_expiry_notice@luvbrite.com");
+		email.setRecipientName("Reco Expiry");
 		email.setSubject("Recommendation Expiry");
 		email.setEmailInfo("recommendation expiry info");
 		email.setEmail(rc);
@@ -84,5 +84,23 @@ public class BatchController {
 		}
 		
 		return "layout";
+	}	
+
+	
+	@RequestMapping(value = "/customers-expiring-in-6-months")
+	public @ResponseBody List<User> customerList(){
+		
+		Calendar month6 = Calendar.getInstance();
+		month6.add(Calendar.MONTH, 6);
+		
+		//Expiring in next 3 days
+		List<User> users = userDao.createQuery()
+				.field("active").equal(true)
+				.field("identifications.recoExpiry").greaterThan(month6.getTime())
+				.order("_id")
+				.retrievedFields(true, "identifications.recoExpiry", "fname", "lname", "phone")
+				.asList();		
+		
+		return users;
 	}
 }

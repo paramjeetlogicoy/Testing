@@ -1,6 +1,7 @@
 var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 	var m = this,
-	deliveryLoaded = false;
+	deliveryLoaded = false,	
+	cmcVersion = 'v0002'; //Math.random();
 	
 	m.order = {};	
 	m.ddprds = [];
@@ -15,6 +16,8 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 	
 	m.cartData = null;
 	m.ccErrors = '';
+	m.promoOptions = '';
+	m.couponCode = '';
 
 	$scope.pageLevelAlert='';
 	
@@ -23,6 +26,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 	
 	m.promosAvailable = false;
 	m.couponApplied = true;  //Only refers to coupons
+	m.appliedCouponCode = "";
 	m.offersApplied = false; //Refers to all kinds of offers
 	m.orderAboveOrderMin = false;
 	m.emptyCart = true;
@@ -34,16 +38,26 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 	m.doubleDownApplied = false;
 	m.doubleDownEligible = false;
 	
+	m.briteBoxApplied = false;
+	m.briteBoxEligible = false;
+	m.briteBoxThreshold = 75;
+	m.availableDeals = {};
+	
+	m.showPromoTab = true;
+	
 	
 	/* When ever there is a change in m.order, this function needs to be called 
 	 * most of the logic control flags are set here. */
 	m.processOrder = function(){
 		
-		m.sales = [];		
+		m.sales = [];	
+		m.appliedCouponCode = "";	
+		m.promoOptions = '';
 		
 		var couponApplied = false,
 			offersApplied = false,
 			doubleDownApplied = false,
+			briteBoxApplied = false,
 			emptyCart = true;
 		
 		
@@ -63,6 +77,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 					
 					if(item.type=='coupon'){					
 						couponApplied = true;
+						m.appliedCouponCode = item.name;
 					}
 					
 					
@@ -73,15 +88,24 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 					
 					
 					if(item.type=='item' && 
-							(item.promo == 's' || item.promo == 'doubledownoffer')){
+							(item.promo == 's' || 
+									item.promo == 'doubledownoffer' || 
+									item.promo == 'firsttimepatient')){
 						
-						var productName = item.name.length>15?item.name.substr(0,15)+'...':item.name,
+						//var productName = item.name.length>15?item.name.substr(0,15)+'...':item.name,
+						var productName = item.name,
 						discount = (item.cost - item.price)*item.qty;
 						
 						
 						if(item.promo == 'doubledownoffer'){
 							productName = 'Double Down Offer';
 							doubleDownApplied = true;
+						}
+						
+						
+						if(item.promo == 'firsttimepatient'){
+							productName = 'First Time Patient';
+							briteBoxApplied = true;
 						}
 						
 							
@@ -102,11 +126,12 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		m.couponApplied = couponApplied;
 		m.offersApplied = offersApplied;
 		m.emptyCart = emptyCart;
+		m.briteBoxApplied = briteBoxApplied;
 		
 		
 		//OrderMin Check (it doesnt apply to orders placed by orders@luvbrite.com [_id = 29])
-		if(m.order.total >= m.orderMin || 
-				(m.user && (m.user._id == 29 || m.user._id == 1))){
+		if(m.order.total && (m.order.total >= m.orderMin || 
+				(m.user && (m.user._id == 29 || m.user._id == 1)))){
 			
 			m.orderAboveOrderMin = true;
 			
@@ -120,13 +145,48 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		
 		//DoubleDown Check
-		if(m.doubleDownActive && 
-				m.order.total >= m.config.doubleDown){
+		if(m.doubleDownActive && !m.doubleDownApplied){
 			m.doubleDownEligible = true;
 		}
 		else {
 			m.doubleDownEligible = false;
-		}		
+		}	
+		
+		
+		//BriteBox check
+		if(m.availableDeals.firstTimepatient && !m.briteBoxApplied){
+			m.briteBoxEligible = true;
+		}
+		else {
+			m.briteBoxEligible = false;
+		}
+		
+		
+/*		console.log("1" + (m.briteBoxEligible && (m.order.total >= m.briteBoxThreshold)));
+		console.log("2" + (m.doubleDownEligible && (m.order.total >= m.config.doubleDown)));
+		console.log("3" + m.promosAvailable);
+		console.log("4" + !m.couponApplied);*/
+		
+		//Promotab
+		if((m.briteBoxEligible && (m.order.total >= m.briteBoxThreshold)) || 
+			(m.doubleDownEligible && (m.order.total >= m.config.doubleDown)) || 
+			(m.promosAvailable && !m.couponApplied) || 
+			!m.couponApplied){
+			
+			m.showPromoTab = true;
+		}
+		else{
+			m.showPromoTab = false;
+		}
+		
+		
+		//Set Britebox as the default if no offers are applied and its firsttime patient.
+		if(!m.doubleDownApplied && 
+				!m.couponApplied && 
+				!m.briteBoxApplied && m.availableDeals.firstTimepatient){
+			m.promoOptions = 'firsttimepatient';
+		}
+		
 		
 		
 		if(m.cartPage && m.emptyCart){			
@@ -169,6 +229,9 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 							m.ddprds = resp.data.ddPrds;
 						}
 					}	
+					
+					if(resp.data.availableDeals)
+						m.availableDeals = resp.data.availableDeals;
 					
 
 					if(m.order){ 
@@ -213,7 +276,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		$scope.ivm = $scope.$new();
 				
-		$templateRequest("/resources/ng-templates/cart/item.html")
+		$templateRequest("/resources/ng-templates/cart/item.html?" + cmcVersion)
 		.then(function(html){
 		      var template = angular.element(html);
 		      angular.element('#itemCtrlr')
@@ -244,7 +307,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		$scope.cvm = $scope.$new();
 			
-		$templateRequest("/resources/ng-templates/cart/coupon.html")
+		$templateRequest("/resources/ng-templates/cart/coupon.html?" + cmcVersion)
 		.then(function(html){
 		      var template = angular.element(html);
 		      angular.element('#couponCtrlr')
@@ -271,7 +334,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		$scope.dvm = $scope.$new();
 				
-		$templateRequest("/resources/ng-templates/cart/delivery.html")
+		$templateRequest("/resources/ng-templates/cart/delivery.html?" + cmcVersion)
 		.then(function(html){
 		      var template = angular.element(html);
 		      angular.element('#deliveryCtrlr')
@@ -306,7 +369,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		$scope.pvm = $scope.$new();
 			
-		$templateRequest("/resources/ng-templates/cart/payment.html")
+		$templateRequest("/resources/ng-templates/cart/payment.html?" + cmcVersion)
 		.then(function(html){
 		      var template = angular.element(html);
 		      angular.element('#paymentCtrlr')
@@ -341,7 +404,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		
 		$scope.rvm = $scope.$new();
 				
-		$templateRequest("/resources/ng-templates/cart/review.html?v001")
+		$templateRequest("/resources/ng-templates/cart/review.html?" + cmcVersion)
 		.then(function(html){
 		      var template = angular.element(html);
 		      angular.element('#reviewCtrlr')
