@@ -157,7 +157,7 @@
 			
 		</div>
 		
-		<div class="row">
+		<div class="row marg-b5">
 			<div class="col-sm-4">
 				<div class="marg-b2"><a class="btn btn-warning btn-sm" href="" ng-click="changePassword()">Change Password</a></div>
 				<div class="customer-passwordchange hideme">
@@ -205,6 +205,17 @@
 
 				</div>
 			</div>
+		</div>
+		
+		<div>
+			<h3 class="marg-b0">Personalization</h3>
+			<div class="marg-b3 grey7"><em>Your coupons, reviews, etc</em></div>
+			
+			<ul>
+				<li><a href="#/my-coupons">Your coupons</a></li>
+				<li><a href="#/product-reviews">Review your purchases</a></li>
+				<li><a href="#/my-reviews">Product Reviews Written by You</a></li>
+			</ul>
 		</div>
 	</div>
 
@@ -485,6 +496,57 @@
 
 			</div>
 
+		</div>
+	</div>
+	
+	
+	<div th:fragment="fragment-reviewproducts" class="container-fluid">
+		<div class="row">
+			<div class="col-sm-10">
+			
+				<h3>Review My Purchases</h3>
+
+				<div>
+					<div class="row">
+						<div class="col-xs-4">
+							<img ng-src="/files/view//uploads/2016/05/lion-king-300x300.jpg"
+								class="fit"
+								src="/files/view//uploads/2016/05/lion-king-150x150.jpg" />
+						</div>
+						<div class="col-xs-8">
+							<p><a href="">Lion King - 5 Gram Special</a></p>
+							<div class="rating-wrapper fa-3x">
+										<fieldset class="rate rate-able">
+											<input type="radio" id="rating10" name="rating"  value="10" /><label
+												for="rating10" title="5 stars"></label> <input type="radio"
+												id="rating9" name="rating" value="9" /><label class="half"
+												for="rating9" title="4 1/2 stars"></label> <input
+												type="radio" id="rating8" name="rating" value="8" /><label
+												for="rating8" title="4 stars"></label> <input type="radio"
+												id="rating7" name="rating" value="7" /><label class="half"
+												for="rating7" title="3 1/2 stars"></label> <input
+												type="radio" id="rating6" name="rating" value="6" /><label
+												for="rating6" title="3 stars"></label> <input type="radio"
+												id="rating5" name="rating" value="5" /><label class="half"
+												for="rating5" title="2 1/2 stars"></label> <input
+												type="radio" id="rating4" name="rating" value="4" /><label
+												for="rating4" title="2 stars"></label> <input type="radio"
+												id="rating3" name="rating" value="3" /><label class="half"
+												for="rating3" title="1 1/2 stars"></label> <input
+												type="radio" id="rating2" name="rating" value="2" /><label
+												for="rating2" title="1 star"></label> <input type="radio"
+												id="rating1" name="rating" value="1" /><label class="half"
+												for="rating1" title="1/2 star"></label>
+										</fieldset>								
+							</div>
+							<div th:each="id,iterStat : ${#lists.toList({1,2,3,4,5})}"><span th:text="${id}"></span></div>
+						</div>
+					</div>
+				</div>
+
+				<!-- <div th:replace="fragments/layout::fragment-pagination"></div> -->
+
+			</div>
 		</div>
 	</div>
 

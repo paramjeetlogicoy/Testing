@@ -61,10 +61,45 @@
 				<div class="prdpage-details">
 					<div class="hidden-xs">
 						<div>
-							<h1 th:text="${product.name}"
-								class="capitalize marg-b0">Product Name</h1>
-							<div class="marg-t05 marg-b15" th:if="${product.variation}">
-								<em th:text="${product.priceRange}"></em>
+							<h1 th:text="${product.name}" class="capitalize marg-b0">Product
+								Name</h1>
+
+							<div class="rating-wrapper marg-b05">
+								<fieldset class="rate" th:if="${product.rating > -1}"
+									th:title="|${product.rating/2} star|">
+									<input type="radio" th:name="|rating_${product._id}|"
+										th:checked="${product.rating == 10}" value="10" /><label></label>
+									<input type="radio" th:name="|rating_${product._id}|"
+										th:checked="${product.rating == 9}" value="9" /><label
+										class="half"></label> <input type="radio" id="rating8"
+										th:name="|rating_${product._id}|"
+										th:checked="${product.rating == 8}" value="8" /><label></label>
+									<input type="radio" th:name="|rating_${product._id}|"
+										th:checked="${product.rating == 7}" value="7" /><label
+										class="half"></label> <input type="radio"
+										th:name="|rating_${product._id}|"
+										th:checked="${product.rating == 6}" value="6" /><label></label>
+									<input type="radio" th:name="|rating_${product._id}|"
+										th:checked="${product.rating == 5}" value="5" /><label
+										class="half"></label> <input type="radio"
+										th:name="|rating_${product._id}|"
+										th:checked="${product.rating == 4}" value="4" /><label></label>
+									<input type="radio" th:name="|rating_${product._id}|"
+										th:checked="${product.rating == 3}" value="3" /><label
+										class="half"></label> <input type="radio"
+										th:name="|rating_${product._id}|"
+										th:checked="${product.rating == 2}" value="2" /><label></label>
+									<input type="radio" th:name="|rating_${product._id}|"
+										th:checked="${product.rating == 1}" value="1" /><label
+										class="half"></label>
+								</fieldset>
+								<a href="" class="review-count"
+									th:if="${product.reviewCount > 0}">
+									<span th:if="${product.reviewCount == 1}">1 customer
+										review</span> <span th:if="${product.reviewCount != 1}"><span
+										th:text="${product.reviewCount}"></span> customer reviews</span>
+								</a> <a href="" th:if="${product.rating == -1}">Be the first to
+									review</a>
 							</div>
 						</div>
 					</div>

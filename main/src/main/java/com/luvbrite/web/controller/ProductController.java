@@ -37,6 +37,16 @@ public class ProductController {
 	@Autowired
 	private PriceDAO priceDao;
 	
+	
+	private List<Product> returnActiveProducts(){
+		
+		return prdDao.createQuery()
+				.filter("status", "publish")
+				.filter("stockStat", "instock")
+				.order("-_id")
+				.asList();
+	}
+	
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String home(@AuthenticationPrincipal 
@@ -46,11 +56,7 @@ public class ProductController {
 		if(user!=null && user.isEnabled())
 			model.addAttribute("userId", user.getId());
 
-		List<Product> products = prdDao.createQuery()
-				.filter("status", "publish")
-				.filter("stockStat", "instock")
-				.order("-_id")
-				.asList();
+		List<Product> products = returnActiveProducts();
 		
 		model.addAttribute("products", products);
 		model.addAttribute("page", "product");
@@ -96,7 +102,7 @@ public class ProductController {
 	public @ResponseBody ProdCatResponse ListPublishedProductsCategories() {		
 		ProdCatResponse pcr = new ProdCatResponse();
 		
-		List<Product> products = prdDao.createQuery().filter("status", "publish").asList();
+		List<Product> products = returnActiveProducts();
 		List<Category> categories = catDao.find().asList();
 		
 		pcr.setSuccess(true);

@@ -5,21 +5,21 @@
 @basefont:        'Open Sans', sans-serif;
 @headfont:        'Acme', sans-serif;
 @italicfont:      'Lora', serif;
-@basefont-color: 	#333;
-@basesize:			  13px;
+@basefont-color:  #333;
+@basesize:        13px;
 @basesizeD:       14px;  /*Base size for desktop*/
 @sizeFactor:      (14/10); /* @basesizeD / 10. Division by 10 because 10px would come as 1, and 15px as 1.5*/
 
-@orange1:			#EF6030;
+@orange1:     #EF6030;
 @orange2:     #ffa500;
 @orange3:     #FB8C00;
-@blue1:				#118DC7;
+@blue1:       #118DC7;
 @green1:      #008c77;
 @green2:      #70b100;
 @green3:      #16a765;
-@grey3:				#333;
-@grey7:				#777;
-@grey9:				#999;
+@grey3:       #333;
+@grey7:       #777;
+@grey9:       #999;
 
 // Mixins
 .getRem(@size){  
@@ -313,8 +313,8 @@ img.fit{max-width:100%;max-height:100%}
 .mx800{.maxWidth(800px);}
 
 label>sup{
-	top:-5px;
-	color:@orange1;
+  top:-5px;
+  color:@orange1;
 }
 
 .ul-li-type-1{
@@ -570,6 +570,60 @@ label.fa-label:extend(.marg-b1,.pointer){
   opacity:1;
 }
 /***NG Animation Styles End*/
+/* Ratings widget */
+.rate {
+  display: inline-block;
+  border: 0;
+  color:#ddd;
+
+  /* Hide radio */
+  > input {
+    display: none;
+  }
+
+  /* Order correctly by floating highest to the right */
+  > label {
+    float: right;
+    margin-bottom: 0;
+
+    /* The star of the show */
+    &:before {
+      display: inline-block;
+      font-size: inherit;
+      padding: .3rem .2rem 0;
+      margin: 0;
+      cursor: pointer;
+      font-family: FontAwesome;
+      content: "\f005 "; /* full star */
+    }
+  }
+
+  /* Half star trick */
+  .half:before {
+    content: "\f089 "; /* half star no outline */
+    position: absolute;
+    padding-right: 0;
+  }
+
+  /* Click color */
+  input:checked ~ label{ color: #73B100;  } /* color current and previous stars on checked */
+
+  &.rate-able{
+
+    label:hover, label:hover ~ label { color: #73B100;  } /* color previous stars on hover */
+
+    /* Hover highlights */
+    input:checked + label:hover, input:checked ~ label:hover, /* highlight current and previous stars */
+    input:checked ~ label:hover ~ label, /* highlight previous selected stars for new rating */
+    label:hover ~ input:checked ~ label /* highlight previous selected stars */ { color: #A6E72D;  }
+  }
+}
+
+.rating-wrapper{
+  .review-count:extend(.inlineb, .marg-l2){
+    vertical-align: 6px;
+  } 
+}
 
 /***** Sprites *****/
 .s1,.ns1,.ppg{background-repeat:no-repeat;position:relative;display:inline-block}

@@ -207,6 +207,9 @@ orderDetailsCtrl = function($scope, $http, $routeParams){
 	$scope.getDetails();
 	
 	$('.nav-profile, .nav-orders').removeClass('active');
+},
+
+productsReviewCtrl = function($scope, $http){
 };
 
 cusApp
@@ -230,9 +233,14 @@ cusApp
 	         templateUrl: 'ordersDetailsPage',
 	         controller: 'orderDetailsCtrl'
 	    }).
+	    when('/product-reviews', {
+	         templateUrl: 'productsReviews',
+	         controller: 'productsReviewCtrl'
+	    }).
 	    otherwise({ redirectTo: "/profile" });
 }])
 
 .controller('defaultRouteCtrl', defaultCtrlr)
 .controller('orderCtrl', orderCtrlr)
-.controller('orderDetailsCtrl', orderDetailsCtrl);
+.controller('orderDetailsCtrl', orderDetailsCtrl)
+.controller('productsReviewCtrl', productsReviewCtrl);

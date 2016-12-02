@@ -15,9 +15,11 @@ public class Product {
 	//The ID of user who last edited this.
 	private int editedLast;
 	private int stock;
+	private int reviewCount;
 	
 	private double price;	
 	private double salePrice;
+	private double rating = -1;
 	
 	private String name;
 	private String description;
@@ -151,5 +153,17 @@ public class Product {
 	}
 	public void setRps(List<Integer> rps) {
 		this.rps = rps;
+	}
+	public double getRating() {
+		return rating;
+	}
+	public void setRating(double rating) {
+		this.rating = rating;
+	}
+	public int getReviewCount() {
+		return reviewCount;
+	}
+	public void setReviewCount(int reviewCount) {
+		this.reviewCount = reviewCount;
 	}
 }

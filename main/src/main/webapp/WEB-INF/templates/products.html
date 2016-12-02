@@ -77,12 +77,51 @@
 									</div>
 
 									<div class="tocart">
+										<div class="rating-wrapper">
+											<fieldset class="rate" th:if="${product.rating > -1}"
+												th:title="|${product.rating/2} star|">
+												<input type="radio" th:name="|rating_${product._id}|"
+													th:checked="${product.rating == 10}" value="10" /><label></label>
+												<input type="radio" th:name="|rating_${product._id}|"
+													th:checked="${product.rating == 9}" value="9" /><label
+													class="half"></label> <input type="radio" id="rating8"
+													th:name="|rating_${product._id}|"
+													th:checked="${product.rating == 8}" value="8" /><label></label>
+												<input type="radio" th:name="|rating_${product._id}|"
+													th:checked="${product.rating == 7}" value="7" /><label
+													class="half"></label> <input type="radio"
+													th:name="|rating_${product._id}|"
+													th:checked="${product.rating == 6}" value="6" /><label></label>
+												<input type="radio" th:name="|rating_${product._id}|"
+													th:checked="${product.rating == 5}" value="5" /><label
+													class="half"></label> <input type="radio"
+													th:name="|rating_${product._id}|"
+													th:checked="${product.rating == 4}" value="4" /><label></label>
+												<input type="radio" th:name="|rating_${product._id}|"
+													th:checked="${product.rating == 3}" value="3" /><label
+													class="half"></label> <input type="radio"
+													th:name="|rating_${product._id}|"
+													th:checked="${product.rating == 2}" value="2" /><label></label>
+												<input type="radio" th:name="|rating_${product._id}|"
+													th:checked="${product.rating == 1}" value="1" /><label
+													class="half"></label>
+											</fieldset>
+											<a href="" class="review-count"
+												th:if="${product.reviewCount > 0}">
+												<span th:if="${product.reviewCount == 1}">1
+													review</span> <span th:if="${product.reviewCount != 1}"><span
+													th:text="${product.reviewCount}"></span> reviews</span>
+											</a> <a href="" th:if="${product.rating == -1}">Be the
+												first to review</a>
+										</div>
+
 										<div class="text-center size16 marg-b1">
 											Price: <strong th:if="${product.priceRange}"
 												th:text="${(product.categories!=null) and (#lists.contains(product.categories, 'Flowers'))} ? ${#strings.listSplit(product.priceRange,' - ').get(0)} : ${product.priceRange}"></strong><span
 												th:unless="${product.priceRange}"><strong
 												th:text="${'$' + #numbers.formatDecimal(product.price,0,2)}"></strong></span>
 										</div>
+
 										<div class="row">
 											<div class="col-xs-6">
 												<button type="button" class="btn btn-lb btn-sm btn-block"
