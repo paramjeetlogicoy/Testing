@@ -39,6 +39,14 @@ _lbFns = {
 		return false;
 	},
 	
+	ratingFunction : function(){
+        if($(this).is(':checked')){
+            $('.rate label.checked').removeClass('checked');
+            $(this).parent().addClass('checked');
+        }
+		return false;
+	},
+	
 	pAlert:function(msg,title,callBack,showCancel){
 		var options={title:'Oops!',text:'There was some error processing your request. Please try later.',type:'error',buttons:{sticker:false},hide:false,addclass:'pnotifyNoCancel'};
 		if(msg) options.text=msg;
@@ -102,7 +110,10 @@ $(document).ready(function(){
 	.resize(_lbFns.navOffsetCorrection);
 	
 	$('body')
-	.on('click','.to-top',_lbFns.goToTop);
+	.on('click','.to-top',_lbFns.goToTop)
+    .on('change', '.rate input', _lbFns.ratingFunction);
+	
+	
 	
 	PNotify.prototype.options.styling = "fontawesome";
 });

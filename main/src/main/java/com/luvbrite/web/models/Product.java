@@ -19,7 +19,7 @@ public class Product {
 	
 	private double price;	
 	private double salePrice;
-	private double rating = -1;
+	private int rating = -1;
 	
 	private String name;
 	private String description;
@@ -154,10 +154,10 @@ public class Product {
 	public void setRps(List<Integer> rps) {
 		this.rps = rps;
 	}
-	public double getRating() {
+	public int getRating() {
 		return rating;
 	}
-	public void setRating(double rating) {
+	public void setRating(int rating) {
 		this.rating = rating;
 	}
 	public int getReviewCount() {

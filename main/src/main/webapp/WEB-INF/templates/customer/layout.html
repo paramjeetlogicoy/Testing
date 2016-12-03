@@ -516,30 +516,14 @@
 						<div class="col-xs-8">
 							<p><a href="">Lion King - 5 Gram Special</a></p>
 							<div class="rating-wrapper fa-3x">
-										<fieldset class="rate rate-able">
-											<input type="radio" id="rating10" name="rating"  value="10" /><label
-												for="rating10" title="5 stars"></label> <input type="radio"
-												id="rating9" name="rating" value="9" /><label class="half"
-												for="rating9" title="4 1/2 stars"></label> <input
-												type="radio" id="rating8" name="rating" value="8" /><label
-												for="rating8" title="4 stars"></label> <input type="radio"
-												id="rating7" name="rating" value="7" /><label class="half"
-												for="rating7" title="3 1/2 stars"></label> <input
-												type="radio" id="rating6" name="rating" value="6" /><label
-												for="rating6" title="3 stars"></label> <input type="radio"
-												id="rating5" name="rating" value="5" /><label class="half"
-												for="rating5" title="2 1/2 stars"></label> <input
-												type="radio" id="rating4" name="rating" value="4" /><label
-												for="rating4" title="2 stars"></label> <input type="radio"
-												id="rating3" name="rating" value="3" /><label class="half"
-												for="rating3" title="1 1/2 stars"></label> <input
-												type="radio" id="rating2" name="rating" value="2" /><label
-												for="rating2" title="1 star"></label> <input type="radio"
-												id="rating1" name="rating" value="1" /><label class="half"
-												for="rating1" title="1/2 star"></label>
-										</fieldset>								
+								<fieldset class="rate rate-able">
+									<label
+										th:each="id,iterStat : ${#numbers.sequence(10,1)}"
+										th:class="${iterStat.odd}? 'half'"
+										th:title="${id == 1} ? '0.5 star' : (${id == 2} ? '1 star' : (${iterStat.odd}? |${id/2}.5 stars| : |${id/2} stars|))"><input
+										type="radio" th:name="rating" th:value="${id}" /></label>
+								</fieldset>
 							</div>
-							<div th:each="id,iterStat : ${#lists.toList({1,2,3,4,5})}"><span th:text="${id}"></span></div>
 						</div>
 					</div>
 				</div>

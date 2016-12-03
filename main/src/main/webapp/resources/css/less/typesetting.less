@@ -577,12 +577,12 @@ label.fa-label:extend(.marg-b1,.pointer){
   color:#ddd;
 
   /* Hide radio */
-  > input {
+  input {
     display: none;
   }
 
   /* Order correctly by floating highest to the right */
-  > label {
+  label {
     float: right;
     margin-bottom: 0;
 
@@ -605,31 +605,55 @@ label.fa-label:extend(.marg-b1,.pointer){
     padding-right: 0;
   }
 
-  /* Click color */
-  input:checked ~ label{ color: #73B100;  } /* color current and previous stars on checked */
+  /* Click + hover color */
+  label.checked,
+  label.checked ~ label { color: #73B100;  } /* color current and previous stars on checked */
 
   &.rate-able{
 
+    /* Click + hover color */
+    label.checked,
+    label.checked ~ label, /* color current and previous stars on checked */
     label:hover, label:hover ~ label { color: #73B100;  } /* color previous stars on hover */
 
     /* Hover highlights */
-    input:checked + label:hover, input:checked ~ label:hover, /* highlight current and previous stars */
-    input:checked ~ label:hover ~ label, /* highlight previous selected stars for new rating */
-    label:hover ~ input:checked ~ label /* highlight previous selected stars */ { color: #A6E72D;  }
+    label.checked:hover, label.checked:hover ~ label, /* highlight current and previous stars */
+    label.checked ~ label:hover, label.checked ~ label:hover ~ label, /* highlight any previous stars including the current star for new rating */
+    label:hover ~ label.checked, label:hover ~ label.checked ~ label /* highlight previous selected stars */ { color: #A6E72D;  } 
   }
 }
 
 .rating-wrapper{
-  .review-count:extend(.inlineb, .marg-l2){
-    vertical-align: 6px;
+  .review-count:extend(.inlineb, .marg-l15){
+    vertical-align: 4px;
   } 
+
+  .s2{
+    width: 86px;
+    height:18px;
+    background-position: 1px 0;
+  }
+
+  .rating-2 {background-position:-66px 0}
+  .rating-4 {background-position:-49px 0}
+  .rating-6 {background-position:-33px 0}
+  .rating-8 {background-position:-16px 0}
+  .rating-10{background-position:  1px 0}
+
+  .rating-1 {background-position:-66px -20px}
+  .rating-3 {background-position:-49px -20px}
+  .rating-5 {background-position:-33px -20px}
+  .rating-7 {background-position:-16px -20px}
+  .rating-9 {background-position:  1px -20px}
 }
 
+
 /***** Sprites *****/
-.s1,.ns1,.ppg{background-repeat:no-repeat;position:relative;display:inline-block}
+.s1,.ns1,.ppg,.s2{background-repeat:no-repeat;position:relative;display:inline-block}
 .s1{background-image:url(//s.d2dprnt.com/img/sprites/s1.png?v002)}
 .ns1{background-image:url(//s.d2dprnt.com/imgs/sprites/ns1.png)}
 .ppg{background-image:url(//s.d2dprnt.com/imgs/sprites/ppg.jpg)}
+.s2{background-image:url(//lbrit.co/static/imgs/sprite/s2.png)}
 /***** Sprites Ends*/
 
 
