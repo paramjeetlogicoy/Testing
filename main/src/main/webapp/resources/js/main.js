@@ -41,8 +41,8 @@ _lbFns = {
 	
 	ratingFunction : function(){
         if($(this).is(':checked')){
-            $('.rate label.checked').removeClass('checked');
-            $(this).parent().addClass('checked');
+            $(this).parent().addClass('checked')
+            	.siblings().removeClass('checked');
         }
 		return false;
 	},

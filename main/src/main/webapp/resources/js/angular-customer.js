@@ -12,7 +12,7 @@ var cusApp = angular.module(
  * Scroll to the bottom to see it being attached to the App.
  */ 
 var 
-defaultCtrlr = function($scope, $http){
+defaultCtrlr = function($scope, $http, $rootScope){
 	
 	$scope.user = {};
 
@@ -187,7 +187,7 @@ orderCtrlr = function($scope, $http){
 	$('.nav-orders').addClass('active');
 },
 
-orderDetailsCtrl = function($scope, $http, $routeParams){
+orderDetailsCtrlr = function($scope, $http, $routeParams){
 	
 	$scope.orderNumber = $routeParams.orderNumber;
 
@@ -209,7 +209,141 @@ orderDetailsCtrl = function($scope, $http, $routeParams){
 	$('.nav-profile, .nav-orders').removeClass('active');
 },
 
-productsReviewCtrl = function($scope, $http){
+productsReviewCtrlr = function($scope, $http, $rootScope){
+
+	$scope.pageLevelAlert = '';
+	$scope.pg = {};
+	$scope.pg.currentPage = 1;
+	
+	$scope.products = [];
+	$scope.getDetails = function(){
+		
+		$scope.errorMsg = "";
+		$http.get('/customer/json/purchaselist', {
+			params : { 
+				'p' : $scope.pg.currentPage
+			}
+		})
+		.then(function(resp){
+			var data = resp.data;
+			if(data.success){
+				$scope.pg = data.pg;
+				$scope.products = data.respData;
+			}
+			else if(data.message){
+				$scope.pageLevelAlert = $scope.message;
+			}
+			else{
+				$scope.pageLevelAlert = 'There was some error getting the info. '
+					+'Please try later';
+			}
+		},
+		function(){
+			$scope.pageLevelAlert = 'There was some error getting the info. '
+				+'Please try later';
+		});			
+	};
+	
+	$scope.getDetails();
+	
+	$scope.pageChanged = function() {
+		$scope.getDetails();
+	};
+	
+	$scope.clearRating = function($event){
+		if(this.p) {
+			this.p.rating = -1;
+		}
+		
+		//removed the .checked class
+		$($event.target).parent().find('label.checked').removeClass('checked');
+	};
+	
+	$scope.saveReview = function(){
+		this.p.formError = false;
+		
+		if(this.p._id && this.p.reviewForm.title){
+			
+			
+			var review = {},
+				itemReviewed = this.p;
+			
+			review.productId = this.p._id;
+			review.title = this.p.reviewForm.title;
+			review.body = this.p.reviewForm.body;
+			review.productName = this.p.name;
+			review.productUrl = this.p.url;
+			review.productImg = this.p.featuredImg;
+			review.rating = this.p.rating;
+			
+			$http.post('/customer/save-review', review)
+			.then(
+					function(resp){
+						if(resp.data && resp.data.success){
+							_lbFns.pSuccess('Review Saved.');
+							itemReviewed.reviewed = true;
+						}
+					
+						else if(resp.data && resp.data.message){
+							$scope.pageLevelAlert = resp.data.message;
+						}
+						else{
+							$scope.pageLevelAlert = $rootScope.errMsgPageRefresh;
+						}
+					},
+					
+					function(){
+						$scope.pageLevelAlert = $rootScope.errMsgPageRefresh;
+					}
+			);
+		}
+		else{
+			this.p.formError = true;
+		}
+		
+	}
+},
+
+myReviewCtrlr = function($scope, $http, $rootScope){
+
+	$scope.pageLevelAlert = '';
+	$scope.pg = {};
+	$scope.pg.currentPage = 1;
+	
+	$scope.reviews = [];
+	$scope.getDetails = function(){
+		
+		$scope.errorMsg = "";
+		$http.get('/customer/json/myreviewslist', {
+			params : { 
+				'p' : $scope.pg.currentPage
+			}
+		})
+		.then(function(resp){
+			var data = resp.data;
+			if(data.success){
+				$scope.pg = data.pg;
+				$scope.reviews = data.respData;
+			}
+			else if(data.message){
+				$scope.pageLevelAlert = $scope.message;
+			}
+			else{
+				$scope.pageLevelAlert = 'There was some error getting the info. '
+					+'Please try later';
+			}
+		},
+		function(){
+			$scope.pageLevelAlert = 'There was some error getting the info. '
+				+'Please try later';
+		});			
+	};
+	
+	$scope.getDetails();
+	
+	$scope.pageChanged = function() {
+		$scope.getDetails();
+	};
 };
 
 cusApp
@@ -237,10 +371,15 @@ cusApp
 	         templateUrl: 'productsReviews',
 	         controller: 'productsReviewCtrl'
 	    }).
+	    when('/my-reviews', {
+	         templateUrl: 'myReviews',
+	         controller: 'myReviewCtrl'
+	    }).
 	    otherwise({ redirectTo: "/profile" });
 }])
 
 .controller('defaultRouteCtrl', defaultCtrlr)
 .controller('orderCtrl', orderCtrlr)
-.controller('orderDetailsCtrl', orderDetailsCtrl)
-.controller('productsReviewCtrl', productsReviewCtrl);
+.controller('orderDetailsCtrl', orderDetailsCtrlr)
+.controller('productsReviewCtrl', productsReviewCtrlr)
+.controller('myReviewCtrl', myReviewCtrlr);

@@ -504,31 +504,116 @@
 		<div class="row">
 			<div class="col-sm-10">
 			
-				<h3>Review My Purchases</h3>
+				<h2>Review My Purchases</h2>
 
-				<div>
+				<div ng-repeat="p in products">
 					<div class="row">
-						<div class="col-xs-4">
-							<img ng-src="/files/view//uploads/2016/05/lion-king-300x300.jpg"
-								class="fit"
-								src="/files/view//uploads/2016/05/lion-king-150x150.jpg" />
+						<div class="col-xs-4 col-sm-3">
+							<img
+								ng-src="{{lbGlobalCDNPath + p.featuredImg.replace('.jpg','-300x300.jpg')}}"
+								ng-if="p.featuredImg" class="fit" />
 						</div>
-						<div class="col-xs-8">
-							<p><a href="">Lion King - 5 Gram Special</a></p>
-							<div class="rating-wrapper fa-3x">
-								<fieldset class="rate rate-able">
-									<label
-										th:each="id,iterStat : ${#numbers.sequence(10,1)}"
-										th:class="${iterStat.odd}? 'half'"
-										th:title="${id == 1} ? '0.5 star' : (${id == 2} ? '1 star' : (${iterStat.odd}? |${id/2}.5 stars| : |${id/2} stars|))"><input
-										type="radio" th:name="rating" th:value="${id}" /></label>
-								</fieldset>
+						<div class="col-xs-8 col-sm-7 col-lg-6 review-main">
+							<p>
+								<a target="_blank" href="/product/{{p.url}}">{{p.name}}</a>
+							</p>
+
+							<div ng-if="p.reviewed">
+								<div class="rating-wrapper marg-b1">
+									<span class="s2 rating-{{p.rating}}"></span>
+								</div>
+								<blockquote>
+									<p>
+										<strong>{{p.reviewForm.title}}</strong>
+									</p>
+									<p ng-if="p.reviewForm.body">{{p.reviewForm.body}}</p>
+								</blockquote>
+								<div class="alert alert-success">
+									<strong>Thank you.</strong> Your review has been submitted for
+									approval and will be published soon.
+								</div>
+							</div>
+
+							<div ng-hide="p.reviewed">
+								<div class="rating-wrapper marg-b3">
+									<fieldset class="rate rate-able">
+										<label th:each="id,iterStat : ${#numbers.sequence(10,1)}"
+											th:class="${iterStat.odd}? 'half'"
+											th:title="${id == 1} ? '0.5 star' : (${id == 2} ? '1 star' : (${iterStat.odd}? |${id/2}.5 stars| : |${id/2} stars|))"><input
+											type="radio" name="rating_{{p._id}}" th:value="${id}"
+											ng-model="p.rating" /></label>
+									</fieldset>
+									<a href="" ng-click="clearRating($event)"
+										class="marg-l2 clear-rating" ng-if="p.rating > -1">Clear
+										rating</a>
+								</div>
+								<form name="reviewForm" ng-show="p.rating > -1"
+									ng-submit="saveReview()">
+									<div class="form-group form-group-sm">
+										<input type="text" class="form-control" value=""
+											ng-model="p.reviewForm.title" required="required"
+											placeholder="Title for your review" />
+									</div>
+									<div class="form-group form-group-sm">
+										<textarea name="" id="" cols="30" rows="6"
+											ng-model="p.reviewForm.body"
+											class="form-control" placeholder="Your review"></textarea>
+									</div>
+									<div class="form-group">
+										<div class="alert alert-danger" ng-if="p.formError">Please
+											provide a title for the review</div>
+										<button class="btn btn-lb btn-sm" type="submit">Save
+											Review</button>
+									</div>
+								</form>							
 							</div>
 						</div>
 					</div>
+					<hr/>
 				</div>
 
-				<!-- <div th:replace="fragments/layout::fragment-pagination"></div> -->
+				<div class="text-center"><div th:replace="fragments/layout::fragment-pagination"></div></div>
+
+			</div>
+		</div>
+	</div>
+	
+	
+	<div th:fragment="fragment-reviewed-products" class="container-fluid">
+		<div class="row">
+			<div class="col-sm-10 marg-b5">
+			
+				<h2>My Reviews</h2>
+
+				<div ng-repeat="r in reviews">
+					<div class="row">
+						<div class="col-xs-4 col-sm-3">
+							<img
+								ng-src="{{lbGlobalCDNPath + r.productImg.replace('.jpg','-300x300.jpg')}}"
+								ng-if="r.productImg" class="fit" />
+						</div>
+						<div class="col-xs-8 col-sm-7 col-lg-6 review-main">
+							<p>
+								<a target="_blank" href="/product/{{r.productUrl}}">{{r.productName}}</a>
+							</p>
+
+							<div>
+								<div class="rating-wrapper marg-b1">
+									<span class="s2 rating-{{r.rating}}"></span>
+								</div>
+								<blockquote>
+									<p>
+										<strong>{{r.title}}</strong>
+									</p>
+									<p ng-if="r.body">{{r.body}}</p>
+								</blockquote>
+							</div>
+						</div>
+					</div>
+					<hr/>
+				</div>
+
+				<div class="text-center"><div th:replace="fragments/layout::fragment-pagination"></div></div>
 
 			</div>
 		</div>

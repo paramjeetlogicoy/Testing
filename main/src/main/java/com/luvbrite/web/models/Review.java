@@ -13,13 +13,20 @@ public class Review {
 	private ObjectId _id;
 	
 	private long productId;
+	private long authorId;
+	
 	private String title;
 	private String body;
 	private String author;
-	private String authorId;
+	private String productUrl;
+	private String productName;
+	private String productImg;
+	
 	private Date created;
+	
 	private double rating;
 	private boolean approved;
+	
 	public ObjectId get_id() {
 		return _id;
 	}
@@ -50,10 +57,10 @@ public class Review {
 	public void setAuthor(String author) {
 		this.author = author;
 	}
-	public String getAuthorId() {
+	public long getAuthorId() {
 		return authorId;
 	}
-	public void setAuthorId(String authorId) {
+	public void setAuthorId(long authorId) {
 		this.authorId = authorId;
 	}
 	public Date getCreated() {
@@ -73,6 +80,24 @@ public class Review {
 	}
 	public void setApproved(boolean approved) {
 		this.approved = approved;
+	}
+	public String getProductName() {
+		return productName;
+	}
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+	public String getProductImg() {
+		return productImg;
+	}
+	public void setProductImg(String productImg) {
+		this.productImg = productImg;
+	}
+	public String getProductUrl() {
+		return productUrl;
+	}
+	public void setProductUrl(String productUrl) {
+		this.productUrl = productUrl;
 	}
 	
 }

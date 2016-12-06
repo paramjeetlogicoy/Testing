@@ -452,8 +452,8 @@ footer:extend(.text-center,.white){
 nav#pagination-nav{
 
 	>pre {
-	    float: left;
-	    margin-top: 21px;
+	    display: inline-block;
+	    margin: 20px 0;
 	    margin-right: 10px;
 	    padding: 5px;
 	}
@@ -1884,5 +1884,26 @@ ul.img-thumbnails {
 
 	&:focus {
 	    outline: none;
+	}
+}
+
+/* Customer Profile */
+.review-main {
+	.clear-rating{
+		vertical-align: 25px;
+	}
+
+	.rate-able{
+		label{
+		    font-size:2em;
+
+			@media(min-width:550px){
+		    	font-size:3em;
+			}
+		    
+			@media(min-width:1000px){
+		    	font-size:4em;
+			}
+		}
 	}
 }
