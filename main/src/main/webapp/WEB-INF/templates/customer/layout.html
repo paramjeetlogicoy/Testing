@@ -207,7 +207,7 @@
 			</div>
 		</div>
 		
-		<div>
+		<div class="marg-b5">
 			<h3 class="marg-b0">Personalization</h3>
 			<div class="marg-b3 grey7"><em>Your coupons, reviews, etc</em></div>
 			
@@ -522,11 +522,12 @@
 								<div class="rating-wrapper marg-b1">
 									<span class="s2 rating-{{p.rating}}"></span>
 								</div>
-								<blockquote>
+								<blockquote class="size14">
 									<p>
 										<strong>{{p.reviewForm.title}}</strong>
 									</p>
-									<p ng-if="p.reviewForm.body">{{p.reviewForm.body}}</p>
+									<p class="pre-warp" ng-if="p.reviewForm.body"
+										ng-bind-html="p.reviewForm.body"></p>
 								</blockquote>
 								<div class="alert alert-success">
 									<strong>Thank you.</strong> Your review has been submitted for
@@ -601,11 +602,11 @@
 								<div class="rating-wrapper marg-b1">
 									<span class="s2 rating-{{r.rating}}"></span>
 								</div>
-								<blockquote>
+								<blockquote class="size14">
 									<p>
 										<strong>{{r.title}}</strong>
 									</p>
-									<p ng-if="r.body">{{r.body}}</p>
+									<p class="pre-warp" ng-if="r.body" ng-bind-html="r.body"></p>
 								</blockquote>
 							</div>
 						</div>

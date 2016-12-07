@@ -212,35 +212,46 @@
 
 		</div>
 
-
-		<div class="marg-b5" id="reviews"
-			th:if="${reviews} != null">
+		<input type="hidden" id="productReviewsIndicator" th:if="${avgRating} != null" />
+		<div class="marg-b5 ng-cloak" id="reviews"
+			ng-if="showReviews">
 			<h4 class="split-lines">Most Recent Reviews</h4>
-			<div class="marg-b5 text-center size15">
+			<div class="marg-b2 text-center size15">
 				Average product rating - <strong class="orange1"
-					th:text="${drating}"></strong> stars from <span
+					th:text="${avgRating}"></strong> stars from <span
 					th:text="${product.reviewCount}"></span> reviews.
 			</div>
 
 			<div>
-				<div class="row product-review" th:each="r : ${reviews}">
+				<div class="btn-group marg-b3" uib-dropdown="true" is-open="reviewSortIsOpen">
+					<button id="single-button" type="button" class="btn btn-default"
+						uib-dropdown-toggle="true" ng-disabled="disabled">
+						{{reviewSortSelected.text}} <span class="caret"></span>
+					</button>
+					<ul uib-dropdown-menu="true" role="menu" aria-labelledby="single-button">
+						<li role="menuitem" ng-repeat="rso in reviewSortOptions"><a
+							href="" ng-click="changeReviewSort()">{{rso.text}}</a></li>
+					</ul>
+				</div>
+				
+				<div class="row product-review" ng-repeat="r in reviews">
 					<div class="col-xs-3">
 						<div>
-							<strong th:text="${r.author}"></strong>
+							<strong>{{r.author}}</strong>
 						</div>
-						<div class="size13 grey7"
-							th:text="|Reviewed on ${#dates.format(r.created, 'dd/MM/yyyy')}|"></div>
+						<div class="size13 grey7">
+							Reviewed on {{r.created | date:'dd/MM/yyyy'}}</div>
 					</div>
 
 					<div class="col-xs-9">
 						<blockquote class="size14">
 							<div class="rating-wrapper marg-b1">
-								<span th:class="|s2 rating-${r.rating}|"></span>
+								<span class="s2 rating-{{r.rating}}"></span>
 							</div>
 							<p>
-								<strong th:text="${r.title}"></strong>
+								<strong>{{r.title}}</strong>
 							</p>
-							<p th:if="${r.body != null and r.body != ''}" th:text="${r.body}"></p>
+							<p class="pre-warp" ng-if="r.body" ng-bind-html="r.body"></p>
 						</blockquote>
 					</div>
 				</div>

@@ -7,7 +7,18 @@
 					<i class="fa fa-times size24"></i>
 				</button>
 				
-				<h3>Product Reviews</h3>				
+				<h3>Product Reviews</h3>	
+				
+				<div class="btn-group marg-b3" uib-dropdown="true" is-open="reviewSortIsOpen">
+					<button id="single-button" type="button" class="btn btn-default"
+						uib-dropdown-toggle="true" ng-disabled="disabled">
+						{{reviewSortSelected.text}} <span class="caret"></span>
+					</button>
+					<ul uib-dropdown-menu="true" role="menu" aria-labelledby="single-button">
+						<li role="menuitem" ng-repeat="rso in reviewSortOptions"><a
+							href="" ng-click="changeReviewSort()">{{rso.text}}</a></li>
+					</ul>
+				</div>			
 				
 				<div class="alert alert-danger alert-dismissible" role="alert"
 					ng-show="errorMsg">
@@ -19,9 +30,13 @@
 				</div>
 
 				<div class="admin-review">
+					<div ng-if="!reviews.length" class="pad2">
+						<em>No {{reviewSortSelected.value}} reviews found!</em>
+					</div>
+				
 					<div
 						class="row marg-b2 admin-reviews {{ r.approvalStatus == 'new' ? 'new-review' : '' }} {{ r.approvalStatus == 'declined' ? 'declined-review' : '' }}"
-						ng-repeat="r in reviews">
+						ng-repeat="r in reviews | filter : reviewStat">
 						<div class="col-xs-3 col-sm-2">
 							<img
 								ng-src="{{lbGlobalCDNPath + r.productImg.replace('.jpg','-300x300.jpg')}}"
@@ -38,7 +53,7 @@
 								<p>
 									<strong>{{r.title}}</strong>
 								</p>
-								<p ng-if="r.body">{{r.body}}</p>
+								<p class="pre-warp" ng-if="r.body" ng-bind-html="r.body"></p>
 								<footer class="size13"> by {{r.author}} on {{r.created
 									| date : 'MM/dd/yyyy h:mm a'}}</footer>
 							</blockquote>

@@ -25,9 +25,11 @@ import com.luvbrite.dao.OrderDAO;
 import com.luvbrite.dao.ProductDAO;
 import com.luvbrite.dao.ReviewDAO;
 import com.luvbrite.dao.UserDAO;
+import com.luvbrite.services.EmailService;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.PaginationLogic;
 import com.luvbrite.web.models.Address;
+import com.luvbrite.web.models.Email;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Log;
 import com.luvbrite.web.models.Order;
@@ -63,6 +65,9 @@ public class CustomerController {
 
 	@Autowired
 	private LogDAO logDao;
+
+	@Autowired
+	private EmailService emailService;
 	
 	
 	@RequestMapping(method = RequestMethod.GET)
@@ -345,6 +350,29 @@ public class CustomerController {
 					logDao.save(log);					
 				}
 				catch(Exception e){
+					logger.error(Exceptions.giveStackTrace(e));
+				}
+				
+
+				
+
+				
+				/* Send email if needed */
+				try {
+					
+					Email email = new Email();
+					email.setEmailTemplate("new-review");
+					email.setFromName("Luvbrite Notifications");
+					email.setFromEmail("no-reply@luvbrite.com");
+					email.setRecipientEmail("product_reviews@luvbrite.com");
+					email.setRecipientName("CSR");					
+					email.setEmailTitle("New product review notification");
+					email.setSubject("New product review for  " + review.getProductName());
+					email.setEmailInfo("new product review.");						
+					
+					emailService.sendEmail(email);
+					
+				}catch(Exception e){
 					logger.error(Exceptions.giveStackTrace(e));
 				}
 			}

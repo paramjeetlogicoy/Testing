@@ -179,6 +179,56 @@ var productCtrlr = function($scope, $http, $rootScope){
 		}
 	}
 	
+	
+	
+	
+	
+	/* Review Section */
+	$scope.showReviews = false;
+	$scope.reviews = [];
+	$scope.reviewSortIsOpen = false;
+	$scope.reviewSortOptions = [
+		{text : 'Sort by - Most recent reviews', value : 'latest'},
+		{text : 'Sort by - Oldest reviews', value : 'old'},
+		{text : 'Sort by - Most rated reviews', value : 'toprated'},
+		{text : 'Sort by - Lowest rated reviews', value : 'lowrated'}
+	];
+	$scope.reviewSortSelected = $scope.reviewSortOptions[0];
+	
+	$scope.getProductReviews = function(){
+		
+		$http.get(_lbUrls.getprd + $scope.productId + '/topreviews', {
+			params : { 
+				's' : $scope.reviewSortSelected.value,
+				'hidepop' : true  //tells the config not to show the loading popup
+			}
+		})
+		.then(function(resp){
+			$scope.reviews = resp.data;
+		});	
+		
+	};	
+	
+	$scope.changeReviewSort = function(){
+		$scope.reviewSortSelected = this.rso;
+		$scope.getProductReviews();
+	};
+
+	$scope.toggleDropdown = function($event) {
+		$event.preventDefault();
+	    $event.stopPropagation();
+	    $scope.reviewSortIsOpen = !$scope.reviewSortIsOpen;
+	};
+
+	(function reviewInit(){
+		if($('#productReviewsIndicator').length > 0){
+			$scope.showReviews = true;
+			$scope.getProductReviews();
+		}
+	})();
+	
+	
+	
 	/*Activate Image Zoom*/
 	var $img = $('.prdpage-img');
 	$scope.zoomFn = {

@@ -868,7 +868,7 @@ reviewCtrlrs = function($scope, $http, $filter){
 		$http.get('/admin/products/json/list-reviews', {
 			params : { 
 				'p' : $scope.pg.currentPage,
-				's' : $scope.reviewStatus
+				's' : $scope.reviewSortSelected.value
 			}
 		})
 		.then(function(resp){
@@ -911,7 +911,27 @@ reviewCtrlrs = function($scope, $http, $filter){
 				+ " Please contact G.";
 		});
 	};
+
+	$scope.reviewSortIsOpen = false;
+	$scope.reviewSortOptions = [
+		{text : 'New reviews', value : 'new'},
+		{text : 'Declined reviews', value : 'declined'},
+		{text : 'Approved reviews', value : 'approved'},
+		{text : 'All reviews', value : 'all'}
+	];
 	
+	$scope.reviewStat = {approvalStatus : 'new'};
+	$scope.reviewSortSelected = $scope.reviewSortOptions[0];
+	$scope.toggleDropdown = function($event) {
+		$event.preventDefault();
+	    $event.stopPropagation();
+	    $scope.reviewSortIsOpen = !$scope.reviewSortIsOpen;
+	};	
+	$scope.changeReviewSort = function(){
+		$scope.reviewSortSelected = this.rso;
+		$scope.reviewStat = {approvalStatus : $scope.reviewSortSelected.value};
+		$scope.getReviews();
+	};
 	
 	
 	$scope.closeReviewModal = function(){		
@@ -950,7 +970,7 @@ prdApp.config(['$routeProvider',
 	         controller: 'categoryControllers'
 	    }).
 	    
-	    when('/reviews', {
+	    when('/reviews/', {
 	         templateUrl: '/resources/ng-templates/admin/products-reviews.html'+versionCtrl,
 	         controller: 'reviewControllers'
 	    }).

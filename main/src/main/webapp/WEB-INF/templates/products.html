@@ -5,16 +5,21 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title th:if="${category}==null">All Products</title>
-<link th:if="${category}==null" href="https://www.luvbrite.com/products" rel="canonical" />
-<title th:if="${category}!=null"  th:text="'All Products | ' + ${category}"></title>
-<link th:if="${cUrl}!=null" th:href="@{'https://www.luvbrite.com/category/' + ${cUrl}}" rel="canonical" />
+<link th:if="${category}==null" href="https://www.luvbrite.com/products"
+	rel="canonical" />
+<title th:if="${category}!=null"
+	th:text="'All Products | ' + ${category}"></title>
+<link th:if="${cUrl}!=null"
+	th:href="@{'https://www.luvbrite.com/category/' + ${cUrl}}"
+	rel="canonical" />
 <meta th:include="fragments/layout::fragment-head" />
 </head>
-<body ng-app="lbApp" ng-controller="allProductCtrlr" class="bg-greyF9 allproductspage">
+<body ng-app="lbApp" ng-controller="allProductCtrlr"
+	class="bg-greyF9 allproductspage">
 	<div th:replace="fragments/layout::fragment-google-analytics"></div>
-	
+
 	<div th:replace="fragments/layout::fragment-header"></div>
-	
+
 	<div class="products-page-container">
 		<div class="container page-container rel">
 
@@ -29,14 +34,17 @@
 
 			<h1 th:if="${page}=='product'">All Products</h1>
 			<h1 th:if="${page}=='category'" th:text="${category}">Products</h1>
-			<h1 th:if="${page}=='search'">Search Results : <small
-					th:if="${query}!=''" th:text="${query}"></small>
+			<h1 th:if="${page}=='search'">
+				Search Results : <small th:if="${query}!=''" th:text="${query}"></small>
 			</h1>
 
-			<div class="products-listing" th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
-				
+			<div class="products-listing"
+				th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
+
 				<div th:if="${page}=='search'" class="text-center">
-					<div th:if="${#lists.size(products)==0}"><em class="size16">No results found</em></div>
+					<div th:if="${#lists.size(products)==0}">
+						<em class="size16">No results found</em>
+					</div>
 				</div>
 
 				<ul class="products-container row">
@@ -58,8 +66,8 @@
 										th:if="${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_ADMIN')}"><i
 										class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
 									<h3>
-										<a th:href="@{'/product/' + *{url}}"
-											th:title="*{name}" th:text="*{name}"></a>
+										<a th:href="@{'/product/' + *{url}}" th:title="*{name}"
+											th:text="*{name}"></a>
 									</h3>
 
 									<div class="card-center">
@@ -85,8 +93,7 @@
 												th:if="*{reviewCount == 1}">1 review</span> <span
 												th:if="*{reviewCount != 1}"><span
 													th:text="*{reviewCount}"></span> reviews</span>
-											</a> <a href="" th:if="*{rating == -1}">Be the
-												first to review</a>
+											</a>
 										</div>
 
 										<div class="text-center size16 marg-b1">
@@ -111,8 +118,8 @@
 
 								<div class="pi-cards pi-info">
 									<h3>
-										<a th:href="@{'/product/' + *{url}}"
-											th:title="*{name}" th:text="*{name}"></a>
+										<a th:href="@{'/product/' + *{url}}" th:title="*{name}"
+											th:text="*{name}"></a>
 									</h3>
 
 									<div class="product-options empty">
@@ -163,14 +170,15 @@
 		</div>
 	</div>
 
-	<div  th:if="${page}!='search'" class="sidecart" ng-controller="cartMainCtrlr as m">
+	<div th:if="${page}!='search'" class="sidecart"
+		ng-controller="cartMainCtrlr as m">
 		<div ng-controller="cartItemCtrlr" class="pch100">
 			<h4>Your Cart</h4>
 			<button class="close" ng-click="prdCartClose()">&times;</button>
 			<div class="sc-items lb-scrollbar">
 				<ul>
-					<li ng-repeat="item in m.order.lineItems"
-					ng-if="item.type=='item'" ng-hide="!item.instock">
+					<li ng-repeat="item in m.order.lineItems" ng-if="item.type=='item'"
+						ng-hide="!item.instock">
 						<div class="clearfix">
 							<div class="sci-qty">
 								<a href="" ng-click="updateCart(+1)"><i
@@ -186,17 +194,17 @@
 								<img class="fit" ng-if="item.img"
 									ng-src="{{lbGlobalCDNPath + item.img}}" />
 							</div>
-							
+
 							<div class="sci-info">
 								<h6>{{item.name}}</h6>
 							</div>
-							
+
 							<div class="scii-price">{{item.price | currency}}</div>
 						</div>
 					</li>
 				</ul>
 			</div>
-			
+
 			<div class="sc-action">
 				<div class="clearfix strong uppercase marg-b1">
 					<div class="pull-left">SUBTOTAL</div>

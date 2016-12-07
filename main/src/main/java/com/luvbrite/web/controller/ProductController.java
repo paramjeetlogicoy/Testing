@@ -144,20 +144,10 @@ public class ProductController {
 			}
 		}
 		
-		/*Find Reviews*/
-		if(p.getRating() != -1 && p.getReviewCount() > 0){
-			
-			List<Review> reviews =  reviewDao.createQuery()
-					.field("productId").equal(p.get_id())
-					.field("approvalStatus").equal("approved")
-					.order("-created")
-					.limit(10)
-					.asList();
-			
-			double dRating = p.getRating()/2d;
-			model.addAttribute("drating", dRating);
-			
-			model.addAttribute("reviews", reviews);
+		/*Get double value of average rating*/
+		if(p.getRating() != -1 && p.getReviewCount() > 0){			
+			double avgRating = p.getRating()/2d;
+			model.addAttribute("avgRating", avgRating);
 		}
 		
 		return "product-page";		
@@ -167,6 +157,43 @@ public class ProductController {
 	@RequestMapping(value = "/json/{productId}/price")
 	public @ResponseBody List<Price> price(@PathVariable long productId){			
 		return priceDao.findPriceByProduct(productId);		
+	}
+	
+
+	@RequestMapping(value = "/json/{productId}/topreviews")
+	public @ResponseBody List<Review> reviews(
+			@PathVariable long productId, 
+			@RequestParam(value="s", required=false) String sort){
+		
+		String orderBy = "-created";
+		if(sort != null){
+			
+			if(sort.equals("toprated")){
+				orderBy = "-rating";
+			}
+			
+			else if(sort.equals("lowrated")){
+				orderBy = "rating";
+			}
+
+			else if(sort.equals("old")){
+				orderBy = "created";
+			}
+			
+			else if(sort.equals("latest")){
+				orderBy = "-created";
+			}
+		}
+		
+		
+		List<Review> reviews =  reviewDao.createQuery()
+				.field("productId").equal(productId)
+				.field("approvalStatus").equal("approved")
+				.order(orderBy)
+				.limit(10)
+				.asList();
+		
+		return reviews;		
 	}
 	
 

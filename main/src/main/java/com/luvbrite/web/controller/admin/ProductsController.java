@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.mongodb.morphia.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -143,12 +144,17 @@ public class ProductsController {
 		if(page==null) page = 1;
 		if(page >1) offset = (page-1)*limit;
 		
+		Query<Review> query = reviewDao.createQuery();		
+		if(reviewStatus != null && !reviewStatus.equals("all")){
+			query.field("approvalStatus").equal(reviewStatus);
+		}
+		
 		PaginationLogic pgl = new PaginationLogic(
-				(int) reviewDao.find().countAll(), 
+				(int) reviewDao.count(query), 
 					limit, 
 					page);
 		
-		List<Review> reviews =  reviewDao.createQuery()
+		List<Review> reviews =  query
 				.offset(offset)
 				.limit(limit)
 				.order("-created")
@@ -426,8 +432,10 @@ public class ProductsController {
 				reviewDao.save(reviewDb);
 				
 				
-				//Update product with latest rating
-				if(review.getApprovalStatus().equals("approved")){
+				//Update product with latest rating if there is a new approved review, or 
+				//existing approved review has been updated!
+				if(review.getApprovalStatus().equals("approved") || 
+						prevStat.equals("approved")){
 					try{
 						updateProductOverallRating(reviewDb.getProductId());
 					}
