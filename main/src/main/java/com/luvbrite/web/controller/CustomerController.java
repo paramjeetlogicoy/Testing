@@ -320,7 +320,7 @@ public class CustomerController {
 				Calendar now = Calendar.getInstance();
 				
 				//Set the other fields for review 
-				review.setApproved(false);
+				review.setApprovalStatus("new");
 				review.setAuthor(principal.getUsername());
 				review.setAuthorId(principal.getId());
 				review.setCreated(now.getTime());

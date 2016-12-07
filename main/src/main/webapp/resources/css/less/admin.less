@@ -32,7 +32,7 @@ body{
 /* body Ends */
 
 /* Footer */
-footer{
+header ~ footer{
 	.fix;
 	.pad1;
 	bottom:0px;
@@ -277,5 +277,23 @@ nav#pagination-nav{
 	    .size13;
 
 	    height: auto;
+	}
+}
+
+/*Product Reviews*/
+.admin-reviews{
+    padding: 8px;
+    border-radius: 3px;
+
+    &.declined-review{
+		background: #FBE9E7;
+    }
+
+    &.new-review{
+		background: #FFFDE7;
+    }
+
+    img.fit {
+	    max-width: 150px;
 	}
 }

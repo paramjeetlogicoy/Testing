@@ -21,11 +21,11 @@ public class Review {
 	private String productUrl;
 	private String productName;
 	private String productImg;
+	private String approvalStatus; //'approved', 'new', 'declined'
 	
 	private Date created;
 	
-	private double rating;
-	private boolean approved;
+	private int rating;
 	
 	public ObjectId get_id() {
 		return _id;
@@ -69,17 +69,11 @@ public class Review {
 	public void setCreated(Date created) {
 		this.created = created;
 	}
-	public double getRating() {
+	public int getRating() {
 		return rating;
 	}
-	public void setRating(double rating) {
+	public void setRating(int rating) {
 		this.rating = rating;
-	}
-	public boolean isApproved() {
-		return approved;
-	}
-	public void setApproved(boolean approved) {
-		this.approved = approved;
 	}
 	public String getProductName() {
 		return productName;
@@ -98,6 +92,12 @@ public class Review {
 	}
 	public void setProductUrl(String productUrl) {
 		this.productUrl = productUrl;
+	}
+	public String getApprovalStatus() {
+		return approvalStatus;
+	}
+	public void setApprovalStatus(String approvalStatus) {
+		this.approvalStatus = approvalStatus;
 	}
 	
 }

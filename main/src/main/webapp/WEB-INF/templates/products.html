@@ -79,10 +79,11 @@
 									<div class="tocart">
 										<div class="rating-wrapper">
 											<span class="s2" th:if="*{rating > -1}"
-												th:classappend="|rating-*{rating}|"></span> <a href="" class="review-count"
-												th:if="*{reviewCount > 0}">
-												<span th:if="*{reviewCount == 1}">1
-													review</span> <span th:if="*{reviewCount != 1}"><span
+												th:classappend="|rating-*{rating}|"></span> <a
+												th:href="@{'/product/' + *{url} + '#reviews'}"
+												class="review-count" th:if="*{reviewCount > 0}"> <span
+												th:if="*{reviewCount == 1}">1 review</span> <span
+												th:if="*{reviewCount != 1}"><span
 													th:text="*{reviewCount}"></span> reviews</span>
 											</a> <a href="" th:if="*{rating == -1}">Be the
 												first to review</a>

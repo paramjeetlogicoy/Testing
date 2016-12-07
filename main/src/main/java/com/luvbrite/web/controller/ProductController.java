@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.luvbrite.dao.CategoryDAO;
 import com.luvbrite.dao.PriceDAO;
 import com.luvbrite.dao.ProductDAO;
+import com.luvbrite.dao.ReviewDAO;
 import com.luvbrite.web.models.Category;
 import com.luvbrite.web.models.Price;
 import com.luvbrite.web.models.ProdCatResponse;
 import com.luvbrite.web.models.Product;
+import com.luvbrite.web.models.Review;
 import com.luvbrite.web.models.UserDetailsExt;
 
 
@@ -36,6 +38,9 @@ public class ProductController {
 	
 	@Autowired
 	private PriceDAO priceDao;
+	
+	@Autowired
+	private ReviewDAO reviewDao;
 	
 	
 	private List<Product> returnActiveProducts(){
@@ -137,6 +142,22 @@ public class ProductController {
 				
 				model.addAttribute("rps", relatedProducts);
 			}
+		}
+		
+		/*Find Reviews*/
+		if(p.getRating() != -1 && p.getReviewCount() > 0){
+			
+			List<Review> reviews =  reviewDao.createQuery()
+					.field("productId").equal(p.get_id())
+					.field("approvalStatus").equal("approved")
+					.order("-created")
+					.limit(10)
+					.asList();
+			
+			double dRating = p.getRating()/2d;
+			model.addAttribute("drating", dRating);
+			
+			model.addAttribute("reviews", reviews);
 		}
 		
 		return "product-page";		

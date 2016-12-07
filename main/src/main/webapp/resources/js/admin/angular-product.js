@@ -856,6 +856,70 @@ catCtrlrs = function($scope, $http, $filter){
 	
 	
 	$scope.getCategories();
+},
+
+reviewCtrlrs = function($scope, $http, $filter){
+	
+	$scope.errorMsg = '';
+	$scope.reviews = [];
+	
+	$scope.getReviews = function($event){
+		
+		$http.get('/admin/products/json/list-reviews', {
+			params : { 
+				'p' : $scope.pg.currentPage,
+				's' : $scope.reviewStatus
+			}
+		})
+		.then(function(resp){
+			$scope.pg = resp.data.pg;
+			$scope.reviews = resp.data.respData;
+			
+			$('#review-holder').show();			
+		},
+		function(){
+			$scope.errorMsg = 'There was some error getting the reviews. Please try later';			
+			$('#review-holder').show();
+		});		
+	};	
+	
+	$scope.pageChanged = function() {
+		$scope.getReviews();
+	};
+	
+	
+	$scope.updateReview = function(newStatus){
+		var currentReview = this.r;
+		currentReview.approvalStatus = newStatus;
+		
+		$http.post('/admin/products/update-review', currentReview)
+		.then(function(resp){
+			if(resp.data && resp.data.success){				
+				_lbFns.pSuccess("Review Updated!");
+			}
+			else if(resp.data && resp.data.message){
+				$scope.errorMsg = resp.data.message;
+			}
+			else{
+				$scope.errorMsg = "There was some error updating review." 
+					+ " Please contact G.";
+			}
+			
+		},
+		function(){
+			$scope.errorMsg = "There was some error updating review." 
+				+ " Please contact G.";
+		});
+	};
+	
+	
+	
+	$scope.closeReviewModal = function(){		
+		$('#review-holder').hide();
+	};
+	
+	
+	$scope.getReviews();
 };
 
 prdApp.config(['$routeProvider',
@@ -886,6 +950,11 @@ prdApp.config(['$routeProvider',
 	         controller: 'categoryControllers'
 	    }).
 	    
+	    when('/reviews', {
+	         templateUrl: '/resources/ng-templates/admin/products-reviews.html'+versionCtrl,
+	         controller: 'reviewControllers'
+	    }).
+	    
 	    when('', {
 	         templateUrl: '/resources/ng-templates/empty.html',
 	         controller: 'defaultRouteCtrl'
@@ -903,6 +972,7 @@ prdApp.config(['$routeProvider',
 .controller('defaultRouteCtrl', defaultCtrlr)
 .controller('productControllers', prdCtrlrs)
 .controller('categoryControllers', catCtrlrs)
+.controller('reviewControllers', reviewCtrlrs)
 
 //This is defined in angular-upload-service.js. Common fn for uploads
 .controller('uploadCtrlr', uploadCtrlr);

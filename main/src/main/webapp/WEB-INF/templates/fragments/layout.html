@@ -164,7 +164,7 @@
 	</header>
 
 	<nav th:fragment="fragment-pagination" id="pagination-nav"
-		ng-show="pg.totalItems>15">
+		ng-show="pg.totalItems>pg.itemsPerPage">
 		<pre>{{pg.startCount}} - {{pg.endCount}} of {{pg.totalItems}}</pre>
 		<uib-pagination total-items="pg.totalItems" ng-model="pg.currentPage"
 			num-pages="numPages" previous-text="&lsaquo;" next-text="&rsaquo;"
