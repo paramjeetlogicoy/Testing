@@ -209,11 +209,12 @@ orderDetailsCtrlr = function($scope, $http, $routeParams){
 	$('.nav-profile, .nav-orders').removeClass('active');
 },
 
-productsReviewCtrlr = function($scope, $http, $rootScope){
+productsReviewCtrlr = function($scope, $http, $rootScope, $routeParams){
 
-	$scope.pageLevelAlert = '';
+	$rootScope.reviewErrors = '';
 	$scope.pg = {};
 	$scope.pg.currentPage = 1;
+	$scope.onlyProductId = $routeParams.productId ? $routeParams.productId : 0;
 	
 	$scope.products = [];
 	$scope.getDetails = function(){
@@ -221,7 +222,8 @@ productsReviewCtrlr = function($scope, $http, $rootScope){
 		$scope.errorMsg = "";
 		$http.get('/customer/json/purchaselist', {
 			params : { 
-				'p' : $scope.pg.currentPage
+				'p' : $scope.pg.currentPage,
+				'pid' : $scope.onlyProductId
 			}
 		})
 		.then(function(resp){
@@ -229,17 +231,30 @@ productsReviewCtrlr = function($scope, $http, $rootScope){
 			if(data.success){
 				$scope.pg = data.pg;
 				$scope.products = data.respData;
+				
+				if($scope.products.length == 0 && $scope.onlyProductId != 0){
+					$scope.reviewErrors = "Sorry, seems like you never purchased this product! You can only review the items you have purchased!"
+				}
 			}
 			else if(data.message){
-				$scope.pageLevelAlert = $scope.message;
+
+				if(data.message == 'reviewed'){
+					$scope.reviewErrors = 'Seems like you have already reviewed this item. Please check <a href="/customer/#/my-reviews">Product Reviews Written by You</a>';					
+				}
+				else if(data.message == 'no-products' && $scope.onlyProductId != 0){
+					$scope.reviewErrors = "Sorry, seems like you never purchased this product! You can only review the items you have purchased!"				
+				}
+				else{
+					$scope.reviewErrors = $scope.message;					
+				}
 			}
 			else{
-				$scope.pageLevelAlert = 'There was some error getting the info. '
+				$scope.reviewErrors = 'There was some error getting the info. '
 					+'Please try later';
 			}
 		},
 		function(){
-			$scope.pageLevelAlert = 'There was some error getting the info. '
+			$scope.reviewErrors = 'There was some error getting the info. '
 				+'Please try later';
 		});			
 	};
@@ -285,15 +300,15 @@ productsReviewCtrlr = function($scope, $http, $rootScope){
 						}
 					
 						else if(resp.data && resp.data.message){
-							$scope.pageLevelAlert = resp.data.message;
+							$rootScope.pageLevelAlert = resp.data.message;
 						}
 						else{
-							$scope.pageLevelAlert = $rootScope.errMsgPageRefresh;
+							$rootScope.pageLevelAlert = $rootScope.errMsgPageRefresh;
 						}
 					},
 					
 					function(){
-						$scope.pageLevelAlert = $rootScope.errMsgPageRefresh;
+						$rootScope.pageLevelAlert = $rootScope.errMsgPageRefresh;
 					}
 			);
 		}
@@ -326,15 +341,15 @@ myReviewCtrlr = function($scope, $http, $rootScope){
 				$scope.reviews = data.respData;
 			}
 			else if(data.message){
-				$scope.pageLevelAlert = $scope.message;
+				$rootScope.pageLevelAlert = $scope.message;
 			}
 			else{
-				$scope.pageLevelAlert = 'There was some error getting the info. '
+				$rootScope.pageLevelAlert = 'There was some error getting the info. '
 					+'Please try later';
 			}
 		},
 		function(){
-			$scope.pageLevelAlert = 'There was some error getting the info. '
+			$rootScope.pageLevelAlert = 'There was some error getting the info. '
 				+'Please try later';
 		});			
 	};
@@ -368,6 +383,10 @@ cusApp
 	         controller: 'orderDetailsCtrl'
 	    }).
 	    when('/product-reviews', {
+	         templateUrl: 'productsReviews',
+	         controller: 'productsReviewCtrl'
+	    }).
+	    when('/product-reviews/:productId', {
 	         templateUrl: 'productsReviews',
 	         controller: 'productsReviewCtrl'
 	    }).

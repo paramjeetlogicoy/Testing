@@ -93,7 +93,12 @@
 												th:if="*{reviewCount == 1}">1 review</span> <span
 												th:if="*{reviewCount != 1}"><span
 													th:text="*{reviewCount}"></span> reviews</span>
-											</a>
+											</a> <a th:href="@{'/customer/#/product-reviews/' + *{_id}}"
+												th:if="*{rating == -1} and ${userId != null}">Be the
+												first to review</a><a
+												th:href="@{'/login/?ret=/customer/%23/product-reviews/' + *{_id}}"
+												th:if="*{rating == -1} and ${userId == null}">Be the
+												first to review</a>
 										</div>
 
 										<div class="text-center size16 marg-b1">

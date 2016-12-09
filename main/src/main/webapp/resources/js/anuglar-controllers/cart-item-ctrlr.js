@@ -309,14 +309,17 @@ var cartItemCtrlr = function($scope, $http, $rootScope, $timeout){
 	var fixAvailableCoupons = function(){	
 		$scope.promos = $scope.allPromos.slice();
 	
-		for(var i=0; i<m.order.lineItems.length; i++){
-			var item = m.order.lineItems[i];
-			if(item.type=='coupon'){
-				
-				for(var j=0; j<$scope.promos.length; j++){
-					if($scope.promos[j] == item.name){
-						$scope.promos.splice(j,1);
-						break;
+		if(m.order.lineItems) {
+			
+			for(var i=0; i<m.order.lineItems.length; i++){
+				var item = m.order.lineItems[i];
+				if(item.type=='coupon'){
+					
+					for(var j=0; j<$scope.promos.length; j++){
+						if($scope.promos[j] == item.name){
+							$scope.promos.splice(j,1);
+							break;
+						}
 					}
 				}
 			}

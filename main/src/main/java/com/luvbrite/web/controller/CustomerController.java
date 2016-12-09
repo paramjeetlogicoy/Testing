@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.mongodb.morphia.aggregation.AggregationPipeline;
 import org.mongodb.morphia.aggregation.Sort;
+import org.mongodb.morphia.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -185,7 +186,8 @@ public class CustomerController {
 	@RequestMapping(value = "/json/purchaselist")
 	public @ResponseBody ResponseWithPg purchaseListForReview(@AuthenticationPrincipal 
 			UserDetailsExt user,
-			@RequestParam(value="p", required=false) Integer page){
+			@RequestParam(value="p", required=false) Integer page,
+			@RequestParam(value="pid", required=false) Integer productId){
 		
 		ResponseWithPg rpg = new ResponseWithPg();
 		rpg.setSuccess(false);
@@ -201,11 +203,21 @@ public class CustomerController {
 
 		if(page==null) page = 1;
 		if(page >1) offset = (page-1)*limit;
-				
+
+		List<Long> productIds = new ArrayList<Long>();
+		if(productId == null) productId = 0;
+		
+		Query<Order> query = orderDao.createQuery();
+		query.filter("customer._id", user.getId());
+		
+		if(productId != 0){
+			query.filter("lineItems.pid", productId);
+		}
+			
 		AggregationPipeline pipeline = orderDao.getDatastore().createAggregation(Order.class)
 		
 				//Pull orders for this customer
-				.match(orderDao.createQuery().filter("customer._id", user.getId()))
+				.match(query)
 				
 				.sort(new Sort("orderNumber", -1))
 				
@@ -219,10 +231,26 @@ public class CustomerController {
 		
 		
 		Iterator<ProductId> iterator = pipeline.aggregate(ProductId.class);
-		List<Long> productIds = new ArrayList<Long>();
 		while(iterator.hasNext()) {
-			productIds.add(iterator.next().getProductId());
+
+			long tempPId = iterator.next().getProductId();
+			
+			/**
+			 * If there is a filter on product ID, then the order might have other
+			 * product along with this, so we filter again to get only this productId
+			 * into the next step
+			 **/			
+			if(productId != 0){
+				if(tempPId == (long)productId){
+					productIds.add(tempPId);
+				}
+			}
+			else{
+				productIds.add(tempPId);
+			}
 		}
+		
+		
 		
 		if(!productIds.isEmpty()){
 			
@@ -243,22 +271,32 @@ public class CustomerController {
 				}
 			}
 			
-			PaginationLogic pgl = new PaginationLogic(
-					(int)productDao.createQuery().field("_id").in(productIds).countAll(), 
-					limit, 
-					page);
-			
-			List<Product> products = productDao.createQuery()
-					.field("_id").in(productIds)
-					.retrievedFields(true, "name", "featuredImg", "url")
-					.offset(offset)
-					.limit(limit)
-					.asList();
-			
-
-			rpg.setSuccess(true);
-			rpg.setPg(pgl.getPg());
-			rpg.setRespData(products);
+			if(productId != 0 && productIds.isEmpty()){
+				rpg.setMessage("reviewed");
+			}
+			else {
+				
+				PaginationLogic pgl = new PaginationLogic(
+						(int)productDao.createQuery().field("_id").in(productIds).countAll(), 
+						limit, 
+						page);
+				
+				List<Product> products = productDao.createQuery()
+						.field("_id").in(productIds)
+						.retrievedFields(true, "name", "featuredImg", "url")
+						.offset(offset)
+						.limit(limit)
+						.asList();
+				
+	
+				rpg.setSuccess(true);
+				rpg.setPg(pgl.getPg());
+				rpg.setRespData(products);
+			}
+		}
+		
+		else{
+			rpg.setMessage("no-products");
 		}
 		
 		return rpg;				

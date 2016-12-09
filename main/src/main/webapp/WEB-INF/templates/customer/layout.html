@@ -506,6 +506,16 @@
 			
 				<h2>Review My Purchases</h2>
 
+				<div ng-show="reviewErrors"
+					class="alert alert-danger alert-dismissible ng-cloak "
+					role="alert">
+					<button type="button" class="close" aria-label="Close"
+						ng-click="reviewErrors=''">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<span ng-bind-html="reviewErrors"></span>
+				</div>
+
 				<div ng-repeat="p in products">
 					<div class="row">
 						<div class="col-xs-4 col-sm-3">
