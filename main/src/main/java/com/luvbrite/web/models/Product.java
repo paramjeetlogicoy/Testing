@@ -39,6 +39,7 @@ public class Product {
 	private List<String> categories;
 	private List<Integer> rps; /*Related product ids*/
 	
+	private ProductFilters productFilters;
 	
 	public long get_id() {
 		return _id;
@@ -165,5 +166,11 @@ public class Product {
 	}
 	public void setReviewCount(int reviewCount) {
 		this.reviewCount = reviewCount;
+	}
+	public ProductFilters getProductFilters() {
+		return productFilters;
+	}
+	public void setProductFilters(ProductFilters productFilters) {
+		this.productFilters = productFilters;
 	}
 }

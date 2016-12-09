@@ -37,6 +37,39 @@
 			<h1 th:if="${page}=='search'">
 				Search Results : <small th:if="${query}!=''" th:text="${query}"></small>
 			</h1>
+			
+			<div class="product-filters clearfix">
+				<div class="dropdown pull-right">
+					<span>Filter By:</span>
+					<button class="btn btn-default dropdown-toggle" type="button"
+						id="productFilterMenu" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="true">
+						Dropdown <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" aria-labelledby="productFilterMenu">
+						<li><a href="#">Action</a></li>
+						<li><a href="#">Another action</a></li>
+						<li><a href="#">Something else here</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a href="#">Separated link</a></li>
+					</ul>
+				</div>
+				<div class="dropdown pull-right">
+					<span>Sort By:</span>
+					<button class="btn btn-default dropdown-toggle" type="button"
+						id="productSortMenu" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="true">
+						Dropdown <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" aria-labelledby="productSortMenu">
+						<li><a href="#">Action</a></li>
+						<li><a href="#">Another action</a></li>
+						<li><a href="#">Something else here</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a href="#">Separated link</a></li>
+					</ul>
+				</div>
+			</div>
 
 			<div class="products-listing"
 				th:with="sc=${session.SPRING_SECURITY_CONTEXT}">

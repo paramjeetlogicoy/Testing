@@ -129,9 +129,9 @@ public class ProductController {
 		model.addAttribute("url", productUrl);
 		model.addAttribute("product", p);
 		
-		/* Find related products */
 		if(p != null){
-			
+
+			/* Find related products */
 			List<Product> relatedProducts = new ArrayList<Product>();
 			
 			List<Integer> ids = p.getRps();
@@ -142,12 +142,13 @@ public class ProductController {
 				
 				model.addAttribute("rps", relatedProducts);
 			}
-		}
-		
-		/*Get double value of average rating*/
-		if(p.getRating() != -1 && p.getReviewCount() > 0){			
-			double avgRating = p.getRating()/2d;
-			model.addAttribute("avgRating", avgRating);
+
+			
+			/*Get double value of average rating*/
+			if(p.getRating() != -1 && p.getReviewCount() > 0){			
+				double avgRating = p.getRating()/2d;
+				model.addAttribute("avgRating", avgRating);
+			}
 		}
 		
 		return "product-page";		
