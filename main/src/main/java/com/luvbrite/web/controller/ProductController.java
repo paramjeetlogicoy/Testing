@@ -126,22 +126,23 @@ public class ProductController {
 			model.addAttribute("userId", user.getId());
 		
 		Product p = prdDao.findOne("url", productUrl);
+		
+		if(p == null) return "404";
+
+		
 		model.addAttribute("url", productUrl);
 		model.addAttribute("product", p);
 		
 		/* Find related products */
-		if(p != null){
+		List<Product> relatedProducts = new ArrayList<Product>();
+		
+		List<Integer> ids = p.getRps();
+		if(ids != null && ids.size()>0){			
+			relatedProducts = prdDao.createQuery()
+					.field("_id").in(ids)
+					.asList();
 			
-			List<Product> relatedProducts = new ArrayList<Product>();
-			
-			List<Integer> ids = p.getRps();
-			if(ids != null && ids.size()>0){			
-				relatedProducts = prdDao.createQuery()
-						.field("_id").in(ids)
-						.asList();
-				
-				model.addAttribute("rps", relatedProducts);
-			}
+			model.addAttribute("rps", relatedProducts);
 		}
 		
 		/*Get double value of average rating*/
@@ -150,7 +151,8 @@ public class ProductController {
 			model.addAttribute("avgRating", avgRating);
 		}
 		
-		return "product-page";		
+		return "product-page";	
+			
 	}	
 	
 
