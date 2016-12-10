@@ -17,7 +17,7 @@ var lbApp = angular.module(
 
 //All controllers are implemented as separate functions in the folder 'angular-controllers'
 
-.controller('allProductCtrlr', 			['$scope', '$http', '$rootScope', '$templateRequest', '$compile', allProductCtrlr])
+.controller('allProductCtrlr', 			['$scope', '$http', '$rootScope', '$templateRequest', '$compile', 'categoryFltrFilter', allProductCtrlr])
 	.controller('allProductPriceCtrlr', ['$scope', '$http', '$rootScope', '$timeout', allProductPriceCtrlr])
 
 .controller('productCtrlr', 		 ['$scope', '$http', '$rootScope', productCtrlr])
@@ -35,4 +35,6 @@ var lbApp = angular.module(
 .controller('homeCtrlr', ['$scope', '$http', '$rootScope', homeCtrlr])
 
 // This directive is implemented in angular-general-functions.js
-.directive('remainingTime', ['$interval', remainingTime]);
+.directive('remainingTime', ['$interval', remainingTime])
+
+.filter('categoryFltr', categoryFilter);
