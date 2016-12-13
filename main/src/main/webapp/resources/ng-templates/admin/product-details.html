@@ -147,20 +147,20 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-4 control-label">Concentration (in
-								mg)</label>
-							<div class="col-sm-7">
-								<input type="number" min="0" value=""
-									ng-model="p.productFilters.concentration"
-									name="productFilters.concentration" class="form-control" />
-							</div>
-						</div>
-						<div class="form-group">
 							<label class="col-sm-4 control-label">THC (in mg)</label>
 							<div class="col-sm-7">
 								<input type="number" min="0" value=""
 									ng-model="p.productFilters.thc" name="productFilters.thc"
 									class="form-control" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-4 control-label">CBD (in
+								mg)</label>
+							<div class="col-sm-7">
+								<input type="number" min="0" value=""
+									ng-model="p.productFilters.cbd"
+									name="productFilters.cbd" class="form-control" />
 							</div>
 						</div>
 
@@ -170,7 +170,7 @@
 									ng-if="productDetailsForm.$dirty && !productDetailsForm.$invalid">
 									SAVE</button>
 
-								<button type="button" class="btn"
+								<button type="button" class="btn" ng-click="saveDetails(true)"
 									ng-disabled="productDetailsForm.$invalid"
 									ng-class="productDetailsForm.$dirty ? 'btn-success' : 'btn-info'">
 									<span ng-show="productDetailsForm.$dirty">SAVE &amp;

@@ -153,7 +153,7 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 			
 			p.productFilters = {
 					price : $e.data("filter-price"),
-					concentration : $e.data("filter-conc"), 
+					cbd : $e.data("filter-cbd"), 
 					thc : $e.data("filter-thc")
 			};
 			

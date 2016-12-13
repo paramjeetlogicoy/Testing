@@ -47,6 +47,10 @@ _lbFns = {
 		return false;
 	},
 	
+	activateNavMenu : function(elem){
+		$('.'+elem).addClass('active').siblings().removeClass('active');
+	},
+	
 	pAlert:function(msg,title,callBack,showCancel){
 		var options={title:'Oops!',text:'There was some error processing your request. Please try later.',type:'error',buttons:{sticker:false},hide:false,addclass:'pnotifyNoCancel'};
 		if(msg) options.text=msg;

@@ -130,14 +130,14 @@
 		<nav class="header-sub">
 			<div class="container">
 				<ul class="nav hidden-xs nav-justified">
-					<li><a href="/products">ALL PRODUCTS</a></li>
-					<li><a href="/category/specials">SPECIALS<i class="fa fa-star star"
+					<li class="nav-products"><a href="/products">ALL PRODUCTS</a></li>
+					<li class="nav-specials"><a href="/category/specials">SPECIALS<i class="fa fa-star star"
 							aria-hidden="true"></i></a></li>
-					<li><a href="/category/flowers">FLOWERS</a></li>
-					<li><a href="/category/edibles">EDIBLES</a></li>
-					<li><a href="/category/concentrates">CONCENTRATES</a></li>
-					<li><a href="/category/pre-rolls">PRE-ROLLS</a></li>
-					<li><a href="/category/gear">ACCESSORIES</a></li>
+					<li class="nav-flowers"><a href="/category/flowers">FLOWERS</a></li>
+					<li class="nav-edibles"><a href="/category/edibles">EDIBLES</a></li>
+					<li class="nav-concentrates"><a href="/category/concentrates">CONCENTRATES</a></li>
+					<li class="nav-pre-rolls"><a href="/category/pre-rolls">PRE-ROLLS</a></li>
+					<li class="nav-gear"><a href="/category/gear">ACCESSORIES</a></li>
 				</ul>
 			</div>
 		</nav>
@@ -155,7 +155,7 @@
 				</button>
 
 				<input type="text" name="s" class="nav-search-input"
-					autocomplete="off" ng-model="gSearch"
+					autocomplete="off" ng-model="gSearch" required="required"
 					placeholder="Start typing your search here&hellip;" />
 			</form>
 		</nav>
