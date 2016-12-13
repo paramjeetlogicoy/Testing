@@ -43,12 +43,13 @@
 
 				<div class="col-sm-7">
 					<div class="product-filters clearfix ng-cloak">
-						
-						<div class="dropdown pull-right" th:if="${page} == 'product' or ${category} == 'Flowers'">
+
+						<div class="dropdown pull-right"
+							th:if="${page} == 'product' or ${category} == 'Flowers' or ${category} == 'Edibles' or ${category} == 'Concentrates'">
 							<span>Filter by:</span>
-							
-							<button class="btn btn-sm btn-default dropdown-toggle" type="button"
-								id="productFilterMenu" data-toggle="dropdown"
+
+							<button class="btn btn-sm btn-default dropdown-toggle"
+								type="button" id="productFilterMenu" data-toggle="dropdown"
 								ng-click="filterActions()" aria-haspopup="true"
 								aria-expanded="true">
 								<i class="fa fa-sliders fa-rotate-90 marg-r1"
@@ -62,6 +63,8 @@
 									ng-class="{'disabled' : buildList.catFilter == 'Flowers'}"><a
 									href="" ng-click="buildList.catFilter = 'Flowers'">Flowers</a></li>
 
+
+								<!--/* Subcategory for Flowers in All Products page */-->
 								<li th:if="${page}=='product'"
 									ng-class="{'disabled' : buildList.catFilter == 'Indica'}"><a
 									href="" ng-click="buildList.catFilter = 'Indica'"><span
@@ -77,31 +80,141 @@
 									href="" ng-click="buildList.catFilter = 'Hybrid'"><span
 										class="marg-l1">- Hybrid</span></a></li>
 
+								<li  th:if="${page}=='product'" role="separator"
+									class="divider"></li>
+								<!--/* Subcategory for Flowers in All Products page - ENDS */-->
+
+
+
+								<!--/* Subcategory for Flowers in Flowers Page */-->
 								<li th:if="${category}=='Flowers'"
 									ng-class="{'disabled' : buildList.catFilter == 'Indica'}"><a
 									href="" ng-click="buildList.catFilter = 'Indica'">Indica</a></li>
-								
+
 								<li th:if="${category}=='Flowers'"
 									ng-class="{'disabled' : buildList.catFilter == 'Sativa'}"><a
 									href="" ng-click="buildList.catFilter = 'Sativa'">Sativa</a></li>
-								
+
 								<li th:if="${category}=='Flowers'"
 									ng-class="{'disabled' : buildList.catFilter == 'Hybrid'}"><a
 									href="" ng-click="buildList.catFilter = 'Hybrid'">Hybrid</a></li>
+								<!--/* Subcategory for Flowers in Flowers Page - ENDS */-->
+
+
 
 								<li th:if="${page}=='product'"
 									ng-class="{'disabled' : buildList.catFilter == 'Edibles'}"><a
 									href="" ng-click="buildList.catFilter = 'Edibles'">Edibles</a></li>
-								
+
+
+
+								<!--/* Subcategory for Edibles in All Products page */-->
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Candies'}"><a
+									href="" ng-click="buildList.catFilter = 'Candies'"><span
+										class="marg-l1">- Candies</span></a></li>
+
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Baked Goods'}"><a
+									href="" ng-click="buildList.catFilter = 'Baked Goods'"><span
+										class="marg-l1">- Baked Goods</span></a></li>
+
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Drinks'}"><a
+									href="" ng-click="buildList.catFilter = 'Drinks'"><span
+										class="marg-l1">- Drinks</span></a></li>
+
+								<li  th:if="${page}=='product'" role="separator"
+									class="divider"></li>
+								<!--/* Subcategory for Edibles in All Products page - ENDS */-->
+
+
+
+								<!--/* Subcategory for Edibles in Edibles page */-->
+								<li th:if="${category}=='Edibles'"
+									ng-class="{'disabled' : buildList.catFilter == 'Candies'}"><a
+									href="" ng-click="buildList.catFilter = 'Candies'">Candies</a></li>
+
+								<li th:if="${category}=='Edibles'"
+									ng-class="{'disabled' : buildList.catFilter == 'Baked Goods'}"><a
+									href="" ng-click="buildList.catFilter = 'Baked Goods'">Baked
+										Goods</a></li>
+
+								<li th:if="${category}=='Edibles'"
+									ng-class="{'disabled' : buildList.catFilter == 'Drinks'}"><a
+									href="" ng-click="buildList.catFilter = 'Drinks'">Drinks</a></li>
+								<!--/* Subcategory for Edibles in Edibles page - ENDS */-->
+
+
+
 								<li th:if="${page}=='product'"
 									ng-class="{'disabled' : buildList.catFilter == 'Concentrates'}"><a
 									href="" ng-click="buildList.catFilter = 'Concentrates'">Concentrates</a></li>
-								
+
+
+
+								<!--/* Subcategory for Concentrates in All Products page */-->
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Waxes'}"><a
+									href="" ng-click="buildList.catFilter = 'Waxes'"><span
+										class="marg-l1">- Waxes</span></a></li>
+
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Pills and Capsules'}"><a
+									href="" ng-click="buildList.catFilter = 'Pills and Capsules'"><span
+										class="marg-l1">- Pills and Capsules</span></a></li>
+
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Vapes'}"><a
+									href="" ng-click="buildList.catFilter = 'Vapes'"><span
+										class="marg-l1">- Vapes</span></a></li>
+
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Topicals'}"><a
+									href="" ng-click="buildList.catFilter = 'Topicals'"><span
+										class="marg-l1">- Topicals</span></a></li>
+
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Oil'}"><a
+									href="" ng-click="buildList.catFilter = 'Oil'"><span
+										class="marg-l1">- Oils</span></a></li>
+
+								<li  th:if="${page}=='product'" role="separator"
+									class="divider"></li>
+								<!--/* Subcategory for Concentrates in All Products page - ENDS */-->
+
+
+
+								<!--/* Subcategory for Concentrates in Concentrates Page */-->
+								<li th:if="${category}=='Concentrates'"
+									ng-class="{'disabled' : buildList.catFilter == 'Waxes'}"><a
+									href="" ng-click="buildList.catFilter = 'Waxes'">Waxes</a></li>
+
+								<li th:if="${category}=='Concentrates'"
+									ng-class="{'disabled' : buildList.catFilter == 'Pills and Capsules'}"><a
+									href="" ng-click="buildList.catFilter = 'Pills and Capsules'">Pills
+										and Capsules</a></li>
+
+								<li th:if="${category}=='Concentrates'"
+									ng-class="{'disabled' : buildList.catFilter == 'Vapes'}"><a
+									href="" ng-click="buildList.catFilter = 'Vapes'">Vapes</a></li>
+
+								<li th:if="${category}=='Concentrates'"
+									ng-class="{'disabled' : buildList.catFilter == 'Topicals'}"><a
+									href="" ng-click="buildList.catFilter = 'Topicals'">Topicals</a></li>
+
+								<li th:if="${category}=='Concentrates'"
+									ng-class="{'disabled' : buildList.catFilter == 'Oil'}"><a
+									href="" ng-click="buildList.catFilter = 'Oil'">Oils</a></li>
+								<!--/* Subcategory for Concentrates in Concentrates Page - ENDS */-->
+
+
+
 								<li th:if="${page}=='product'"
 									ng-class="{'disabled' : buildList.catFilter == 'Pre-Rolls'}"><a
 									href="" ng-click="buildList.catFilter = 'Pre-Rolls'">Pre-Rolls</a></li>
-								
-								
+
+
 								<li ng-show="buildList.catFilter" role="separator"
 									class="divider"></li>
 								<li ng-show="buildList.catFilter" class="text-center"><a

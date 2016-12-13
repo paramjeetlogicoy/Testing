@@ -437,6 +437,10 @@
 					</div>
 				</div>
 			</li>
+			
+			<li ng-if="(buildList.products | categoryFltr : buildList.catFilter).length == 0">
+				<em>No items found.</em>
+			</li>
 		</ul>
 
 	</div>
