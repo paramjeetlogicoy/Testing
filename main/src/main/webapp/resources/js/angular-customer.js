@@ -12,7 +12,7 @@ var cusApp = angular.module(
  * Scroll to the bottom to see it being attached to the App.
  */ 
 var 
-defaultCtrlr = function($scope, $http){
+defaultCtrlr = function($scope, $http, $rootScope){
 	
 	$scope.user = {};
 
@@ -187,7 +187,7 @@ orderCtrlr = function($scope, $http){
 	$('.nav-orders').addClass('active');
 },
 
-orderDetailsCtrl = function($scope, $http, $routeParams){
+orderDetailsCtrlr = function($scope, $http, $routeParams){
 	
 	$scope.orderNumber = $routeParams.orderNumber;
 
@@ -207,6 +207,158 @@ orderDetailsCtrl = function($scope, $http, $routeParams){
 	$scope.getDetails();
 	
 	$('.nav-profile, .nav-orders').removeClass('active');
+},
+
+productsReviewCtrlr = function($scope, $http, $rootScope, $routeParams){
+
+	$rootScope.reviewErrors = '';
+	$scope.pg = {};
+	$scope.pg.currentPage = 1;
+	$scope.onlyProductId = $routeParams.productId ? $routeParams.productId : 0;
+	
+	$scope.products = [];
+	$scope.getDetails = function(){
+		
+		$scope.errorMsg = "";
+		$http.get('/customer/json/purchaselist', {
+			params : { 
+				'p' : $scope.pg.currentPage,
+				'pid' : $scope.onlyProductId
+			}
+		})
+		.then(function(resp){
+			var data = resp.data;
+			if(data.success){
+				$scope.pg = data.pg;
+				$scope.products = data.respData;
+				
+				if($scope.products.length == 0 && $scope.onlyProductId != 0){
+					$scope.reviewErrors = "Sorry, seems like you never purchased this product! You can only review the items you have purchased!"
+				}
+			}
+			else if(data.message){
+
+				if(data.message == 'reviewed'){
+					$scope.reviewErrors = 'Seems like you have already reviewed this item. Please check <a href="/customer/#/my-reviews">Product Reviews Written by You</a>';					
+				}
+				else if(data.message == 'no-products' && $scope.onlyProductId != 0){
+					$scope.reviewErrors = "Sorry, seems like you never purchased this product! You can only review the items you have purchased!"				
+				}
+				else{
+					$scope.reviewErrors = $scope.message;					
+				}
+			}
+			else{
+				$scope.reviewErrors = 'There was some error getting the info. '
+					+'Please try later';
+			}
+		},
+		function(){
+			$scope.reviewErrors = 'There was some error getting the info. '
+				+'Please try later';
+		});			
+	};
+	
+	$scope.getDetails();
+	
+	$scope.pageChanged = function() {
+		$scope.getDetails();
+	};
+	
+	$scope.clearRating = function($event){
+		if(this.p) {
+			this.p.rating = -1;
+		}
+		
+		//removed the .checked class
+		$($event.target).parent().find('label.checked').removeClass('checked');
+	};
+	
+	$scope.saveReview = function(){
+		this.p.formError = false;
+		
+		if(this.p._id && this.p.reviewForm.title){
+			
+			
+			var review = {},
+				itemReviewed = this.p;
+			
+			review.productId = this.p._id;
+			review.title = this.p.reviewForm.title;
+			review.body = this.p.reviewForm.body;
+			review.productName = this.p.name;
+			review.productUrl = this.p.url;
+			review.productImg = this.p.featuredImg;
+			review.rating = this.p.rating;
+			
+			$http.post('/customer/save-review', review)
+			.then(
+					function(resp){
+						if(resp.data && resp.data.success){
+							_lbFns.pSuccess('Review Saved.');
+							itemReviewed.reviewed = true;
+						}
+					
+						else if(resp.data && resp.data.message){
+							$rootScope.pageLevelAlert = resp.data.message;
+						}
+						else{
+							$rootScope.pageLevelAlert = $rootScope.errMsgPageRefresh;
+						}
+					},
+					
+					function(){
+						$rootScope.pageLevelAlert = $rootScope.errMsgPageRefresh;
+					}
+			);
+		}
+		else{
+			this.p.formError = true;
+		}
+		
+	}
+},
+
+myReviewCtrlr = function($scope, $http, $rootScope){
+
+	$scope.pageLevelAlert = '';
+	$scope.pg = {};
+	$scope.pg.currentPage = 1;
+	
+	$scope.reviews = [];
+	$scope.getDetails = function(){
+		
+		$scope.errorMsg = "";
+		$http.get('/customer/json/myreviewslist', {
+			params : { 
+				'p' : $scope.pg.currentPage
+			}
+		})
+		.then(function(resp){
+			var data = resp.data;
+			if(data.success){
+				$scope.pg = data.pg;
+				$scope.reviews = data.respData;
+			}
+			else if(data.message){
+				$rootScope.pageLevelAlert = $scope.message;
+			}
+			else{
+				$rootScope.pageLevelAlert = 'There was some error getting the info. '
+					+'Please try later';
+			}
+		},
+		function(){
+			$rootScope.pageLevelAlert = 'There was some error getting the info. '
+				+'Please try later';
+		});			
+	};
+	
+	$scope.getDetails();
+	
+	$scope.pageChanged = function() {
+		$scope.getDetails();
+	};
 };
 
 cusApp
@@ -230,9 +382,23 @@ cusApp
 	         templateUrl: 'ordersDetailsPage',
 	         controller: 'orderDetailsCtrl'
 	    }).
+	    when('/product-reviews', {
+	         templateUrl: 'productsReviews',
+	         controller: 'productsReviewCtrl'
+	    }).
+	    when('/product-reviews/:productId', {
+	         templateUrl: 'productsReviews',
+	         controller: 'productsReviewCtrl'
+	    }).
+	    when('/my-reviews', {
+	         templateUrl: 'myReviews',
+	         controller: 'myReviewCtrl'
+	    }).
 	    otherwise({ redirectTo: "/profile" });
 }])
 
 .controller('defaultRouteCtrl', defaultCtrlr)
 .controller('orderCtrl', orderCtrlr)
-.controller('orderDetailsCtrl', orderDetailsCtrl);
+.controller('orderDetailsCtrl', orderDetailsCtrlr)
+.controller('productsReviewCtrl', productsReviewCtrlr)
+.controller('myReviewCtrl', myReviewCtrlr);

@@ -22,7 +22,6 @@ public class OrderFinalization {
 	
 	private static Logger logger = Logger.getLogger(OrderFinalization.class);
 	private static boolean offhourPromoActive = true;
-	private static boolean firstOrderPromoActive = true;
 	
 	private long orderNumber = 0;	
 	public long getOrderNumber() {
@@ -138,13 +137,15 @@ public class OrderFinalization {
 			//Check if it off hour
 			Calendar now = Calendar.getInstance();
 			int hour = now.get(Calendar.HOUR_OF_DAY);
-			if((hour >= 23) || (hour <= 10)){
+			int minute = now.get(Calendar.MINUTE);
+			
+			if((hour == 22 && minute >= 29) || (hour >= 23) || (hour <= 10)){
 				
 				//Add the new item
 				OrderLineItemCart newItem = new OrderLineItemCart();
 				newItem.setTaxable(false);
 				newItem.setType("item");
-				newItem.setName("Kiva chocolate (Offhour Promo)");
+				newItem.setName("Kiva Milk or Dark Chocolate (Offhour Promo)");
 				newItem.setPromo("offhourpromo");
 				newItem.setProductId(11825);
 				newItem.setVariationId(0);
@@ -171,44 +172,21 @@ public class OrderFinalization {
 	 **/
 	
 	private void firstOrderCheck(CartOrder co, CartLogics cartLogics){
-		
-		if(firstOrderPromoActive && co.getTotal() >= 75d){
 			
-			String response = cartLogics.firstOrderCheck(co.getCustomer().get_id());
-			if(response.equals("Y")){
-				
-				//Add the new item
-				OrderLineItemCart newItem = new OrderLineItemCart();
-				newItem.setTaxable(false);
-				newItem.setType("item");
-				newItem.setName("Brite Box");
-				newItem.setPromo("firsttimepatient");
-				newItem.setProductId(11839);
-				newItem.setVariationId(0);
-				newItem.setQty(1);
-				newItem.setCost(50d);
-				newItem.setPrice(0d);
-				newItem.setImg("/products/brite-box-img.jpg");
+		String response = cartLogics.firstOrderCheck(co.getCustomer().get_id());
+		if(response.equals("Y")){
 
-				List<OrderLineItemCart> olic = co.getLineItems();
-				olic.add(newItem);
-				co.setLineItems(olic);
-				
-				//Update orderTotals
-				cartLogics.calculateSummary(co);
+			OrderNotes notes = co.getNotes();
+			if(notes == null) notes = new OrderNotes();
+			if(notes.getAdditonalNotes()==null){
+				notes.setAdditonalNotes("**FIRST ORDER**");
+			}
+			else {
+				notes.setAdditonalNotes(notes.getAdditonalNotes() + "**FIRST ORDER**");
+			}
 
-				OrderNotes notes = co.getNotes();
-				if(notes == null) notes = new OrderNotes();
-				if(notes.getAdditonalNotes()==null){
-					notes.setAdditonalNotes("**FIRST ORDER**");
-				}
-				else {
-					notes.setAdditonalNotes(notes.getAdditonalNotes() + "**FIRST ORDER**");
-				}
-
-				co.setNotes(notes);
-			}		
-		}
+			co.setNotes(notes);
+		}	
 	};
 	
 	/**

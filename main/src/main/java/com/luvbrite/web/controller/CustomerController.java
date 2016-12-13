@@ -1,9 +1,14 @@
 package com.luvbrite.web.controller;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.mongodb.morphia.aggregation.AggregationPipeline;
+import org.mongodb.morphia.aggregation.Sort;
+import org.mongodb.morphia.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,19 +20,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.luvbrite.dao.LogDAO;
 import com.luvbrite.dao.OrderDAO;
+import com.luvbrite.dao.ProductDAO;
+import com.luvbrite.dao.ReviewDAO;
 import com.luvbrite.dao.UserDAO;
+import com.luvbrite.services.EmailService;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.PaginationLogic;
 import com.luvbrite.web.models.Address;
+import com.luvbrite.web.models.Email;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Log;
 import com.luvbrite.web.models.Order;
+import com.luvbrite.web.models.Product;
 import com.luvbrite.web.models.ResponseWithPg;
+import com.luvbrite.web.models.Review;
 import com.luvbrite.web.models.User;
 import com.luvbrite.web.models.UserDetailsExt;
+import com.luvbrite.web.models.pipelines.ProductId;
 
+import static org.mongodb.morphia.aggregation.Projection.projection;
 
 @Controller
 @RequestMapping(value = "/customer")
@@ -45,7 +59,16 @@ public class CustomerController {
 	PasswordEncoder encoder;
 
 	@Autowired
+	private ReviewDAO reviewDao;
+
+	@Autowired
+	private ProductDAO productDao;
+
+	@Autowired
 	private LogDAO logDao;
+
+	@Autowired
+	private EmailService emailService;
 	
 	
 	@RequestMapping(method = RequestMethod.GET)
@@ -158,7 +181,254 @@ public class CustomerController {
 		
 		return orderDao.findOne("orderNumber", orderNumber);				
 	}
+	
 
+	@RequestMapping(value = "/json/purchaselist")
+	public @ResponseBody ResponseWithPg purchaseListForReview(@AuthenticationPrincipal 
+			UserDetailsExt user,
+			@RequestParam(value="p", required=false) Integer page,
+			@RequestParam(value="pid", required=false) Integer productId){
+		
+		ResponseWithPg rpg = new ResponseWithPg();
+		rpg.setSuccess(false);
+		
+		if(user==null){
+			
+			rpg.setMessage("login");
+			return rpg;
+		}
+		
+		int offset = 0,
+				limit = 15; //itemsPerPage
+
+		if(page==null) page = 1;
+		if(page >1) offset = (page-1)*limit;
+
+		List<Long> productIds = new ArrayList<Long>();
+		if(productId == null) productId = 0;
+		
+		Query<Order> query = orderDao.createQuery();
+		query.filter("customer._id", user.getId());
+		
+		if(productId != 0){
+			query.filter("lineItems.pid", productId);
+		}
+			
+		AggregationPipeline pipeline = orderDao.getDatastore().createAggregation(Order.class)
+		
+				//Pull orders for this customer
+				.match(query)
+				
+				.sort(new Sort("orderNumber", -1))
+				
+				.unwind("lineItems")
+				
+				.project(projection("_id").suppress(),
+						projection("orderNumber","orderNumber"),
+						projection("productId","lineItems.pid"))
+				
+				.group("productId");
+		
+		
+		Iterator<ProductId> iterator = pipeline.aggregate(ProductId.class);
+		while(iterator.hasNext()) {
+
+			long tempPId = iterator.next().getProductId();
+			
+			/**
+			 * If there is a filter on product ID, then the order might have other
+			 * product along with this, so we filter again to get only this productId
+			 * into the next step
+			 **/			
+			if(productId != 0){
+				if(tempPId == (long)productId){
+					productIds.add(tempPId);
+				}
+			}
+			else{
+				productIds.add(tempPId);
+			}
+		}
+		
+		
+		
+		if(!productIds.isEmpty()){
+			
+			//get the products already reviewed
+			List<Long> reviewedProductIds = new ArrayList<Long>();	
+			List<Review> reviewedProducts = reviewDao.createQuery()
+						.field("authorId").equal(user.getId())
+						.retrievedFields(true, "productId")
+						.asList();
+			if(reviewedProducts != null){
+				for(Review r : reviewedProducts){
+					reviewedProductIds.add(r.getProductId());
+				}
+				
+				if(!reviewedProductIds.isEmpty()){
+					//remove reviewedProductIds from productIds
+					productIds.removeAll(reviewedProductIds);
+				}
+			}
+			
+			if(productId != 0 && productIds.isEmpty()){
+				rpg.setMessage("reviewed");
+			}
+			else {
+				
+				PaginationLogic pgl = new PaginationLogic(
+						(int)productDao.createQuery().field("_id").in(productIds).countAll(), 
+						limit, 
+						page);
+				
+				List<Product> products = productDao.createQuery()
+						.field("_id").in(productIds)
+						.retrievedFields(true, "name", "featuredImg", "url")
+						.offset(offset)
+						.limit(limit)
+						.asList();
+				
+	
+				rpg.setSuccess(true);
+				rpg.setPg(pgl.getPg());
+				rpg.setRespData(products);
+			}
+		}
+		
+		else{
+			rpg.setMessage("no-products");
+		}
+		
+		return rpg;				
+	}
+
+	
+	@RequestMapping(value = "/json/myreviewslist")
+	public @ResponseBody ResponseWithPg myReviewList(@AuthenticationPrincipal 
+			UserDetailsExt user,
+			@RequestParam(value="p", required=false) Integer page){
+		
+		ResponseWithPg rpg = new ResponseWithPg();
+		rpg.setSuccess(false);
+		
+		if(user==null){
+			
+			rpg.setMessage("login");
+			return rpg;
+		}
+		
+		int offset = 0,
+				limit = 15; //itemsPerPage
+
+		if(page==null) page = 1;
+		if(page >1) offset = (page-1)*limit;
+		
+		PaginationLogic pgl = new PaginationLogic(
+				(int) reviewDao.createQuery().field("authorId").equal(user.getId()).countAll(), 
+					limit, 
+					page);
+		
+		List<Review> reviews =  reviewDao.createQuery()
+				.field("authorId").equal(user.getId())
+				.offset(offset)
+				.limit(limit)
+				.asList();
+		
+
+		rpg.setSuccess(true);
+		rpg.setPg(pgl.getPg());
+		rpg.setRespData(reviews);
+		
+		return rpg;				
+	}
+
+	
+	@RequestMapping(value = "/save-review", method = RequestMethod.POST)
+	public @ResponseBody GenericResponse saveReview(
+			@AuthenticationPrincipal UserDetailsExt principal,
+			@RequestBody Review review){
+		
+		GenericResponse r = new GenericResponse();
+		r.setSuccess(false);
+		
+		if(principal != null){
+			
+			if(review !=null && review.getProductId() != 0){				
+				if(review.getTitle().equals("")){
+					r.setMessage("Please provide a title for your review");
+					return r;
+				}
+				
+				
+				Calendar now = Calendar.getInstance();
+				
+				//Set the other fields for review 
+				review.setApprovalStatus("new");
+				review.setAuthor(principal.getUsername());
+				review.setAuthorId(principal.getId());
+				review.setCreated(now.getTime());
+				
+				reviewDao.save(review);
+				
+				r.setSuccess(true);
+				
+				
+				/**
+				 * Update Log
+				 * */
+				try {
+					
+					Log log = new Log();
+					log.setCollection("reviews");
+					log.setDetails("New review created for productId - " + review.getProductId() );
+					log.setDate(Calendar.getInstance().getTime());
+					log.setKey(review.getProductId());
+					log.setUser(principal.getUsername());
+					
+					logDao.save(log);					
+				}
+				catch(Exception e){
+					logger.error(Exceptions.giveStackTrace(e));
+				}
+				
+
+				
+
+				
+				/* Send email if needed */
+				try {
+					
+					Email email = new Email();
+					email.setEmailTemplate("new-review");
+					email.setFromName("Luvbrite Notifications");
+					email.setFromEmail("no-reply@luvbrite.com");
+					email.setRecipientEmail("product_reviews@luvbrite.com");
+					email.setRecipientName("CSR");					
+					email.setEmailTitle("New product review notification");
+					email.setSubject("New product review for  " + review.getProductName());
+					email.setEmailInfo("new product review.");						
+					
+					emailService.sendEmail(email);
+					
+				}catch(Exception e){
+					logger.error(Exceptions.giveStackTrace(e));
+				}
+			}
+			
+			else{
+				
+				r.setMessage("Invalid review parameters. Please try again after refreshing the page");
+			}
+		}
+		
+		else{
+			
+			r.setMessage("Seems like you have logged out of your account. Please login back to submit review.");
+		}
+		
+		return r;
+	}
+	
 	
 	@RequestMapping(value = "/savep", method = RequestMethod.POST)
 	public @ResponseBody GenericResponse savePassword(

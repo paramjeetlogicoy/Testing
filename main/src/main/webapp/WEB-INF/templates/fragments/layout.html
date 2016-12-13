@@ -105,10 +105,10 @@
 				<div class="navbar-collapse collapse" id="xs-navbar">
 					<ul class="nav navbar-nav visible-xs-block">
 					<li><a href="/products">ALL PRODUCTS</a></li>
+					<li><a href="/category/specials">SPECIALS</a></li>
 					<li><a href="/category/flowers">FLOWERS</a></li>
 					<li><a href="/category/edibles">EDIBLES</a></li>
 					<li><a href="/category/concentrates">CONCENTRATES</a></li>
-					<li><a href="/category/specials">SPECIALS</a></li>
 					<li><a href="/category/tinctures">TINCTURES</a></li>
 					<li><a href="/category/pre-rolls">PRE-ROLLS</a></li>
 					<li><a href="/category/gear">ACCESSORIES</a></li>
@@ -130,14 +130,14 @@
 		<nav class="header-sub">
 			<div class="container">
 				<ul class="nav hidden-xs nav-justified">
-					<li><a href="/products">ALL PRODUCTS</a></li>
-					<li><a href="/category/flowers">FLOWERS</a></li>
-					<li><a href="/category/edibles">EDIBLES</a></li>
-					<li><a href="/category/concentrates">CONCENTRATES</a></li>
-					<li><a href="/category/pre-rolls">PRE-ROLLS</a></li>
-					<li><a href="/category/gear">ACCESSORIES</a></li>
-					<li><a href="/category/specials">SPECIALS<i class="fa fa-star star"
+					<li class="nav-products"><a href="/products">ALL PRODUCTS</a></li>
+					<li class="nav-specials"><a href="/category/specials">SPECIALS<i class="fa fa-star star"
 							aria-hidden="true"></i></a></li>
+					<li class="nav-flowers"><a href="/category/flowers">FLOWERS</a></li>
+					<li class="nav-edibles"><a href="/category/edibles">EDIBLES</a></li>
+					<li class="nav-concentrates"><a href="/category/concentrates">CONCENTRATES</a></li>
+					<li class="nav-pre-rolls"><a href="/category/pre-rolls">PRE-ROLLS</a></li>
+					<li class="nav-gear"><a href="/category/gear">ACCESSORIES</a></li>
 				</ul>
 			</div>
 		</nav>
@@ -155,7 +155,7 @@
 				</button>
 
 				<input type="text" name="s" class="nav-search-input"
-					autocomplete="off" ng-model="gSearch"
+					autocomplete="off" ng-model="gSearch" required="required"
 					placeholder="Start typing your search here&hellip;" />
 			</form>
 		</nav>
@@ -164,7 +164,7 @@
 	</header>
 
 	<nav th:fragment="fragment-pagination" id="pagination-nav"
-		ng-show="pg.totalItems>15">
+		ng-show="pg.totalItems>pg.itemsPerPage">
 		<pre>{{pg.startCount}} - {{pg.endCount}} of {{pg.totalItems}}</pre>
 		<uib-pagination total-items="pg.totalItems" ng-model="pg.currentPage"
 			num-pages="numPages" previous-text="&lsaquo;" next-text="&rsaquo;"
@@ -342,6 +342,110 @@
 			</div>
 		</div>
 	</div>
+	
+	
+	
+	<div th:fragment="fragment-product-list">
+		<ul id="thymeleaf-productlist" class="products-container row">
+			<li
+				ng-repeat="p in buildList.products | categoryFltr : buildList.catFilter | orderBy : buildList.order"
+				data-pname="{{p.name}}" data-pid="{{p._id}}"
+				data-img="{{p.featuredImg}}">
+				<div class="product-item-container">
+					<div class="product-item-card showItem">
+						<div class="pi-cards product-item">
+							<h3>
+								<a href="/product/{{p.url}}" title="{{p.name}}">{{p.name}}</a>
+							</h3>
+
+							<div class="card-center">
+								<a ng-if="p.featuredImg != null"
+									href="{{_lbGlobalCDNPath + p.featuredImg}}"
+									class="pc-img-holder" ng-click="showBiggerImg($event)"> <img
+									ng-src="{{_lbGlobalCDNPath + p.featuredImg.replace('.jpg','-300x266.jpg')}}"
+									class="featured-img" /><span
+									ng-if="p.categories &amp;&amp; p.categories.indexOf('Specials') > -1"
+									class="splribbon"><span>special</span></span><span
+									ng-if="p.categories &amp;&amp; p.categories.indexOf('Super Specials') > -1"
+									class="splribbon sspl"><span>super <br />special
+									</span></span>
+								</a>
+							</div>
+
+							<div class="tocart">
+								<div class="rating-wrapper">
+									<span class="s2 rating-{{p.rating}}" ng-if="p.rating > 0"></span>
+									<a href="/product/{{p.url}}#reviews}" class="review-count"
+										ng-if="p.reviewCount > 0"> <span
+										ng-if="p.reviewCount == 1">1 review</span> <span
+										ng-if="p.reviewCount != 1">{{p.reviewCount}} reviews</span>
+									</a> <a href="/customer/#/product-reviews/{{p._id}}"
+										ng-if="p.rating == -1 &amp;&amp; userId != null">Be the
+										first to review</a><a
+										href="/login/?ret=/customer/%23/product-reviews/{{p._id}}"
+										ng-if="p.rating == -1 &amp;&amp; userId == null">Be the
+										first to review</a>
+								</div>
+
+								<div class="text-center size16 marg-b1">
+									Price: <strong ng-if="p.priceRange"> {{ (p.categories
+										&amp;&amp; p.categories.indexOf('Flowers') > -1) ?
+										p.priceRange.split('-')[0] : p.priceRange}} </strong><span
+										ng-if="!p.priceRange"><strong>{{p.price |
+											currency}}</strong></span>
+								</div>
+
+								<div class="row">
+									<div class="col-xs-6">
+										<button type="button" class="btn btn-lb btn-sm btn-block"
+											ng-click="showInfo($event)">INFO</button>
+									</div>
+									<div class="col-xs-6">
+										<button type="button" class="btn btn-lb btn-sm btn-block"
+											ng-click="showOptions($event)">PICK</button>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="pi-cards pi-info">
+							<h3>
+								<a href="/product/{{p.url}}" title="{{p.name}}">{{p.name}}</a>
+							</h3>
+
+							<div class="product-options empty">
+								<table>
+									<tr>
+										<td><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></td>
+									</tr>
+								</table>
+							</div>
+
+							<div class="product-desc">
+								<div class="card-center">
+									<ul class="lb-scrollbar">
+										<li ng-bind-html="p.description"></li>
+									</ul>
+								</div>
+
+								<div class="tocart">
+									<button type="button" class="btn btn-lb btn-sm"
+										ng-click="flipBack($event)">BACK</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</li>
+			
+			<li ng-if="(buildList.products | categoryFltr : buildList.catFilter).length == 0">
+				<em>No items found.</em>
+			</li>
+		</ul>
+
+	</div>
+	
+	
 
 	<div class="hidden">
 		<div th:fragment="fragment-doubledownmodal">
@@ -366,19 +470,58 @@
 
 							<div class="small">
 								<strong>TERMS &amp; CONDITIONS</strong>
-								<p>In order to qualify, the donation that is being doubled
-									must be valued at $50 or greater, meaning that the overall
-									order total should be $100 or greater. If an item is
-									removed/cancelled from the order brining the total below $100,
-									the free patient-selected gift will be forfeited. This offer
-									cannot be combined with other coupons or discounts, and is
-									valid while supplies last.</p>
+								<p>
+									In order to qualify, the donation that is being doubled must be
+									valued at $50 or greater, meaning that the overall order total
+									should be $100 or greater. If an item is removed/cancelled from
+									the order brining the total below $100, the free
+									patient-selected gift will be forfeited. This offer cannot be
+									combined with other coupons or discounts, and is valid while
+									supplies last. <span class="orange1">Cannot be combined
+										with other offers.</span>
+								</p>
 							</div>
 
 						</div>
 					</div>
 				</div>
 			</div>
+		</div>
+		
+		<div th:fragment="fragment-briteboxmodal">		
+			<div class="modal fade" id="britebox" tabindex="-1"
+				role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<h3 class="modal-title">Brite Box</h3>
+						</div>
+						<div class="modal-body">
+							<h4>What to expect:</h4>
+							<div class="marg-b2">
+								<ul class="styled">
+									<li>One (1) Baked Bees Medicated Honey with a generous
+										60mg of tender loving THC.</li>
+									<li>One (1) Premium Keif Roll: This little guy (or not so
+										little) packs in 1.5g of some of our top shelf hybrid medicine.</li>
+									<li>Three (3) Flower Samples: You'll get 0.35g of each of
+										our smoking hot Indica, Sativa, and Hybrid strains.</li>
+								</ul>
+							</div>
+							<div class="marg-b2 small">
+								Note: Offer only valid for donations $75 or above. Applies to
+								first time customers only.
+								<span class="orange1">Cannot be combined with other offers.</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
 		</div>
 
 	</div>

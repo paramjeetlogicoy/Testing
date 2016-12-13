@@ -42,6 +42,14 @@
 		
 		<script type="text/ng-template" id="ordersDetailsPage">
 				<div th:replace="customer/layout::fragment-orderdetails"></div>
+    		</script>
+		
+		<script type="text/ng-template" id="productsReviews">
+				<div th:replace="customer/layout::fragment-reviewproducts"></div>
+    		</script>
+		
+		<script type="text/ng-template" id="myReviews">
+				<div th:replace="customer/layout::fragment-reviewed-products"></div>
     		</script>		
 		
 	</div>
@@ -50,7 +58,7 @@
 	<div th:replace="fragments/layout::fragment-foot(angular=true)"></div>
 	<script src="/resources/js/angular-upload-service.js"></script>
 	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
-	<script src="/resources/js/angular-customer.js"></script>
+	<script src="/resources/js/angular-customer.js?v005"></script>
 	<script type="text/javascript">
 	</script>
 </body>

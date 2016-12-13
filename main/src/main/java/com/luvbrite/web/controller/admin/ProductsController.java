@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.mongodb.morphia.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.luvbrite.dao.LogDAO;
 import com.luvbrite.dao.PriceDAO;
 import com.luvbrite.dao.ProductDAO;
+import com.luvbrite.dao.ReviewDAO;
 import com.luvbrite.services.SynchronizeCartItems;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.PaginationLogic;
@@ -31,6 +33,7 @@ import com.luvbrite.web.models.Log;
 import com.luvbrite.web.models.Price;
 import com.luvbrite.web.models.Product;
 import com.luvbrite.web.models.ResponseWithPg;
+import com.luvbrite.web.models.Review;
 import com.luvbrite.web.models.UserDetailsExt;
 import com.luvbrite.web.validator.ProductDetailsFormValidator;
 
@@ -59,6 +62,10 @@ public class ProductsController {
 	
 	
 	@Autowired
+	private ReviewDAO reviewDao;
+	
+	
+	@Autowired
 	private SynchronizeCartItems syncCart;
 	
 	
@@ -71,6 +78,12 @@ public class ProductsController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String mainPage(ModelMap model){		
 		return "admin/products";		
+	}
+	
+	
+	@RequestMapping(value = "/reviews/", method = RequestMethod.GET)
+	public String reviewPage(ModelMap model){		
+		return "admin/product-reviews";		
 	}
 	
 	
@@ -117,6 +130,45 @@ public class ProductsController {
 	}
 
 	
+	@RequestMapping(value = "/json/list-reviews")
+	public @ResponseBody ResponseWithPg listReviews(
+			@RequestParam(value="p", required=false) Integer page,
+			@RequestParam(value="s", required=false) String reviewStatus){
+		
+		ResponseWithPg rpg = new ResponseWithPg();
+		rpg.setSuccess(false);
+		
+		int offset = 0,
+				limit = 8; //itemsPerPage
+
+		if(page==null) page = 1;
+		if(page >1) offset = (page-1)*limit;
+		
+		Query<Review> query = reviewDao.createQuery();		
+		if(reviewStatus != null && !reviewStatus.equals("all")){
+			query.field("approvalStatus").equal(reviewStatus);
+		}
+		
+		PaginationLogic pgl = new PaginationLogic(
+				(int) reviewDao.count(query), 
+					limit, 
+					page);
+		
+		List<Review> reviews =  query
+				.offset(offset)
+				.limit(limit)
+				.order("-created")
+				.asList();
+		
+
+		rpg.setSuccess(true);
+		rpg.setPg(pgl.getPg());
+		rpg.setRespData(reviews);
+		
+		return rpg;				
+	}
+
+	
 	@RequestMapping(value = "/json/savepdtls", method = RequestMethod.POST)
 	public @ResponseBody GenericResponse saveProductDetails(
 			@Validated @RequestBody Product product, 
@@ -156,6 +208,7 @@ public class ProductsController {
 				productDb.setVariation(product.isVariation());
 				productDb.setFeaturedImg(product.getFeaturedImg());
 				productDb.setRps(product.getRps());
+				productDb.setProductFilters(product.getProductFilters());
 				
 				if(product.isVariation()){
 					productDb.setAttrs(product.getAttrs());
@@ -358,5 +411,133 @@ public class ProductsController {
 		
 		
 		return r;		
+	}
+
+	
+	@RequestMapping(value = "/update-review", method = RequestMethod.POST)
+	public @ResponseBody GenericResponse updateReview(
+			@RequestBody Review review, @AuthenticationPrincipal 
+			UserDetailsExt user){
+		
+		GenericResponse r = new GenericResponse();
+		r.setSuccess(false);
+		
+		//Validation		
+		if(review != null && review.get_id() != null){
+			
+			Review reviewDb = reviewDao.get(review.get_id());
+			if(reviewDb != null){
+				String prevStat = reviewDb.getApprovalStatus();
+				
+				reviewDb.setApprovalStatus(review.getApprovalStatus());
+				reviewDao.save(reviewDb);
+				
+				
+				//Update product with latest rating if there is a new approved review, or 
+				//existing approved review has been updated!
+				if(review.getApprovalStatus().equals("approved") || 
+						prevStat.equals("approved")){
+					try{
+						updateProductOverallRating(reviewDb.getProductId());
+					}
+					catch(Exception e){
+						logger.error(Exceptions.giveStackTrace(e));
+					}
+				}
+				
+				/**
+				 * Update Log
+				 * */
+				try {
+					
+					Log log = new Log();
+					log.setCollection("reviews");
+					log.setDetails("Approval status update for productId - " + 
+								review.getProductId() +  
+								". Previous value " + prevStat);
+					log.setDate(Calendar.getInstance().getTime());
+					log.setKey(reviewDb.getProductId());
+					log.setUser(user.getUsername());
+					
+					logDao.save(log);					
+				}
+				catch(Exception e){
+					logger.error(Exceptions.giveStackTrace(e));
+				}
+				
+				r.setSuccess(true);
+				
+			}
+			else {
+				r.setMessage("No corresponding review found in Database.");
+			}
+			
+		}
+		else{
+			r.setMessage("Invalid update parameters.");
+		}
+		
+		
+		return r;		
+	}
+	
+	private String updateProductOverallRating(long productId){
+		
+		String response = "";
+		
+		double sumRating = 0d;
+		int reviewCount = 0;
+		
+		List<Review> reviews =  reviewDao.createQuery()
+				.field("approvalStatus").equal("approved")
+				.field("productId").equal(productId)
+				.retrievedFields(true, "rating")
+				.asList();
+		
+		if(reviews != null){
+			for(Review review : reviews){
+				reviewCount++;
+				
+				sumRating+= review.getRating();
+			}
+			
+			//Find average rating
+			int newRating = (int) Math.round(sumRating/reviewCount);
+			
+			Product p = prdDao.get(productId);
+			int prevRating = p.getRating();
+			int prevReviewCount = p.getReviewCount();
+			
+			p.setRating(newRating);
+			p.setReviewCount(reviewCount);
+			prdDao.save(p);
+
+			
+			/**
+			 * Update Log
+			 * */
+			try {
+				
+				Log log = new Log();
+				log.setCollection("products");
+				log.setDetails("Review updated. Previous values " + prevRating + " star, " + prevReviewCount + " reviews.");
+				log.setDate(Calendar.getInstance().getTime());
+				log.setKey(p.get_id());
+				log.setUser("system");
+				
+				logDao.save(log);					
+			}
+			catch(Exception e){
+				logger.error(Exceptions.giveStackTrace(e));
+			}
+			
+			response = "success";			
+		}
+		
+		else {
+			response = "no reviews found for this product";
+		}
+		
+		return response;		
 	}
 }

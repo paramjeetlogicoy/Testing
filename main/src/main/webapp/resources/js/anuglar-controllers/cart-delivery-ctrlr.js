@@ -109,7 +109,7 @@ var cartDeliveryCtrlr = function($scope, $http, $rootScope, $filter, $timeout){
 			}
 			
 			
-			d.setHours(22,59,0);			
+			d.setHours(22,29,0);			
 			$scope.endTime = d;
 			
 			$scope.deliveryTimeText = 'Today - ' +

@@ -162,7 +162,7 @@ appConfigs = function($httpProvider){
 remainingTime = function($interval) {
 	// return the directive link function. (compile function not needed)
 	return function(scope, element, attrs) {
-		var endTime = 0,
+		var endTime = null,
 		timeOneDay = 1000 * 60 * 60 * 24,
 		stopTime; // so that we can cancel the time updates
 
@@ -174,6 +174,8 @@ remainingTime = function($interval) {
 
 		// used to update the UI
 		function updateTime() {
+			if(endTime===null) return;
+			
 			var now = new Date().getTime(),
 			et = endTime.getTime();
 			

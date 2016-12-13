@@ -101,8 +101,7 @@ public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 					String userRole = dbUser.getRole();		
 					List<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
 					
-					if(userRole!=null && enabled){
-						
+					if(userRole!=null && enabled){						
 						if(userRole.indexOf("admin")==0){
 							
 							invOpsId = dbUser.getInvOpsId();

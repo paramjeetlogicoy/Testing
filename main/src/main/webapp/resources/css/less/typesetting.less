@@ -5,21 +5,21 @@
 @basefont:        'Open Sans', sans-serif;
 @headfont:        'Acme', sans-serif;
 @italicfont:      'Lora', serif;
-@basefont-color: 	#333;
-@basesize:			  13px;
+@basefont-color:  #333;
+@basesize:        13px;
 @basesizeD:       14px;  /*Base size for desktop*/
 @sizeFactor:      (14/10); /* @basesizeD / 10. Division by 10 because 10px would come as 1, and 15px as 1.5*/
 
-@orange1:			#EF6030;
+@orange1:     #EF6030;
 @orange2:     #ffa500;
 @orange3:     #FB8C00;
-@blue1:				#118DC7;
+@blue1:       #118DC7;
 @green1:      #008c77;
 @green2:      #70b100;
 @green3:      #16a765;
-@grey3:				#333;
-@grey7:				#777;
-@grey9:				#999;
+@grey3:       #333;
+@grey7:       #777;
+@grey9:       #999;
 
 // Mixins
 .getRem(@size){  
@@ -225,6 +225,7 @@ img.fit{max-width:100%;max-height:100%}
 .capitalize{text-transform:capitalize}
 .uppercase{text-transform:uppercase}
 .text-overflow{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pre-warp{white-space: pre-wrap;}
 
 .hideme{display:none}
 .show{display: block!important}
@@ -247,6 +248,7 @@ img.fit{max-width:100%;max-height:100%}
 .border-b{.border-b()}
 .border-r{.border-r()}
 .border-l{.border-l()}
+.border-t{.border-t()}
 .form-border{border:1px solid #ddd;}
 
 .pointer{cursor:pointer!important}
@@ -454,6 +456,26 @@ a.inherit{
   text-decoration: none;
 }
 
+label.fa-label:extend(.marg-b1,.pointer){
+  .fa {
+    .size18;
+    .rel;
+    .marg-r(.5);
+
+    top: 2px;
+  }
+  
+  >input {
+    display: none;
+    outline: none;
+
+    &:checked+.fa:before {
+      content: "\f192";
+      .green1;
+    }
+  }
+}
+ 
 .btn-lb{
     color:white;
     background-color: #4AB740;
@@ -569,12 +591,98 @@ a.inherit{
   opacity:1;
 }
 /***NG Animation Styles End*/
+/* Ratings widget */
+.rate {
+  display: inline-block;
+  border: 0;
+  color:#ddd;
+
+  /* Hide radio */
+  input {
+    display: none;
+  }
+
+  /* Order correctly by floating highest to the right */
+  label {
+    float: right;
+    margin-bottom: 0;
+
+    /* The star of the show */
+    &:before {
+      display: inline-block;
+      font-size: inherit;
+      padding: .3rem .2rem 0;
+      margin: 0;
+      cursor: pointer;
+      font-family: FontAwesome;
+      content: "\f005 "; /* full star */
+    }
+  }
+
+  /* Half star trick */
+  .half:before {
+    content: "\f089 "; /* half star no outline */
+    position: absolute;
+    padding-right: 0;
+  }
+
+  /* Click + hover color */
+  label.checked,
+  label.checked ~ label { color: #73B100;  } /* color current and previous stars on checked */
+
+  &.rate-able{
+
+    /* Click + hover color */
+    label.checked,
+    label.checked ~ label, /* color current and previous stars on checked */
+    label:hover, label:hover ~ label { color: #73B100;  } /* color previous stars on hover */
+
+    /* Hover highlights */
+    label.checked:hover, label.checked:hover ~ label, /* highlight current and previous stars */
+    label.checked ~ label:hover, label.checked ~ label:hover ~ label, /* highlight any previous stars including the current star for new rating */
+    label:hover ~ label.checked, label:hover ~ label.checked ~ label /* highlight previous selected stars */ { color: #A6E72D;  } 
+  }
+}
+
+.rating-wrapper{
+  .review-count:extend(.inlineb, .marg-l15){
+    vertical-align: 4px;
+  } 
+
+  .s2{
+    width: 86px;
+    height:18px;
+    background-position: 1px 0;
+  }
+
+  .rating-2 {background-position:-66px 0}
+  .rating-4 {background-position:-49px 0}
+  .rating-6 {background-position:-33px 0}
+  .rating-8 {background-position:-16px 0}
+  .rating-10{background-position:  1px 0}
+
+  .rating-1 {background-position:-66px -20px}
+  .rating-3 {background-position:-49px -20px}
+  .rating-5 {background-position:-33px -20px}
+  .rating-7 {background-position:-16px -20px}
+  .rating-9 {background-position:  1px -20px}
+}
+
+.lb-fa{
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+}
+
 
 /***** Sprites *****/
-.s1,.ns1,.ppg{background-repeat:no-repeat;position:relative;display:inline-block}
+.s1,.ns1,.ppg,.s2{background-repeat:no-repeat;position:relative;display:inline-block}
 .s1{background-image:url(//s.d2dprnt.com/img/sprites/s1.png?v002)}
 .ns1{background-image:url(//s.d2dprnt.com/imgs/sprites/ns1.png)}
 .ppg{background-image:url(//s.d2dprnt.com/imgs/sprites/ppg.jpg)}
+.s2{background-image:url(//lbrit.co/static/imgs/sprite/s2.png)}
 /***** Sprites Ends*/
 
 

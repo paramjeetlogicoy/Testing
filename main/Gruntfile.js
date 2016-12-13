@@ -33,7 +33,7 @@ module.exports = function(grunt) {
     	 }
     },
       
-    // configure uglify to minify js files -------------------------------------    
+    // configure uglify to minify js files -------------------------------------  
     uglify: {  
         main:{  
             options:{  

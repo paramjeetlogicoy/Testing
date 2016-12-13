@@ -30,15 +30,15 @@
 				Product</a>
 		</div>
 		
-		<div class="row marg-b5">
+		<div class="row marg-b5" th:object="${product}">
 
 			<div class="col-sm-6">
 				<div class="visible-xs-block">
 					<div>
-						<h1 th:text="${product.name}" class="capitalize marg-b0">Product
+						<h1 th:text="*{name}" class="capitalize marg-b0">Product
 							Name</h1>
 						<div class="marg-t05 marg-b15">
-							<em th:text="${product.priceRange}"></em>
+							<em th:text="*{priceRange}"></em>
 						</div>
 					</div>
 
@@ -61,15 +61,27 @@
 				<div class="prdpage-details">
 					<div class="hidden-xs">
 						<div>
-							<h1 th:text="${product.name}"
-								class="capitalize marg-b0">Product Name</h1>
-							<div class="marg-t05 marg-b15" th:if="${product.variation}">
-								<em th:text="${product.priceRange}"></em>
+							<h1 th:text="*{name}" class="capitalize marg-b0">Product
+								Name</h1>
+
+							<div class="rating-wrapper marg-b05">
+								<span class="s2" th:if="*{rating > -1}"
+									th:classappend="|rating-*{rating}|"></span> <a href="#reviews"
+									class="review-count" th:if="*{reviewCount > 0}"> <span
+									th:if="*{reviewCount == 1}">1 customer review</span> <span
+									th:if="*{reviewCount != 1}"><span
+										th:text="*{reviewCount}"></span> customer reviews</span>
+								</a> <a th:href="@{'/customer/#/product-reviews/' + *{_id}}"
+									th:if="*{rating == -1} and ${userId != null}">Be the first
+									to review</a><a
+									th:href="@{'/login/?ret=/customer/%23/product-reviews/' + *{_id}}"
+									th:if="*{rating == -1} and ${userId == null}">Be the first
+									to review</a>
 							</div>
 						</div>
 					</div>
 
-					<div class="prdpage-prices" th:if="${product.variation}">
+					<div class="prdpage-prices" th:if="*{variation}">
 						<div>
 							<small>Options:</small>
 						</div>
@@ -91,14 +103,14 @@
 
 					</div>
 
-					<div class="prdpage-prices" th:if="not ${product.variation}">
+					<div class="prdpage-prices" th:if="not *{variation}">
 						<div class="marg-b1">
 							<strong class="size24 orange1"><span
-								th:if="${product.salePrice}"><del class="grey7"
+								th:if="*{salePrice}"><del class="grey7"
 										th:text="${'$' + #numbers.formatDecimal(product.price,0,2)}"></del>
 									<span 
 									th:text="${'$' + #numbers.formatDecimal(product.salePrice,0,2)}"></span></span>
-								<span th:unless="${product.salePrice}"
+								<span th:unless="*{salePrice}"
 								th:text="${'$' + #numbers.formatDecimal(product.price,0,2)}"></span></strong>
 						</div>
 					</div>
@@ -146,22 +158,22 @@
 					</div>
 
 					<div class="bg-white pad2">
-						<div th:utext="${product.description}"></div>
+						<div th:utext="*{description}"></div>
 					</div>
-					<input type="hidden" id="productId" th:value="${product._id}" /> <input
+					<input type="hidden" id="productId" th:value="*{_id}" /> <input
 						type="hidden" id="productStockStat"
-						th:value="${product.stockStat}" /><input type="hidden"
-						id="productName" th:value="${product.name}" /><input
-						type="hidden" id="featuredImg" th:value="${product.featuredImg}" /><input
+						th:value="*{stockStat}" /><input type="hidden"
+						id="productName" th:value="*{name}" /><input
+						type="hidden" id="featuredImg" th:value="*{featuredImg}" /><input
 						type="hidden" id="variableProduct"
-						th:if="${product.variation}" value="true" />
+						th:if="*{variation}" value="true" />
 				</div>
 			</div>
 
 		</div>
 		
 		
-		<div class="marg-b5" th:if="${rps}!=null">
+		<div class="marg-b5" th:if="${rps} != null">
 			<h4 class="split-lines">You Might Also Like</h4>
 
 			<div class="yml-container">
@@ -200,6 +212,57 @@
 					</li>
 				</ul>
 
+			</div>
+
+		</div>
+		
+		<!-- Needed for proper working of  #reviews anchor-->
+		<div id="reviews"></div>
+		<input type="hidden" id="productReviewsIndicator"
+			th:if="${avgRating} != null" />
+		<div class="marg-b5 ng-cloak" ng-if="showReviews">
+			<h4 class="split-lines">Most Recent Reviews</h4>
+			<div class="marg-b2 text-center size15">
+				Average product rating - <strong class="orange1"
+					th:text="${avgRating}"></strong> stars from <span
+					th:text="${product.reviewCount}"></span> reviews.
+			</div>
+
+			<div>
+				<div class="btn-group marg-b3" uib-dropdown="true"
+					is-open="reviewSortIsOpen">
+					<button id="single-button" type="button" class="btn btn-default"
+						uib-dropdown-toggle="true" ng-disabled="disabled">
+						{{reviewSortSelected.text}} <span class="caret"></span>
+					</button>
+					<ul uib-dropdown-menu="true" role="menu"
+						aria-labelledby="single-button">
+						<li role="menuitem" ng-repeat="rso in reviewSortOptions"><a
+							href="" ng-click="changeReviewSort()">{{rso.text}}</a></li>
+					</ul>
+				</div>
+
+				<div class="row product-review" ng-repeat="r in reviews">
+					<div class="col-xs-3">
+						<div>
+							<strong>{{r.author}}</strong>
+						</div>
+						<div class="size13 grey7">Reviewed on {{r.created |
+							date:'dd/MM/yyyy'}}</div>
+					</div>
+
+					<div class="col-xs-9">
+						<blockquote class="size14">
+							<div class="rating-wrapper marg-b1">
+								<span class="s2 rating-{{r.rating}}"></span>
+							</div>
+							<p>
+								<strong>{{r.title}}</strong>
+							</p>
+							<p class="pre-warp" ng-if="r.body" ng-bind-html="r.body"></p>
+						</blockquote>
+					</div>
+				</div>
 			</div>
 
 		</div>

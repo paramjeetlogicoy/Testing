@@ -2,34 +2,7 @@ var cartReviewCtrlr = function($scope, $http, $rootScope){
 	
 	var m = $scope.m;
 	
-	$scope.reviewErrors = '';
-	$scope.showPromo = false;
-	$scope.bbPromoEligible = false;
-	
-	$scope.reviewInit = function(){
-		
-		if(m.order._id && m.user._id){
-			$scope.showPromo = false;
-			$scope.bbPromoEligible = false;
-			
-			$http
-			.get(_lbUrls.cart + 'foc')
-			.then(
-				function(resp){
-					if(resp.data){
-						if(resp.data.success){
-							$scope.showPromo = true;
-							$scope.bbPromoEligible = true;							
-						}
-					}
-				}
-			);
-		}
-	};
-	
-	$scope.nobritebox = function(){
-		$scope.showPromo = false;
-	};	
+	$scope.reviewErrors = '';	
 	
 	$scope.placeOrder = function(){
 		
@@ -94,6 +67,4 @@ var cartReviewCtrlr = function($scope, $http, $rootScope){
 		}
 		
 	};
-	//Initial load
-	$scope.reviewInit();
 };

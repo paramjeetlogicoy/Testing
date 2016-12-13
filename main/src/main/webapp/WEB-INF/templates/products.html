@@ -5,16 +5,21 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title th:if="${category}==null">All Products</title>
-<link th:if="${category}==null" href="https://www.luvbrite.com/products" rel="canonical" />
-<title th:if="${category}!=null"  th:text="'All Products | ' + ${category}"></title>
-<link th:if="${cUrl}!=null" th:href="@{'https://www.luvbrite.com/category/' + ${cUrl}}" rel="canonical" />
+<link th:if="${category}==null" href="https://www.luvbrite.com/products"
+	rel="canonical" />
+<title th:if="${category}!=null"
+	th:text="'All Products | ' + ${category}"></title>
+<link th:if="${cUrl}!=null"
+	th:href="@{'https://www.luvbrite.com/category/' + ${cUrl}}"
+	rel="canonical" />
 <meta th:include="fragments/layout::fragment-head" />
 </head>
-<body ng-app="lbApp" ng-controller="allProductCtrlr" class="bg-greyF9 allproductspage">
+<body ng-app="lbApp" ng-controller="allProductCtrlr"
+	class="bg-greyF9 allproductspage">
 	<div th:replace="fragments/layout::fragment-google-analytics"></div>
-	
+
 	<div th:replace="fragments/layout::fragment-header"></div>
-	
+
 	<div class="products-page-container">
 		<div class="container page-container rel">
 
@@ -26,20 +31,255 @@
 				<li th:if="${page}=='category'" class="active" th:text="${category}">Products</li>
 				<li th:if="${page}=='search'" class="active">Search Results</li>
 			</ol>
-
-			<h1 th:if="${page}=='product'">All Products</h1>
-			<h1 th:if="${page}=='category'" th:text="${category}">Products</h1>
-			<h1 th:if="${page}=='search'">Search Results : <small
-					th:if="${query}!=''" th:text="${query}"></small>
-			</h1>
-
-			<div class="products-listing" th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
-				
-				<div th:if="${page}=='search'" class="text-center">
-					<div th:if="${#lists.size(products)==0}"><em class="size16">No results found</em></div>
+			
+			<div class="row">
+				<div class="col-sm-5">
+					<h1 th:if="${page}=='product'">All Products</h1>
+					<h1 th:if="${page}=='category'" th:text="${category}">Products</h1>
+					<h1 th:if="${page}=='search'">
+						Search Results : <small th:if="${query}!=''" th:text="${query}"></small>
+					</h1>
 				</div>
 
-				<ul class="products-container row">
+				<div class="col-sm-7">
+					<div class="product-filters clearfix ng-cloak">
+
+						<div class="dropdown pull-right"
+							th:if="${page} == 'product' or ${category} == 'Flowers' or ${category} == 'Edibles' or ${category} == 'Concentrates'">
+							<span>Filter by:</span>
+
+							<button class="btn btn-sm btn-default dropdown-toggle"
+								type="button" id="productFilterMenu" data-toggle="dropdown"
+								ng-click="filterActions()" aria-haspopup="true"
+								aria-expanded="true">
+								<i class="fa fa-sliders fa-rotate-90 marg-r1"
+									ng-class="{'orange1' : buildList.catFilter}" aria-hidden="true"></i>
+								Filter <em ng-if="buildList.catFilter">({{buildList.catFilter}})</em>
+								<span class="caret"></span>
+							</button>
+
+							<ul class="dropdown-menu" aria-labelledby="productFilterMenu">
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Flowers'}"><a
+									href="" ng-click="buildList.catFilter = 'Flowers'">Flowers</a></li>
+
+
+								<!--/* Subcategory for Flowers in All Products page */-->
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Indica'}"><a
+									href="" ng-click="buildList.catFilter = 'Indica'"><span
+										class="marg-l1">- Indica</span></a></li>
+
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Sativa'}"><a
+									href="" ng-click="buildList.catFilter = 'Sativa'"><span
+										class="marg-l1">- Sativa</span></a></li>
+
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Hybrid'}"><a
+									href="" ng-click="buildList.catFilter = 'Hybrid'"><span
+										class="marg-l1">- Hybrid</span></a></li>
+
+								<li  th:if="${page}=='product'" role="separator"
+									class="divider"></li>
+								<!--/* Subcategory for Flowers in All Products page - ENDS */-->
+
+
+
+								<!--/* Subcategory for Flowers in Flowers Page */-->
+								<li th:if="${category}=='Flowers'"
+									ng-class="{'disabled' : buildList.catFilter == 'Indica'}"><a
+									href="" ng-click="buildList.catFilter = 'Indica'">Indica</a></li>
+
+								<li th:if="${category}=='Flowers'"
+									ng-class="{'disabled' : buildList.catFilter == 'Sativa'}"><a
+									href="" ng-click="buildList.catFilter = 'Sativa'">Sativa</a></li>
+
+								<li th:if="${category}=='Flowers'"
+									ng-class="{'disabled' : buildList.catFilter == 'Hybrid'}"><a
+									href="" ng-click="buildList.catFilter = 'Hybrid'">Hybrid</a></li>
+								<!--/* Subcategory for Flowers in Flowers Page - ENDS */-->
+
+
+
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Edibles'}"><a
+									href="" ng-click="buildList.catFilter = 'Edibles'">Edibles</a></li>
+
+
+
+								<!--/* Subcategory for Edibles in All Products page */-->
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Candies'}"><a
+									href="" ng-click="buildList.catFilter = 'Candies'"><span
+										class="marg-l1">- Candies</span></a></li>
+
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Baked Goods'}"><a
+									href="" ng-click="buildList.catFilter = 'Baked Goods'"><span
+										class="marg-l1">- Baked Goods</span></a></li>
+
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Drinks'}"><a
+									href="" ng-click="buildList.catFilter = 'Drinks'"><span
+										class="marg-l1">- Drinks</span></a></li>
+
+								<li  th:if="${page}=='product'" role="separator"
+									class="divider"></li>
+								<!--/* Subcategory for Edibles in All Products page - ENDS */-->
+
+
+
+								<!--/* Subcategory for Edibles in Edibles page */-->
+								<li th:if="${category}=='Edibles'"
+									ng-class="{'disabled' : buildList.catFilter == 'Candies'}"><a
+									href="" ng-click="buildList.catFilter = 'Candies'">Candies</a></li>
+
+								<li th:if="${category}=='Edibles'"
+									ng-class="{'disabled' : buildList.catFilter == 'Baked Goods'}"><a
+									href="" ng-click="buildList.catFilter = 'Baked Goods'">Baked
+										Goods</a></li>
+
+								<li th:if="${category}=='Edibles'"
+									ng-class="{'disabled' : buildList.catFilter == 'Drinks'}"><a
+									href="" ng-click="buildList.catFilter = 'Drinks'">Drinks</a></li>
+								<!--/* Subcategory for Edibles in Edibles page - ENDS */-->
+
+
+
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Concentrates'}"><a
+									href="" ng-click="buildList.catFilter = 'Concentrates'">Concentrates</a></li>
+
+
+
+								<!--/* Subcategory for Concentrates in All Products page */-->
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Waxes'}"><a
+									href="" ng-click="buildList.catFilter = 'Waxes'"><span
+										class="marg-l1">- Waxes</span></a></li>
+
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Pills and Capsules'}"><a
+									href="" ng-click="buildList.catFilter = 'Pills and Capsules'"><span
+										class="marg-l1">- Pills and Capsules</span></a></li>
+
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Vapes'}"><a
+									href="" ng-click="buildList.catFilter = 'Vapes'"><span
+										class="marg-l1">- Vapes</span></a></li>
+
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Topicals'}"><a
+									href="" ng-click="buildList.catFilter = 'Topicals'"><span
+										class="marg-l1">- Topicals</span></a></li>
+
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Oil'}"><a
+									href="" ng-click="buildList.catFilter = 'Oil'"><span
+										class="marg-l1">- Oils</span></a></li>
+
+								<li  th:if="${page}=='product'" role="separator"
+									class="divider"></li>
+								<!--/* Subcategory for Concentrates in All Products page - ENDS */-->
+
+
+
+								<!--/* Subcategory for Concentrates in Concentrates Page */-->
+								<li th:if="${category}=='Concentrates'"
+									ng-class="{'disabled' : buildList.catFilter == 'Waxes'}"><a
+									href="" ng-click="buildList.catFilter = 'Waxes'">Waxes</a></li>
+
+								<li th:if="${category}=='Concentrates'"
+									ng-class="{'disabled' : buildList.catFilter == 'Pills and Capsules'}"><a
+									href="" ng-click="buildList.catFilter = 'Pills and Capsules'">Pills
+										and Capsules</a></li>
+
+								<li th:if="${category}=='Concentrates'"
+									ng-class="{'disabled' : buildList.catFilter == 'Vapes'}"><a
+									href="" ng-click="buildList.catFilter = 'Vapes'">Vapes</a></li>
+
+								<li th:if="${category}=='Concentrates'"
+									ng-class="{'disabled' : buildList.catFilter == 'Topicals'}"><a
+									href="" ng-click="buildList.catFilter = 'Topicals'">Topicals</a></li>
+
+								<li th:if="${category}=='Concentrates'"
+									ng-class="{'disabled' : buildList.catFilter == 'Oil'}"><a
+									href="" ng-click="buildList.catFilter = 'Oil'">Oils</a></li>
+								<!--/* Subcategory for Concentrates in Concentrates Page - ENDS */-->
+
+
+
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Pre-Rolls'}"><a
+									href="" ng-click="buildList.catFilter = 'Pre-Rolls'">Pre-Rolls</a></li>
+
+
+								<li ng-show="buildList.catFilter" role="separator"
+									class="divider"></li>
+								<li ng-show="buildList.catFilter" class="text-center"><a
+									href="" ng-click="buildList.catFilter = ''" class="orange1"><i
+										class="fa fa-times" aria-hidden="true"></i> clear filter</a></li>
+							</ul>
+						</div>
+
+						<div class="dropdown pull-right" th:if="${page} == 'product' or ${category} != 'Pre-Rolls'">
+							<span>Sort by:</span>
+							<button class="btn btn-sm btn-default dropdown-toggle" type="button"
+								id="productSortMenu" data-toggle="dropdown" aria-haspopup="true"
+								ng-click="filterActions()" aria-expanded="true">
+								{{buildList.orderTxt}} <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="productSortMenu">
+								<li ng-class="{'disabled' : buildList.order == '-_id'}"><a
+									href=""
+									ng-click="buildList.order = '-_id'; buildList.orderTxt = 'Newest'">Newest</a></li>
+								<li
+									ng-class="{'disabled' : buildList.order == 'productFilters.price'}"><a
+									href=""
+									ng-click="buildList.order = 'productFilters.price'; buildList.orderTxt = 'Lowest Price'">Lowest
+										Price</a></li>
+								<li
+									ng-class="{'disabled' : buildList.order == '-productFilters.price'}"><a
+									href=""
+									ng-click="buildList.order = '-productFilters.price'; buildList.orderTxt = 'Highest Price'">Highest
+										Price</a></li>
+								<li ng-class="{'disabled' : buildList.order == '-rating'}"><a
+									href=""
+									ng-click="buildList.order = '-rating'; buildList.orderTxt = 'Highly rated'">Highly
+										rated</a></li>
+								<li ng-class="{'disabled' : buildList.order == '-reviewCount'}"><a
+									href=""
+									ng-click="buildList.order = '-reviewCount'; buildList.orderTxt = 'Most reviews'">Most
+										reviews</a></li>
+								<li th:if="${page}=='product' or ${category}!='Gear'"
+									ng-class="{'disabled' : buildList.order == '-productFilters.thc'}"><a
+									href=""
+									ng-click="buildList.order = '-productFilters.thc'; buildList.orderTxt = 'High THC'">High
+										THC</a></li>
+								<li th:if="${page}=='product' or ${category}!='Gear'"
+									ng-class="{'disabled' : buildList.order == '-productFilters.cbd'}"><a
+									href=""
+									ng-click="buildList.order = '-productFilters.cbd'; buildList.orderTxt = 'High CBD'">High
+										CBD</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			
+
+			<div class="products-listing"
+				th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
+
+				<div th:if="${page}=='search'" class="text-center">
+					<div th:if="${#lists.size(products)==0}">
+						<em class="size16">No results found</em>
+					</div>
+				</div>
+
+				<ul id="thymeleaf-productlist" class="products-container row">
 					<li th:each="product : ${products}"
 						th:attr="data-pid=${product._id},
 					data-stockstat=${product.stockStat},
@@ -47,24 +287,32 @@
 					data-img=${product.featuredImg},
 					data-var=${product.variation},
 					data-p=${product.price},
-					data-sp=${product.salePrice}">
+					data-url=${product.url},
+					data-cat=${#lists.isEmpty(product.categories) ? '' : #strings.listJoin(product.categories,',')},
+					data-rating=${product.rating},
+					data-review-count=${product.reviewCount},
+					data-price-range=${product.priceRange},
+					data-desc=${product.description},
+					data-filter-price=${product.productFilters != null ? product.productFilters.price : ''},
+					data-filter-cbd=${product.productFilters != null ? product.productFilters.cbd : ''},
+					data-filter-thc=${product.productFilters != null ? product.productFilters.thc : ''}">
 
 
-						<div class="product-item-container">
+						<div class="product-item-container" th:object="${product}">
 							<div class="product-item-card showItem">
 								<div class="pi-cards product-item">
-									<a th:href="@{'/admin/products#/details/' + ${product._id}}"
+									<a th:href="@{'/admin/products#/details/' + *{_id}}"
 										class="pull-right inhert"
 										th:if="${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_ADMIN')}"><i
 										class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
 									<h3>
-										<a th:href="@{'/product/' + ${product.url}}"
-											th:title="${product.name}" th:text="${product.name}"></a>
+										<a th:href="@{'/product/' + *{url}}" th:title="*{name}"
+											th:text="*{name}"></a>
 									</h3>
 
 									<div class="card-center">
-										<a th:if="${product.featuredImg}!=null"
-											th:href="@{${_lbGlobalCDNPath} + ${product.featuredImg}}"
+										<a th:if="*{featuredImg}!=null"
+											th:href="@{${_lbGlobalCDNPath} + *{featuredImg}}"
 											class="pc-img-holder" ng-click="showBiggerImg($event)"> <img
 											th:src="${_lbGlobalCDNPath} + ${#strings.replace(product.featuredImg,'.jpg','-300x266.jpg')}"
 											class="featured-img" /> <span
@@ -77,11 +325,29 @@
 									</div>
 
 									<div class="tocart">
+										<div class="rating-wrapper">
+											<span class="s2" th:if="*{rating > -1}"
+												th:classappend="|rating-*{rating}|"></span> <a
+												th:href="@{'/product/' + *{url} + '#reviews'}"
+												class="review-count" th:if="*{reviewCount > 0}"> <span
+												th:if="*{reviewCount == 1}">1 review</span> <span
+												th:if="*{reviewCount != 1}"><span
+													th:text="*{reviewCount}"></span> reviews</span>
+											</a> <a th:href="@{'/customer/#/product-reviews/' + *{_id}}"
+												th:if="*{rating == -1} and ${userId != null}">Be the
+												first to review</a><a
+												th:href="@{'/login/?ret=/customer/%23/product-reviews/' + *{_id}}"
+												th:if="*{rating == -1} and ${userId == null}">Be the
+												first to review</a>
+										</div>
+
 										<div class="text-center size16 marg-b1">
-											Price: <strong th:if="${product.priceRange}" th:text="${product.priceRange}"></strong><span
-												th:unless="${product.priceRange}"><strong
+											Price: <strong th:if="*{priceRange}"
+												th:text="${(product.categories!=null) and (#lists.contains(product.categories, 'Flowers'))} ? ${#strings.listSplit(product.priceRange,' - ').get(0)} : *{priceRange}"></strong><span
+												th:unless="*{priceRange}"><strong
 												th:text="${'$' + #numbers.formatDecimal(product.price,0,2)}"></strong></span>
 										</div>
+
 										<div class="row">
 											<div class="col-xs-6">
 												<button type="button" class="btn btn-lb btn-sm btn-block"
@@ -97,8 +363,8 @@
 
 								<div class="pi-cards pi-info">
 									<h3>
-										<a th:href="@{'/product/' + ${product.url}}"
-											th:title="${product.name}" th:text="${product.name}"></a>
+										<a th:href="@{'/product/' + *{url}}" th:title="*{name}"
+											th:text="*{name}"></a>
 									</h3>
 
 									<div class="product-options empty">
@@ -112,7 +378,7 @@
 									<div class="product-desc">
 										<div class="card-center">
 											<ul class="lb-scrollbar">
-												<li th:utext="${product.description}"></li>
+												<li th:utext="*{description}"></li>
 											</ul>
 										</div>
 
@@ -126,6 +392,8 @@
 						</div>
 					</li>
 				</ul>
+				
+				<div id="angular-productlist"></div>
 			</div>
 		</div>
 	</div>
@@ -136,6 +404,20 @@
 	<script type="text/ng-template" id="productOptionsTemp">
 		<div th:replace="fragments/layout::fragment-product-option"></div>
     </script>
+	<script type="text/ng-template" id="productListTemplate">
+		<div th:replace="fragments/layout::fragment-product-list"></div>
+    </script>
+    <script th:inline="javascript" type="text/javascript">
+	/*<![CDATA[*/
+		var thisPage = /*[[${category} == null ? 'products' : ${#strings.toLowerCase(category)}]]*/; 
+		$(document).ready(function(){
+			_lbFns.activateNavMenu('nav-' + thisPage);
+		});
+		
+	    var _globalUserId = /*[[${userId}]]*/ 0;
+	    var _lbGlobalCDNPath = /*[[${_lbGlobalCDNPath}]]*/ '';
+	/*]]>*/
+	</script>
 	<script type="text/javascript">
 		
 	</script>
@@ -149,14 +431,15 @@
 		</div>
 	</div>
 
-	<div  th:if="${page}!='search'" class="sidecart" ng-controller="cartMainCtrlr as m">
+	<div th:if="${page}!='search'" class="sidecart"
+		ng-controller="cartMainCtrlr as m">
 		<div ng-controller="cartItemCtrlr" class="pch100">
 			<h4>Your Cart</h4>
 			<button class="close" ng-click="prdCartClose()">&times;</button>
 			<div class="sc-items lb-scrollbar">
 				<ul>
-					<li ng-repeat="item in m.order.lineItems"
-					ng-if="item.type=='item'" ng-hide="!item.instock">
+					<li ng-repeat="item in m.order.lineItems" ng-if="item.type=='item'"
+						ng-hide="!item.instock">
 						<div class="clearfix">
 							<div class="sci-qty">
 								<a href="" ng-click="updateCart(+1)"><i
@@ -172,17 +455,17 @@
 								<img class="fit" ng-if="item.img"
 									ng-src="{{lbGlobalCDNPath + item.img}}" />
 							</div>
-							
+
 							<div class="sci-info">
 								<h6>{{item.name}}</h6>
 							</div>
-							
+
 							<div class="scii-price">{{item.price | currency}}</div>
 						</div>
 					</li>
 				</ul>
 			</div>
-			
+
 			<div class="sc-action">
 				<div class="clearfix strong uppercase marg-b1">
 					<div class="pull-left">SUBTOTAL</div>

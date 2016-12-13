@@ -227,14 +227,20 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 		}
 	};
 	
+	$scope.saveThenProceedToPricing = function(){
+		$scope.saveDetails(true);
+	}
 	
-	$scope.saveDetails = function(){
+	$scope.saveDetails = function(proceedToPricing){
 		
 		if($scope.productDetailsForm.$dirty){			
 			$scope.saveProductGeneric(function(resp){
 				if(resp.success){
 					$scope.productDetailsForm.$setPristine();
-					$scope.toPricing();					
+					if(proceedToPricing === true)
+						$scope.toPricing();		
+					else
+						_lbFns.pSuccess('product details saved');
 				}
 				else{
 					$scope.errorMsg = resp.message;
@@ -856,6 +862,90 @@ catCtrlrs = function($scope, $http, $filter){
 	
 	
 	$scope.getCategories();
+},
+
+reviewCtrlrs = function($scope, $http, $filter){
+	
+	$scope.errorMsg = '';
+	$scope.reviews = [];
+	
+	$scope.getReviews = function($event){
+		
+		$http.get('/admin/products/json/list-reviews', {
+			params : { 
+				'p' : $scope.pg.currentPage,
+				's' : $scope.reviewSortSelected.value
+			}
+		})
+		.then(function(resp){
+			$scope.pg = resp.data.pg;
+			$scope.reviews = resp.data.respData;
+			
+			$('#review-holder').show();			
+		},
+		function(){
+			$scope.errorMsg = 'There was some error getting the reviews. Please try later';			
+			$('#review-holder').show();
+		});		
+	};	
+	
+	$scope.pageChanged = function() {
+		$scope.getReviews();
+	};
+	
+	
+	$scope.updateReview = function(newStatus){
+		var currentReview = this.r;
+		currentReview.approvalStatus = newStatus;
+		
+		$http.post('/admin/products/update-review', currentReview)
+		.then(function(resp){
+			if(resp.data && resp.data.success){				
+				_lbFns.pSuccess("Review Updated!");
+			}
+			else if(resp.data && resp.data.message){
+				$scope.errorMsg = resp.data.message;
+			}
+			else{
+				$scope.errorMsg = "There was some error updating review." 
+					+ " Please contact G.";
+			}
+			
+		},
+		function(){
+			$scope.errorMsg = "There was some error updating review." 
+				+ " Please contact G.";
+		});
+	};
+
+	$scope.reviewSortIsOpen = false;
+	$scope.reviewSortOptions = [
+		{text : 'New reviews', value : 'new'},
+		{text : 'Declined reviews', value : 'declined'},
+		{text : 'Approved reviews', value : 'approved'},
+		{text : 'All reviews', value : 'all'}
+	];
+	
+	$scope.reviewStat = {approvalStatus : 'new'};
+	$scope.reviewSortSelected = $scope.reviewSortOptions[0];
+	$scope.toggleDropdown = function($event) {
+		$event.preventDefault();
+	    $event.stopPropagation();
+	    $scope.reviewSortIsOpen = !$scope.reviewSortIsOpen;
+	};	
+	$scope.changeReviewSort = function(){
+		$scope.reviewSortSelected = this.rso;
+		$scope.reviewStat = {approvalStatus : $scope.reviewSortSelected.value};
+		$scope.getReviews();
+	};
+	
+	
+	$scope.closeReviewModal = function(){		
+		$('#review-holder').hide();
+	};
+	
+	
+	$scope.getReviews();
 };
 
 prdApp.config(['$routeProvider',
@@ -886,6 +976,11 @@ prdApp.config(['$routeProvider',
 	         controller: 'categoryControllers'
 	    }).
 	    
+	    when('/reviews/', {
+	         templateUrl: '/resources/ng-templates/admin/products-reviews.html'+versionCtrl,
+	         controller: 'reviewControllers'
+	    }).
+	    
 	    when('', {
 	         templateUrl: '/resources/ng-templates/empty.html',
 	         controller: 'defaultRouteCtrl'
@@ -903,6 +998,7 @@ prdApp.config(['$routeProvider',
 .controller('defaultRouteCtrl', defaultCtrlr)
 .controller('productControllers', prdCtrlrs)
 .controller('categoryControllers', catCtrlrs)
+.controller('reviewControllers', reviewCtrlrs)
 
 //This is defined in angular-upload-service.js. Common fn for uploads
 .controller('uploadCtrlr', uploadCtrlr);
