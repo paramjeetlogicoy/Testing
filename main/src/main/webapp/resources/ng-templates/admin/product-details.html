@@ -25,7 +25,7 @@
 					<h5 class="text-primary">Step 1 - Product Details</h5>
 
 					<form name="productDetailsForm" class="form-horizontal"
-						ng-submit="saveDetails()">
+						ng-submit="saveDetails(false)">
 						<div class="form-group">
 							<label class="col-sm-4 control-label">Product ID</label>
 							<div class="col-sm-7">
@@ -133,9 +133,44 @@
 							</div>
 						</div>
 
+
+						<div class="form-group pad-t2">
+							<h4 class="col-sm-4 col-sm-offset-2 pad-t2 u">Product Filters</h4>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-4 control-label">Price <br /> <span class="grey7">Price
+									range is {{p.priceRange}}</span></label>
+							<div class="col-sm-7">
+								<input type="number" min="0" value=""
+									ng-model="p.productFilters.price" name="productFilters.price"
+									class="form-control" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-4 control-label">THC (in mg)</label>
+							<div class="col-sm-7">
+								<input type="number" min="0" value=""
+									ng-model="p.productFilters.thc" name="productFilters.thc"
+									class="form-control" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-4 control-label">CBD (in
+								mg)</label>
+							<div class="col-sm-7">
+								<input type="number" min="0" value=""
+									ng-model="p.productFilters.cbd"
+									name="productFilters.cbd" class="form-control" />
+							</div>
+						</div>
+
 						<div class="form-group">
 							<div class="col-sm-7 col-sm-offset-4">
-								<button type="submit" class="btn"
+								<button type="submit" class="btn btn-success"
+									ng-if="productDetailsForm.$dirty && !productDetailsForm.$invalid">
+									SAVE</button>
+
+								<button type="button" class="btn" ng-click="saveDetails(true)"
 									ng-disabled="productDetailsForm.$invalid"
 									ng-class="productDetailsForm.$dirty ? 'btn-success' : 'btn-info'">
 									<span ng-show="productDetailsForm.$dirty">SAVE &amp;

@@ -227,14 +227,20 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 		}
 	};
 	
+	$scope.saveThenProceedToPricing = function(){
+		$scope.saveDetails(true);
+	}
 	
-	$scope.saveDetails = function(){
+	$scope.saveDetails = function(proceedToPricing){
 		
 		if($scope.productDetailsForm.$dirty){			
 			$scope.saveProductGeneric(function(resp){
 				if(resp.success){
 					$scope.productDetailsForm.$setPristine();
-					$scope.toPricing();					
+					if(proceedToPricing === true)
+						$scope.toPricing();		
+					else
+						_lbFns.pSuccess('product details saved');
 				}
 				else{
 					$scope.errorMsg = resp.message;

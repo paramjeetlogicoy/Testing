@@ -31,12 +31,131 @@
 				<li th:if="${page}=='category'" class="active" th:text="${category}">Products</li>
 				<li th:if="${page}=='search'" class="active">Search Results</li>
 			</ol>
+			
+			<div class="row">
+				<div class="col-sm-5">
+					<h1 th:if="${page}=='product'">All Products</h1>
+					<h1 th:if="${page}=='category'" th:text="${category}">Products</h1>
+					<h1 th:if="${page}=='search'">
+						Search Results : <small th:if="${query}!=''" th:text="${query}"></small>
+					</h1>
+				</div>
 
-			<h1 th:if="${page}=='product'">All Products</h1>
-			<h1 th:if="${page}=='category'" th:text="${category}">Products</h1>
-			<h1 th:if="${page}=='search'">
-				Search Results : <small th:if="${query}!=''" th:text="${query}"></small>
-			</h1>
+				<div class="col-sm-7">
+					<div class="product-filters clearfix ng-cloak">
+						
+						<div class="dropdown pull-right" th:if="${page} == 'product' or ${category} == 'Flowers'">
+							<span>Filter by:</span>
+							
+							<button class="btn btn-sm btn-default dropdown-toggle" type="button"
+								id="productFilterMenu" data-toggle="dropdown"
+								ng-click="filterActions()" aria-haspopup="true"
+								aria-expanded="true">
+								<i class="fa fa-sliders fa-rotate-90 marg-r1"
+									ng-class="{'orange1' : buildList.catFilter}" aria-hidden="true"></i>
+								Filter <em ng-if="buildList.catFilter">({{buildList.catFilter}})</em>
+								<span class="caret"></span>
+							</button>
+
+							<ul class="dropdown-menu" aria-labelledby="productFilterMenu">
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Flowers'}"><a
+									href="" ng-click="buildList.catFilter = 'Flowers'">Flowers</a></li>
+
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Indica'}"><a
+									href="" ng-click="buildList.catFilter = 'Indica'"><span
+										class="marg-l1">- Indica</span></a></li>
+
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Sativa'}"><a
+									href="" ng-click="buildList.catFilter = 'Sativa'"><span
+										class="marg-l1">- Sativa</span></a></li>
+
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Hybrid'}"><a
+									href="" ng-click="buildList.catFilter = 'Hybrid'"><span
+										class="marg-l1">- Hybrid</span></a></li>
+
+								<li th:if="${category}=='Flowers'"
+									ng-class="{'disabled' : buildList.catFilter == 'Indica'}"><a
+									href="" ng-click="buildList.catFilter = 'Indica'">Indica</a></li>
+								
+								<li th:if="${category}=='Flowers'"
+									ng-class="{'disabled' : buildList.catFilter == 'Sativa'}"><a
+									href="" ng-click="buildList.catFilter = 'Sativa'">Sativa</a></li>
+								
+								<li th:if="${category}=='Flowers'"
+									ng-class="{'disabled' : buildList.catFilter == 'Hybrid'}"><a
+									href="" ng-click="buildList.catFilter = 'Hybrid'">Hybrid</a></li>
+
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Edibles'}"><a
+									href="" ng-click="buildList.catFilter = 'Edibles'">Edibles</a></li>
+								
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Concentrates'}"><a
+									href="" ng-click="buildList.catFilter = 'Concentrates'">Concentrates</a></li>
+								
+								<li th:if="${page}=='product'"
+									ng-class="{'disabled' : buildList.catFilter == 'Pre-Rolls'}"><a
+									href="" ng-click="buildList.catFilter = 'Pre-Rolls'">Pre-Rolls</a></li>
+								
+								
+								<li ng-show="buildList.catFilter" role="separator"
+									class="divider"></li>
+								<li ng-show="buildList.catFilter" class="text-center"><a
+									href="" ng-click="buildList.catFilter = ''" class="orange1"><i
+										class="fa fa-times" aria-hidden="true"></i> clear filter</a></li>
+							</ul>
+						</div>
+
+						<div class="dropdown pull-right" th:if="${page} == 'product' or ${category} != 'Pre-Rolls'">
+							<span>Sort by:</span>
+							<button class="btn btn-sm btn-default dropdown-toggle" type="button"
+								id="productSortMenu" data-toggle="dropdown" aria-haspopup="true"
+								ng-click="filterActions()" aria-expanded="true">
+								{{buildList.orderTxt}} <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="productSortMenu">
+								<li ng-class="{'disabled' : buildList.order == '-_id'}"><a
+									href=""
+									ng-click="buildList.order = '-_id'; buildList.orderTxt = 'Newest'">Newest</a></li>
+								<li
+									ng-class="{'disabled' : buildList.order == 'productFilters.price'}"><a
+									href=""
+									ng-click="buildList.order = 'productFilters.price'; buildList.orderTxt = 'Lowest Price'">Lowest
+										Price</a></li>
+								<li
+									ng-class="{'disabled' : buildList.order == '-productFilters.price'}"><a
+									href=""
+									ng-click="buildList.order = '-productFilters.price'; buildList.orderTxt = 'Highest Price'">Highest
+										Price</a></li>
+								<li ng-class="{'disabled' : buildList.order == '-rating'}"><a
+									href=""
+									ng-click="buildList.order = '-rating'; buildList.orderTxt = 'Highly rated'">Highly
+										rated</a></li>
+								<li ng-class="{'disabled' : buildList.order == '-reviewCount'}"><a
+									href=""
+									ng-click="buildList.order = '-reviewCount'; buildList.orderTxt = 'Most reviews'">Most
+										reviews</a></li>
+								<li th:if="${page}=='product' or ${category}!='Gear'"
+									ng-class="{'disabled' : buildList.order == '-productFilters.thc'}"><a
+									href=""
+									ng-click="buildList.order = '-productFilters.thc'; buildList.orderTxt = 'High THC'">High
+										THC</a></li>
+								<li th:if="${page}=='product' or ${category}!='Gear'"
+									ng-class="{'disabled' : buildList.order == '-productFilters.cbd'}"><a
+									href=""
+									ng-click="buildList.order = '-productFilters.cbd'; buildList.orderTxt = 'High CBD'">High
+										CBD</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			
 
 			<div class="products-listing"
 				th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
@@ -47,7 +166,7 @@
 					</div>
 				</div>
 
-				<ul class="products-container row">
+				<ul id="thymeleaf-productlist" class="products-container row">
 					<li th:each="product : ${products}"
 						th:attr="data-pid=${product._id},
 					data-stockstat=${product.stockStat},
@@ -55,7 +174,15 @@
 					data-img=${product.featuredImg},
 					data-var=${product.variation},
 					data-p=${product.price},
-					data-sp=${product.salePrice}">
+					data-url=${product.url},
+					data-cat=${#lists.isEmpty(product.categories) ? '' : #strings.listJoin(product.categories,',')},
+					data-rating=${product.rating},
+					data-review-count=${product.reviewCount},
+					data-price-range=${product.priceRange},
+					data-desc=${product.description},
+					data-filter-price=${product.productFilters != null ? product.productFilters.price : ''},
+					data-filter-cbd=${product.productFilters != null ? product.productFilters.cbd : ''},
+					data-filter-thc=${product.productFilters != null ? product.productFilters.thc : ''}">
 
 
 						<div class="product-item-container" th:object="${product}">
@@ -152,6 +279,8 @@
 						</div>
 					</li>
 				</ul>
+				
+				<div id="angular-productlist"></div>
 			</div>
 		</div>
 	</div>
@@ -162,6 +291,20 @@
 	<script type="text/ng-template" id="productOptionsTemp">
 		<div th:replace="fragments/layout::fragment-product-option"></div>
     </script>
+	<script type="text/ng-template" id="productListTemplate">
+		<div th:replace="fragments/layout::fragment-product-list"></div>
+    </script>
+    <script th:inline="javascript" type="text/javascript">
+	/*<![CDATA[*/
+		var thisPage = /*[[${category} == null ? 'products' : ${#strings.toLowerCase(category)}]]*/; 
+		$(document).ready(function(){
+			_lbFns.activateNavMenu('nav-' + thisPage);
+		});
+		
+	    var _globalUserId = /*[[${userId}]]*/ 0;
+	    var _lbGlobalCDNPath = /*[[${_lbGlobalCDNPath}]]*/ '';
+	/*]]>*/
+	</script>
 	<script type="text/javascript">
 		
 	</script>

@@ -1,8 +1,10 @@
-var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $compile){
+var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $compile, categoryFltrFilter){
 
 	$scope.prices = [];
 	$scope.productPrices = {};
 	$scope.currentPid = 0;
+	$scope._lbGlobalCDNPath = _lbGlobalCDNPath;
+	
 	$scope.flipBack = function(event){
 		angular.element(event.target).closest('li').find('.product-item-card').removeClass('showInfo showOptions');
 	};
@@ -26,6 +28,13 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 			salePrice = parseFloat($angularElement.data('sp'));
 		
 		$scope.currentPid = $angularElement.data('pid');
+		
+		if($scope.angularListOn && this.p){
+			variation = this.p.variation;
+			price = this.p.price;
+			salePrice = this.p.salesPrice;
+			$scope.currentPid = this.p._id;			
+		}
 		
 		if($scope.currentPid !== 0){	
 			
@@ -111,4 +120,99 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 	$scope.setPageAlert = function(alert){
 		$scope.pageLevelAlert = alert;
 	};
+	
+	
+	/** Sort filter logic **/
+	$scope.angularListOn = false;
+	$scope.buildList = {
+			catFilter : '',
+			order : '',
+			orderTxt : 'Newest'
+	};
+	//scan the page for all listing and build an array.
+	var scanListing = function(){
+		$scope.buildList.products = [];
+		$('#thymeleaf-productlist>li').each(function(index){
+			var p = {},
+			$e = $(this);
+			
+			p.name = $e.data("pname");
+			p.stockStat = $e.data("stockstat");
+			p._id = $e.data("pid");
+			p.featuredImg = $e.data("img");
+			p.variation = $e.data("var");
+			p.price = $e.data("p");
+			p.salePrice = $e.data("sp");
+			
+			p.url = $e.data("url");
+			p.categories = $e.data("cat");
+			p.rating = $e.data("rating");
+			p.reviewCount = $e.data("review-count");
+			p.priceRange = $e.data("price-range");
+			p.description = $e.data("desc");
+			
+			p.productFilters = {
+					price : $e.data("filter-price"),
+					cbd : $e.data("filter-cbd"), 
+					thc : $e.data("filter-thc")
+			};
+			
+			
+			//push product object to the list we made.
+			$scope.buildList.products.push(p);
+		});
+		
+		//console.log($scope.buildList);
+	},
+	
+	reBuildListing = function(){
+
+		if(!$scope.buildList.products || $scope.buildList.products.length == 0) return;
+		
+		//load productListTemplate		
+		$templateRequest("productListTemplate")
+		.then(function(html){
+		      var template = angular.element(html);
+		      angular.element('#angular-productlist')
+		      	.empty()
+		      	.append(template);
+		      
+		      $compile(template)($scope);
+		      
+		      $scope.angularListOn = true;
+		      $('#thymeleaf-productlist').hide();
+		      
+		 });
+	};
+	
+	$scope.filterActions = function(){
+		if(!$scope.angularListOn){
+			reBuildListing();
+		}		
+	};
+	
+	
+	//Build angular productlist during initial load.
+	scanListing();
+},
+
+categoryFilter = function(){
+	
+	return function(input, filter){
+		
+		if(!filter || $.trim(filter)=='')
+			return input;
+		
+		var out = [];
+		
+		angular.forEach(input, function(product){
+			
+			if(product.categories && product.categories.indexOf(filter) > -1){
+				out.push(product);
+			}
+			
+		});
+		
+		return out;		
+	}
 };

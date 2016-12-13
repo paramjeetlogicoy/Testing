@@ -132,7 +132,6 @@ public class ProductController {
 		
 		model.addAttribute("url", productUrl);
 		model.addAttribute("product", p);
-		
 		/* Find related products */
 		List<Product> relatedProducts = new ArrayList<Product>();
 		
