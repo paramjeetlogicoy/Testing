@@ -22,7 +22,6 @@ public class OrderFinalization {
 	
 	private static Logger logger = Logger.getLogger(OrderFinalization.class);
 	private static boolean offhourPromoActive = true;
-	private static boolean firstOrderPromoActive = true;
 	
 	private long orderNumber = 0;	
 	public long getOrderNumber() {
@@ -173,24 +172,21 @@ public class OrderFinalization {
 	 **/
 	
 	private void firstOrderCheck(CartOrder co, CartLogics cartLogics){
-		
-		if(firstOrderPromoActive && co.getTotal() >= 75d){
 			
-			String response = cartLogics.firstOrderCheck(co.getCustomer().get_id());
-			if(response.equals("Y")){
+		String response = cartLogics.firstOrderCheck(co.getCustomer().get_id());
+		if(response.equals("Y")){
 
-				OrderNotes notes = co.getNotes();
-				if(notes == null) notes = new OrderNotes();
-				if(notes.getAdditonalNotes()==null){
-					notes.setAdditonalNotes("**FIRST ORDER**");
-				}
-				else {
-					notes.setAdditonalNotes(notes.getAdditonalNotes() + "**FIRST ORDER**");
-				}
+			OrderNotes notes = co.getNotes();
+			if(notes == null) notes = new OrderNotes();
+			if(notes.getAdditonalNotes()==null){
+				notes.setAdditonalNotes("**FIRST ORDER**");
+			}
+			else {
+				notes.setAdditonalNotes(notes.getAdditonalNotes() + "**FIRST ORDER**");
+			}
 
-				co.setNotes(notes);
-			}		
-		}
+			co.setNotes(notes);
+		}	
 	};
 	
 	/**
