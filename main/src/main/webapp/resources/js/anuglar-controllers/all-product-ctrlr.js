@@ -138,23 +138,23 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 			
 			p.name = $e.data("pname");
 			p.stockStat = $e.data("stockstat");
-			p._id = $e.data("pid");
+			p._id = parseInt($e.data("pid"));
 			p.featuredImg = $e.data("img");
 			p.variation = $e.data("var");
-			p.price = $e.data("p");
-			p.salePrice = $e.data("sp");
+			p.price = parseFloat($e.data("p"));
+			p.salePrice = parseFloat($e.data("sp"));
 			
 			p.url = $e.data("url");
 			p.categories = $e.data("cat");
-			p.rating = $e.data("rating");
-			p.reviewCount = $e.data("review-count");
+			p.rating = parseInt($e.data("rating"));
+			p.reviewCount = parseInt($e.data("review-count"));
 			p.priceRange = $e.data("price-range");
 			p.description = $e.data("desc");
 			
 			p.productFilters = {
-					price : $e.data("filter-price"),
-					cbd : $e.data("filter-cbd"), 
-					thc : $e.data("filter-thc")
+					price : parseFloat($e.data("filter-price")),
+					cbd : parseFloat($e.data("filter-cbd")), 
+					thc : parseFloat($e.data("filter-thc"))
 			};
 			
 			
