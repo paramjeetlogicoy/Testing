@@ -81,12 +81,6 @@ public class ProductsController {
 	}
 	
 	
-	@RequestMapping(value = "/reviews/", method = RequestMethod.GET)
-	public String reviewPage(ModelMap model){		
-		return "admin/product-reviews";		
-	}
-	
-	
 	@RequestMapping(value = "/json/", method = RequestMethod.GET)
 	public @ResponseBody ResponseWithPg products(
 			@RequestParam(value="p", required=false) Integer page,

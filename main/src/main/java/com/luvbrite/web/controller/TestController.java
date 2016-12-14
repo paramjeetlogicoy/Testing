@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.luvbrite.dao.OrderDAO;
 import com.luvbrite.dao.PriceDAO;
 import com.luvbrite.dao.ProductDAO;
+import com.luvbrite.dao.SeoDAO;
 import com.luvbrite.services.PostOrderMeta;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Order;
 import com.luvbrite.web.models.Price;
 import com.luvbrite.web.models.Product;
 import com.luvbrite.web.models.ProductFilters;
+import com.luvbrite.web.models.Seo;
 
 
 @Controller
@@ -33,6 +35,9 @@ public class TestController {
 
 	@Autowired
 	private ProductDAO prdDao;
+
+	@Autowired
+	private SeoDAO seoDao;
 	
 
 	@RequestMapping(value = "/test/meta/{orderNumber}")
@@ -139,6 +144,46 @@ public class TestController {
 			}			
 			
 			sb.append(processCounter + " products updated!");
+			gr.setMessage(sb.toString());
+		}
+
+		return gr;		
+	}
+	
+	
+	@RequestMapping(value = "/onetime/populateproductseo")
+	public @ResponseBody GenericResponse populateProductSEO(){	
+
+		GenericResponse gr  = new GenericResponse();
+		gr.setSuccess(false);
+		gr.setMessage("");
+		
+		int processCounter = 0;
+		StringBuilder sb = new StringBuilder();
+		
+		List<Product> products = prdDao.createQuery().order("-_id").asList();
+		if(products != null){
+			
+			for(Product p : products){					
+				
+				String title = p.getName();
+				String url = p.getUrl();
+				
+				if(title != null && !title.equals("")
+						&& url != null && !url.equals("")){
+					
+					Seo seo = new Seo();
+
+					seo.setTitle(title);
+					seo.setUrl(url);
+					seo.setNobots(false);
+					seoDao.save(seo);
+
+					processCounter++;
+				}				
+			}			
+			
+			sb.append(processCounter + " products seo information updated");
 			gr.setMessage(sb.toString());
 		}
 
