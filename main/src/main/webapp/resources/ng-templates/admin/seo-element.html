@@ -25,7 +25,7 @@
 								ng-class="{ 'has-error' : elemForm.title.$invalid && !elemForm.title.$pristine }">
 								<label class="col-sm-4 control-label">Title</label>
 								<div class="col-sm-7">
-									<input type="text" class="form-control" ng-model="elem.title"
+									<input type="text" class="form-control" ng-model="elem.seoElem.title"
 										name="title" required />
 									<p ng-show="elemForm.title.$invalid && !elemForm.title.$pristine"
 										class="help-block">Title is required.</p>
@@ -36,7 +36,7 @@
 								<label class="col-sm-4 control-label">Meta Keywords</label>
 								<div class="col-sm-7">
 									<textarea class="form-control" name="keywords"
-										ng-model="elem.keywords" ng-list=" , "></textarea>
+										ng-model="elem.seoElem.keywords" ng-list=" , "></textarea>
 								</div>
 							</div>
 
@@ -44,14 +44,14 @@
 								<label class="col-sm-4 control-label">Meta Description</label>
 								<div class="col-sm-7">
 									<textarea class="form-control" required name="description"
-										ng-model="elem.description"></textarea>
+										ng-model="elem.seoElem.description"></textarea>
 								</div>
 							</div>
 
 							<div class="form-group form-group-sm">
 								<div class="col-sm-7 col-sm-offset-4">
 									<div class="checkbox">
-										<label><input type="checkbox" ng-model="elem.nobots" /> Mark as No Index</label>
+										<label><input type="checkbox" ng-model="elem.seoElem.nobots" /> Mark as No Index</label>
 									</div>
 								</div>
 							</div>

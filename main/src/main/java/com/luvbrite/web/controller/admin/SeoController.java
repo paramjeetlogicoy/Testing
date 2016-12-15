@@ -15,12 +15,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.luvbrite.dao.CategoryDAO;
 import com.luvbrite.dao.LogDAO;
+import com.luvbrite.dao.ProductDAO;
 import com.luvbrite.dao.SeoDAO;
 import com.luvbrite.utils.Exceptions;
+import com.luvbrite.web.models.Category;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Log;
+import com.luvbrite.web.models.Product;
 import com.luvbrite.web.models.Seo;
+import com.luvbrite.web.models.SeoElem;
 import com.luvbrite.web.models.UserDetailsExt;
 
 
@@ -35,6 +40,12 @@ public class SeoController {
 	
 	@Autowired
 	private SeoDAO seoDao;
+
+	@Autowired
+	private ProductDAO prdDao;
+
+	@Autowired
+	private CategoryDAO catDao;
 	
 	
 	@RequestMapping(method = RequestMethod.GET)
@@ -59,8 +70,29 @@ public class SeoController {
 	
 	@RequestMapping(value = "/json/{stringId}", method = RequestMethod.GET)
 	public @ResponseBody Seo elementDetails(@PathVariable String stringId){
+		
+		Seo seo = seoDao.get(new ObjectId(stringId));
+		if(seo != null){
+			
+			String pageType = seo.getPageType();
+			if(pageType.equals("product")){
+				Product p = prdDao.createQuery()
+						.filter("url", seo.getUrl())
+						.retrievedFields(true, "seoElem").get();
 				
-		return seoDao.get(new ObjectId(stringId));		
+				seo.setSeoElem(p.getSeoElem());
+			}
+			
+			else if(pageType.equals("category")){
+				Category c = catDao.createQuery()
+						.filter("url", seo.getUrl().replace("category/", ""))
+						.retrievedFields(true, "seoElem").get();
+
+				seo.setSeoElem(c.getSeoElem());
+			}
+		}
+		
+		return seo;		
 	}
 	
 
@@ -78,40 +110,119 @@ public class SeoController {
 			Seo seoDb = seoDao.get(new ObjectId(seo.get_id()));
 			if(seoDb != null){
 				
-				String seoDbString = "";
-				try {
-					/* Convert productDb to JSON */
-					ObjectMapper mapper = new ObjectMapper();
-					seoDbString = mapper.writeValueAsString(seoDb);
-				} catch (Exception e1) {}
+				String seoElemString = "",
+						logDetailsString = "";
 				
-				
-				seoDb.setDescription(seo.getDescription());
-				seoDb.setKeywords(seo.getKeywords());
-				seoDb.setNobots(seo.isNobots());
-				seoDb.setTitle(seo.getTitle());
-				
-				seoDao.save(seoDb);
-				r.setSuccess(true);
-				
+				if(seo.getPageType().equals("product")){
+					Product p = prdDao.findOne("url", seo.getUrl());
+					if(p != null){
+						
+						SeoElem seoElem = p.getSeoElem();
+						if(seoElem == null) seoElem = new SeoElem();
+
+						try {
+							/* Convert seoElem to JSON */
+							ObjectMapper mapper = new ObjectMapper();
+							seoElemString = mapper.writeValueAsString(seoElem);
+						} catch (Exception e1) {}
+
+
+						seoElem.setDescription(seo.getSeoElem().getDescription());
+						seoElem.setKeywords(seo.getSeoElem().getKeywords());
+						seoElem.setNobots(seo.getSeoElem().isNobots());
+						seoElem.setTitle(seo.getSeoElem().getTitle());
+
+						p.setSeoElem(seoElem);
+						prdDao.save(p);
+						
+						logDetailsString = "Product Seo Element update. ProductId - " + p.get_id();
+
+						r.setSuccess(true);
+					}
+					
+					else{
+						r.setMessage("No corresponding Product found in DB for this Seo Element");
+					}
+				}
+
+				else if(seo.getPageType().equals("category")){
+					Category c = catDao.findOne("url", seo.getUrl().replace("category/", ""));
+					if(c != null){
+
+						SeoElem seoElem = c.getSeoElem();
+						if(seoElem == null) seoElem = new SeoElem();
+
+						try {
+							/* Convert seoElem to JSON */
+							ObjectMapper mapper = new ObjectMapper();
+							seoElemString = mapper.writeValueAsString(seoElem);
+						} catch (Exception e1) {}
+
+
+						seoElem.setDescription(seo.getSeoElem().getDescription());
+						seoElem.setKeywords(seo.getSeoElem().getKeywords());
+						seoElem.setNobots(seo.getSeoElem().isNobots());
+						seoElem.setTitle(seo.getSeoElem().getTitle());
+
+						c.setSeoElem(seoElem);
+						catDao.save(c);
+						
+						logDetailsString = "Category Seo Element update. CategoryId - " + c.get_id();
+
+						r.setSuccess(true);
+					}
+					
+					else{
+						r.setMessage("No corresponding category entry found in DB for this Seo Element");
+					}
+
+				}
+
+				else {
+
+
+					SeoElem seoElem = seoDb.getSeoElem();
+					if(seoElem == null) seoElem = new SeoElem();
+
+					try {
+						/* Convert seoElem to JSON */
+						ObjectMapper mapper = new ObjectMapper();
+						seoElemString = mapper.writeValueAsString(seoElem);
+					} catch (Exception e1) {}
+
+
+					seoElem.setDescription(seo.getSeoElem().getDescription());
+					seoElem.setKeywords(seo.getSeoElem().getKeywords());
+					seoElem.setNobots(seo.getSeoElem().isNobots());
+					seoElem.setTitle(seo.getSeoElem().getTitle());
+
+					seoDb.setSeoElem(seoElem);
+					seoDao.save(seoDb);
+
+					logDetailsString = "Seo Element update. Url - " + seoDb.getUrl();
+					
+					r.setSuccess(true);
+
+				}
+
 				/**
 				 * Update Log
 				 * */
 				try {
-					
+
 					Log log = new Log();
 					log.setCollection("seo");
-					log.setDetails("seo document updated. Old doc - " + seoDbString);
+					log.setDetails(logDetailsString + ". Seo ID - " + seo.get_id() + ". Prev value " + seoElemString);
 					log.setDate(Calendar.getInstance().getTime());
 					log.setKey(0);
 					log.setUser(user.getUsername());
-					
+
 					logDao.save(log);					
 				}
 				catch(Exception e){
 					logger.error(Exceptions.giveStackTrace(e));
 				}
-				
+
 			}
 			
 			else{

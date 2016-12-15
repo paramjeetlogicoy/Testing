@@ -40,6 +40,7 @@ public class Product {
 	private List<Integer> rps; /*Related product ids*/
 	
 	private ProductFilters productFilters;
+	private SeoElem seoElem;
 	
 	public long get_id() {
 		return _id;
@@ -172,5 +173,11 @@ public class Product {
 	}
 	public void setProductFilters(ProductFilters productFilters) {
 		this.productFilters = productFilters;
+	}
+	public SeoElem getSeoElem() {
+		return seoElem;
+	}
+	public void setSeoElem(SeoElem seoElem) {
+		this.seoElem = seoElem;
 	}
 }

@@ -17,6 +17,8 @@ public class Category {
 	private String description;
 
 	private long parent;
+	
+	private SeoElem seoElem;
 
 	public long get_id() {
 		return _id;
@@ -47,5 +49,11 @@ public class Category {
 	}
 	public void setParent(long parent) {
 		this.parent = parent;
+	}
+	public SeoElem getSeoElem() {
+		return seoElem;
+	}
+	public void setSeoElem(SeoElem seoElem) {
+		this.seoElem = seoElem;
 	}
 }

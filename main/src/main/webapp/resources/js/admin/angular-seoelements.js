@@ -88,7 +88,6 @@ elemCtrlrs = function($scope, $http, $filter, $routeParams, $location, $sanitize
 		.error(function(){
 			$scope.errorMsg  = "There was some error saving the element details. "
 					+"Please contact G.";
-			$('.admin-editor-container')[0].scrollIntoView();
 		});	
 	};
 	
