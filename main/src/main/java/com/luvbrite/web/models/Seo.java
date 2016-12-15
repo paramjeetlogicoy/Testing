@@ -17,6 +17,7 @@ public class Seo {
 	private String description = "";	
 	private List<String> keywords;
 	private boolean nobots = false;
+	private String pageType = ""; //product, category, etc
 	
 	public String get_id() {
 		return _id.toString();
@@ -53,5 +54,11 @@ public class Seo {
 	}
 	public void setNobots(boolean nobots) {
 		this.nobots = nobots;
+	}
+	public String getPageType() {
+		return pageType;
+	}
+	public void setPageType(String pageType) {
+		this.pageType = pageType;
 	}
 }

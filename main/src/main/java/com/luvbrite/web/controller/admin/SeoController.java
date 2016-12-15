@@ -8,19 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luvbrite.dao.LogDAO;
 import com.luvbrite.dao.SeoDAO;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Log;
-import com.luvbrite.web.models.Product;
 import com.luvbrite.web.models.Seo;
 import com.luvbrite.web.models.UserDetailsExt;
 
@@ -65,31 +64,66 @@ public class SeoController {
 	}
 	
 
-	@RequestMapping(value = "/json/createproduct", method = RequestMethod.POST)
-	public @ResponseBody Product createProduct(
-			@RequestBody Product product, 
-			BindingResult result, @AuthenticationPrincipal 
-			UserDetailsExt user){
-			
-			
-			/**
-			 * Update Log
-			 * */
-			try {
-				
-				Log log = new Log();
-				log.setCollection("products");
-				log.setDetails("product created");
-				log.setDate(Calendar.getInstance().getTime());
-				log.setKey(0);
-				log.setUser(user.getUsername());
-				
-				logDao.save(log);					
-			}
-			catch(Exception e){
-				logger.error(Exceptions.giveStackTrace(e));
-			}
+	@RequestMapping(value = "/json/save", method = RequestMethod.POST)
+	public @ResponseBody GenericResponse saveElem(
+			@RequestBody Seo seo,
+			@AuthenticationPrincipal UserDetailsExt user){
 		
-		return product;		
+		
+		GenericResponse r = new GenericResponse();
+		r.setSuccess(false);
+		
+		if(seo != null){
+			
+			Seo seoDb = seoDao.get(new ObjectId(seo.get_id()));
+			if(seoDb != null){
+				
+				String seoDbString = "";
+				try {
+					/* Convert productDb to JSON */
+					ObjectMapper mapper = new ObjectMapper();
+					seoDbString = mapper.writeValueAsString(seoDb);
+				} catch (Exception e1) {}
+				
+				
+				seoDb.setDescription(seo.getDescription());
+				seoDb.setKeywords(seo.getKeywords());
+				seoDb.setNobots(seo.isNobots());
+				seoDb.setTitle(seo.getTitle());
+				
+				seoDao.save(seoDb);
+				r.setSuccess(true);
+				
+				/**
+				 * Update Log
+				 * */
+				try {
+					
+					Log log = new Log();
+					log.setCollection("seo");
+					log.setDetails("seo document updated. Old doc - " + seoDbString);
+					log.setDate(Calendar.getInstance().getTime());
+					log.setKey(0);
+					log.setUser(user.getUsername());
+					
+					logDao.save(log);					
+				}
+				catch(Exception e){
+					logger.error(Exceptions.giveStackTrace(e));
+				}
+				
+			}
+			
+			else{
+				r.setMessage("No corresponding entry found in DB");
+			}
+		}
+		
+		else{
+			r.setMessage("Invalid update parameters.");
+		}
+
+		
+		return r;		
 	}
 }

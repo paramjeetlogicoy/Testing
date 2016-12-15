@@ -136,7 +136,9 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 		$http.get('/admin/users/json/' + $scope.userId)
 		.success(function(data){
 			$scope.u = data;			
-			$('#user-editor').show();
+			$('#user-editor').show(0, function(){
+				$('.admin-editor-container')[0].scrollIntoView();
+			});
 			
 		    if($scope.u.identifications && $scope.u.identifications.recoExpiry)
 		    		$scope.recoExpiry = new Date($scope.u.identifications.recoExpiry);
@@ -148,7 +150,9 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 		    
 		}).error(function(){
 			$scope.errorMsg = 'There was some error getting the product info. Please try later';
-			$('#user-editor').show();
+			$('#user-editor').show(0, function(){
+				$('.admin-editor-container')[0].scrollIntoView();
+			});
 		});		
 	};	
 	

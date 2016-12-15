@@ -27,18 +27,41 @@
 
 			<div class="customers-container pad2">				
 				<h2>Pages (URLs)</h2>
-				
-				<div class="marg-b1 fx300">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h3 class="panel-title size15">Filters</h3>
-						</div>
-						<div class="panel-body">
-							<input type="text" class="form-control"
-								placeholder="Search Page Url" ng-model="seoSearch.url" />
+
+				<div class="marg-b1 row">
+					<div class="col-sm-8">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title size15">Filters</h3>
+							</div>
+							<div class="panel-body">
+								<div class="row">
+									<div class="col-sm-6">
+										<input type="text" class="form-control"
+											placeholder="Search Page Url" ng-model="seoSearch.url" />
+									</div>
+									<div class="col-sm-6">
+										<div class="radio">
+											<label><input type="radio" name="productFilter"
+												ng-model="seoSearch.pageType" value="" />Show all pages</label>
+										</div>
+										<div class="radio">
+											<label><input type="radio" name="productFilter"
+												ng-model="seoSearch.pageType" value="product" />Show product
+												pages only</label>
+										</div>
+										<div class="radio">
+											<label><input type="radio" name="productFilter"
+												ng-model="seoSearch.pageType" value="category" />Show
+												category pages only</label>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
+				
 				<div class="pad-v2">
 					<ul class="row seoelement-wrapper">
 						<li class="col-sm-4 col-md-3"

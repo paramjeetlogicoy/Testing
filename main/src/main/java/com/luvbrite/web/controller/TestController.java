@@ -177,6 +177,7 @@ public class TestController {
 					seo.setTitle(title);
 					seo.setUrl(url);
 					seo.setNobots(false);
+					seo.setPageType("product");
 					seoDao.save(seo);
 
 					processCounter++;

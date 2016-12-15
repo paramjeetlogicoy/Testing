@@ -19,7 +19,7 @@ defaultCtrlr = function($scope, $http, $filter, $sanitize){
 	
 	$scope.pageLevelError = '';
 	$scope.elements = [];
-	$scope.seoSearch = { url : ''};	
+	$scope.seoSearch = { url : '', pageType: ''};	
 	
 	$scope.getElements = function(){
 		
@@ -58,11 +58,15 @@ elemCtrlrs = function($scope, $http, $filter, $routeParams, $location, $sanitize
 		$http.get('/admin/seo/json/' + $scope.elemId)
 		.success(function(data){
 			$scope.elem = data;			
-			$('#seoelem-editor').show();
+			$('#seoelem-editor').show(0, function(){
+				$('.admin-editor-container')[0].scrollIntoView();
+			});
 			
 		}).error(function(){
 			$scope.errorMsg = 'There was some error getting the SEO element info. Please try later';
-			$('#seoelem-editor').show();
+			$('#seoelem-editor').show(0, function(){
+				$('.admin-editor-container')[0].scrollIntoView();
+			});
 		});		
 	};	
 	
@@ -75,12 +79,16 @@ elemCtrlrs = function($scope, $http, $filter, $routeParams, $location, $sanitize
 			
 		$http.post('/admin/seo/json/save', $scope.elem)
 		.success(function(resp){
-			if(cb)
-				cb(resp);
+			if(resp && resp.success){
+				_lbFns.pSuccess('SEO details saved');
+				
+				$scope.elemForm.$setPristine();
+			}
 		})
 		.error(function(){
 			$scope.errorMsg  = "There was some error saving the element details. "
 					+"Please contact G.";
+			$('.admin-editor-container')[0].scrollIntoView();
 		});	
 	};
 	

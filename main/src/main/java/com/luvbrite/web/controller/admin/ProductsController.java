@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luvbrite.dao.LogDAO;
 import com.luvbrite.dao.PriceDAO;
 import com.luvbrite.dao.ProductDAO;
@@ -191,7 +192,36 @@ public class ProductsController {
 		else{
 			
 			Product productDb = prdDao.get(product.get_id());
-			if(productDb.get_id()==product.get_id()){
+			if(productDb != null){
+				
+				/**
+				 * Before saving the product, we need to make sure that the 
+				 * URL haven't changed. If it changed, then we 
+				 * need to make sure that it remains unique
+				 **/
+				
+				boolean urlUnique = false;
+				String otherProductName = "";
+				if(productDb.getUrl().equals(product.getUrl())){
+					urlUnique = true;
+				}
+				else{
+					Product p2 = prdDao.findOne("url", product.getUrl());
+					if(p2 == null) urlUnique = true;
+					else otherProductName = p2.getName();
+				}
+				
+				if(!urlUnique){
+					r.setMessage("Product URL is not unique. Product - " + otherProductName + " - has same URL.");
+					return r;
+				}
+				
+				String productDbString = "";
+				try {
+					/* Convert productDb to JSON */
+					ObjectMapper mapper = new ObjectMapper();
+					productDbString = mapper.writeValueAsString(productDb);
+				} catch (Exception e1) {} 
 				
 				productDb.setName(product.getName());
 				productDb.setDescription(product.getDescription());
@@ -219,12 +249,13 @@ public class ProductsController {
 				prdDao.save(productDb);
 				
 				
+				
 				/* Update Log */
 				try {
 					
 					Log log = new Log();
 					log.setCollection("products");
-					log.setDetails("product document updated");
+					log.setDetails("product document updated. Old doc - " + productDbString);
 					log.setDate(Calendar.getInstance().getTime());
 					log.setKey(product.get_id());
 					log.setUser(user.getUsername());
