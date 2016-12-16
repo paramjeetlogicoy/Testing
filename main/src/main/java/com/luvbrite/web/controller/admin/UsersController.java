@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luvbrite.dao.CouponDAO;
 import com.luvbrite.dao.LogDAO;
 import com.luvbrite.dao.OrderDAO;
@@ -111,7 +112,7 @@ public class UsersController {
 		List<User> users = dao.find(order, limit, offset, query, status);
 
 		rpg.setSuccess(true);
-		rpg .setPg(pgl.getPg());
+		rpg.setPg(pgl.getPg());
 		rpg.setRespData(users);
 		
 		return rpg;	
@@ -520,6 +521,16 @@ public class UsersController {
 							}
 						}
 					}
+
+					
+					String userDbString = "";
+					try {
+						/* Convert productDb to JSON */
+						User tempUser = userDb;
+						tempUser.setPassword("");
+						ObjectMapper mapper = new ObjectMapper();
+						userDbString = mapper.writeValueAsString(tempUser);
+					} catch (Exception e1) {} 
 					
 					/**
 					 * Update Log
@@ -528,7 +539,8 @@ public class UsersController {
 						
 						Log log = new Log();
 						log.setCollection("users");
-						log.setDetails("user document updated.");
+						log.setDetails("user document updated");
+						log.setPreviousDoc(userDbString);
 						log.setDate(Calendar.getInstance().getTime());
 						log.setKey(user.get_id());
 						log.setUser(userExt.getUsername());

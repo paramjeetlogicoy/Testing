@@ -70,9 +70,9 @@ var ordDtlsCtrlr = function ($scope, $http, $sanitize, ordDtlService) {
 		$scope.errorMsg = "";
 		$http.get('/admin/orders/json/' + $scope.orderNumber)
 		.success(function(data){
-			$scope.o = data;	
-			
-			//$scope.checkIfFirstOrder();
+			$scope.o = data;
+
+			$scope.getMemos();
 					
 			/* Check for the nexPrev order logic */
 			prevNextLogic();
@@ -91,6 +91,7 @@ var ordDtlsCtrlr = function ($scope, $http, $sanitize, ordDtlService) {
 		.success(function(resp){
 			if(resp.success) {
 				_lbFns.pSuccess('Order status updated to ' + $scope.o.status);
+				$scope.reloadMemos();
 			}
 			else{
 				alert(resp.message);
@@ -109,6 +110,7 @@ var ordDtlsCtrlr = function ($scope, $http, $sanitize, ordDtlService) {
 			if(resp && resp.data){
 				if(resp.data.success) {
 					_lbFns.pSuccess('Email sent.');
+					$scope.reloadMemos();
 				}
 				else{
 					$scope.errorMsg  = resp.data.message;
@@ -124,6 +126,48 @@ var ordDtlsCtrlr = function ($scope, $http, $sanitize, ordDtlService) {
 					+"Please contact G.";
 		});	
 	};
+	
+	/* MEMO FNS */
+	$scope.memos = [];
+	$scope.memopg = {};
+	$scope.memopg.currentPage = 1;
+	$scope.memoText = "";
+	
+	$scope.reloadMemos = function(){
+		$scope.memopg.currentPage = 1;
+		$scope.getMemos();
+	};
+	
+	$scope.getMemos = function(){
+		
+		$http.get('/admin/logs/orders/' + $scope.o._id, {
+			params : {
+				'p' : $scope.memopg.currentPage
+			}
+		})
+		.then(function(resp){
+			if(resp.data){
+				$scope.memos = resp.data.respData;
+				$scope.memopg = resp.data.pg;
+			}			
+		});		
+	};
+	$scope.saveMemo = function(){
+		var log = {
+				collection : 'orders',
+				key : $scope.o._id,
+				details : $('textarea#memoText').val(),
+				date : new Date(),
+				user : $('#adminHeaderUsername').text()
+		}
+		
+		$http.post('/admin/logs/add', log);
+		$scope.memos.unshift(log);
+		$('textarea#memoText').val('');
+	};	
+	/* MEMO FNS ENDS*/
+	
+	
 	
 	/* Prev/Next Order Logic */
 	$scope.prevOrderNumber = 0;

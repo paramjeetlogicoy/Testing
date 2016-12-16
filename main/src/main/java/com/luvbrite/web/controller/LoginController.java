@@ -51,7 +51,7 @@ public class LoginController {
 	private PasswordResetDAO pwdresetDAO;
 
 	@Autowired
-	PasswordEncoder encoder;
+	private PasswordEncoder encoder;
 
 	@Autowired
 	private LogDAO logDao;
@@ -513,41 +513,38 @@ public class LoginController {
 	
 	
 	@RequestMapping(value = "/pending-registration")
-	public String pendingRegistration(ModelMap model){			
+	public String pendingRegistration(ModelMap model){	
+		
+		model.addAttribute("title", "Pending Registration");
+		model.addAttribute("message", "registering with Luvbrite Collective");
+		
+		
+		return "pending-registration";		
+	}
+	
+	
+	@RequestMapping(value = "/pending-verification")
+	public String pendingVerification(ModelMap model){	
+
+		
+		model.addAttribute("title", "Pending Verification");
+		model.addAttribute("message", "uploading your recent recommendation letter.");		
+		
+		
 		return "pending-registration";		
 	}	
 	
 	
-	
-	@RequestMapping(value = "/account-closed/{username}")
-	public String accountClosed(ModelMap model, @PathVariable String username){	
+	@RequestMapping(value = "/account-expired/{userId}")
+	public String accountExpired(ModelMap model, @PathVariable long userId){
 		
 		Query<User> query = dao.createQuery();
 		
-		query.or(query.criteria("username").equal(username),
-				query.criteria("email").equal(username));
+		query
+		.filter("_id", userId)
+		.retrievedFields(true, "_id", "fname", "lname", "username", "email");
 		
-		query.retrievedFields(true, "_id", "fname", "lname", "username", "email");
-		
-		User user = query.get();
-		if(user != null){
-			model.addAttribute("user", user);			
-		}
-		
-		return "account-closed";		
-	}
-	
-	
-	
-	@RequestMapping(value = "/account-expired/{username}")
-	public String accountExpired(ModelMap model, @PathVariable String username){
-		
-		Query<User> query = dao.createQuery();
-		
-		query.or(query.criteria("username").equal(username),
-				query.criteria("email").equal(username));
-
-		query.retrievedFields(true, "_id", "fname", "lname", "username", "email");
+		//System.out.println(" Query - " + query.getQueryObject().toString());
 		
 		User user = query.get();
 		if(user != null){
@@ -555,5 +552,109 @@ public class LoginController {
 		}
 		
 		return "account-expired";		
+	}
+	
+	
+	
+	
+	@RequestMapping(value = "/reco-reupload")
+	public @ResponseBody GenericResponse recoReupload(@RequestBody User user){
+		
+		GenericResponse r = new GenericResponse();
+		r.setSuccess(false);
+		
+		if(user != null && user.getIdentifications() != null){
+			
+			if(user.getIdentifications().getRecomendation() == null 
+					|| user.getIdentifications().getRecomendation().equals("")){
+				
+				r.setMessage("Please provide doctors recommendation letter.");
+				return r;
+			}
+			
+			
+			User userDb = dao.get(user.get_id());
+			if(userDb != null){
+				
+				String oldRecoFileLoc = userDb.getIdentifications() != null ? 
+								userDb.getIdentifications().getRecomendation() : "";
+				
+				userDb.getIdentifications().setRecomendation(user.getIdentifications().getRecomendation());
+				userDb.getIdentifications().setRecoExpiry(user.getIdentifications().getRecoExpiry());
+				userDb.setStatus("new-reco-uploaded");
+
+				dao.save(userDb);
+				
+				
+				/* Update Log */
+				try {
+					
+					Log log = new Log();
+					log.setCollection("users");
+					log.setDetails("user new reco upload. Old reco - " + oldRecoFileLoc);
+					log.setDate(Calendar.getInstance().getTime());
+					log.setKey(userDb.get_id());
+					log.setUser("customer");
+					
+					logDao.save(log);						
+				}
+				catch(Exception e){
+					logger.error(Exceptions.giveStackTrace(e));
+				}
+				
+				
+				
+				/* Email User */
+				try {
+					
+					Email email = new Email();
+					email.setEmailTemplate("reco-reupload");
+					email.setFromName("Luvbrite Security");
+					email.setFromEmail("no-reply@luvbrite.com");
+					email.setRecipientEmail(userDb.getEmail());
+					email.setRecipientName(userDb.getFname());
+					
+					email.setSubject("Luvbrite received your recommendation letter");
+					email.setEmailTitle("New Recommendation Letter");
+					email.setEmailInfo("Info about your recent upload at www.luvbrite.com");	
+					
+					emailService.sendEmail(email);
+				}
+				catch(Exception e){
+					logger.error(Exceptions.giveStackTrace(e));
+				}
+				
+				
+				if(!ccs.getcOps().isDev()){
+
+					/* Email Admin */
+					try {
+
+						Email email = new Email();
+						email.setEmailTemplate("reco-reupload-admin");
+						email.setFromName("Luvbrite Security");
+						email.setFromEmail("no-reply@luvbrite.com");
+						email.setRecipientEmail("new-users@luvbrite.com");
+
+						email.setSubject("Luvbrite New Recommendation Uploaded");
+						email.setEmailTitle("Recommendation Update Admin Email");
+						email.setEmailInfo("Info about new recommendation uploaded at www.luvbrite.com");	
+
+						email.setEmail(userDb);
+
+						emailService.sendEmail(email);
+					}
+					catch(Exception e){
+						logger.error(Exceptions.giveStackTrace(e));
+					}
+				}
+				
+				
+				r.setSuccess(true);
+			}
+			
+		}
+		
+		return r;		
 	}
 }

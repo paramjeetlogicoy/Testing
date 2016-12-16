@@ -212,7 +212,8 @@ public class SeoController {
 
 					Log log = new Log();
 					log.setCollection("seo");
-					log.setDetails(logDetailsString + ". Seo ID - " + seo.get_id() + ". Prev value " + seoElemString);
+					log.setDetails(logDetailsString + ". Seo ID - " + seo.get_id());
+					log.setPreviousDoc(seoElemString);
 					log.setDate(Calendar.getInstance().getTime());
 					log.setKey(0);
 					log.setUser(user.getUsername());

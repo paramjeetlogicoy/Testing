@@ -255,8 +255,9 @@ public class ProductsController {
 					
 					Log log = new Log();
 					log.setCollection("products");
-					log.setDetails("product document updated. Old doc - " + productDbString);
+					log.setDetails("product document updated.");
 					log.setDate(Calendar.getInstance().getTime());
+					log.setPreviousDoc(productDbString);
 					log.setKey(product.get_id());
 					log.setUser(user.getUsername());
 					

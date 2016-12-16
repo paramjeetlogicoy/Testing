@@ -31,8 +31,9 @@ var lbApp = angular.module(
 	.controller('cartCouponCtrlr',   ['$scope', '$http', '$rootScope', cartCouponCtrlr])
 	.controller('cartReviewCtrlr',   ['$scope', '$http', '$rootScope', cartReviewCtrlr])
 	
-.controller('localBoxCtrlr', ['$scope', '$http', '$rootScope', localBoxCtrlr])
-.controller('homeCtrlr', ['$scope', '$http', '$rootScope', homeCtrlr])
+.controller('localBoxCtrlr', 		 ['$scope', '$http', '$rootScope', localBoxCtrlr])
+.controller('homeCtrlr', 			 ['$scope', '$http', '$rootScope', homeCtrlr])
+.controller('acctExpiredCtrlr', 	 ['$scope', '$http', 'Upload', acctExpiredCtrlr])
 
 // This directive is implemented in angular-general-functions.js
 .directive('remainingTime', ['$interval', remainingTime])

@@ -9,6 +9,7 @@ public class Pagination {
 	protected int startCount = 0;
 	protected int endCount = 0;
 	protected int offset = 0;
+	protected int totalPages = 0;
 
 	public Pagination(){}	
 	
@@ -48,6 +49,12 @@ public class Pagination {
 	public void setOffset(int offset) {
 		this.offset = offset;
 	}
+	public int getTotalPages() {
+		return totalPages;
+	}
+	public void setTotalPages(int totalPages) {
+		this.totalPages = totalPages;
+	}
 	
 	
 	@Override
@@ -59,7 +66,8 @@ public class Pagination {
 		.append("\"itemsPerPage\":").append(itemsPerPage).append(",")
 		.append("\"startCount\":").append(startCount).append(",")
 		.append("\"endCount\":").append(endCount).append(",")
-		.append("\"offset\":").append(offset)
+		.append("\"offset\":").append(offset).append(",")
+		.append("\"totalpages\":").append(totalPages)
 		.append("}").toString();
 	}
 }

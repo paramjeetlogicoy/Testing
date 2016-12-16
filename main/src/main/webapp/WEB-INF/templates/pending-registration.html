@@ -14,13 +14,10 @@
 
 	<div class="container page-container">
 		<div class="generic-container pad2">
-			<h2>Pending Registration</h2>
-
-			<div class="marg-b2" th:if="${userName}!=null"
-				th:text="'Hi ' + ${userName}"></div>
+			<h2 th:text="${title}">Pending Registration</h2>
 
 			<div class="alert alert-warning">
-				<h4>Thank you for registering with Luvbrite Collective.</h4>
+				<h4>Thank you for <span th:text="${message}">registering with Luvbrite Collective.</span></h4>
 				<div class="marg-b2">
 					Your account registration is currently in pending status. Our
 					support team usually reviews your registration information and

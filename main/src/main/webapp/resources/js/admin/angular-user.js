@@ -79,7 +79,7 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 	$scope.errorMsg = '';
 	$scope.p = {};
 	$scope.roles = ["customer","admin"];
-	$scope.statuses = ['pending','active','declined','reco-expired','closed'];
+	$scope.statuses = ['pending','active','declined','reco-expired','new-reco-uploaded','closed'];
 	$scope.mode = mode; //Mode will be 'new' while adding a user, and 'edit', if editing a user.
 	$scope.userId = $scope.params.userId;
 	
@@ -154,7 +154,47 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 				$('.admin-editor-container')[0].scrollIntoView();
 			});
 		});		
-	};	
+	};
+	
+	
+	$scope.memos = [];
+	$scope.memopg = {};
+	$scope.memopg.currentPage = 1;
+	$scope.memoText = "";
+	
+	$scope.reloadMemos = function(){
+		$scope.memopg.currentPage = 1;
+		$scope.getMemos();
+	};
+	
+	$scope.getMemos = function(){
+		
+		$http.get('/admin/logs/users/' + $scope.userId, {
+			params : {
+				'p' : $scope.memopg.currentPage
+			}
+		})
+		.then(function(resp){
+			if(resp.data){
+				$scope.memos = resp.data.respData;
+				$scope.memopg = resp.data.pg;
+			}			
+		});		
+	};
+	$scope.saveMemo = function(){
+		var log = {
+				collection : 'users',
+				key : $scope.userId,
+				details : $('textarea#memoText').val(),
+				date : new Date(),
+				user : $('#adminHeaderUsername').text()
+		}
+		
+		$http.post('/admin/logs/add', log);
+		$scope.memos.unshift(log);
+		$('textarea#memoText').val('');
+	};
+	
 	
 	$scope.closeUserDetails = function(){
 		$scope.initalize();	
@@ -200,6 +240,7 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 				_lbFns.pSuccess('Password Updated');
 				
 				$scope.showUserForm();
+				$scope.reloadMemos();
 			}
 			else{
 				alert(resp.message);
@@ -238,6 +279,7 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 					}
 					
 					_lbFns.pSuccess('User activated and email sent. ' + msg);
+					$scope.reloadMemos();
 				}
 				else{
 					alert(resp.message);
@@ -305,7 +347,8 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 			$scope.saveUserGeneric(function(resp){
 				if(resp.success){
 					$scope.user.$setPristine();
-					_lbFns.pSuccess('User updated');				
+					_lbFns.pSuccess('User updated');		
+					$scope.reloadMemos();		
 				}
 				else{
 					$scope.errorMsg = resp.message;
@@ -321,9 +364,10 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 	};
 	
 	
-	if($scope.mode=='edit' && $scope.userId)
+	if($scope.mode=='edit' && $scope.userId){
 		$scope.getUserDetails();
-	
+		$scope.getUserMemos();
+	}
 	else {
 		$scope.u = {};	
 		$scope.u._id = 0;

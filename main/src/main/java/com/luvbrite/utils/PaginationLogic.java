@@ -46,5 +46,6 @@ public class PaginationLogic {
 		pg.setStartCount(startC);
 		pg.setEndCount(endC);
 		pg.setOffset(offset);
+		pg.setTotalPages(pages);
 	}
 }

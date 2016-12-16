@@ -16,6 +16,7 @@ public class Log {
 	private String details;
 	private Date date;
 	private String user;
+	private String previousDoc;
 	
 	public ObjectId get_id() {
 		return _id;
@@ -52,5 +53,11 @@ public class Log {
 	}
 	public void setUser(String user) {
 		this.user = user;
+	}
+	public String getPreviousDoc() {
+		return previousDoc;
+	}
+	public void setPreviousDoc(String previousDoc) {
+		this.previousDoc = previousDoc;
 	}	
 }

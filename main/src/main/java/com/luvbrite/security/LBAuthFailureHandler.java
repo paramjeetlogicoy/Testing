@@ -36,16 +36,17 @@ public class LBAuthFailureHandler implements AuthenticationFailureHandler  {
 		
 		if(RequestUtil.isAjaxRequest(req)) {	
 			
-			if(errMsg.equals("User is disabled")){
+			if(errMsg.equals("Pending activation")){
 				RequestUtil.sendJsonResponse(res, "pending", "/pending-registration");
 			}
 			
-			else if(errMsg.equals("User account has expired")){
-				RequestUtil.sendJsonResponse(res, "expired", "/account-closed");
+			else if(errMsg.equals("Pending verification")){
+				RequestUtil.sendJsonResponse(res, "pending", "/pending-verification");
 			}
 			
-			else if(errMsg.equals("User credentials have expired")){
-				RequestUtil.sendJsonResponse(res, "expired", "/account-expired");
+			else if(errMsg.indexOf("Recommendation expired")==0){
+				String userId = errMsg.split(":")[1];
+				RequestUtil.sendJsonResponse(res, "expired", "/account-expired/" + userId);
 			}
 			
 			else{

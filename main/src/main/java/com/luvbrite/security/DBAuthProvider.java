@@ -94,20 +94,24 @@ public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 						}					
 					}
 
-					
-					boolean enabled = true,
-							credentialsNonExpired = true,
-							accountNonExpired = true;
-										
-					 if(dbUser.getStatus().equals("closed")){
-						accountNonExpired = false;
+					if(dbUser.getStatus().equals("closed")){
+						throw new 
+						InternalAuthenticationServiceException("Account closed");
 					}
-					
+
 					else if(dbUser.getStatus().equals("reco-expired")) {
-						credentialsNonExpired = false;
-						
-					} else if(!dbUser.getStatus().equals("active")) {
-						enabled = false;
+						throw new 
+						InternalAuthenticationServiceException("Recommendation expired:" + dbUser.get_id());
+					} 
+
+					else if(dbUser.getStatus().equals("new-reco-uploaded")) {
+						throw new 
+						InternalAuthenticationServiceException("Pending verification");
+					} 
+
+					else if(dbUser.getStatus().equals("pending")) {
+						throw new 
+						InternalAuthenticationServiceException("Pending activation");
 					}
 					 
 					 
@@ -115,10 +119,7 @@ public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 					String userRole = dbUser.getRole();		
 					List<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
 					
-					if(userRole!=null && 
-							enabled && 
-							credentialsNonExpired && 
-							accountNonExpired){
+					if(userRole!=null){
 						
 						if(userRole.equals("admin") || userRole.equals("adminInv") || userRole.equals("adminSpr")){
 							authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
@@ -134,8 +135,7 @@ public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 					else
 						authorities.add(new SimpleGrantedAuthority("ROLE_NONE"));
 					
-					currUser = new UserDetailsExt(actualUsername, dbUser.get_id(), enabled, 
-											accountNonExpired, credentialsNonExpired, authorities);
+					currUser = new UserDetailsExt(actualUsername, dbUser.get_id(), authorities);
 					
 				}
 

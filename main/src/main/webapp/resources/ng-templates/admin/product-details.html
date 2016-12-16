@@ -6,11 +6,11 @@
 					ng-click="closeProductDetails()">
 					<i class="fa fa-times size24"></i>
 				</button>
-				
+
 				<h3>
 					<span class="text-success">{{p.name}}</span>
 				</h3>
-				
+
 				<div class="alert alert-danger alert-dismissible" role="alert"
 					ng-show="errorMsg">
 					<button type="button" class="close" data-dismiss="alert"
@@ -19,8 +19,8 @@
 					</button>
 					<span ng-bind-html="errorMsg"></span>
 				</div>
-				
-				
+
+
 				<div class="product-details-holder">
 					<h5 class="text-primary">Step 1 - Product Details</h5>
 
@@ -41,7 +41,7 @@
 							ng-class="{ 'has-error' : productDetailsForm.name.$invalid && !productDetailsForm.name.$pristine }">
 							<label class="col-sm-4 control-label">Product Name</label>
 							<div class="col-sm-7">
-								<input type="text" class="form-control" ng-model="p.name" 
+								<input type="text" class="form-control" ng-model="p.name"
 									name="name" required ng-blur="createProductUrl()" />
 								<p
 									ng-show="productDetailsForm.name.$invalid && !productDetailsForm.name.$pristine"
@@ -55,8 +55,8 @@
 							<div class="col-sm-7">
 								<input type="text" class="form-control" ng-model="p.url"
 									name="url" required ng-blur="createProductUrl()" /> <a
-									target="_blank" ng-href="/product/{{p.url}}" class="small" ng-show="mode=='edit'">View
-									Product</a>
+									target="_blank" ng-href="/product/{{p.url}}" class="small"
+									ng-show="mode=='edit'">View Product</a>
 								<p
 									ng-show="productDetailsForm.url.$invalid && !productDetailsForm.url.$pristine"
 									class="help-block">URL is required.</p>
@@ -74,7 +74,8 @@
 									Image</button>
 								<input type="hidden" name="featuredImg" ng-model="p.featuredImg" />
 								<div class="thumbnail-holder" ng-if="p.featuredImg">
-									<img ng-src="{{cdnPath + p.featuredImg.replace('.jpg','-150x150.jpg')}}" />
+									<img
+										ng-src="{{cdnPath + p.featuredImg.replace('.jpg','-150x150.jpg')}}" />
 								</div>
 							</div>
 						</div>
@@ -112,9 +113,10 @@
 						<div class="form-group">
 							<label class="col-sm-4 control-label">Related Products</label>
 							<div class="col-sm-4">
-								<textarea class="form-control" name="rps"
-									ng-model="p.rps" ng-list=" | "></textarea>
-									<p class="help-block small">Provide the Product IDs separated by | Maximum 4</p>
+								<textarea class="form-control" name="rps" ng-model="p.rps"
+									ng-list=" | "></textarea>
+								<p class="help-block small">Provide the Product IDs
+									separated by | Maximum 4</p>
 							</div>
 						</div>
 
@@ -135,11 +137,12 @@
 
 
 						<div class="form-group pad-t2">
-							<h4 class="col-sm-4 col-sm-offset-2 pad-t2 u">Product Filters</h4>
+							<h4 class="col-sm-4 col-sm-offset-2 pad-t2 u">Product
+								Filters</h4>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-4 control-label">Price <br /> <span class="grey7">Price
-									range is {{p.priceRange}}</span></label>
+							<label class="col-sm-4 control-label">Price <br /> <span
+								class="grey7">Price range is {{p.priceRange}}</span></label>
 							<div class="col-sm-7">
 								<input type="number" min="0" value=""
 									ng-model="p.productFilters.price" name="productFilters.price"
@@ -155,12 +158,11 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-4 control-label">CBD (in
-								mg)</label>
+							<label class="col-sm-4 control-label">CBD (in mg)</label>
 							<div class="col-sm-7">
 								<input type="number" min="0" value=""
-									ng-model="p.productFilters.cbd"
-									name="productFilters.cbd" class="form-control" />
+									ng-model="p.productFilters.cbd" name="productFilters.cbd"
+									class="form-control" />
 							</div>
 						</div>
 
@@ -179,9 +181,9 @@
 							</div>
 						</div>
 					</form>
-					
-					
-					
+
+
+
 
 					<div class="add-category-popup abs overlay pad3"
 						ng-show="showAddCat">
@@ -253,8 +255,8 @@
 							</div>
 						</div>
 					</form>
-					
-					
+
+
 					<div ng-hide="p.variation">
 
 						<form class="form-horizontal" name="productSimpleForm">
@@ -311,10 +313,10 @@
 						</form>
 
 					</div>
-					
-					
-					
-					
+
+
+
+
 					<!-- ATTRIBUTES SECTION -->
 
 					<div ng-show="p.variation">
@@ -334,8 +336,8 @@
 
 										<div class="panel-heading" role="tab">
 											<a class="pull-right" href="" role="button"
-												ng-click="removeAttr()"><small class="red1">Delete Attr</small></a><a
-												role="button" data-toggle="collapse" class="show"
+												ng-click="removeAttr()"><small class="red1">Delete
+													Attr</small></a><a role="button" data-toggle="collapse" class="show"
 												data-parent="#accordion" ng-click="attrCollapse()"><i
 												class="fa fa-caret-right"></i> {{attr.attr}} </a>
 										</div>
@@ -401,11 +403,11 @@
 							</form>
 
 						</div>
-						
-						
-						
-						
-					
+
+
+
+
+
 						<!-- PRICING SECTION -->
 
 						<div class="product-price-holder hideme">
@@ -414,8 +416,9 @@
 								<button class="btn btn-warning btn-xs marg-l1"
 									ng-click="getNewVarCombinations()">Create All
 									Combinations</button>
-								<button class="btn btn-primary btn-xs marg-l1" ng-show="prices.length"
-									ng-click="addPriceLine()">Add Price Line</button>
+								<button class="btn btn-primary btn-xs marg-l1"
+									ng-show="prices.length" ng-click="addPriceLine()">Add
+									Price Line</button>
 							</h6>
 
 							<form name="productPriceForm" class="form-horizontal">
@@ -426,8 +429,9 @@
 										<div class="panel-heading" role="tab">
 											<div class="row">
 												<a href="" role="button" data-toggle="collapse"
-													class="pull-left marg-t2 marg-l2 m-nofloat" data-parent="#accordion"
-													ng-click="attrCollapse()"><i class="fa fa-caret-right"></i> <span
+													class="pull-left marg-t2 marg-l2 m-nofloat"
+													data-parent="#accordion" ng-click="attrCollapse()"><i
+													class="fa fa-caret-right"></i> <span
 													class="visible-xs-inline">Show/Hide</span> </a>
 												<div class="price-listing col-sm-4 col-md-3"
 													ng-repeat="vars in price.variation">
@@ -468,7 +472,8 @@
 
 										<div class="panel-collapse collapse" role="tabpanel">
 											<div class="panel-body">
-												<div class="form-group" data-vid="{{price.variationId}}" data-_id="{{price._id}}">
+												<div class="form-group" data-vid="{{price.variationId}}"
+													data-_id="{{price._id}}">
 													<div class="col-sm-3 marg-b2">
 														<div class="form-group-sm">
 															<label class="control-label">Sales Price</label> <input
@@ -531,7 +536,7 @@
 										<p class="bg-danger" ng-show="productPriceForm.$invalid">Please
 											correct the fields.</p>
 									</div>
-								
+
 								</div>
 							</form>
 						</div>
@@ -540,6 +545,10 @@
 
 					</div>
 				</div>
+
+				<div
+					ng-include="'/resources/ng-templates/admin/admin-memo.html' + '?' + Math.random()"></div>
+
 			</div>
 		</div>
 	</div>

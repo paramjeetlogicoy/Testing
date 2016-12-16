@@ -103,7 +103,8 @@ _lbUrls = {
 	'login' : '/login',
 	'register' : '/register',
 	'creset' : '/createreset',
-	'rsavep' : '/reset/savep'
+	'rsavep' : '/reset/savep',
+	'recoreupload' : '/reco-reupload'
 };
 
 $(document).ready(function(){

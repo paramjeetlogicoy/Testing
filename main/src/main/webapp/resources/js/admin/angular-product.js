@@ -221,6 +221,7 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 			
 			$http.post('/admin/products/json/savepdtls', $scope.p)
 			.success(function(resp){
+				$scope.reloadMemos();
 				if(cb)
 					cb(resp);
 			})
@@ -668,9 +669,53 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 	};
 	
 	
-	if($scope.mode=='edit' && $scope.productId)
-		$scope.getProductDetails();
+	/* MEMO FNS */
+
 	
+	
+	$scope.memos = [];
+	$scope.memopg = {};
+	$scope.memopg.currentPage = 1;
+	$scope.memoText = "";
+	
+	$scope.reloadMemos = function(){
+		$scope.memopg.currentPage = 1;
+		$scope.getMemos();
+	};
+	
+	$scope.getMemos = function(){
+		
+		$http.get('/admin/logs/products/' + $scope.productId, {
+			params : {
+				'p' : $scope.memopg.currentPage
+			}
+		})
+		.then(function(resp){
+			if(resp.data){
+				$scope.memos = resp.data.respData;
+				$scope.memopg = resp.data.pg;
+			}			
+		});		
+	};
+	$scope.saveMemo = function(){
+		var log = {
+				collection : 'products',
+				key : $scope.productId,
+				details : $('textarea#memoText').val(),
+				date : new Date(),
+				user : $('#adminHeaderUsername').text()
+		}
+		
+		$http.post('/admin/logs/add', log);
+		$scope.memos.unshift(log);
+		$('textarea#memoText').val('');
+	};
+	/* MEMO FNS END*/
+	
+	if($scope.mode=='edit' && $scope.productId){
+		$scope.getProductDetails();
+		$scope.reloadMemos();
+	}
 	else
 		$('#product-editor').show();
 

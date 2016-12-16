@@ -1,0 +1,43 @@
+<div class="memos-wrapper">
+	<h5>Activity Logs</h5>
+	<div class="row marg-b1">
+		<div class="col-sm-8">
+			<textarea name="" id="memoText" ng-model="memoText" class="form-control"
+				placeholder="Add a new activity..."></textarea>
+		</div>
+		<div class="col-sm-4">
+			<button type="button" class="btn btn-info btn-sm"
+				ng-click="saveMemo()" ng-disabled="!memoText">Save Activity</button>
+		</div>
+	</div>
+	<div class="text-right small marg-b1"
+		ng-show="memopg.totalItems > memopg.itemsPerPage">
+		<span class="label label-default">{{memopg.startCount}} -
+			{{memopg.endCount}} of {{memopg.totalItems}}</span> | <span class="grey7"
+			ng-if="memopg.currentPage == 1"><i
+			class="fa fa-chevron-circle-left" aria-hidden="true"></i></span> <a href=""
+			ng-click="memopg.currentPage = memopg.currentPage - 1; getMemos()"
+			title="Prev" ng-hide="memopg.currentPage == 1"><i
+			class="fa fa-chevron-circle-left" aria-hidden="true"></i></a> <strong
+			class="orange1">{{memopg.currentPage}} of
+			{{memopg.totalPages}}</strong> <a href=""
+			ng-click="memopg.currentPage = memopg.currentPage + 1; getMemos()"
+			title="Next" ng-hide="memopg.currentPage == memopg.totalPages"><i
+			class="fa fa-chevron-circle-right" aria-hidden="true"></i></a> <span
+			class="grey7" ng-if="memopg.currentPage == memopg.totalPages"><i
+			class="fa fa-chevron-circle-right" aria-hidden="true"></i></span>
+	</div>
+
+	<div class="memos" ng-repeat="m in memos">
+		<div class="pre-wrap">{{m.details}}</div>
+		<div ng-if="m.previousDoc">
+			<a href="" ng-click="showValue = !showValue" class="small"
+				ng-init="showValue = false">{{showValue ? 'hide' : 'show'}}
+				previous value</a>
+			<pre ng-show="showValue">{{m.previousDoc}}</pre>
+		</div>
+		<div class="grey7 small">
+			<em>by {{m.user}} on {{m.date | date:'MM/dd/yyyy hh:mm a'}}</em>
+		</div>
+	</div>
+</div>

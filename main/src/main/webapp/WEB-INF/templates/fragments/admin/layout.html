@@ -50,8 +50,8 @@
 					<div class="marg-b05"><a href="/" class="sitelnk">Visit Luvbrite</a></div>
 					<div class="nav-user-info"
 						th:if="${session.SPRING_SECURITY_CONTEXT.authentication.name}">
-						<span
-							th:text="|Hi ${session.SPRING_SECURITY_CONTEXT.authentication.name}|"></span>
+						<span> Hi <span id="adminHeaderUsername"
+							th:text="${session.SPRING_SECURITY_CONTEXT.authentication.name}"></span></span>
 						<form method="post" action="/logout" class="inline">
 							<input type="hidden" id="_lb_sec_tok"
 								th:name="*{_csrf.parameterName}" th:value="${_csrf.token}" /> <em>(<input

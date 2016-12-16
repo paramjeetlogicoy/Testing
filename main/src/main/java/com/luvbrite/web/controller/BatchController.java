@@ -3,14 +3,18 @@ package com.luvbrite.web.controller;
 import java.util.Calendar;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.luvbrite.dao.LogDAO;
 import com.luvbrite.dao.UserDAO;
 import com.luvbrite.services.EmailService;
+import com.luvbrite.utils.Exceptions;
 import com.luvbrite.web.models.Email;
+import com.luvbrite.web.models.Log;
 import com.luvbrite.web.models.RecoExpiry;
 import com.luvbrite.web.models.User;
 
@@ -19,11 +23,16 @@ import com.luvbrite.web.models.User;
 @RequestMapping(value = "/batch")
 public class BatchController {
 	
+	private static Logger logger = Logger.getLogger(BatchController.class);
+	
 	@Autowired
 	private EmailService emailService;
 
 	@Autowired
-	private UserDAO userDao;
+	private UserDAO userDao;	
+	
+	@Autowired
+	private LogDAO logDao;
 	
 	@RequestMapping(value = "/")
 	public String homePage() {
@@ -49,11 +58,18 @@ public class BatchController {
 				.asList();		
 		
 		//Expired
+		
+		/** IMPORTANT - We need the full User object here. 
+		 * The same object is passed to deactivateUser() method
+		 * Don't user projection or retrieveFields in the query. **/
 		List<User> usersE = userDao.createQuery()
 				.field("active").equal(true)
 				.field("identifications.recoExpiry").lessThan(now.getTime())
 				.order("identifications.recoExpiry")
 				.asList();
+
+		//Deactivate these expired users
+		deactivateUser(usersE);
 		
 		//No expiry Date
 		List<User> usersN = userDao.createQuery()
@@ -85,6 +101,47 @@ public class BatchController {
 		
 		return "layout";
 	}	
+	
+	
+	private void deactivateUser(List<User> users){
+		
+		try {
+			
+			if(users != null){
+				
+				for(User user : users){
+
+					user.setActive(false);
+					user.setStatus("reco-expired");
+
+					userDao.save(user);
+
+					/**
+					 * Update Log
+					 * */
+					try {
+
+						Log log = new Log();
+						log.setCollection("users");
+						log.setDetails("(Batch Job) user status changed to reco-expired.");
+						log.setDate(Calendar.getInstance().getTime());
+						log.setKey(user.get_id());
+						log.setUser("system");
+
+						logDao.save(log);					
+					}
+					catch(Exception e){
+						logger.error(Exceptions.giveStackTrace(e));
+					}
+				}
+				
+				logger.error(users.size() + " Users marked as reco-expired! ");
+			}
+			
+		} catch(Exception e){
+			logger.error(Exceptions.giveStackTrace(e));
+		}
+	}
 
 	
 	@RequestMapping(value = "/customers-expiring-in-6-months")
