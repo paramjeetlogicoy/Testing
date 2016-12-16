@@ -126,7 +126,9 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 		$http.get('/admin/products/json/' + $scope.productId)
 		.success(function(data){
 			$scope.p = data;			
-			$('#product-editor').show();
+			$('#product-editor').show(0, function(){
+				$('.admin-editor-container')[0].scrollIntoView();
+			});
 			$scope.correctVarValues();
 			
 			if($scope.p.attrs){
@@ -140,7 +142,9 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 			
 		}).error(function(){
 			$scope.errorMsg = 'There was some error getting the product info. Please try later';
-			$('#product-editor').show();
+			$('#product-editor').show(0, function(){
+				$('.admin-editor-container')[0].scrollIntoView();
+			});
 		});		
 	};
 	
@@ -244,6 +248,7 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 				}
 				else{
 					$scope.errorMsg = resp.message;
+					$('.admin-editor-container')[0].scrollIntoView();
 				}
 			});	
 		}
@@ -259,7 +264,8 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 		if($scope.p.name && $scope.p.name != '' 
 				&& (!$scope.p.url || $scope.p.url == '')){
 			
-			$scope.p.url = $scope.p.name.toLowerCase().replace(/\s+/g,"-");
+			//remove all non-alphabetic (except spaces) and then replace spaces with hypen
+			$scope.p.url = $scope.p.name.toLowerCase().replace(/[^a-z0-9 ]/g, "").replace(/\s+/g, "-");
 		}
 	};
 	

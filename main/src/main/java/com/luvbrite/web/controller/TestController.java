@@ -8,15 +8,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.luvbrite.dao.CategoryDAO;
 import com.luvbrite.dao.OrderDAO;
 import com.luvbrite.dao.PriceDAO;
 import com.luvbrite.dao.ProductDAO;
+import com.luvbrite.dao.SeoDAO;
 import com.luvbrite.services.PostOrderMeta;
+import com.luvbrite.web.models.Category;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Order;
 import com.luvbrite.web.models.Price;
 import com.luvbrite.web.models.Product;
 import com.luvbrite.web.models.ProductFilters;
+import com.luvbrite.web.models.Seo;
+import com.luvbrite.web.models.SeoElem;
 
 
 @Controller
@@ -33,6 +38,12 @@ public class TestController {
 
 	@Autowired
 	private ProductDAO prdDao;
+
+	@Autowired
+	private CategoryDAO catDao;
+
+	@Autowired
+	private SeoDAO seoDao;
 	
 
 	@RequestMapping(value = "/test/meta/{orderNumber}")
@@ -142,6 +153,82 @@ public class TestController {
 			gr.setMessage(sb.toString());
 		}
 
+		return gr;		
+	}
+	
+	
+	@RequestMapping(value = "/onetime/populateproductseo")
+	public @ResponseBody GenericResponse populateProductSEO(){	
+
+		GenericResponse gr  = new GenericResponse();
+		gr.setSuccess(false);
+		gr.setMessage("");
+		
+		int processCounter = 0;
+		StringBuilder sb = new StringBuilder();
+		
+		List<Product> products = prdDao.createQuery().order("-_id").asList();
+		if(products != null){
+			
+			for(Product p : products){					
+				
+				String title = p.getName();
+				String url = p.getUrl();
+				
+				if(title != null && !title.equals("")
+						&& url != null && !url.equals("")){
+					
+					Seo seo = new Seo(); 
+					seo.setUrl(url);
+					seo.setPageType("product");
+					seoDao.save(seo);
+
+					SeoElem seoElem = new SeoElem();
+					seoElem.setTitle(title);
+					seoElem.setNobots(false);
+					
+					p.setSeoElem(seoElem);
+					prdDao.save(p);					
+
+					processCounter++;
+				}				
+			}			
+			
+			sb.append(processCounter + " products seo information updated ");
+		}
+		
+		processCounter = 0;
+		List<Category> categories = catDao.createQuery().order("-_id").asList();
+		if(categories != null){
+			
+			for(Category c : categories){					
+				
+				String title = c.getName();
+				String url = c.getUrl();
+				
+				if(title != null && !title.equals("")
+						&& url != null && !url.equals("")){
+					
+					Seo seo = new Seo(); 
+					seo.setUrl("category/" + url);
+					seo.setPageType("category");
+					seoDao.save(seo);
+
+					SeoElem seoElem = new SeoElem();
+					seoElem.setTitle(title);
+					seoElem.setNobots(false);
+					
+					c.setSeoElem(seoElem);
+					catDao.save(c);					
+
+					processCounter++;
+				}				
+			}			
+			
+			sb.append(processCounter + " category seo information updated ");
+		}
+
+		gr.setMessage(sb.toString());
 		return gr;		
 	}
 }

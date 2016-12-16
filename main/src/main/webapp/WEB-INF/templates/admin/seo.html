@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SEO Elements</title>
+<meta th:include="fragments/admin/layout::fragment-head" />
+</head>
+<body ng-app="seoApp">
+	<div class="admin-container">
+		<div th:replace="fragments/admin/layout::fragment-header"></div>
+		<div th:replace="fragments/admin/layout::fragment-subnav"></div>
+		<div class="rel ng-cloak clearfix"
+			ng-controller="defaultRouteCtrl">
+			<div class="page-level-alert">
+				<div class="alert alert-danger alert-dismissible" role="alert"
+					ng-show="pageLevelError">
+					<button type="button" class="close" data-dismiss="alert"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<span ng-bind-html="pageLevelError"></span>
+				</div>
+			</div>
+
+
+			<div class="customers-container pad2">				
+				<h2>Pages (URLs)</h2>
+
+				<div class="marg-b1 row">
+					<div class="col-sm-8">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title size15">Filters</h3>
+							</div>
+							<div class="panel-body">
+								<div class="row">
+									<div class="col-sm-6">
+										<input type="text" class="form-control"
+											placeholder="Search Page Url" ng-model="seoSearch.url" />
+									</div>
+									<div class="col-sm-6">
+										<div class="radio">
+											<label><input type="radio" name="productFilter"
+												ng-model="seoSearch.pageType" value="" />Show all pages</label>
+										</div>
+										<div class="radio">
+											<label><input type="radio" name="productFilter"
+												ng-model="seoSearch.pageType" value="product" />Show product
+												pages only</label>
+										</div>
+										<div class="radio">
+											<label><input type="radio" name="productFilter"
+												ng-model="seoSearch.pageType" value="category" />Show
+												category pages only</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="pad-v2">
+					<ul class="row seoelement-wrapper">
+						<li class="col-sm-4 col-md-3"
+							ng-repeat="s in elements | filter : seoSearch"><a
+							href="#/details/{{s._id}}" title="{{s.seoElem.title}}"><span
+								class="{{s.pageType}}">{{s.url}}</span></a></li>
+					</ul>
+				</div>
+
+			</div>
+
+			<div ng-view=""></div>
+		</div>
+
+		<div th:replace="fragments/admin/layout::fragment-footer"></div>
+		<div th:replace="fragments/admin/layout::fragment-foot(angular=true)"></div>
+	</div>
+	<script src="/resources/js/angular-upload-service.js"></script>
+	<script src="/resources/js/admin/angular-seoelements.js"></script>
+	<script type="text/javascript">
+		$('.nav-seo').addClass('active');
+	</script>
+</body>
+</html>
