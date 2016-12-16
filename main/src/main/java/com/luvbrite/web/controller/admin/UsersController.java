@@ -172,6 +172,7 @@ public class UsersController {
 				if(userId != 0l){
 					user.set_id(userId);
 					user.setDateRegistered(Calendar.getInstance().getTime());
+					user.setStatus("new");
 					
 					//Encode the password before saving it
 					String encodedPwd = encoder.encode(user.getPassword());
@@ -313,6 +314,7 @@ public class UsersController {
 			if(userDb!=null){		
 				
 				userDb.setActive(true);
+				userDb.setStatus("active");
 				
 				/**
 				 * Here we are only changing the status to active.

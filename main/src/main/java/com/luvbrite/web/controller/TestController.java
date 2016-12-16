@@ -13,6 +13,7 @@ import com.luvbrite.dao.OrderDAO;
 import com.luvbrite.dao.PriceDAO;
 import com.luvbrite.dao.ProductDAO;
 import com.luvbrite.dao.SeoDAO;
+import com.luvbrite.dao.UserDAO;
 import com.luvbrite.services.PostOrderMeta;
 import com.luvbrite.web.models.Category;
 import com.luvbrite.web.models.GenericResponse;
@@ -22,6 +23,7 @@ import com.luvbrite.web.models.Product;
 import com.luvbrite.web.models.ProductFilters;
 import com.luvbrite.web.models.Seo;
 import com.luvbrite.web.models.SeoElem;
+import com.luvbrite.web.models.User;
 
 
 @Controller
@@ -41,6 +43,9 @@ public class TestController {
 
 	@Autowired
 	private CategoryDAO catDao;
+
+	@Autowired
+	private UserDAO userDao;
 
 	@Autowired
 	private SeoDAO seoDao;
@@ -226,6 +231,42 @@ public class TestController {
 			}			
 			
 			sb.append(processCounter + " category seo information updated ");
+		}
+
+		gr.setMessage(sb.toString());
+		return gr;		
+	}	
+	
+	@RequestMapping(value = "/onetime/setuserstatus")
+	public @ResponseBody GenericResponse setUserStatus(){	
+
+		GenericResponse gr  = new GenericResponse();
+		gr.setSuccess(false);
+		gr.setMessage("");
+		
+		int activeCounter = 0,
+				declineCounter = 0;
+		StringBuilder sb = new StringBuilder();
+		
+		List<User> users = userDao.createQuery().order("_id").asList();
+		if(users != null){
+			
+			for(User u : users){					
+				
+				if(u.isActive()){					
+					u.setStatus("active");
+					activeCounter++;
+				}
+				
+				else{
+					u.setStatus("declined");
+					declineCounter++;
+				}
+				
+				userDao.save(u);
+			}			
+			
+			sb.append(activeCounter + " Users marked active. " + declineCounter + " Users marked declined.");
 		}
 
 		gr.setMessage(sb.toString());

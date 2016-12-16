@@ -74,11 +74,8 @@ public class UserDAO extends BasicDAO<User, Long> {
 			setFilters(query, regExp);
 		}
 		
-		if(status.equals("inactive")){
-			query.field("active").equal(false);
-		}
-		else if(status.equals("active")){
-			query.field("active").equal(true);
+		if(!status.equals("all") && !status.equals("")){
+			query.field("status").equal(status);
 		}
 		
 		//Apply limit if applicable

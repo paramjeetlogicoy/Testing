@@ -22,6 +22,9 @@ var loginCtrlr = function($scope, $http){
 				if(resp.data.pending){
 					location.href = resp.data.pending;
 				}
+				else if(resp.data.expired){
+					location.href = resp.data.expired + '/' + $scope.user.username;
+				}
 				else if(resp.data.success){
 					if($('#redirectURL').val()!==''){
 						location.href = $('#redirectURL').val();

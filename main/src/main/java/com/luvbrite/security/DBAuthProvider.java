@@ -94,13 +94,32 @@ public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 						}					
 					}
 
-					boolean enabled = false;
-					if(dbUser.isActive()) enabled = true;
+					
+					boolean enabled = true,
+							credentialsNonExpired = true,
+							accountNonExpired = true;
+										
+					 if(dbUser.getStatus().equals("closed")){
+						accountNonExpired = false;
+					}
+					
+					else if(dbUser.getStatus().equals("reco-expired")) {
+						credentialsNonExpired = false;
+						
+					} else if(!dbUser.getStatus().equals("active")) {
+						enabled = false;
+					}
+					 
+					 
 					
 					String userRole = dbUser.getRole();		
 					List<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
 					
-					if(userRole!=null && enabled){
+					if(userRole!=null && 
+							enabled && 
+							credentialsNonExpired && 
+							accountNonExpired){
+						
 						if(userRole.equals("admin") || userRole.equals("adminInv") || userRole.equals("adminSpr")){
 							authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 							authorities.add(new SimpleGrantedAuthority("ROLE_EDIT"));
@@ -115,7 +134,8 @@ public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 					else
 						authorities.add(new SimpleGrantedAuthority("ROLE_NONE"));
 					
-					currUser = new UserDetailsExt(actualUsername, dbUser.get_id(), enabled, authorities);
+					currUser = new UserDetailsExt(actualUsername, dbUser.get_id(), enabled, 
+											accountNonExpired, credentialsNonExpired, authorities);
 					
 				}
 

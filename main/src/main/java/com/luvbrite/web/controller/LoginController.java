@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.query.Query;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -175,6 +176,7 @@ public class LoginController {
 					
 					user.set_id(userId);
 					user.setActive(false);
+					user.setStatus("pending");
 					user.setRole("customer");
 					user.setDateRegistered(Calendar.getInstance().getTime());
 					
@@ -507,5 +509,51 @@ public class LoginController {
 		
 		
 		return r;		
+	}		
+	
+	
+	@RequestMapping(value = "/pending-registration")
+	public String pendingRegistration(ModelMap model){			
+		return "pending-registration";		
+	}	
+	
+	
+	
+	@RequestMapping(value = "/account-closed/{username}")
+	public String accountClosed(ModelMap model, @PathVariable String username){	
+		
+		Query<User> query = dao.createQuery();
+		
+		query.or(query.criteria("username").equal(username),
+				query.criteria("email").equal(username));
+		
+		query.retrievedFields(true, "_id", "fname", "lname", "username", "email");
+		
+		User user = query.get();
+		if(user != null){
+			model.addAttribute("user", user);			
+		}
+		
+		return "account-closed";		
+	}
+	
+	
+	
+	@RequestMapping(value = "/account-expired/{username}")
+	public String accountExpired(ModelMap model, @PathVariable String username){
+		
+		Query<User> query = dao.createQuery();
+		
+		query.or(query.criteria("username").equal(username),
+				query.criteria("email").equal(username));
+
+		query.retrievedFields(true, "_id", "fname", "lname", "username", "email");
+		
+		User user = query.get();
+		if(user != null){
+			model.addAttribute("user", user);			
+		}
+		
+		return "account-expired";		
 	}
 }

@@ -37,6 +37,9 @@ public class User {
 	
 	private Date dob;
 	private String gender;
+	
+	private String status; //pending, active, reco-expired, closed, declined, etc
+	
 	public long get_id() {
 		return _id;
 	}
@@ -144,5 +147,11 @@ public class User {
 	}
 	public void setGender(String gender) {
 		this.gender = gender;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 }

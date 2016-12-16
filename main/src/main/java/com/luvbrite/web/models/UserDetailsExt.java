@@ -20,9 +20,10 @@ public class UserDetailsExt extends User {
 	}
 	
 	public UserDetailsExt(String username, long id, boolean enabled, 
+			boolean accountNonExpired, boolean credentialsNonExpired,
 			Collection<? extends GrantedAuthority> authorities) {
 		
-		super(username, "", enabled, true, true, true, authorities);
+		super(username, "", enabled, accountNonExpired, credentialsNonExpired, true, authorities);
 		this.id = id;
 	}
 

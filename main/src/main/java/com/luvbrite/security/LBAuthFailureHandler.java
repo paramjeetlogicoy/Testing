@@ -32,17 +32,29 @@ public class LBAuthFailureHandler implements AuthenticationFailureHandler  {
 			HttpServletResponse res, AuthenticationException exception)
 			throws IOException, ServletException {
 		
+		String errMsg = exception.getMessage();
+		
 		if(RequestUtil.isAjaxRequest(req)) {	
-			if(exception.getMessage().equals("User is disabled")){
+			
+			if(errMsg.equals("User is disabled")){
 				RequestUtil.sendJsonResponse(res, "pending", "/pending-registration");
 			}
+			
+			else if(errMsg.equals("User account has expired")){
+				RequestUtil.sendJsonResponse(res, "expired", "/account-closed");
+			}
+			
+			else if(errMsg.equals("User credentials have expired")){
+				RequestUtil.sendJsonResponse(res, "expired", "/account-expired");
+			}
+			
 			else{
-				RequestUtil.sendJsonResponse(res, "authfailure", exception.getMessage());
+				RequestUtil.sendJsonResponse(res, "authfailure", errMsg);
 			}
 			
 		}
 		else{
-			redirectStrategy.sendRedirect(req, res, "/login?error");
+			redirectStrategy.sendRedirect(req, res, "/login?error=" + errMsg);
 		}
 	}
 }

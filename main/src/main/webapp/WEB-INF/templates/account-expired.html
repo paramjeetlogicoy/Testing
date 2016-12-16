@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Account Credentials Expired</title>
+<link href="https://www.luvbrite.com/account-expired" rel="canonical" />
+<meta th:include="fragments/layout::fragment-head" />
+</head>
+<body ng-app="lbApp" class="bg-greyF0">
+	<div th:replace="fragments/layout::fragment-google-analytics"></div>
+	<div th:replace="fragments/layout::fragment-header"></div>
+
+	<div class="container page-container">
+		<div class="generic-container pad2">
+			<h2>Account credentials expired.</h2>
+
+			<div class="alert alert-info">
+				<h4>Thank you for being with Luvbrite Collective.</h4>
+				<div class="marg-b2">
+					<p>Your account with Luvbrite is currently <strong class="orange1">de-activated</strong>.
+						Our records indicate that your doctor's recommendation letter with
+						us has expired. Please use the below form to upload your latest
+						recommendation.
+					</p>
+
+					<p>
+						Once we have your latest recommendation letter, our support team
+						will review the information and will re-activate your account in <strong>20
+							minutes</strong>. In case you are registering outside our business hours
+						(11 AM to 11 PM PST), your account will be activated the next
+						business day. If there has been a delay, please call us at <strong>(424)
+							270-1560</strong> and we will be happy to assist you.</p>
+				</div>
+				<div>
+					<strong>Important:</strong> Please make sure that our emails are
+					coming to your inbox. In some scenarios, our emails to you might
+					end up in your email SPAM and get lost.
+				</div>
+			</div>
+			
+			
+			<h4>Upload Doctor's recommendation letter</h4>
+
+			<div class="row">
+				<div class="col-lg-8 col-lg-offset-2 col-sm-10 col-sm-offset-1">
+
+
+					<div class="ng-cloak">
+						<form class="reco-upload-form form-horizontal"
+							name="recoUploadrForm" ng-submit="submitForm()">
+
+							<div class="form-group">
+								<label class="control-label col-sm-4">First Name</label>
+								<div class="col-sm-8">
+									<p class="form-control-static" th:text="${user.fname}"></p>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-sm-4">Last Name</label>
+								<div class="col-sm-8">
+									<p class="form-control-static" th:text="${user.lname}"></p>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-sm-4">Email</label>
+								<div class="col-sm-8">
+									<p class="form-control-static" th:text="${user.email}"></p>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-sm-4">Username</label>
+								<div class="col-sm-8">
+									<p class="form-control-static" th:text="${user.username}"></p>
+								</div>
+							</div>
+
+							<div class="form-group recofile-group">
+								<label class="control-label col-sm-4">Your Doctor's
+									Medical Recommendation Letter <sup>*</sup><br /> <small
+									class="em">(Images or PDF Only. 10MB Max)</small>
+								</label>
+								<div class="col-sm-8">
+									<div class="fgw-file-selector" ng-hide="recoFile">
+
+										<div ngf-drop="ngf-drop" ngf-select="ngf-select"
+											ng-model="recofileobj" class="fgw-drop-box pad1 marg-b3"
+											ngf-max-size="'10MB'" ngf-drag-over-class="'dragover'"
+											ngf-multiple="false" ngf-allow-dir="true"
+											accept="image/*,application/pdf"
+											ngf-pattern="'image/*,application/pdf'">
+											<h6>Select Or Drop files here</h6>
+											<div class="max-size-error">Max size for upload is 10MB</div>
+											<div class="invalid-pattern-error">Only images and PDFs
+												are accepted</div>
+
+
+											<div class="progress-wrapper reco-progress-wrapper"></div>
+										</div>
+										<div ngf-no-file-drop="ngf-no-file-drop">File Drag/Drop
+											is not supported for this browser</div>
+									</div>
+									<div ng-if="recoFile" class="form-control-static">
+										<a href="/files/view{{recoFile.location}}" target="_blank"
+											class="small">{{recoFile.filename}}</a> <a href="#"
+											ng-click="removeFile('reco')"><i class="fa fa-trash"
+											aria-hidden="true"></i></a>
+									</div>
+								</div>
+							</div>
+
+
+							<div class="form-group recoWrapper">
+								<label class="control-label col-sm-4">Recommendation
+									Expiry <sup>*</sup><br /> <small class="em">(mm/dd/yyyy)</small>
+								</label>
+								<div class="col-sm-8">
+									<div class="date-inputs clearfix">
+										<input type="number" min="1" max="12" step="1"
+											ng-model="reco.month" class="form-control" name="recoMonth"
+											placeholder="MM" required="required" /> <span>/</span> <input
+											type="number" min="1" max="31" step="1" ng-model="reco.day"
+											name="recoDay" class="form-control" placeholder="DD"
+											required="required" /> <span>/</span> <input type="number"
+											name="recoYear" min="2016" step="1" ng-model="reco.year"
+											class="form-control" placeholder="YYYY" required="required" />
+									</div>
+
+									<p class="help-block help-error">Recommendation Expiry
+										should be a valid future date.</p>
+								</div>
+							</div>
+
+
+							<div class="form-group marg-b3">
+								<div class="col-sm-8 col-sm-offset-4">
+									<button type="submit" class="btn btn-lb">SUBMIT</button>
+								</div>
+							</div>
+
+
+							<div class="pad-v1 text-center"
+								ng-if="registerForm.$invalid || !recoFile || !idFile">
+								<div class="alert alert-warning">
+									Please fill up all the mandatory fields.<span ng-if="!recoFile"><br />Recommendation
+										letter is required.</span><span
+										ng-if="!registerForm.recYear.$pristine &amp;&amp; registerForm.recoYear.$invalid"><br />Reco.
+										Expiry. year is invalid.</span>
+								</div>
+							</div>
+						</form>
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
+	<div th:replace="fragments/layout::fragment-footer"></div>
+	<div th:include="fragments/layout::fragment-foot(angular=true)"></div>
+	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
+</body>
+</html>

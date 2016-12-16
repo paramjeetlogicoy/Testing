@@ -79,7 +79,7 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 	$scope.errorMsg = '';
 	$scope.p = {};
 	$scope.roles = ["customer","admin"];
-	$scope.statuses = [true,false];
+	$scope.statuses = ['pending','active','declined','reco-expired','closed'];
 	$scope.mode = mode; //Mode will be 'new' while adding a user, and 'edit', if editing a user.
 	$scope.userId = $scope.params.userId;
 	
@@ -226,7 +226,7 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 				
 				var resp = response.data;				
 				if(resp.success) {
-					$scope.u.active = true;
+					$scope.u.status = 'active';
 					
 					var msg = "";					
 					if(resp.message && resp.message.indexOf('CP')==0){
@@ -237,7 +237,7 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 							+ " was created and included in the email."
 					}
 					
-					_lbFns.pSuccess('User activated and email send. ' + msg);
+					_lbFns.pSuccess('User activated and email sent. ' + msg);
 				}
 				else{
 					alert(resp.message);

@@ -123,19 +123,6 @@ public class MainController {
 	
 	
 	
-	@RequestMapping(value = "/pending-registration")
-	public String pendingRegistration(@AuthenticationPrincipal 
-			UserDetailsExt user, ModelMap model){	
-		
-		if(user!=null && user.isEnabled()) {
-			model.addAttribute("userName", user.getUsername());
-		}
-		
-		return "pending-registration";		
-	}	
-	
-	
-	
 	@RequestMapping(value = "/contact-us")
 	public String contact(@AuthenticationPrincipal 
 			UserDetailsExt user, ModelMap model){	

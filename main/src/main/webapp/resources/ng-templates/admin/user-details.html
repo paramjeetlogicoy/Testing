@@ -207,15 +207,15 @@
 								<label class="col-sm-4 control-label">Active</label>
 								<div class="col-sm-7">
 									<select class="form-control"
-										ng-options="status for status in statuses" ng-model="u.active"
-										name="active" required></select> <a href=""
+										ng-options="status for status in statuses" ng-model="u.status"
+										name="status" required></select> <a href=""
 										uib-tooltip="Just activation and email. No coupon generated or emailed."
 										class="btn btn-xs btn-primary marg-t1"
-										ng-click="activateNemail(false)" ng-if="!u.active">Activate
+										ng-click="activateNemail(false)" ng-if="u.status != 'active'">Activate
 										&amp; Email</a> <a href=""
 										uib-tooltip="Creates welcome coupon and sends it to the customer along with activation email"
 										class="btn btn-xs btn-primary marg-t1 marg-l1"
-										ng-click="activateNemail(true)" ng-if="!u.active">Generate
+										ng-click="activateNemail(true)" ng-if="u.status != 'active'">Generate
 										Coupon, Activate &amp; Email</a>
 								</div>
 							</div>
