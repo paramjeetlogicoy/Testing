@@ -535,20 +535,20 @@ public class LoginController {
 	}	
 	
 	
-	@RequestMapping(value = "/account-expired/{userId}")
-	public String accountExpired(ModelMap model, @PathVariable long userId){
+	@RequestMapping(value = "/account-expired/{expiredUserId}")
+	public String accountExpired(ModelMap model, @PathVariable long expiredUserId){
 		
 		Query<User> query = dao.createQuery();
 		
 		query
-		.filter("_id", userId)
+		.filter("_id", expiredUserId)
 		.retrievedFields(true, "_id", "fname", "lname", "username", "email");
 		
 		//System.out.println(" Query - " + query.getQueryObject().toString());
 		
 		User user = query.get();
 		if(user != null){
-			model.addAttribute("user", user);			
+			model.addAttribute("expiredUser", user);			
 		}
 		
 		return "account-expired";		

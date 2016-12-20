@@ -366,7 +366,7 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 	
 	if($scope.mode=='edit' && $scope.userId){
 		$scope.getUserDetails();
-		$scope.getUserMemos();
+		$scope.getMemos();
 	}
 	else {
 		$scope.u = {};	

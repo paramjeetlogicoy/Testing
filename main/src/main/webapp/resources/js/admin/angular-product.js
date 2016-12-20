@@ -974,7 +974,7 @@ reviewCtrlrs = function($scope, $http, $filter){
 		{text : 'New reviews', value : 'new'},
 		{text : 'Declined reviews', value : 'declined'},
 		{text : 'Approved reviews', value : 'approved'},
-		{text : 'All reviews', value : 'all'}
+		{text : 'All reviews', value : ''}
 	];
 	
 	$scope.reviewStat = {approvalStatus : 'new'};

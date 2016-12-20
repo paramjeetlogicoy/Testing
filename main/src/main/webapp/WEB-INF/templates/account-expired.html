@@ -12,7 +12,7 @@
 	<div th:replace="fragments/layout::fragment-google-analytics"></div>
 	<div th:replace="fragments/layout::fragment-header"></div>
 
-	<div class="container page-container" th:if="${user}">
+	<div class="container page-container" th:if="${expiredUser}">
 		<div class="generic-container pad3">
 			<h2 class="text-center">
 				<i class="fa fa-exclamation-triangle marg-r1" aria-hidden="true"></i>
@@ -54,25 +54,25 @@
 					<div class="ng-cloak">
 						<form class="reco-upload-form form-horizontal"
 							name="recoUploadForm" ng-submit="submitForm()">
-							<input type="hidden" id="formUserId" th:value="${user._id}" />
+							<input type="hidden" id="formUserId" th:value="${expiredUser._id}" />
 							<div class="form-group">
 								<label class="control-label col-sm-6">Name:</label>
 								<div class="col-sm-6">
-									<p class="form-control-static" th:text="|${user.fname} ${user.lname}|"></p>
+									<p class="form-control-static" th:text="|${expiredUser.fname} ${expiredUser.lname}|"></p>
 								</div>
 							</div>
 
 							<div class="form-group">
 								<label class="control-label col-sm-6">Email:</label>
 								<div class="col-sm-6">
-									<p class="form-control-static" th:text="${user.email}"></p>
+									<p class="form-control-static" th:text="${expiredUser.email}"></p>
 								</div>
 							</div>
 
 							<div class="form-group">
 								<label class="control-label col-sm-6">Username:</label>
 								<div class="col-sm-6">
-									<p class="form-control-static" th:text="${user.username}"></p>
+									<p class="form-control-static" th:text="${expiredUser.username}"></p>
 								</div>
 							</div>
 

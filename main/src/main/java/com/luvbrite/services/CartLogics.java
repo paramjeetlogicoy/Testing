@@ -320,7 +320,7 @@ public class CartLogics {
 	
 	public String firstOrderCheck(long customerId){
 		
-		String response = "";
+		String response = "Y";
 		
 		Query<Order> q = completedOrderdao.createQuery()
 				.field("status").notEqual("cancelled")

@@ -52,6 +52,7 @@ public class BatchController {
 		//Expiring in next 3 days
 		List<User> users = userDao.createQuery()
 				.field("active").equal(true)
+				.field("role").equal("customer")
 				.field("identifications.recoExpiry").greaterThan(now.getTime())
 				.field("identifications.recoExpiry").lessThan(day4.getTime())
 				.order("identifications.recoExpiry")
@@ -64,6 +65,7 @@ public class BatchController {
 		 * Don't user projection or retrieveFields in the query. **/
 		List<User> usersE = userDao.createQuery()
 				.field("active").equal(true)
+				.field("role").equal("customer")
 				.field("identifications.recoExpiry").lessThan(now.getTime())
 				.order("identifications.recoExpiry")
 				.asList();
@@ -74,6 +76,7 @@ public class BatchController {
 		//No expiry Date
 		List<User> usersN = userDao.createQuery()
 				.field("active").equal(true)
+				.field("role").equal("customer")
 				.field("identifications.recoExpiry").doesNotExist()
 				.asList();
 		

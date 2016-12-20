@@ -140,7 +140,7 @@ public class ProductsController {
 		if(page >1) offset = (page-1)*limit;
 		
 		Query<Review> query = reviewDao.createQuery();		
-		if(reviewStatus != null && !reviewStatus.equals("all")){
+		if(reviewStatus != null && !reviewStatus.equals("")){
 			query.field("approvalStatus").equal(reviewStatus);
 		}
 		

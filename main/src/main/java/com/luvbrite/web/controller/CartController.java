@@ -854,13 +854,13 @@ public class CartController {
 		
 		CartResponse cr = new CartResponse();
 		CartOrder order = findOrder(Utility.getLong(orderIdS));
-		
+
 		
 		/*If userinfo is available, update the order with it.*/
 		if(order !=null && user != null){
 			User userDb = userDao.get(user.getId());
 			
-			if(userDb != null && userDb.isActive()){
+			if(userDb != null && userDb.getStatus().equals("active")){
 				
 				cr.setUser(userDb);
 				
