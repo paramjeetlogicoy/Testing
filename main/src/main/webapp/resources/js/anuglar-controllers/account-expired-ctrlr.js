@@ -164,7 +164,7 @@ var acctExpiredCtrlr = function($scope, $http, Upload){
     $scope.init = function(){
     	
     	try {    		
-        	$scope.user._id = $("#formUserId").val()
+        	$scope.user._id = $("#formUserId").val();
     	}catch(e){}
     	
     	try {    		

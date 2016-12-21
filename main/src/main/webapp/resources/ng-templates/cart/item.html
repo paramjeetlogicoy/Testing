@@ -31,13 +31,16 @@
 							down offer</div>
 						<div ng-if="item.promo == 'firsttimepatient'" class="orange1 size13">First
 							time patient offer</div>
+						<div ng-if="item.promo == 'fifthflower'" class="orange1 size13">Holiday
+							special offer</div>
 					</div>
 					
 					<div class="item-qty">
-						Qty: <span ng-if="item.productId == '11839'">1</span><span
-							ng-if="item.productId != '11839'"><input type="number"
-							min="1" step="1" ng-model="item.qty" class="form-control"
-							ng-change="updateCart()" /></span>
+						Qty: <span
+							ng-if="item.productId == '11839' || item.productId == '11871'">1</span><span
+							ng-if="item.productId != '11839' && item.productId != '11871'"><input
+							type="number" min="1" step="1" ng-model="item.qty"
+							class="form-control" ng-change="updateCart()" /></span>
 					</div>
 
 					<div class="item-price">
@@ -104,6 +107,8 @@
 								class="marg-r1 size13 u" ng-if="m.briteBoxApplied">(Britebox
 								will be removed)</em> <em class="marg-r1 size13 u"
 								ng-if="m.doubleDownApplied">(Double down promotion will be
+								removed)</em> <em class="marg-r1 size13 u"
+								ng-if="m.fifthFlowerApplied">(Holiday promotion will be
 								removed)</em>
 						</div>
 					</div>
@@ -139,8 +144,12 @@
 									<div class="col-sm-8">
 										<div class="marg-b2">
 											Your first donation meets the $75 goal, earning you our
-											exclusive Brite Box. <a href="" class="u"
-												ng-click="addbriteBox()">Apply</a>
+											exclusive Brite Box.
+
+											<div class="text-center pad-t2">
+												<button class="btn btn-lb btn-sm" ng-click="addbriteBox()">Apply
+													Promotion</button>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -149,21 +158,30 @@
 						</div>
 					</div>
 					
-					
-
 					<div class="cart-promo-options"
-						ng-show="m.fifthFlowerActive && (m.flowerCount >= 4)"
+						ng-show="m.fifthFlowerActive && !m.fifthFlowerApplied && (m.flowerCount >= 4)"
 						ng-class="{'promoSelected' : m.promoOptions == 'fifthflower'}">
 
 						<label class="fa-label"><input type="radio"
 							name="promoOptions" ng-model="m.promoOptions"
 							value="fifthflower" /><i class="fa fa-circle-o"
-							aria-hidden="true"></i> Fifth flower free - <span
-							class="orange1">$55 value.</span></label>
+							aria-hidden="true"></i> Holiday Promo - Fifth flower free - <span
+							class="orange1">$45 value.</span></label>
 
 						<div class="cart-promo-details">
 							<div class="cart-offers-bb">
-								If you have four flowers in your cart, then the fifth flower is on us!
+								<h4 class="text-center">HOLIDAY SPECIAL!</h4>
+								<div class="size13">
+									Order 4 units of any flower and get a 5th select unit free!
+									Luvbrite will choose the free unit of flower and include in the
+									qualifying purchase. Valid while supplies last or until deemed
+									void.
+
+									<div class="text-center pad-t2">
+										<button class="btn btn-lb btn-sm" ng-click="addFifthFlower()">Apply
+											Promotion</button>
+									</div>
+								</div>
 							</div>
 
 						</div>

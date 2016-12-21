@@ -495,20 +495,18 @@ public class CartController {
 					
 					else {
 						
-						int totalItems = 0,
-							briteBoxIndex = -1,
-							index = -1;
+						int totalItems = 0;
 						
 						long pid = lineItem.getProductId(),
 								vid = lineItem.getVariationId();
 						
 						//Check if the same item is already in the order
 						boolean itemFound = false;
+
+						List<OrderLineItemCart> removeItems = new ArrayList<>();
 						List<OrderLineItemCart> items = order.getLineItems();
 						if(items != null){
 							for(OrderLineItemCart item : items){
-								
-								index++;
 								
 								if(item.getProductId() == pid && 
 										item.getVariationId() == vid){
@@ -535,8 +533,17 @@ public class CartController {
 									itemFound = true;						
 								}
 								
-								if(item.getProductId() == 11839){
-									briteBoxIndex = index;
+								
+								//Remove Holiday Promo if present
+								if( item.getPromo() != null 
+										&& "fifthflower".equals(item.getPromo()) ){
+									removeItems.add(item);
+								}
+
+								// Remove britebox if present
+								else if( item.getPromo() != null 
+										&& "firsttimepatient".equals(item.getPromo()) ){
+									removeItems.add(item);
 								}
 								
 								/*totalItems refers to the cart count*/
@@ -548,10 +555,10 @@ public class CartController {
 						}
 						
 						
-						//if there is britebox in the items, remove it
-						if(briteBoxIndex != -1){
-							items.remove(briteBoxIndex);
-							totalItems--;
+
+						if(removeItems.size() > 0){
+							items.removeAll(removeItems);
+							totalItems = totalItems - removeItems.size();
 						}
 						
 						
@@ -626,19 +633,26 @@ public class CartController {
 			}		
 			
 			else {
-				
-				int briteBoxIndx = -1;
-				int totalItems = 0,
-						index = -1;
+
+				int totalItems = 0;
+
+				List<OrderLineItemCart> removeItems = new ArrayList<>();
 				
 				List<OrderLineItemCart> items = order.getLineItems();
 				if(items != null){
 					for(OrderLineItemCart item : items){
 						
-						index++;
-						
-						if(item.getProductId() == 11839){
-							briteBoxIndx = index;
+						//If Holiday Promo is there...remove it!
+						if( item.getPromo() != null 
+								&& "fifthflower".equals(item.getPromo()) ){
+							removeItems.add(item);
+						}
+
+						// If already present remove it. Any issue with item which is preventing it from 
+						// appearing in the cart will be solved this away
+						else if( item.getPromo() != null 
+								&& "firsttimepatient".equals(item.getPromo()) ){
+							removeItems.add(item);
 						}
 						
 						//If there is doubledownoffer, remove the promo.
@@ -656,10 +670,9 @@ public class CartController {
 				}
 				
 				
-				// If already present remove it. Any issue with item which is preventing it from 
-				// appearing in the cart will be solved this away
-				if(briteBoxIndx != -1){
-					items.remove(briteBoxIndx);
+				if(removeItems.size() > 0){
+					items.removeAll(removeItems);
+					totalItems = totalItems - removeItems.size();
 				}
 				
 				
@@ -735,16 +748,16 @@ public class CartController {
 				List<OrderLineItemCart> items = order.getLineItems();
 				if(items != null){
 					for(OrderLineItemCart item : items){
-						
-						if(item.getProductId() == 11871){
 
+						if( item.getPromo() != null 
+								&& "fifthflower".equals(item.getPromo()) ){
 							// If already present remove it. Any issue with item which is preventing it from 
 							// appearing in the cart will be solved this away
 							removeItems.add(item);
 						}
 						
 						//If there is BriteBox, remove it.
-						if( item.getPromo() != null 
+						else if( item.getPromo() != null 
 								&& "firsttimepatient".equals(item.getPromo()) ){
 							removeItems.add(item);
 						}
@@ -766,6 +779,7 @@ public class CartController {
 				
 				if(removeItems.size() > 0){
 					items.removeAll(removeItems);
+					totalItems = totalItems - removeItems.size();
 				}
 				
 				

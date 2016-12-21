@@ -1,4 +1,4 @@
-var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
+var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootScope){
 	var m = this,
 	deliveryLoaded = false,	
 	cmcVersion = Math.random(); //'v0002'; //Math.random();
@@ -64,6 +64,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 			offersApplied = false,
 			doubleDownApplied = false,
 			briteBoxApplied = false,
+			fifthFlowerApplied = false,
 			emptyCart = true,
 			flowerCount = 0;
 		
@@ -80,8 +81,11 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 							item.img = item.img.replace('.jpg','-150x150.jpg');
 						}
 						
-						//Count the flowing in the item
-						if(m.flowerIds.indexOf(item.productId) > -1){
+						//Count the flowers in the orders
+						if(item.productId != 10504 		&&   //Double down offer flower 1 Gram 
+							item.productId != 11871 	&& //Holiday special offer flower
+							m.flowerIds.indexOf(item.productId) > -1){
+							
 							flowerCount = flowerCount + item.qty;
 						}
 					}
@@ -99,8 +103,9 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 					
 					if(item.type=='item' && 
 							(item.promo == 's' || 
-									item.promo == 'doubledownoffer' || 
-									item.promo == 'firsttimepatient')){
+									item.promo == 'doubledownoffer'  || 
+									item.promo == 'firsttimepatient' || 
+									item.promo == 'fifthflower')){
 						
 						//var productName = item.name.length>15?item.name.substr(0,15)+'...':item.name,
 						var productName = item.name,
@@ -113,9 +118,15 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 						}
 						
 						
-						if(item.promo == 'firsttimepatient'){
+						else if(item.promo == 'firsttimepatient'){
 							productName = 'First Time Patient';
 							briteBoxApplied = true;
+						}
+						
+						
+						else if(item.promo == 'fifthflower'){
+							productName = 'Holiday Special Offer';
+							fifthFlowerApplied = true;
 						}
 						
 							
@@ -137,8 +148,8 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		m.offersApplied = offersApplied;
 		m.emptyCart = emptyCart;
 		m.briteBoxApplied = briteBoxApplied;
+		m.fifthFlowerApplied = fifthFlowerApplied;
 		m.flowerCount = flowerCount;
-		console.log("m.flowerCount - " + m.flowerCount);
 		
 		//OrderMin Check (it doesnt apply to orders placed by orders@luvbrite.com [_id = 29])
 		if(m.order.total && (m.order.total >= m.orderMin || 
@@ -181,6 +192,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		//Promotab
 		if((m.briteBoxEligible && (m.order.total >= m.briteBoxThreshold)) || 
 			(m.doubleDownEligible && (m.order.total >= m.config.doubleDown)) || 
+			(m.fifthFlowerActive && !m.fifthFlowerApplied && (m.flowerCount >= 4)) || 
 			(m.promosAvailable && !m.couponApplied) || 
 			!m.couponApplied){
 			
@@ -191,18 +203,53 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		}
 		
 		
-		//Set Britebox as the default if no offers are applied and its firsttime patient.
-		if(!m.doubleDownApplied && 
-				!m.couponApplied && 
-				!m.briteBoxApplied && m.availableDeals.firstTimepatient){
+		//Set Britebox as the default if its firsttime patient.
+		if(!m.briteBoxApplied && m.availableDeals.firstTimepatient){
 			m.promoOptions = 'firsttimepatient';
 		}
-		
+		else if(m.fifthFlowerActive && !m.fifthFlowerApplied && (m.flowerCount >= 4)){
+			m.promoOptions = 'fifthflower';
+		}
+		else if(m.doubleDownEligible && (m.order.total >= m.config.doubleDown)){
+			m.promoOptions = 'doubledown';
+		}
+		else if(m.promosAvailable){
+			m.promoOptions = 'loyalist';
+		}
+		else if(!m.couponApplied){
+			m.promoOptions = 'coupon';
+		}
 		
 		
 		if(m.cartPage && m.emptyCart){			
 			//Will destory item, coupon, delivery, payment and review (if exists)!
 			m.destroyItemTemplate();
+		}
+		
+		
+		//If the fifthflower promo is applied, but is not eligible anymore, remove the item
+		if(m.fifthFlowerApplied && m.flowerCount < 4){
+			if(m.order && m.order._id){
+				var req = {
+						method: 'DELETE',
+						url: _lbUrls.cart + 'removeitem',
+						params: {'oid' : m.order._id, 
+							'pid' : 11871,
+							'vid' : 0
+						}
+				};
+				
+				$http(req)
+				.then(
+					function(resp){
+						if(resp.data && resp.data.success){					
+							$rootScope.rootCartCount = resp.data.cartCount;							
+							m.order = resp.data.order;
+							m.processOrder();
+						}
+					}
+				);
+			}
 		}
 		
 	};

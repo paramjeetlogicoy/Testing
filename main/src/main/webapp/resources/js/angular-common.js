@@ -24,7 +24,7 @@ var lbApp = angular.module(
 .controller('loginCtrlr', 		 	 ['$scope', '$http', loginCtrlr])
 .controller('registerCtrlr', 		 ['$scope', '$http', 'Upload', registerCtrlr])
 .controller('resetCtlr', 			 ['$scope', '$http', '$rootScope', resetCtlr])
-.controller('cartMainCtrlr',         ['$scope', '$http', '$templateRequest', '$compile', cartMainCtrlr])
+.controller('cartMainCtrlr',         ['$scope', '$http', '$templateRequest', '$compile', '$rootScope', cartMainCtrlr])
 	.controller('cartItemCtrlr',     ['$scope', '$http', '$rootScope', '$timeout', cartItemCtrlr])
 	.controller('cartDeliveryCtrlr', ['$scope', '$http', '$rootScope', '$filter', '$timeout', cartDeliveryCtrlr])
 	.controller('cartPaymentCtrlr',  ['$scope', '$http', '$rootScope','$timeout', cartPaymentCtrlr])

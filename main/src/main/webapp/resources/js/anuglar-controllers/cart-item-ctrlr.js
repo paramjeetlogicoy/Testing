@@ -141,6 +141,18 @@ var cartItemCtrlr = function($scope, $http, $rootScope, $timeout){
 		}		
 	};	
 	
+	$scope.addFifthFlower = function(){
+		
+		if(m.appliedCouponCode){
+			removeCoupon(m.appliedCouponCode, function(){
+				applyFifthFlower();
+			});
+		}
+		else{
+			applyFifthFlower();
+		}	
+	};
+	
 	var applyDoubleDown = function(pid, vid){
 		
 		$http.post(_lbUrls.cart + '/adddoubledown/' + pid + '/' + vid)
@@ -182,6 +194,35 @@ var cartItemCtrlr = function($scope, $http, $rootScope, $timeout){
 				m.processOrder();
 				
 				_lbFns.pSuccess('Brite Box Item Added.');
+			}
+			else{
+				$scope.$parent.$parent.pageLevelAlert = $rootScope.errMsgPageRefresh;
+			}
+		},
+		function(resp){
+			if(resp.status == 403){
+				$scope.$parent.$parent.pageLevelAlert  = "Your browser was idle for long. " +
+					"Please refresh the page and add the item to cart again.";
+			}
+			else {
+				$scope.$parent.$parent.pageLevelAlert  = "There was some error adding the item. " +
+					"Please try later. If problem persists, please call the customer care.";
+			}
+		});
+	},
+	
+	applyFifthFlower = function(){
+		
+		$http.post(_lbUrls.cart + '/add-assorted-variety')
+		.then(function(resp){
+			if(resp.data && resp.data.success){
+				
+				$rootScope.rootCartCount = resp.data.cartCount;
+				
+				m.order = resp.data.order;
+				m.processOrder();
+				
+				_lbFns.pSuccess('Holiday offer item added.');
 			}
 			else{
 				$scope.$parent.$parent.pageLevelAlert = $rootScope.errMsgPageRefresh;
@@ -362,4 +403,13 @@ var cartItemCtrlr = function($scope, $http, $rootScope, $timeout){
 	if(m.user && m.user._id){
 		getCustomerCoupons();
 	}
+	
+	$(document).on('click','.cart-promo-options .fa-label',function(){
+
+		if($('.cart-promo-options.promoSelected').length === 0) return;
+		
+		var x = $('.cart-promo-options.promoSelected').offset().top,
+		offset = parseInt($('.header-offset').css('margin-top'));
+		$("html, body").animate({'scrollTop': (x - offset)},400);
+	});
 };

@@ -167,7 +167,7 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 	
 	reBuildListing = function(){
 
-		if(!$scope.buildList.products || $scope.buildList.products.length == 0) return;
+		if(!$scope.buildList.products || $scope.buildList.products.length === 0) return;
 		
 		//load productListTemplate		
 		$templateRequest("productListTemplate")
@@ -200,7 +200,7 @@ categoryFilter = function(){
 	
 	return function(input, filter){
 		
-		if(!filter || $.trim(filter)=='')
+		if(!filter || $.trim(filter) === '')
 			return input;
 		
 		var out = [];
@@ -213,6 +213,6 @@ categoryFilter = function(){
 			
 		});
 		
-		return out;		
-	}
+		return out;
+	};
 };
