@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 import org.mongodb.morphia.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -142,14 +144,12 @@ public class CartLogics {
 	
 	
 	
-	public void applyDeals(CartOrder order, ControlOptions cOps, boolean saveOrder){
+	public void applyDeals(CartOrder order, ControlOptions cOps, boolean saveOrder, HttpSession sess){
 		
 		try {
 
 			
 			if(order == null) return;
-
-			
 			
 			double doubleDownThresholdAmt = cOps.getDoubleDown(),
 					doubleDownOfferAmt = cOps.getDoubleDownOfferValue(),
@@ -157,14 +157,21 @@ public class CartLogics {
 			
 			boolean orderChanged = false,
 					couponPresent = false,
-					doubleDownPresent = false,
 					briteBoxEligible = false,
-					briteBoxPresent = false;
+					autoAddBriteBox = true;
 			
 			int index = -1,
 				doubleDownItemIndex = -1,
-				briteBoxIndex = -1;
-						
+				briteBoxIndex = -1,
+				fifthFlowerIndex = -1;
+
+
+			if(sess != null && 
+					sess.getAttribute("autoBriteBoxAdd") != null && 
+					( (String) sess.getAttribute("autoBriteBoxAdd") ).equals("false")){
+				
+				autoAddBriteBox = false;
+			}
 			
 			/**
 			 * Any coupons applied will be removed if doubledown or britebox is applied.
@@ -195,8 +202,11 @@ public class CartLogics {
 						double itemPrice = item.getPrice();
 						
 						if(item.getProductId() == 11839){
-							briteBoxPresent = true;
 							briteBoxIndex = index;
+						}
+						
+						else if(item.getProductId() == 11871){
+							fifthFlowerIndex = index;
 						}
 						
 						if( item.getPromo() != null 
@@ -216,7 +226,10 @@ public class CartLogics {
 			}
 			
 			
-			if(!couponPresent && !doubleDownPresent){
+			if(!couponPresent 
+					&& doubleDownItemIndex == -1
+					&& fifthFlowerIndex == -1){
+				
 				//First BriteBoxcheck
 				if(order.getCustomer() != null && 
 						order.getCustomer().get_id() != 0 && 
@@ -224,29 +237,58 @@ public class CartLogics {
 					
 					if(firstOrderCheck(order.getCustomer().get_id())
 							.equalsIgnoreCase("Y")){
-						briteBoxEligible = true;					
+						briteBoxEligible = true;	
+						
+
+						// If britebox eligible and not yet added to the order, add it
+						if(briteBoxIndex == -1 && autoAddBriteBox){
+
+							//Add fresh new item
+							OrderLineItemCart newItem = new OrderLineItemCart();
+							newItem.setTaxable(false);
+							newItem.setInstock(true);
+							newItem.setType("item");
+							newItem.setName("Brite Box");
+							newItem.setPromo("firsttimepatient");
+							newItem.setProductId(11839);
+							newItem.setVariationId(0);
+							newItem.setQty(1);
+							newItem.setCost(50d);
+							newItem.setPrice(0d);
+							newItem.setImg("/products/brite-box-img.jpg");
+
+							items.add(newItem);
+
+							/*Update order with lineItems*/
+							order.setLineItems(items);
+
+							orderChanged = true;
+							briteBoxIndex = items.size() - 1;	
+						}
 					}
 				}
-			}
+			}			
 			
-			
-			if(!briteBoxEligible && briteBoxPresent){
+			if(!briteBoxEligible && briteBoxIndex != -1){
 				
 				//Removed Item
 				List<OrderLineItemCart> olic = order.getLineItems();
 				olic.remove(briteBoxIndex);
 				
 				orderChanged = true;	
-				briteBoxPresent = false;			
+				briteBoxIndex = -1;		
 			}
 			
 			
 			
+			
+			//Here we are checking if the double down promo present is still valid			
 			if( doubleDownItemIndex != -1 				&&
 				doubleDownThresholdAmt > 0d 			&&  
 				doubleDownOfferAmt > 0d  				&&
 				!couponPresent 							&&  
-				!briteBoxPresent						&&  
+				briteBoxIndex == -1						&& 
+				fifthFlowerIndex == -1					&&  
 				total >= doubleDownThresholdAmt) {				
 
 				double itemCost = 0d;				
@@ -288,8 +330,12 @@ public class CartLogics {
 			}
 			
 			
+			
+			//If doubledown is currently present, but order doesn't qualify anymore, then remove promo.
+			// OR
+			//Rare case where doubledown and britebox are present, remove doubledown.
 			if(doubleDownItemIndex != -1 && 
-					(total < doubleDownThresholdAmt || doubleDownThresholdAmt == 0)){
+					(total < doubleDownThresholdAmt || doubleDownThresholdAmt == 0 || briteBoxIndex != -1)){
 				
 				OrderLineItemCart item = items.get(doubleDownItemIndex);
 				

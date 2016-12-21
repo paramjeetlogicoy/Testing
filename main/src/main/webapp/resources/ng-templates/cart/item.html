@@ -148,6 +148,26 @@
 
 						</div>
 					</div>
+					
+					
+
+					<div class="cart-promo-options"
+						ng-show="m.fifthFlowerActive && (m.flowerCount >= 4)"
+						ng-class="{'promoSelected' : m.promoOptions == 'fifthflower'}">
+
+						<label class="fa-label"><input type="radio"
+							name="promoOptions" ng-model="m.promoOptions"
+							value="fifthflower" /><i class="fa fa-circle-o"
+							aria-hidden="true"></i> Fifth flower free - <span
+							class="orange1">$55 value.</span></label>
+
+						<div class="cart-promo-details">
+							<div class="cart-offers-bb">
+								If you have four flowers in your cart, then the fifth flower is on us!
+							</div>
+
+						</div>
+					</div>
 
 
 

@@ -11,6 +11,7 @@ public class CartResponse {
 	private List<DoubleDownProducts> ddPrds;
 	private Address prevOrderAddress;
 	private Map<String, Boolean> availableDeals;
+	private List<?> commonList;
 	
 	public CartOrder getOrder() {
 		return order;
@@ -47,5 +48,11 @@ public class CartResponse {
 	}
 	public void setAvailableDeals(Map<String, Boolean> availableDeals) {
 		this.availableDeals = availableDeals;
+	}
+	public List<?> getCommonList() {
+		return commonList;
+	}
+	public void setCommonList(List<?> commonList) {
+		this.commonList = commonList;
 	}
 }

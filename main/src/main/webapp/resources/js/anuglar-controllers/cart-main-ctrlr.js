@@ -1,7 +1,7 @@
 var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 	var m = this,
 	deliveryLoaded = false,	
-	cmcVersion = 'v0002'; //Math.random();
+	cmcVersion = Math.random(); //'v0002'; //Math.random();
 	
 	m.order = {};	
 	m.ddprds = [];
@@ -38,6 +38,12 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 	m.doubleDownApplied = false;
 	m.doubleDownEligible = false;
 	
+	m.flowerCount = 0;
+	m.flowerIds = [];
+	m.fifthFlowerActive = true;
+	m.fifthFlowerApplied = false;
+	m.fifthFlowerEligible = false;
+	
 	m.briteBoxApplied = false;
 	m.briteBoxEligible = false;
 	m.briteBoxThreshold = 75;
@@ -58,7 +64,8 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 			offersApplied = false,
 			doubleDownApplied = false,
 			briteBoxApplied = false,
-			emptyCart = true;
+			emptyCart = true,
+			flowerCount = 0;
 		
 		
 		if(m.order.lineItems && m.order.lineItems.length>0){
@@ -72,6 +79,11 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 						if(item.img){
 							item.img = item.img.replace('.jpg','-150x150.jpg');
 						}
+						
+						//Count the flowing in the item
+						if(m.flowerIds.indexOf(item.productId) > -1){
+							flowerCount = flowerCount + item.qty;
+						}
 					}
 					
 					
@@ -84,8 +96,6 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 					if(item.promo && item.promo !== ''){					
 						offersApplied = true;
 					}
-					
-					
 					
 					if(item.type=='item' && 
 							(item.promo == 's' || 
@@ -127,7 +137,8 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 		m.offersApplied = offersApplied;
 		m.emptyCart = emptyCart;
 		m.briteBoxApplied = briteBoxApplied;
-		
+		m.flowerCount = flowerCount;
+		console.log("m.flowerCount - " + m.flowerCount);
 		
 		//OrderMin Check (it doesnt apply to orders placed by orders@luvbrite.com [_id = 29])
 		if(m.order.total && (m.order.total >= m.orderMin || 
@@ -230,9 +241,11 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile){
 						}
 					}	
 					
-					if(resp.data.availableDeals)
-						m.availableDeals = resp.data.availableDeals;
+					if(resp.data.availableDeals) m.availableDeals = resp.data.availableDeals;
 					
+					if(resp.data.commonList){
+						if(m.fifthFlowerActive) m.flowerIds = resp.data.commonList;
+					}
 
 					if(m.order){ 
 						m.processOrder();

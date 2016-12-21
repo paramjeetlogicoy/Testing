@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -448,7 +449,8 @@ public class CartController {
 	public @ResponseBody CreateOrderResponse addDoubleDownItem(
 			@CookieValue(value = "lbbagnumber", defaultValue = "0") String orderIdS, 
 			@PathVariable Long productId, 
-			@PathVariable Long varitaionId){
+			@PathVariable Long varitaionId,
+			HttpSession sess){
 
 		CreateOrderResponse r = new CreateOrderResponse();
 		r.setSuccess(false);
@@ -578,7 +580,7 @@ public class CartController {
 						
 						
 						//Run through deal logic
-						cartLogics.applyDeals(order, ccs.getcOps(), false);
+						cartLogics.applyDeals(order, ccs.getcOps(), false, sess);
 						
 						
 						/*Update orderTotals*/
@@ -607,7 +609,8 @@ public class CartController {
 	
 	@RequestMapping(value = "/addbritebox", method = RequestMethod.POST)
 	public @ResponseBody CreateOrderResponse addBriteBoxItem(
-			@CookieValue(value = "lbbagnumber", defaultValue = "0") String orderIdS){
+			@CookieValue(value = "lbbagnumber", defaultValue = "0") String orderIdS,
+			HttpSession sess){
 
 		CreateOrderResponse r = new CreateOrderResponse();
 		r.setSuccess(false);
@@ -682,7 +685,114 @@ public class CartController {
 				
 				
 				//Run through deal logic
-				cartLogics.applyDeals(order, ccs.getcOps(), false);
+				cartLogics.applyDeals(order, ccs.getcOps(), false, sess);
+				
+				
+				/*Update orderTotals*/
+				cartLogics.calculateSummary(order);
+				
+				dao.save(order);
+				
+				r.setSuccess(true);
+				r.setCartCount(totalItems);				
+				r.setOrder(order);
+			}
+			
+		}catch(Exception e){
+			
+			r.setMessage("There was some error creating the order, please try later.");
+			logger.error(Exceptions.giveStackTrace(e));
+		}
+		
+		return r;	
+	}
+	
+	
+	@RequestMapping(value = "/add-assorted-variety", method = RequestMethod.POST)
+	public @ResponseBody CreateOrderResponse addAssortedVariety(
+			@CookieValue(value = "lbbagnumber", defaultValue = "0") String orderIdS,
+			HttpSession sess){
+
+		CreateOrderResponse r = new CreateOrderResponse();
+		r.setSuccess(false);
+
+		
+		try {
+						
+			
+			long orderId = Utility.getLong(orderIdS);
+			CartOrder order = dao.get(orderId);
+			if(order == null || !order.getStatus().equals("incart")){
+				r.setMessage("No valid order found.");
+			}		
+			
+			else {
+				
+				int totalItems = 0;
+
+				List<OrderLineItemCart> removeItems = new ArrayList<>();
+				
+				List<OrderLineItemCart> items = order.getLineItems();
+				if(items != null){
+					for(OrderLineItemCart item : items){
+						
+						if(item.getProductId() == 11871){
+
+							// If already present remove it. Any issue with item which is preventing it from 
+							// appearing in the cart will be solved this away
+							removeItems.add(item);
+						}
+						
+						//If there is BriteBox, remove it.
+						if( item.getPromo() != null 
+								&& "firsttimepatient".equals(item.getPromo()) ){
+							removeItems.add(item);
+						}
+						
+						//If there is doubledownoffer, remove the promo.
+						if( item.getPromo() != null 
+								&& "doubledownoffer".equals(item.getPromo()) ){							
+							item.setPrice(item.getCost());
+							item.setPromo("");
+						}
+						
+						if(item.getType().equals("item")
+								&& item.isInstock()){
+							totalItems+= item.getQty();
+						}
+					}
+				}
+				
+				
+				if(removeItems.size() > 0){
+					items.removeAll(removeItems);
+				}
+				
+				
+				
+				//Add fresh new item
+				OrderLineItemCart newItem = new OrderLineItemCart();
+				newItem.setTaxable(false);
+				newItem.setInstock(true);
+				newItem.setType("item");
+				newItem.setName("3.5 Gram - Assorted Variety");
+				newItem.setPromo("fifthflower");
+				newItem.setProductId(11871);
+				newItem.setVariationId(0);
+				newItem.setQty(1);
+				newItem.setCost(45d);
+				newItem.setPrice(0d);
+				newItem.setImg("/products/TahoeOG.jpg");
+
+				items.add(newItem);
+				
+				
+				/*Update order with lineItems*/
+				order.setLineItems(items);
+				
+				
+				//Run through deal logic
+				cartLogics.applyDeals(order, ccs.getcOps(), false, sess);
 				
 				
 				/*Update orderTotals*/
@@ -850,7 +960,8 @@ public class CartController {
 	@RequestMapping(value = "/getcart")
 	public @ResponseBody CartResponse getCart(
 			@AuthenticationPrincipal UserDetailsExt user,
-			@CookieValue(value = "lbbagnumber", defaultValue = "0") String orderIdS){
+			@CookieValue(value = "lbbagnumber", defaultValue = "0") String orderIdS,
+			HttpSession sess){
 		
 		CartResponse cr = new CartResponse();
 		CartOrder order = findOrder(Utility.getLong(orderIdS));
@@ -921,7 +1032,7 @@ public class CartController {
 		 **/
 		
 		if(order !=null) 
-			cartPostProcessing(order, true /*reapply coupon*/);
+			cartPostProcessing(order, true /*reapply coupon*/, sess);
 		
 		
 		cr.setOrder(order);
@@ -1004,6 +1115,24 @@ public class CartController {
 		
 		if(order !=null) {
 			cr.setAvailableDeals(cartLogics.availableDeals(order));
+			
+			//Get productIds of all flowers
+			List<Product> prds = prdDao.createQuery()
+					.field("categories").equal("Flowers")
+					.filter("status", "publish")
+					.filter("stockStat", "instock")
+					.order("-_id")
+					.retrievedFields(true, "_id")
+					.asList();
+			
+			List<Long> flowers = new ArrayList<Long>();
+			if(prds != null){
+				for(Product p : prds){
+					flowers.add(p.get_id());
+				}
+				
+				cr.setCommonList(flowers);
+			}
 		}
 		
 		return cr;			
@@ -1293,7 +1422,8 @@ public class CartController {
 			@RequestParam(value="oid", required=false) Long orderId,
 			@RequestParam(value="vid", required=false) Integer variationId,
 			@RequestParam(value="pid", required=false) Integer productId,
-			@RequestParam(value="qty", required=false) Integer qty){
+			@RequestParam(value="qty", required=false) Integer qty,
+			HttpSession sess){
 		
 		CreateOrderResponse cr = new CreateOrderResponse();
 		cr.setSuccess(false);
@@ -1372,7 +1502,7 @@ public class CartController {
 			if(itemFound){
 				
 				/*Run through the post processing logic*/
-				cartPostProcessing(order, true /*Check and re-apply coupons*/);		
+				cartPostProcessing(order, true /*Check and re-apply coupons*/, sess);		
 
 				cr.setSuccess(true);
 				cr.setCartCount(totalItems);			
@@ -1399,7 +1529,8 @@ public class CartController {
 	@RequestMapping(value = "/removecoupon/{couponCode}", method = RequestMethod.GET)
 	public @ResponseBody CreateOrderResponse removeCoupon(
 			@PathVariable String couponCode,
-			@RequestParam(value="oid", required=false) Long orderId){
+			@RequestParam(value="oid", required=false) Long orderId,
+			HttpSession sess){
 		
 		CreateOrderResponse cr = new CreateOrderResponse();
 		cr.setSuccess(false);
@@ -1411,7 +1542,7 @@ public class CartController {
 			
 			CartOrder order = dao.get(orderId);
 			if(order != null){
-				cartPostProcessing(order, false /*No need to re-apply coupon, hence false*/);
+				cartPostProcessing(order, false /*No need to re-apply coupon, hence false*/, sess);
 				
 				cr.setOrder(order);
 			}
@@ -1425,7 +1556,8 @@ public class CartController {
 	@RequestMapping(value = "/applycoupon/{couponCode}", method = RequestMethod.GET)
 	public @ResponseBody CreateOrderResponse applyCoupon(
 			@PathVariable String couponCode,
-			@RequestParam(value="oid", required=false) Long orderId){
+			@RequestParam(value="oid", required=false) Long orderId,
+			HttpSession sess){
 		
 		CreateOrderResponse cr = new CreateOrderResponse();
 		cr.setSuccess(false);
@@ -1437,7 +1569,7 @@ public class CartController {
 			
 			CartOrder order = dao.get(orderId);
 			if(order != null){
-				cartPostProcessing(order, false /*No need to re-apply coupon, hence false*/);
+				cartPostProcessing(order, false /*No need to re-apply coupon, hence false*/, sess);
 				
 				cr.setOrder(order);
 			}
@@ -1456,7 +1588,8 @@ public class CartController {
 	public @ResponseBody CreateOrderResponse removeItem(
 			@RequestParam(value="oid", required=false) Long orderId,
 			@RequestParam(value="vid", required=false) Integer variationId,
-			@RequestParam(value="pid", required=false) Integer productId){
+			@RequestParam(value="pid", required=false) Integer productId,
+			HttpSession sess){
 		
 		CreateOrderResponse cr = new CreateOrderResponse();
 		cr.setSuccess(false);
@@ -1482,6 +1615,7 @@ public class CartController {
 			int totalItems = 0;
 			boolean itemFound = false;
 
+			
 			List<OrderLineItemCart> items = order.getLineItems();
 			if(items != null){
 				Iterator<OrderLineItemCart> iter = items.iterator();
@@ -1514,6 +1648,10 @@ public class CartController {
 						
 						itemFound = true;
 						
+						if(productId == 11839) {//Britebox
+							sess.setAttribute("autoBriteBoxAdd", "false");
+						}
+						
 						break;
 					}
 				}
@@ -1532,7 +1670,7 @@ public class CartController {
 				}
 				
 				/*Run through the post processing logic*/
-				cartPostProcessing(order, true /*Check and re-apply coupons*/);
+				cartPostProcessing(order, true /*Check and re-apply coupons*/, sess);
 
 				cr.setSuccess(true);
 				cr.setCartCount(totalItems);			
@@ -1739,7 +1877,7 @@ public class CartController {
 		return newItem;
 	}
 	
-	private void cartPostProcessing(CartOrder order, boolean couponReapply){
+	private void cartPostProcessing(CartOrder order, boolean couponReapply, HttpSession sess){
 		
 		String couponCode = "";
 		boolean itemsPresent = false;
@@ -1769,7 +1907,7 @@ public class CartController {
 			
 			
 			//Run through deal logic
-			if(itemsPresent) cartLogics.applyDeals(order, ccs.getcOps(), false);
+			if(itemsPresent) cartLogics.applyDeals(order, ccs.getcOps(), false, sess);
 			
 			
 			//Update orderTotals
