@@ -789,7 +789,7 @@ public class CartController {
 				newItem.setTaxable(false);
 				newItem.setInstock(true);
 				newItem.setType("item");
-				newItem.setName("3.5 Gram - Assorted Variety");
+				newItem.setName("Holiday Promo 1/8th");
 				newItem.setPromo("fifthflower");
 				newItem.setProductId(11871);
 				newItem.setVariationId(0);
