@@ -362,7 +362,7 @@ public class UsersController {
 					
 					Log log = new Log();
 					log.setCollection("users");
-					log.setDetails("user activated." + (cp!=null? " Coupon " + cp.get_id() + " emailed!" : ""));
+					log.setDetails("user activated and emailed" + (cp!=null? " with coupon " + cp.get_id() + "." : "."));
 					log.setDate(Calendar.getInstance().getTime());
 					log.setKey(userDb.get_id());
 					log.setUser(user.getUsername());
