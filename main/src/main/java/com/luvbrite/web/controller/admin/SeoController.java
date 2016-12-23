@@ -131,6 +131,7 @@ public class SeoController {
 						seoElem.setKeywords(seo.getSeoElem().getKeywords());
 						seoElem.setNobots(seo.getSeoElem().isNobots());
 						seoElem.setTitle(seo.getSeoElem().getTitle());
+						seoElem.setMainImgAlt(seo.getSeoElem().getMainImgAlt());
 
 						p.setSeoElem(seoElem);
 						prdDao.save(p);
@@ -163,6 +164,7 @@ public class SeoController {
 						seoElem.setKeywords(seo.getSeoElem().getKeywords());
 						seoElem.setNobots(seo.getSeoElem().isNobots());
 						seoElem.setTitle(seo.getSeoElem().getTitle());
+						seoElem.setMainImgAlt(seo.getSeoElem().getMainImgAlt());
 
 						c.setSeoElem(seoElem);
 						catDao.save(c);
@@ -195,6 +197,7 @@ public class SeoController {
 					seoElem.setKeywords(seo.getSeoElem().getKeywords());
 					seoElem.setNobots(seo.getSeoElem().isNobots());
 					seoElem.setTitle(seo.getSeoElem().getTitle());
+					seoElem.setMainImgAlt(seo.getSeoElem().getMainImgAlt());
 
 					seoDb.setSeoElem(seoElem);
 					seoDao.save(seoDb);

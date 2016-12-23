@@ -11,6 +11,7 @@ public class SeoElem {
 	private String description = "";	
 	private List<String> keywords;
 	private boolean nobots = false;
+	private String mainImgAlt = "";
 	
 	public String getTitle() {
 		return title;
@@ -35,5 +36,11 @@ public class SeoElem {
 	}
 	public void setNobots(boolean nobots) {
 		this.nobots = nobots;
+	}
+	public String getMainImgAlt() {
+		return mainImgAlt;
+	}
+	public void setMainImgAlt(String mainImgAlt) {
+		this.mainImgAlt = mainImgAlt;
 	}
 }
