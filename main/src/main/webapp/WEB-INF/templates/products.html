@@ -13,7 +13,7 @@
 	th:href="@{'https://www.luvbrite.com/category/' + ${cUrl}}"
 	rel="canonical" />
 <meta th:include="fragments/layout::fragment-head" />
-<script th:if="${category}!=null" th:inline="javascript" type="application/ld+json">
+<script th:if="${category}!=null" th:inline="text" type="application/ld+json">
 {
   "@context": "http://schema.org",
   "@type": "BreadcrumbList",
@@ -35,8 +35,8 @@
     "@type": "ListItem",
     "position": 3,
     "item": {
-      "@id": /*[['https://www.luvbrite.com/category/' + ${cUrl}]]*/,
-      "name": /*[[${category}]]*/
+      "@id": "[[ 'https://www.luvbrite.com/category/' + ${cUrl} ]]",
+      "name": "[[ ${category} ]]"
     }
   }]
 }

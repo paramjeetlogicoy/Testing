@@ -7,26 +7,54 @@
 <title th:text="${product.name}"></title>
 <link th:if="${url}!=null" th:href="@{'https://www.luvbrite.com/product/' + ${url}}" rel="canonical" />
 <meta th:include="fragments/layout::fragment-head" />
-<script th:inline="javascript" type="application/ld+json">
+<script th:inline="text" type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+    "@type": "ListItem",
+    "position": 1,
+    "item": {
+      "@id": "https://www.luvbrite.com",
+      "name": "Home"
+    }
+  },{
+    "@type": "ListItem",
+    "position": 2,
+    "item": {
+      "@id": "https://www.luvbrite.com/products",
+      "name": "All Products"
+    }
+  },{
+    "@type": "ListItem",
+    "position": 3,
+    "item": {
+      "@id": "[[ 'https://www.luvbrite.com/product/' + ${url} ]]",
+      "name": "[[ ${product.name} ]]"
+    }
+  }]
+}
+</script>
+<script th:inline="text" type="application/ld+json">
 {
   "@context": "http://schema.org/",
   "@type": "Product",
-  "name": /*[[${product.name}]]*/,
-  "image": /*[[${_lbGlobalCDNPath} + ${#strings.replace(product.featuredImg,'.jpg','-600x600.jpg')}]]*/,
-  "description": /*[[${product.description}]]*/,
+  "name": "[[ ${product.name} ]]",
+  "image": "[[ ${_lbGlobalCDNPath} + ${#strings.replace(product.featuredImg,'.jpg','-600x600.jpg')} ]]",
+  "description": "[[ ${product.description} ]]",
 
   "aggregateRating": {
     "@type": "AggregateRating",
-    "ratingValue": /*[[${product.reviewCount lt 1} ? 0 : ${product.rating}]]*/,
-    "reviewCount": /*[[${product.reviewCount lt 1} ? 0 : ${product.reviewCount}]]*/
+    "ratingValue": [[ ${product.reviewCount lt 1} ? 0 : ${product.rating} ]],
+    "reviewCount": [[ ${product.reviewCount lt 1} ? 0 : ${product.reviewCount} ]]
   },
 
   "offers": {
     "@type": "Offer",
     "priceCurrency": "USD",
-    "price": /*[[${product.productFilters.price}]]*/,
+    "price": [[ ${product.productFilters.price} ]],
     "itemCondition": "http://schema.org/NewCondition",
-    "availability": /*[[${product.stockStat == 'instock'} ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock']]*/
+    "availability": "[[ ${product.stockStat == 'instock'} ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock' ]]"
   }
 }
 </script>
