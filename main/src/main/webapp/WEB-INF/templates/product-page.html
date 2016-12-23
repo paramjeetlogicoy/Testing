@@ -36,7 +36,7 @@
 }
 </script>
 <script th:inline="text"
-	th:if="${product.reviewCount gt 0 and product.ratingValue gt 0}"
+	th:if="${product.reviewCount gt 0 and product.rating gt 0}"
 	type="application/ld+json">
 {
   "@context": "http://schema.org/",
@@ -47,6 +47,8 @@
 
   "aggregateRating": {
     "@type": "AggregateRating",
+	"bestRating" : 10,
+	"worstRating" : 1,
     "ratingValue": [[ ${product.rating} ]],
     "reviewCount": [[ ${product.reviewCount} ]]
   },
@@ -61,7 +63,7 @@
 }
 </script>
 <script th:inline="text"
-	th:if="${product.reviewCount lt 1 or product.ratingValue lt 1}"
+	th:if="${product.reviewCount lt 1 or product.rating lt 1}"
 	type="application/ld+json">
 {
   "@context": "http://schema.org/",
