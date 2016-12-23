@@ -7,7 +7,27 @@
 <title>All Product Categories</title>
 <link href="https://www.luvbrite.com/categories" rel="canonical" />
 <meta th:include="fragments/layout::fragment-head" />
-
+<script th:inline="javascript" type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+    "@type": "ListItem",
+    "position": 1,
+    "item": {
+      "@id": "https://www.luvbrite.com",
+      "name": "Home"
+    }
+  },{
+    "@type": "ListItem",
+    "position": 2,
+    "item": {
+      "@id": "https://www.luvbrite.com/categories",
+      "name": "Categories"
+    }
+  }]
+}
+</script>
 </head>
 <body ng-app="lbApp">
 	<div th:replace="fragments/layout::fragment-google-analytics"></div>

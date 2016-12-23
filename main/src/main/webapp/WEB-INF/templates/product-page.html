@@ -7,6 +7,29 @@
 <title th:text="${product.name}"></title>
 <link th:if="${url}!=null" th:href="@{'https://www.luvbrite.com/product/' + ${url}}" rel="canonical" />
 <meta th:include="fragments/layout::fragment-head" />
+<script th:inline="javascript" type="application/ld+json">
+{
+  "@context": "http://schema.org/",
+  "@type": "Product",
+  "name": /*[[${product.name}]]*/,
+  "image": /*[[${_lbGlobalCDNPath} + ${#strings.replace(product.featuredImg,'.jpg','-600x600.jpg')}]]*/,
+  "description": /*[[${product.description}]]*/,
+
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": /*[[${product.reviewCount lt 1} ? 0 : ${product.rating}]]*/,
+    "reviewCount": /*[[${product.reviewCount lt 1} ? 0 : ${product.reviewCount}]]*/
+  },
+
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "USD",
+    "price": /*[[${product.productFilters.price}]]*/,
+    "itemCondition": "http://schema.org/NewCondition",
+    "availability": /*[[${product.stockStat == 'instock'} ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock']]*/
+  }
+}
+</script>
 </head>
 <body ng-app="lbApp" ng-controller="productCtrlr" class="bg-greyF9">
 	<div th:replace="fragments/layout::fragment-google-analytics"></div>

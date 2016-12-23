@@ -13,6 +13,34 @@
 	th:href="@{'https://www.luvbrite.com/category/' + ${cUrl}}"
 	rel="canonical" />
 <meta th:include="fragments/layout::fragment-head" />
+<script th:if="${category}!=null" th:inline="javascript" type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+    "@type": "ListItem",
+    "position": 1,
+    "item": {
+      "@id": "https://www.luvbrite.com",
+      "name": "Home"
+    }
+  },{
+    "@type": "ListItem",
+    "position": 2,
+    "item": {
+      "@id": "https://www.luvbrite.com/categories",
+      "name": "All Categories"
+    }
+  },{
+    "@type": "ListItem",
+    "position": 3,
+    "item": {
+      "@id": /*[['https://www.luvbrite.com/category/' + ${cUrl}]]*/,
+      "name": /*[[${category}]]*/
+    }
+  }]
+}
+</script>
 </head>
 <body ng-app="lbApp" ng-controller="allProductCtrlr"
 	class="bg-greyF9 allproductspage">
