@@ -35,7 +35,9 @@
   }]
 }
 </script>
-<script th:inline="text" type="application/ld+json">
+<script th:inline="text"
+	th:if="${product.reviewCount gt 0 and product.ratingValue gt 0}"
+	type="application/ld+json">
 {
   "@context": "http://schema.org/",
   "@type": "Product",
@@ -45,9 +47,28 @@
 
   "aggregateRating": {
     "@type": "AggregateRating",
-    "ratingValue": [[ ${product.reviewCount lt 1} ? 0 : ${product.rating} ]],
-    "reviewCount": [[ ${product.reviewCount lt 1} ? 0 : ${product.reviewCount} ]]
+    "ratingValue": [[ ${product.rating} ]],
+    "reviewCount": [[ ${product.reviewCount} ]]
   },
+
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "USD",
+    "price": [[ ${product.productFilters.price} ]],
+    "itemCondition": "http://schema.org/NewCondition",
+    "availability": "[[ ${product.stockStat == 'instock'} ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock' ]]"
+  }
+}
+</script>
+<script th:inline="text"
+	th:if="${product.reviewCount lt 1 or product.ratingValue lt 1}"
+	type="application/ld+json">
+{
+  "@context": "http://schema.org/",
+  "@type": "Product",
+  "name": "[[ ${product.name} ]]",
+  "image": "[[ ${_lbGlobalCDNPath} + ${#strings.replace(product.featuredImg,'.jpg','-600x600.jpg')} ]]",
+  "description": "[[ ${product.description} ]]",
 
   "offers": {
     "@type": "Offer",
