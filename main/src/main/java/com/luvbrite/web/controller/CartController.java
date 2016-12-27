@@ -1464,6 +1464,11 @@ public class CartController {
 			
 			
 			CartOrder order = dao.get(orderId);
+			if(order == null){
+				cr.setMessage("There was some error processing your request. Please refresh the page and try again");
+				logger.error("updateCart. No order found for orderId - " + orderId);
+				return cr;
+			}
 			
 			int totalItems = 0;
 			boolean itemFound = false;
