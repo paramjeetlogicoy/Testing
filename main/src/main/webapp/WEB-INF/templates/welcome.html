@@ -17,7 +17,7 @@
 <meta property="og:url" content="https://www.luvbrite.com" />
 <meta property="og:site_name" content="Luvbrite" />
 <meta th:include="fragments/layout::fragment-head" />
-
+<link href="https://fonts.googleapis.com/css?family=Catamaran:900" rel="stylesheet" />
 <style type="text/css">
 .newarrivals-slider{background-image: url(https://lbrit.co/static/imgs/sliders/new-arrivals-offer-v1.jpg);background-color:white !important;}
 .endofeight-slider{background-image: url(https://lbrit.co/static/imgs/sliders/end-of-eigth-offer-new.jpg)}
@@ -32,6 +32,9 @@
 .holiday-special button{background-color: #fb6a00;border-color: #ea680a}
 .holiday-special{background-image: url(https://lbrit.co/static/imgs/sliders/holiday-special-xs.jpg);background-color:#bab5aa !important;}
 .holiday-special button{font-size:11px;bottom:15px !important;}
+.healthline-slider{background-image: url(https://lbrit.co/static/imgs/sliders/luvbrite-healthline-xs.jpg);background-color:#403b41 !important;}
+.healthline-slider a{bottom:35px !important;}
+.healthline-slider .bnr-txt{position:absolute;top:12px;width:100%;text-align:center;font-size:27px;color:#00b7ed;text-shadow:1px 1px 1px black;font-family: 'Catamaran', sans-serif;}
 @media (min-width: 768px){	
 	.carousel-inner .mx300{max-width:768px;}
 
@@ -45,6 +48,13 @@
 	
 	.britebox-slider.item {background-position:50% 50%;}
 	.britebox-slider.item button.btn{right:10%;bottom: 15px;}
+		
+	.healthline-slider{background-image: url(https://lbrit.co/static/imgs/sliders/luvbrite-healthline.jpg)}
+	.healthline-slider a{font-size:14px}
+	.healthline-slider .bnr-txt{font-size:45px;top:35px;text-shadow:2px 2px 1px black}
+}
+@media (min-width: 1400px){		
+	.healthline-slider .bnr-txt{font-size:65px;top:30px}
 }
 </style>
 </head>
@@ -57,8 +67,13 @@
 
 			<!-- Wrapper for slides -->
 			<div class="carousel-inner" role="listbox">
+				<div class="healthline-slider item active">
+					<div class="bnr-txt">GO HEALTHY WITH LUVBRITE NATURALS</div>
+					<a href="/category/health-line" class="btn btn-sm btn-primary">SHOW
+						ME</a>
+				</div>
 
-				<div class="holiday-special item active">
+				<div class="holiday-special item">
 					<button data-toggle="modal" data-target="#holidaySpecial"
 						class="btn btn-warning btn-sm">LEARN MORE</button>
 				</div>
@@ -111,7 +126,7 @@
 				<h1>FEEL THE LUV</h1>
 				<a href="" data-toggle="modal" data-target="#britebox"
 					class="mx400 marg-b3 no-outline"><img class="fit"
-					src="https://lbrit.co/static/imgs/uploads/2016/02/new-brite-box-t.png"
+					src="https://lbrit.co/static/imgs/new-brite-box-s.png"
 					alt="welcome-kit" /></a>
 
 				<div class="size18 marg-b3">
@@ -136,7 +151,7 @@
 					<div class="col-sm-4 text-center text-d-right">
 						<a class="no-outline" href="" data-toggle="modal"
 							data-target="#briteboxuse"><img class="fit home-loyalistcard"
-							src="https://lbrit.co/static/imgs/uploads/2015/04/loyalist-card.png"
+							src="https://lbrit.co/static/imgs/loyalist-card-s.png"
 							alt="loyalist-card" /></a>
 					</div>
 				</div>
