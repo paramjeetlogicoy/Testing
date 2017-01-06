@@ -439,11 +439,8 @@
 	/*<![CDATA[*/
 		var thisPage = /*[[${category} == null ? 'products' : ${#strings.toLowerCase(category)}]]*/; 
 		$(document).ready(function(){
-			_lbFns.activateNavMenu('nav-' + thisPage);
+			_lbFns.activateNavMenu('nav-' + thisPage.replace(' ','-'));
 		});
-		
-	    var _globalUserId = /*[[${userId}]]*/ 0;
-	    var _lbGlobalCDNPath = /*[[${_lbGlobalCDNPath}]]*/ '';
 	/*]]>*/
 	</script>
 	<script type="text/javascript">
