@@ -37,11 +37,8 @@ public class UserDAO extends BasicDAO<User, Long> {
 			Query<User> query = getDs().createQuery(getEntityClass());
 			setFilters(query, regExp);
 			
-			if(status.equals("inactive")){
-				query.field("active").equal(false);
-			}
-			else if(status.equals("active")){
-				query.field("active").equal(true);
+			if(!status.equals("all")){
+				query.field("status").equal(status);
 			}
 			
 			return count(query);	
@@ -49,12 +46,7 @@ public class UserDAO extends BasicDAO<User, Long> {
 		else if(!status.equals("all")){
 
 			Query<User> query = getDs().createQuery(getEntityClass());
-			if(status.equals("inactive")){
-				query.field("active").equal(false);
-			}
-			else if(status.equals("active")){
-				query.field("active").equal(true);
-			}
+			query.field("status").equal(status);
 			
 			return count(query);
 		}

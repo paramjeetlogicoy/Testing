@@ -40,7 +40,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 	
 	m.flowerCount = 0;
 	m.flowerIds = [];
-	m.fifthFlowerActive = true;
+	m.fifthFlowerActive = false;
 	m.fifthFlowerApplied = false;
 	m.fifthFlowerEligible = false;
 	

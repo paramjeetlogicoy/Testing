@@ -55,19 +55,22 @@
 								<div class="col-sm-5">
 									<label class="radio-inline"> <input type="radio"
 										name="userStatus" ng-model="userStatus" value="all"
-										ng-click="pg.currentPage=1;getUsers()" /> All Users
+										ng-click="pg.currentPage=1;getUsers()" /> All users
 									</label> <label class="radio-inline"> <input type="radio"
 										name="userStatus" ng-model="userStatus" value="active"
-										ng-click="pg.currentPage=1;getUsers()" /> Active Users Only
+										ng-click="pg.currentPage=1;getUsers()" /> Active users
 									</label> <label class="radio-inline"> <input type="radio"
 										name="userStatus" ng-model="userStatus" value="pending"
-										ng-click="pg.currentPage=1;getUsers()" /> Pending Users Only
+										ng-click="pg.currentPage=1;getUsers()" /> Pending users
 									</label> <label class="radio-inline"> <input type="radio"
 										name="userStatus" ng-model="userStatus" value="declined"
-										ng-click="pg.currentPage=1;getUsers()" /> Declined Users Only
+										ng-click="pg.currentPage=1;getUsers()" /> Declined users
 									</label> <label class="radio-inline"> <input type="radio"
-										name="userStatus" ng-model="userStatus" value="rec-expired"
-										ng-click="pg.currentPage=1;getUsers()" /> Reco. expired Users Only
+										name="userStatus" ng-model="userStatus" value="reco-expired"
+										ng-click="pg.currentPage=1;getUsers()" /> Reco. expired users
+									</label><label class="radio-inline"> <input type="radio"
+										name="userStatus" ng-model="userStatus" value="new-reco-uploaded"
+										ng-click="pg.currentPage=1;getUsers()" /> New Reco uploaded users
 									</label>
 								</div>
 							</form>
