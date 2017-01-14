@@ -128,6 +128,15 @@
 					<div class="product-in-cart ng-cloak" ng-if="productInCart">
 						<strong>{{productInCart}} in your cart</strong>
 					</div>
+					
+					<ul class="prdpage-thumbnails" th:if="*{adtlImages} != null and !*{#lists.isEmpty(adtlImages)}">
+						<li class="selected" ng-mouseenter="changeMainImg($event)"><img th:attr="data-zoom=${_lbGlobalCDNPath + product.featuredImg}"
+								th:src="${_lbGlobalCDNPath} + ${#strings.replace(product.featuredImg,'.jpg','-150x150.jpg')}"
+								class="fit" /></li>
+						<li ng-mouseenter="changeMainImg($event)" th:each="adtlImg : *{adtlImages}"><img th:attr="data-zoom=${_lbGlobalCDNPath + adtlImg.attr}"
+								th:src="${_lbGlobalCDNPath} + ${#strings.replace(adtlImg.attr,'.jpg','-150x150.jpg')}"
+								class="fit" /></li>
+					</ul>
 				</div>
 			</div>
 

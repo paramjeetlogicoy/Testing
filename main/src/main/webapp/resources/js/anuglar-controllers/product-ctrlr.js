@@ -180,7 +180,28 @@ var productCtrlr = function($scope, $http, $rootScope){
 	}
 	
 	
-	
+	/* Multiple Product Img hovering*/
+	$scope.changeMainImg = function($event){
+		var $currLi = $($event.target).closest('li');
+		
+		if($currLi.hasClass('.selected')) return;
+		
+		//destroy existing zoom
+		$scope.zoomFn.destroy();
+		
+		//setup new image
+		
+		var newImg = $currLi.find('img'),
+		newImgSrc = newImg.attr('data-zoom') ? newImg.attr('data-zoom').replace('.jpg','-600x600.jpg') : '';
+		if(newImgSrc === '') return;
+		
+		$img.find('img').attr('src', newImgSrc);
+		$img.find('img').attr('data-zoom', newImg.attr('data-zoom'));
+		$currLi.addClass('selected').siblings().removeClass('selected');
+		
+		//activate zoom
+		$scope.zoomFn.activate();
+	};
 	
 	
 	/* Review Section */
@@ -247,6 +268,7 @@ var productCtrlr = function($scope, $http, $rootScope){
 			},
 			
 			destroy : function(){
+				$img.parent().removeClass('loaded');
 				$img.trigger('zoom.destroy');
 			}
 	};

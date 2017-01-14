@@ -41,6 +41,7 @@ public class Product {
 	
 	private ProductFilters productFilters;
 	private SeoElem seoElem;
+	private List<AttrValue> adtlImages; /*Additional Imgs*/
 	
 	public long get_id() {
 		return _id;
@@ -179,5 +180,11 @@ public class Product {
 	}
 	public void setSeoElem(SeoElem seoElem) {
 		this.seoElem = seoElem;
+	}
+	public List<AttrValue> getAdtlImages() {
+		return adtlImages;
+	}
+	public void setAdtlImages(List<AttrValue> adtlImages) {
+		this.adtlImages = adtlImages;
 	}
 }

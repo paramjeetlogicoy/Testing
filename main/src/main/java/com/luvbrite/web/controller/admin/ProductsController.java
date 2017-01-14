@@ -233,6 +233,7 @@ public class ProductsController {
 				productDb.setFeaturedImg(product.getFeaturedImg());
 				productDb.setRps(product.getRps());
 				productDb.setProductFilters(product.getProductFilters());
+				productDb.setAdtlImages(product.getAdtlImages());
 				
 				if(product.isVariation()){
 					productDb.setAttrs(product.getAttrs());

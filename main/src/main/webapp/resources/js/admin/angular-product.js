@@ -113,6 +113,30 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 			}
 		}
 	};
+	
+	
+	$scope.selectAdtlImage = function(){
+		uploadService.config.cb = $scope.afterSelectAdtlImg;
+		uploadService.config.multipleSelect = true;
+		uploadService.config.fields = {path : '/products/'};		
+		uploadService.showGallery($rootScope);
+	};
+	
+	$scope.afterSelectAdtlImg = function(){
+		if(uploadService.selectedFiles){
+			
+			if(!$scope.p.adtlImages) {
+				$scope.p.adtlImages = [];
+			}
+			
+			uploadService.selectedFiles.forEach(function(selectedFile){
+				$scope.p.adtlImages.push({attr: selectedFile.location})
+			});
+			
+			$scope.productDetailsForm.$setDirty();
+		}
+	};
+	
 
 	/**UPLOAD SPECIFIC FN ENDS*/
 	
@@ -181,6 +205,19 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 	
 	$scope.noop = function(){};
 
+	
+	$scope.removeAdtlImg = function(){
+		var currItem = this.imgAlt;
+		for(var i=0; i<$scope.p.adtlImages.length; i++){
+			if($scope.p.adtlImages[i] == currItem){
+				$scope.p.adtlImages.splice(i,1);
+				$scope.productDetailsForm.$setDirty();
+				
+				break;
+			}
+		}
+	};
+	
 	
 	$scope.toDetails = function(){
 		$('.product-pricing-holder').slideUp();
