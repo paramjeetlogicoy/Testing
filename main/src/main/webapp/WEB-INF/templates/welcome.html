@@ -32,8 +32,12 @@
 .healthline-slider{background-image: url(https://lbrit.co/static/imgs/sliders/luvbrite-healthline-xs.jpg);background-color:#403b41 !important;}
 .healthline-slider a{bottom:35px !important;}
 .healthline-slider .bnr-txt{position:absolute;top:12px;width:100%;text-align:center;font-size:27px;color:#00b7ed;text-shadow:1px 1px 1px black;font-family: 'Catamaran', sans-serif;}
+.junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix-home-xs.jpg);background-color:black !important;}
+.junglemix-slider a{background-color: #fb6a00;border-color: #ea680a;bottom: 20px !important;}
 @media (min-width: 768px){	
 	.carousel-inner .mx300{max-width:768px;}
+	
+	.junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix-home-sm.jpg?v001);}
 
 	.endofeight-slider.item button.btn {bottom:100px;right:19%;width: auto;margin-left: 0;left: auto;}
 	.offhouroffer-slider.item button.btn {bottom:70px}
@@ -46,6 +50,9 @@
 	.healthline-slider{background-image: url(https://lbrit.co/static/imgs/sliders/luvbrite-healthline.jpg)}
 	.healthline-slider a{font-size:14px}
 	.healthline-slider .bnr-txt{font-size:45px;top:35px;text-shadow:2px 2px 1px black}
+}
+@media (min-width: 1200px){	
+	.junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix-home.jpg);}
 }
 @media (min-width: 1400px){		
 	.healthline-slider .bnr-txt{font-size:65px;top:30px}
@@ -61,22 +68,15 @@
 
 			<!-- Wrapper for slides -->
 			<div class="carousel-inner" role="listbox">
-				<div class="healthline-slider item active">
-					<div class="bnr-txt">GO HEALTHY WITH LUVBRITE NATURALS</div>
-					<a href="/category/health-line" class="btn btn-sm btn-primary">SHOW
-						ME</a>
+
+				<div class="junglemix-slider item active">
+					<a href="/product/jungle-mix-10-gram-special" class="btn btn-warning">SHOP NOW</a>
 				</div>
 
 				<div class="newarrivals-slider item">
 					<a href="/category/new-arrivals" class="btn btn-sm btn-lb">TAKE
 						A PEAK</a>
 				</div>
-
-				<!--*/ <div class="localbox-slider item">
-					<div class="mx300 rel pch100">
-						<a href="/localbox" class="btn btn-sm btn-lb">LEARN MORE</a>
-					</div>
-				</div> /*-->
 
 				<div class="endofeight-slider item">
 					<div class="mx300 rel pch100">
@@ -85,16 +85,22 @@
 					</div>
 				</div>
 
-				<div class="offhouroffer-slider item">
-					<button data-toggle="modal" data-target="#offHourOfferModal"
-						class="btn btn-warning btn-sm">VIEW DETAILS</button>
-				</div>
-
 				<div class="doubledown-slider item">
 					<div class="mx300 rel pch100">
 						<button data-toggle="modal" data-target="#doubleDownModal"
 							class="btn btn-sm btn-black">VIEW DETAILS</button>
 					</div>
+				</div>
+				
+				<div class="healthline-slider item">
+					<div class="bnr-txt">GO HEALTHY WITH LUVBRITE NATURALS</div>
+					<a href="/category/health-line" class="btn btn-sm btn-primary">SHOW
+						ME</a>
+				</div>
+
+				<div class="offhouroffer-slider item">
+					<button data-toggle="modal" data-target="#offHourOfferModal"
+						class="btn btn-warning btn-sm">VIEW DETAILS</button>
 				</div>
 			</div>
 
