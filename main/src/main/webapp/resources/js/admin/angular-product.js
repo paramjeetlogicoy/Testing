@@ -115,22 +115,51 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 	};
 	
 	
-	$scope.selectAdtlImage = function(){
-		uploadService.config.cb = $scope.afterSelectAdtlImg;
+	$scope.selectVisualImg = function(){
+		uploadService.config.cb = $scope.afterSelectVisualImg;
 		uploadService.config.multipleSelect = true;
 		uploadService.config.fields = {path : '/products/'};		
 		uploadService.showGallery($rootScope);
 	};
 	
-	$scope.afterSelectAdtlImg = function(){
+	$scope.afterSelectVisualImg = function(){
 		if(uploadService.selectedFiles){
 			
-			if(!$scope.p.adtlImages) {
-				$scope.p.adtlImages = [];
+			if(!$scope.p.prdVisuals) {
+				$scope.p.prdVisuals = [];
 			}
 			
 			uploadService.selectedFiles.forEach(function(selectedFile){
-				$scope.p.adtlImages.push({attr: selectedFile.location})
+				$scope.p.prdVisuals.push({
+					'url': selectedFile.location,
+					'type': 'image'
+				});
+			});
+			
+			$scope.productDetailsForm.$setDirty();
+		}
+	};
+	
+	
+	$scope.selectVideoThumb = function(){
+		uploadService.config.cb = $scope.afterSelectVideoThumb;
+		uploadService.config.multipleSelect = true;
+		uploadService.config.fields = {path : '/products/'};		
+		uploadService.showGallery($rootScope);
+	};
+	
+	$scope.afterSelectVideoThumb = function(){
+		if(uploadService.selectedFiles){
+			
+			if(!$scope.p.prdVisuals) {
+				$scope.p.prdVisuals = [];
+			}
+			
+			uploadService.selectedFiles.forEach(function(selectedFile){
+				$scope.p.prdVisuals.push({
+					'thumbnail': selectedFile.location,
+					'type': 'video'
+				});
 			});
 			
 			$scope.productDetailsForm.$setDirty();
@@ -206,11 +235,11 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 	$scope.noop = function(){};
 
 	
-	$scope.removeAdtlImg = function(){
-		var currItem = this.imgAlt;
-		for(var i=0; i<$scope.p.adtlImages.length; i++){
-			if($scope.p.adtlImages[i] == currItem){
-				$scope.p.adtlImages.splice(i,1);
+	$scope.removePrdVisual = function(){
+		var currItem = this.pVisual;
+		for(var i=0; i<$scope.p.prdVisuals.length; i++){
+			if($scope.p.prdVisuals[i] == currItem){
+				$scope.p.prdVisuals.splice(i,1);
 				$scope.productDetailsForm.$setDirty();
 				
 				break;

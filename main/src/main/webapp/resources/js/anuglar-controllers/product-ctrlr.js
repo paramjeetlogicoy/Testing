@@ -184,7 +184,7 @@ var productCtrlr = function($scope, $http, $rootScope){
 	$scope.changeMainImg = function($event){
 		var $currLi = $($event.target).closest('li');
 		
-		if($currLi.hasClass('.selected')) return;
+		if($currLi.hasClass('selected')) return;
 		
 		//destroy existing zoom
 		$scope.zoomFn.destroy();
@@ -192,15 +192,31 @@ var productCtrlr = function($scope, $http, $rootScope){
 		//setup new image
 		
 		var newImg = $currLi.find('img'),
-		newImgSrc = newImg.attr('data-zoom') ? newImg.attr('data-zoom').replace('.jpg','-600x600.jpg') : '';
+				newImgSrc = newImg.data('zoom') ? newImg.data('zoom').replace('.jpg','-600x600.jpg') : '',
+				videoEmbed = newImg.data('video-embed') ? newImg.data('video-embed') : '',
+				$mainImg = $('.prdpage-img img');
+
+		
+	
 		if(newImgSrc === '') return;
 		
-		$img.find('img').attr('src', newImgSrc);
-		$img.find('img').attr('data-zoom', newImg.attr('data-zoom'));
+		$mainImg.attr('src', newImgSrc);
+		$mainImg.data('zoom', newImg.data('zoom'));
 		$currLi.addClass('selected').siblings().removeClass('selected');
 		
-		//activate zoom
-		$scope.zoomFn.activate();
+		if(videoEmbed !== ''){
+			$mainImg.data('video-embed', videoEmbed);
+			$mainImg.addClass('videoEmbed');
+
+		}
+		else{
+			
+			$mainImg.data('video-embed', null);
+			$mainImg.removeClass('videoEmbed');
+			
+			//if not a video, activate zoom
+			$scope.zoomFn.activate();
+		}
 	};
 	
 	
@@ -251,25 +267,25 @@ var productCtrlr = function($scope, $http, $rootScope){
 	
 	
 	/*Activate Image Zoom*/
-	var $img = $('.prdpage-img');
 	$scope.zoomFn = {
 			activate : function(){
 				
-				var url = $img.find('img').attr('data-zoom');
+				var $imgWarpper = $('.prdpage-img'),
+				url = $imgWarpper.find('img').data('zoom');
+				
 				if(url && url !==''){
 					
-					$img.zoom({
+					$imgWarpper.zoom({
 						url : url,
 						callback: function(){
 							$(this).parent().addClass('loaded');
 						}
-					});					
+					});				
 				}
 			},
 			
 			destroy : function(){
-				$img.parent().removeClass('loaded');
-				$img.trigger('zoom.destroy');
+				$('.prdpage-img').removeClass('loaded').trigger('zoom.destroy');
 			}
 	};
 	$scope.zoomFn.activate();

@@ -129,13 +129,24 @@
 						<strong>{{productInCart}} in your cart</strong>
 					</div>
 					
-					<ul class="prdpage-thumbnails" th:if="*{adtlImages} != null and !*{#lists.isEmpty(adtlImages)}">
-						<li class="selected" ng-mouseenter="changeMainImg($event)"><img th:attr="data-zoom=${_lbGlobalCDNPath + product.featuredImg}"
+					<ul class="prdpage-thumbnails clearfix" th:if="*{prdVisuals} != null and !*{#lists.isEmpty(prdVisuals)}">
+						<li class="selected" ng-mouseenter="changeMainImg($event)">
+							<img th:attr="data-zoom=${_lbGlobalCDNPath + product.featuredImg}"
 								th:src="${_lbGlobalCDNPath} + ${#strings.replace(product.featuredImg,'.jpg','-150x150.jpg')}"
-								class="fit" /></li>
-						<li ng-mouseenter="changeMainImg($event)" th:each="adtlImg : *{adtlImages}"><img th:attr="data-zoom=${_lbGlobalCDNPath + adtlImg.attr}"
-								th:src="${_lbGlobalCDNPath} + ${#strings.replace(adtlImg.attr,'.jpg','-150x150.jpg')}"
-								class="fit" /></li>
+								class="fit" />
+						</li>
+						
+						<li ng-mouseenter="changeMainImg($event)" th:each="prdVisual : *{prdVisuals}">
+							<img th:if="${prdVisual.type}=='image'" 
+								th:attr="data-zoom=${_lbGlobalCDNPath + prdVisual.url}"
+								th:src="${_lbGlobalCDNPath} + ${#strings.replace(prdVisual.url,'.jpg','-150x150.jpg')}"
+								class="fit" />
+								
+							<img th:if="${prdVisual.type}=='video'" 
+								th:attr="data-zoom=${_lbGlobalCDNPath + prdVisual.thumbnail},data-video-embed=${prdVisual.videoEmbed}"
+								th:src="${_lbGlobalCDNPath} + ${#strings.replace(prdVisual.thumbnail,'.jpg','-150x150.jpg')}"
+								class="fit" />
+						</li>
 					</ul>
 				</div>
 			</div>
@@ -357,5 +368,17 @@
 	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
 	<script type="text/javascript">
 	</script>
+	
+	<div class="modal fade" tabindex="-1" role="dialog" id="videoPlayerModal"
+		data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog">
+			<div class="text-right">
+				<button class="close rel" onclick="_lbFns.closeVideoModal()">
+					<i class="fa fa-times" aria-hidden="true"></i>
+				</button>
+			</div>
+			<div class="modal-content"></div>
+		</div>
+	</div>
 </body>
 </html>

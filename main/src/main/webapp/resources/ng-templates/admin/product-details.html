@@ -81,16 +81,25 @@
 						</div>
 
 						<div class="form-group">
-							<label class="col-sm-4 control-label">Additional Images</label>
+							<label class="col-sm-4 control-label">Additional Images / Videos</label>
 							<div class="col-sm-7">
 								<button type="button" 
-									class="btn btn-xs btn-info" ng-click="selectAdtlImage()">Add
-									Images</button>
+									class="btn btn-xs btn-info" ng-click="selectVisualImg()">Add
+									Images</button> 
+								<button type="button" 
+									class="btn btn-xs btn-primary" ng-click="selectVideoThumb()">Add
+									Videos</button>
 								<ul class="imgalt-holder">
-								 	<li ng-repeat="imgAlt in p.adtlImages">
-								 		<span><img ng-src="{{cdnPath + imgAlt.attr.replace('.jpg','-150x150.jpg')}}" /><a
-											href="" ng-click="removeAdtlImg()"><i class="fa fa-trash"></i></a></span>
-								 		<span ng-if="imgAlt.value">({{imgAlt.value}})</span>
+								 	<li ng-repeat="pVisual in p.prdVisuals" ng-if="pVisual.type=='image'">
+								 		<span><img ng-src="{{cdnPath + pVisual.url.replace('.jpg','-150x150.jpg')}}" /><a
+											href="" ng-click="removePrdVisual()"><i class="fa fa-trash"></i></a></span>
+								 		<span ng-if="pVisual.alt">({{pVisual.alt}})</span>
+								 	</li>
+								 	<li ng-repeat="pVisual in p.prdVisuals" ng-if="pVisual.type=='video'">
+								 		<span><img ng-src="{{cdnPath + pVisual.thumbnail.replace('.jpg','-150x150.jpg')}}" /><a
+											href="" ng-click="removePrdVisual()"><i class="fa fa-trash"></i></a></span>
+								 		<textarea ng-model="pVisual.videoEmbed" class="form-control" required>
+								 		</textarea>
 								 	</li>
 								</ul>
 							</div>
