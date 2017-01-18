@@ -1268,6 +1268,10 @@ nav#pagination-nav{
 			display: block;
 		}
 	}
+
+	.videoEmbed{
+		cursor: pointer;
+	}
 }
 
 .product-in-cart:extend(.text-center,.white) {
@@ -1962,5 +1966,13 @@ ul.img-thumbnails {
 		float:none;
 		color:white;
 		opacity: 1;
+	}
+
+	iframe{
+		width:100% !important;
+
+		@media(min-width:601px){
+			width:600px !important;
+		}
 	}
 }

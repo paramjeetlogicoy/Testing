@@ -95,7 +95,7 @@
 											href="" ng-click="removePrdVisual()"><i class="fa fa-trash"></i></a></span>
 								 		<span ng-if="pVisual.alt">({{pVisual.alt}})</span>
 								 	</li>
-								 	<li ng-repeat="pVisual in p.prdVisuals" ng-if="pVisual.type=='video'">
+								 	<li ng-repeat="pVisual in p.prdVisuals" ng-if="pVisual.type=='video'" class="video-li">
 								 		<span><img ng-src="{{cdnPath + pVisual.thumbnail.replace('.jpg','-150x150.jpg')}}" /><a
 											href="" ng-click="removePrdVisual()"><i class="fa fa-trash"></i></a></span>
 								 		<textarea ng-model="pVisual.videoEmbed" class="form-control" required>
