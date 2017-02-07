@@ -233,7 +233,10 @@ public class CustomerController {
 		Iterator<ProductId> iterator = pipeline.aggregate(ProductId.class);
 		while(iterator.hasNext()) {
 
-			long tempPId = iterator.next().getProductId();
+			ProductId tempPrdId = iterator.next();
+			if(tempPrdId == null) continue;
+			
+			long tempPId = tempPrdId.getProductId();
 			
 			/**
 			 * If there is a filter on product ID, then the order might have other
