@@ -113,7 +113,7 @@ public class PostOrderMeta {
 						
 						String name = oli.getName();
 						if(oli.getPromo() != null && !"".equals(oli.getPromo())){
-							name += ("(" + oli.getPromo() +")");
+							name += (" (" + oli.getPromo() +")");
 						}
 						
 						li.setName(name);
