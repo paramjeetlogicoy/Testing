@@ -51,6 +51,31 @@
 						<a href="" ng-click="itemRemove()">Delete Item</a>
 					</div>
 				</li>
+				
+				<li class="item-li" ng-if="m.valentinePromoApplied">
+					<div class="item-thumb">
+						<img ng-src="{{lbGlobalCDNPath + '/uploads/2015/12/sensi-chew-amore-150x150.jpg'}}" class="fit"  />
+					</div>
+
+					<div class="item-info">
+						<h5>Sensi Chew Amore - Aphrodisiac</h5>
+						<div class="grey7">
+							<del>$13.00</del>
+							<span class="bold">$0</span>
+						</div>
+						
+						<div class="orange1 size13">Valentine
+							special offer</div>
+					</div>
+					
+					<div class="item-qty">
+						Qty: <span>1</span>
+					</div>
+
+					<div class="item-price">
+						<strong>$0.00</strong>
+					</div>
+				</li>
 
 				<li class="item-li offhouritem" ng-if="itsOffHour"
 					ng-include="'/resources/ng-templates/cart/off-hour-item.html?v002'"></li>
@@ -295,6 +320,16 @@
 						data-target="#britebox" class="inherit u">Offer
 						details.</a></div>
 					</div>
+				</div>
+			</div>
+		
+			<div class="alert alert-info text-center" style="background-color: pink;border-color: lightpink;color: deeppink;"
+				ng-if="m.valentinePromoActive && !m.valentinePromoApplied">
+				<h5><i class="fa fa-heart marg-r2" aria-hidden="true"></i> You're {{(m.valentinePromoAmount - m.order.total) | currency}} away
+					from qualifying for our Valentines Day special offer <i class="fa fa-heart marg-l2" aria-hidden="true"></i></h5>
+				<div>
+					 You have an opportunity to get a <strong>FREE</strong> Sensi Chew Amore ($13 value) when your
+					order total is equal to or above {{m.valentinePromoAmount | currency}}.
 				</div>
 			</div>
 		

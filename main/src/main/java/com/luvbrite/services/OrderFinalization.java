@@ -22,6 +22,7 @@ public class OrderFinalization {
 	
 	private static Logger logger = Logger.getLogger(OrderFinalization.class);
 	private static boolean offhourPromoActive = true;
+	private static boolean valentinesPromoActive = true;
 	
 	private long orderNumber = 0;	
 	public long getOrderNumber() {
@@ -56,6 +57,9 @@ public class OrderFinalization {
 				
 				//Check for offhour promo
 				offHourPromo(cartOrder, cartLogics);
+				
+				//Check for other promos
+				otherPromos(cartOrder, cartLogics);
 				
 				//First Order Check
 				firstOrderCheck(cartOrder, cartLogics);
@@ -163,6 +167,37 @@ public class OrderFinalization {
 			}
 			
 			//System.out.println("Time - " + hour);
+		}
+	}
+	
+	
+	/**
+	 * Check for other adhoc promos 
+	 * */
+	private void otherPromos(CartOrder co, CartLogics cartLogics){
+		
+		if(valentinesPromoActive && co.getTotal() >= 120d){
+				
+			//Add the new item
+			OrderLineItemCart newItem = new OrderLineItemCart();
+			newItem.setTaxable(false);
+			newItem.setInstock(true);
+			newItem.setType("item");
+			newItem.setName("Sensi Chew Amore – Aphrodisiac");
+			newItem.setPromo("ValentinesDayPromos");
+			newItem.setProductId(6098);
+			newItem.setVariationId(0);
+			newItem.setQty(1);
+			newItem.setCost(13d);
+			newItem.setPrice(0d);
+			newItem.setImg("/uploads/2015/12/sensi-chew-amore.jpg");
+
+			List<OrderLineItemCart> olic = co.getLineItems();
+			olic.add(newItem);
+			co.setLineItems(olic);				
+			
+			//Update orderTotals
+			cartLogics.calculateSummary(co);
 		}
 	}
 	

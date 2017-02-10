@@ -51,6 +51,8 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 	
 	m.showPromoTab = true;
 	
+	m.valentinePromoActive = true;
+	m.valentinePromoApplied = false;
 	
 	/* When ever there is a change in m.order, this function needs to be called 
 	 * most of the logic control flags are set here. */
@@ -250,6 +252,22 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 					}
 				);
 			}
+		}
+		
+		
+		//Valentine Promo check
+		m.valentinePromoApplied = false;
+		if(m.valentinePromoActive && m.order.total >= 120){
+			
+			m.valentinePromoApplied = true;
+			
+			m.sales.push({
+				'name' : 'Valentines day promotion',
+				'price' : 13
+			});
+			
+			//Add new discount to order subTotal
+			m.order.subTotal+= 13;
 		}
 		
 	};

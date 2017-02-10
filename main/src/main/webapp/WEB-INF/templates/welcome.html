@@ -34,6 +34,10 @@
 .healthline-slider .bnr-txt{position:absolute;top:12px;width:100%;text-align:center;font-size:27px;color:#00b7ed;text-shadow:1px 1px 1px black;font-family: 'Catamaran', sans-serif;}
 .junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix-home-xs.jpg);background-color:black !important;}
 .junglemix-slider a{background-color: #fb6a00;border-color: #ea680a;bottom: 20px !important;}
+.valentinesday-slider{background-image: url(https://lbrit.co/static/imgs/sliders/valentines-slider-xs.jpg);background-color:black !important;}
+.valentinesday-slider button,
+.valentinesday-slider button:hover,
+.valentinesday-slider button:focus{background-color: #e40079;border-color: #e40079;bottom:5px !important;}
 @media (min-width: 768px){	
 	.carousel-inner .mx300{max-width:768px;}
 	
@@ -51,6 +55,9 @@
 	.healthline-slider{background-image: url(https://lbrit.co/static/imgs/sliders/luvbrite-healthline.jpg)}
 	.healthline-slider a{font-size:14px}
 	.healthline-slider .bnr-txt{font-size:45px;top:35px;text-shadow:2px 2px 1px black}
+
+	.valentinesday-slider{background-image: url(https://lbrit.co/static/imgs/sliders/valentines-slider-lg.jpg);}
+	.valentinesday-slider button{padding: 5px 10px;font-size: 12px;line-height: 1.5}
 }
 @media (min-width: 1000px){	
 	.newarrivals-slider{background-image: url(https://lbrit.co/static/imgs/sliders/newarrivals-slider-lg.jpg)}
@@ -73,7 +80,12 @@
 			<!-- Wrapper for slides -->
 			<div class="carousel-inner" role="listbox">
 
-				<div class="junglemix-slider item active">
+				<div class="valentinesday-slider item active">
+					<button data-toggle="modal" data-target="#valentineDayPromo"
+							class="btn btn-xs btn-lb">LEARN MORE</button>
+				</div>
+
+				<div class="junglemix-slider item">
 					<a href="/product/jungle-mix-10-gram-special" class="btn btn-warning">SHOP NOW</a>
 				</div>
 
@@ -345,6 +357,34 @@
 							the Baked Bees medicated honey. Until further notice, we will be
 							substituting the honey with a 60mg kiva chocolate. Thank you for
 							understanding.</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="modal fade" id="valentineDayPromo" tabindex="-1"
+			role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h3 class="modal-title">Sharing the LUV this Valentines Day!</h3>
+					</div>
+					<div class="modal-body">
+						<div class="marg-b2">
+							<p>From now until February 14th, 10:30am, all orders reaching
+								a total $120 or more will receive a FREE Sensi Chew Amore'.</p>
+							<p><strong>Note:</strong> Order total must hit $120 or more after any
+								discounts or other promos have been applied to order.</p>
+							<p>
+								<small>Offer valid until supplies last. Luvbrite has
+									the right to refuse or void this offer at any time for any
+									reason.</small>
+							</p>
+						</div>
 					</div>
 				</div>
 			</div>
