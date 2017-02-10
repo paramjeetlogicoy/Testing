@@ -104,19 +104,24 @@ public class PostOrderMeta {
 			}
 			
 			List<LineItem> line_items = new ArrayList<LineItem>();
-			List<OrderLineItem> oils = order.getLineItems();
-			if(oils != null){
+			List<OrderLineItem> olis = order.getLineItems();
+			if(olis != null){
 				
-				for(OrderLineItem oil : oils){
-					if(oil.getType().equals("item")){
+				for(OrderLineItem oli : olis){
+					if(oli.getType().equals("item")){
 						LineItem li = new LineItem();
 						
-						li.setName(oil.getName());
-						li.setQuantity(oil.getQty());
+						String name = oli.getName();
+						if(oli.getPromo() != null && !"".equals(oli.getPromo())){
+							name += ("(" + oli.getPromo() +")");
+						}
+						
+						li.setName(name);
+						li.setQuantity(oli.getQty());
 						
 						List<Meta> meta = new ArrayList<Meta>();
 						
-						List<AttrValue> specs = oil.getSpecs();
+						List<AttrValue> specs = oli.getSpecs();
 						if(specs != null && specs.size() !=0){
 							AttrValue spec = specs.get(0);
 							
