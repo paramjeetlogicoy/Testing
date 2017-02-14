@@ -1,7 +1,7 @@
 var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootScope){
 	var m = this,
 	deliveryLoaded = false,	
-	cmcVersion = Math.random(); //'v0002'; //Math.random();
+	cmcVersion = 'v0004'; //Math.random();
 	
 	m.order = {};	
 	m.ddprds = [];
@@ -51,7 +51,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 	
 	m.showPromoTab = true;
 	
-	m.valentinePromoActive = true;
+	m.valentinePromoActive = false;
 	m.valentinePromoApplied = false;
 	
 	/* When ever there is a change in m.order, this function needs to be called 
