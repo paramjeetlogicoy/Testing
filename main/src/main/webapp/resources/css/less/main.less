@@ -72,9 +72,26 @@ nav.admin-navbar {
 		width:40px;
 
 		@media(min-width:768px){
-			width:60px;
+			width:50px;
 		}
 
+	}
+}
+
+.nav-notifications{
+	.fix;
+	.pc100;
+
+	top:65px;
+	background-color: #f9edbe;
+	z-index: 19;
+	border-bottom: 1px solid #f0c36d;
+	padding-top: 3px;
+    line-height: 16px;
+
+	@media(min-width:768px){
+		top:75px;
+		z-index: 20;
 	}
 }
 
@@ -150,7 +167,7 @@ nav.admin-navbar {
 	.box-shadow(0 0 5px 0px rgba(0,0,0,.1));
 
 	padding-right: inherit;
-    top: 92px;
+    top: 98px;
 	z-index:20;
 
     .nav>li>a{
@@ -158,6 +175,7 @@ nav.admin-navbar {
     	font-weight: 600;
     	text-transform: uppercase;
     	white-space: nowrap;
+		padding: 7px 15px;
 
     	&:focus,
     	&:hover,
