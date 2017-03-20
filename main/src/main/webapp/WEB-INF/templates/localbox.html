@@ -83,11 +83,11 @@
 							<div><em>Temporarily out of stock.</em></div>
 
 							<div class="alert alert-success ng-cloak" ng-show="successMsg">
-								<span ng-bind="successMsg"></span><span class="marg-l1"><a
+								<span ng-bind-html="successMsg"></span><span class="marg-l1"><a
 									href="/cart">Go To Cart</a></span>
 							</div>
 							<div class="alert alert-danger ng-cloak" ng-show="errorMsg">
-								<span ng-bind="errorMsg"></span>
+								<span ng-bind-html="errorMsg"></span>
 							</div>
 						</div>
 					</div>
