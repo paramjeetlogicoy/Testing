@@ -1044,6 +1044,25 @@ nav#pagination-nav{
 	    	line-height: 1.2;
 	    }   	
     }
+
+    &.exclusive{
+		background: royalblue;
+	    span {
+	    	bottom: 3px; 
+		} 	
+    }
+}
+
+.stamp:extend(.abs, .white, .text-center){
+	top: 5px;
+    left: 50%;
+    background: @orange2;
+    border-radius: 50%;
+    padding: 5px;
+    height: 27px;
+    width: 27px;
+    margin-left: -13px;
+    font-size: 12px;
 }
 
 .sidecart:extend(.fix,.bg-white){
