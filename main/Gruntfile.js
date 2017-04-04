@@ -39,6 +39,39 @@ module.exports = function(grunt) {
        }
     }, 
     
+    less: {
+        options: {
+            banner: '/*<%= grunt.template.today("yyyy-mm-dd h:MM TT") %>*/\n'
+        },
+        main: {
+            files: {
+                'src/main/webapp/resources/css/main.css': 'src/main/webapp/resources/css/less/main.less'
+            }
+        },
+        admin: {
+            files: {
+                'src/main/webapp/resources/css/admin.css': 'src/main/webapp/resources/css/less/admin.less'
+            }
+        }
+    },
+      
+	cssmin: {
+        options: {
+            banner: '/*<%= grunt.template.today("yyyy-mm-dd h:MM TT") %>*/\n',
+            selectorsSortingMethod: 'none'
+        },
+        main: {
+            files: {
+                'src/main/webapp/resources/css/main.min.css': 'src/main/webapp/resources/css/main.css'
+            }
+        },
+        admin: {
+            files: {
+                'src/main/webapp/resources/css/admin.min.css': 'src/main/webapp/resources/css/admin.css'
+            }
+        }
+	},
+    
     concat: {
       dist: {
         src: 'src/main/webapp/resources/js/lib/cdn/*.js',
@@ -48,12 +81,33 @@ module.exports = function(grunt) {
     
     // configure watch to auto update ----------------
     watch: {
+        lessmain : {
+            files: ['src/main/webapp/resources/css/less/overrides.less',
+            	'src/main/webapp/resources/css/less/typesetting.less',
+            	'src/main/webapp/resources/css/less/main.less'],
+            tasks: ['less:main', 'cssmin:main'],
+            options: {
+               spawn: false
+            }
+    	},
+        	
+    	lessadmin : {
+            files: ['src/main/webapp/resources/css/less/overrides.less',
+            	'src/main/webapp/resources/css/less/typesetting.less',
+            	'src/main/webapp/resources/css/less/admin.less'],
+            tasks: ['less:admin', 'cssmin:admin'],
+           options: {
+              spawn: false
+           }
+        },
+        
       // for scripts, run jshint and uglify 
       scripts: { 
         files: ['src/main/webapp/resources/js/anuglar-controllers/*.js', 
                 'src/main/webapp/resources/js/main.js',
                 'src/main/webapp/resources/js/angular-general-functions.js',
-                'src/main/webapp/resources/js/angular-common.js'], tasks: ['jshint', 'uglify'] 
+                'src/main/webapp/resources/js/angular-common.js'], 
+        tasks: ['jshint', 'uglify'] 
       } 
     }
   });
@@ -65,11 +119,13 @@ module.exports = function(grunt) {
   // make sure you have run npm install so our app can find these
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
   
   
   //============= // CREATE TASKS ========== //
-  grunt.registerTask('default', ['jshint', 'uglify']);
+  grunt.registerTask('default', ['less', 'cssmin', 'jshint', 'uglify']);
 
 };

@@ -3,6 +3,7 @@ package com.luvbrite.web.models;
 public class ModifiedDate {
 	
 	private String cssDate = "";
+	private String adminCssDate = "";
 	private String jsDate = "";
 	
 	public String getCssDate() {
@@ -16,5 +17,11 @@ public class ModifiedDate {
 	}
 	public void setJsDate(String jsDate) {
 		this.jsDate = jsDate;
+	}
+	public String getAdminCssDate() {
+		return adminCssDate;
+	}
+	public void setAdminCssDate(String adminCssDate) {
+		this.adminCssDate = adminCssDate;
 	}
 }

@@ -26,7 +26,9 @@
 	      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	    <![endif]-->
 
-<link href="/resources/css/admin.css" rel="stylesheet" />
+
+<link th:href="@{/resources/css/admin.min.css(v=${@modifiedDate.adminCssDate})}"
+	href="/resources/css/admin.min.css" rel="stylesheet" />
 
 <script th:inline="javascript" type="text/javascript">
 /*<![CDATA[*/

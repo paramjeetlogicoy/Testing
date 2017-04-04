@@ -174,7 +174,7 @@ public class ControlConfigService {
 		if(contextPath != null){
 			SimpleDateFormat sdf = new SimpleDateFormat("yyMMddhhmm");
 			
-            File f1 = new File(contextPath + "resources/css/main.css");
+            File f1 = new File(contextPath + "resources/css/main.min.css");
             long datetime = f1.lastModified();
             Date d = new Date(datetime);
             md.setCssDate(sdf.format(d));
@@ -183,6 +183,11 @@ public class ControlConfigService {
             datetime = f2.lastModified();
             d = new Date(datetime);
             md.setJsDate(sdf.format(d));
+			
+            File f3 = new File(contextPath + "resources/css/admin.min.css");
+            datetime = f3.lastModified();
+            d = new Date(datetime);
+            md.setAdminCssDate(sdf.format(d));
             
             System.out.println("$$$ ModifiedDate called");
 		}
