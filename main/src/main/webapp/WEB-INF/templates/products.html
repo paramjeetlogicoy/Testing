@@ -352,6 +352,9 @@
 											th:if="${(product.categories!=null) and (#lists.contains(product.categories, 'Exclusive'))}"
 											class="splribbon exclusive"><span>Exclusive!
 											</span></span><span
+											th:if="${(product.categories!=null) and (#lists.contains(product.categories, 'Clearance'))}"
+											class="splribbon sspl"><span>Clearance!
+											</span></span><span
 											th:if="${(product.categories!=null) and (#lists.contains(product.categories, '5g'))}"
 											class="stamp fivegram"><span>5g</span></span>
 										</a>
