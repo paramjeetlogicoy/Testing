@@ -205,6 +205,8 @@ public class CouponManager {
 
 		if(couponCode == null) couponCode = "";
 		if(orderId==null) orderId = 0l;
+		
+		couponCode = couponCode.toLowerCase();
 
 		
 		if(!couponCode.equals("") && orderId != 0){
