@@ -294,7 +294,7 @@ var cartItemCtrlr = function($scope, $http, $rootScope, $timeout){
 	$scope.applyCoupon = function(){
 
 		$scope.couponErrors = '';
-		console.log("m.couponCode - " +m.couponCode);
+		//console.log("m.couponCode - " +m.couponCode);
 		if(m.couponCode){
 			$http.get(_lbUrls.cart + 'applycoupon/' + m.couponCode,{
 				params : {

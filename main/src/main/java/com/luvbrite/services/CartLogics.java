@@ -331,11 +331,15 @@ public class CartLogics {
 			
 			
 			
-			//If doubledown is currently present, but order doesn't qualify anymore, then remove promo.
+			//If doubledown is currently present, but order doesn't qualify anymore, then remove doubledown.
 			// OR
 			//Rare case where doubledown and britebox are present, remove doubledown.
+			// OR
+			//Case where doubledown and coupon are present, remove doubledown.
 			if(doubleDownItemIndex != -1 && 
-					(total < doubleDownThresholdAmt || doubleDownThresholdAmt == 0 || briteBoxIndex != -1)){
+					(total < doubleDownThresholdAmt || doubleDownThresholdAmt == 0 
+					|| briteBoxIndex != -1
+					|| couponPresent)){
 				
 				OrderLineItemCart item = items.get(doubleDownItemIndex);
 				
