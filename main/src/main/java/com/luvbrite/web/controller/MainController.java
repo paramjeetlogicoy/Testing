@@ -89,6 +89,12 @@ public class MainController {
 		
 		return "learning-center";		
 	}
+
+	
+	@RequestMapping(value = "/test-page")
+	public String testPage() {
+		return "test-page";		
+	}
 	
 	
 	@RequestMapping(value = "/testemail")
