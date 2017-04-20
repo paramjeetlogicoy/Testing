@@ -145,6 +145,7 @@ public class PostOrderMeta {
 						
 						li.setName(name);
 						li.setQuantity(oli.getQty());
+						li.setMeta(new ArrayList<Meta>());
 						
 						line_items.add(li);
 					}
