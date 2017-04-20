@@ -1,6 +1,7 @@
 package com.luvbrite.services;
 
 import java.net.URL;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,6 +38,7 @@ public class PostOrderMeta {
 	
 	private final String newOrderURL = "https://www.luvbrite.com/inventory/apps/a-ordermeta?json";
 	private final String updateOrderURL = "https://www.luvbrite.com/inventory/apps/a-c-ordermeta?json";
+	private NumberFormat nf = NumberFormat.getCurrencyInstance();
 	
 	public String postOrder(Order order){
 		
@@ -112,11 +114,14 @@ public class PostOrderMeta {
 						LineItem li = new LineItem();
 						
 						String name = oli.getName();
-						if(oli.getPromo() != null && !"".equals(oli.getPromo())){
-							name += (" (" + oli.getPromo() +")");
+						String promo = oli.getPromo();
+						if(promo != null && !"".equals(promo)){
+							name += (" (" + promo +")");
 						}
 						
-						li.setName(name);
+						String unitPrice = " (Unit price: " + nf.format(oli.getPrice()) + ")";
+						
+						li.setName(name + unitPrice);
 						li.setQuantity(oli.getQty());
 						
 						List<Meta> meta = new ArrayList<Meta>();
@@ -129,6 +134,17 @@ public class PostOrderMeta {
 						}
 						
 						li.setMeta(meta);
+						
+						line_items.add(li);
+					}
+					
+					else if(oli.getType().equals("coupon")){
+						LineItem li = new LineItem();
+						
+						String name = " ** Coupon ** (" + oli.getName() + ")";
+						
+						li.setName(name);
+						li.setQuantity(oli.getQty());
 						
 						line_items.add(li);
 					}
