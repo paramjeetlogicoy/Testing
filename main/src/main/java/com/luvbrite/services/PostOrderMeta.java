@@ -119,7 +119,7 @@ public class PostOrderMeta {
 							name += (" (" + promo +")");
 						}
 						
-						String unitPrice = " (Unit price: " + nf.format(oli.getPrice()) + ")";
+						String unitPrice = " (Unit price: " + nf.format(oli.getCost()) + ")";
 						
 						li.setName(name + unitPrice);
 						li.setQuantity(oli.getQty());
@@ -141,7 +141,7 @@ public class PostOrderMeta {
 					else if(oli.getType().equals("coupon")){
 						LineItem li = new LineItem();
 						
-						String name = " ** Coupon ** (" + oli.getName() + ")";
+						String name = " ** Coupon ** (" + oli.getName() + ") - " + nf.format(oli.getPrice());
 						
 						li.setName(name);
 						li.setQuantity(oli.getQty());

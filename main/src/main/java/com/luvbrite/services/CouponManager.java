@@ -53,8 +53,19 @@ public class CouponManager {
 		
 		if(couponCode == null) couponCode = "";
 		Coupon coupon = dao.get(couponCode);
+
+		String resp = preValidateCoupon(coupon, couponCode);
+		if(!resp.equals("")){ //if there was some issue during coupon application, remove coupon
+			removeCouponPrivate(couponCode, null, order);
+		}
+		else{
+			resp = postValidateCoupon(coupon, order.get_id(), order, saveOrder);
+			if(!resp.equals("")){ //if there was some issue during coupon application, remove coupon
+				removeCouponPrivate(couponCode, null, order);
+			}
+		}
 		
-		return applyDiscount(coupon, order, saveOrder);
+		return resp;
 	}
 	
 	
@@ -63,133 +74,147 @@ public class CouponManager {
 	 * Called when a coupon is needs to be removed
 	 */
 	public GenericResponse removeCoupon(String couponCode, Long orderId){
+		GenericResponse gr = new GenericResponse();
+		gr.setSuccess(false);
+
+		if(couponCode == null || couponCode.equals("") || orderId == null || orderId == 0){
+			gr.setMessage("Invalid promocode / order id.");
+			return gr;
+		}
 		
+		return removeCouponPrivate(couponCode, orderId, null);
+	}
+	
+	
+	private GenericResponse removeCouponPrivate(String couponCode, Long orderId, CartOrder order){
+
 		GenericResponse cr = new GenericResponse();
 		cr.setSuccess(false);
-		
-		if(couponCode == null || couponCode.equals("") || orderId == null || orderId == 0){
-			cr.setMessage("Invalid promocode / order id.");
-		}
-		else{
 
-			Coupon coupon = dao.get(couponCode);
-			if(coupon!=null){				
-				
-				CartOrder order = cartDao.get(orderId);
-				if(order != null){
-					
-					boolean couponFound = false;
-					
-					if(order.getLineItems() != null){
-						
-						/* Check if the coupon is applied to this order.*/
-						Iterator<OrderLineItemCart> iter = order.getLineItems().iterator();
-						while(iter.hasNext()){
 
-							OrderLineItemCart item = iter.next();
-							if(item.getType().equals("coupon")
-									&& item.getName().equals(couponCode)){
+		Coupon coupon = dao.get(couponCode);
+		if(coupon!=null){				
 
-								couponFound = true;
-								iter.remove();
+			if(order == null && orderId != null){
+				order = cartDao.get(orderId);
+			}
 
-								break;
+			if(order != null){
+
+				boolean couponFound = false;
+
+				if(order.getLineItems() != null){
+
+					/* Check if the coupon is applied to this order.*/
+					Iterator<OrderLineItemCart> iter = order.getLineItems().iterator();
+					while(iter.hasNext()){
+
+						OrderLineItemCart item = iter.next();
+						if(item.getType().equals("coupon")
+								&& item.getName().equals(couponCode)){
+
+							couponFound = true;
+							iter.remove();
+
+							break;
+						}
+					}
+
+					if(couponFound){
+
+						boolean updateOrderTotal = false;
+
+						/* Go through items and remove the discounted price */
+						List<OrderLineItemCart> olics = order.getLineItems();
+						for(OrderLineItemCart olic : olics){
+
+							if(olic.getPromo()!=null && olic.getPromo().equals("p")){
+								olic.setPromo("");
+								olic.setPrice(olic.getCost());
+
+								updateOrderTotal= true;
 							}
 						}
 
-						if(couponFound){
+						String recalctxt = "";
+						if(updateOrderTotal){
 
-							boolean updateOrder = false;
-							
-							/* Go through items and remove the discounted price */
-							List<OrderLineItemCart> olics = order.getLineItems();
-							for(OrderLineItemCart olic : olics){
-								
-								if(olic.getPromo()!=null && olic.getPromo().equals("p")){
-									olic.setPromo("");
-									olic.setPrice(olic.getCost());
-									
-									updateOrder= true;
-								}
-							}
-							
-							if(updateOrder){
-								
-								//Update orderTotals
-								cartLogics.calculateSummary(order);
-								
-								cartDao.save(order);
-								
-								/**
-								 * Update Log
-								 * */
-								try {
-									
-									Log log = new Log();
-									log.setCollection("cartorders");
-									log.setDetails("Order recalculated and updated because of coupon removal");
-									log.setDate(Calendar.getInstance().getTime());
-									log.setKey(order.get_id());
-									log.setUser("System");
-									
-									logDao.save(log);					
-								}
-								catch(Exception e){
-									logger.error(Exceptions.giveStackTrace(e));
-								}
-							}
-							
-							
-							
-							/* Update count usage count as well as the log.*/
-							coupon.setUsageCount(coupon.getUsageCount()-1);	
-							dao.save(coupon);
+							//Update orderTotals
+							cartLogics.calculateSummary(order);
+							recalctxt = "recalculated and ";
+						}
 
-							try {
-								
-								Log log = new Log();
-								log.setCollection("coupons");
-								log.setDetails("Coupon " + coupon.get_id() + " removed from orderId " + order.get_id()
-										+ ". Coupon usage decreased");
-								log.setDate(Calendar.getInstance().getTime());
-								log.setKey(0);
-								log.setUser("System");
-								
-								logDao.save(log);					
-							}
-							catch(Exception e){
-								logger.error(Exceptions.giveStackTrace(e));
-							}
-							
-							
-							
-							cr.setSuccess(true);																	
-							
-							
-							
+						//Since coupon was removed, order needs to be saved even if updateOrderTotal is false;
+						cartDao.save(order);
+
+						/**
+						 * Update Log
+						 * */
+						try {
+
+							Log log = new Log();
+							log.setCollection("cartorders");
+							log.setDetails("Order " + recalctxt + "updated because of coupon removal");
+							log.setDate(Calendar.getInstance().getTime());
+							log.setKey(order.get_id());
+							log.setUser("System");
+
+							logDao.save(log);					
 						}
-						
-						else{
-							cr.setMessage("Coupon not found in this order.");
+						catch(Exception e){
+							logger.error(Exceptions.giveStackTrace(e));
 						}
+
+
+
+						/* Update count usage count as well as the log.*/
+						coupon.setUsageCount(coupon.getUsageCount()-1);	
+						dao.save(coupon);
+
+						try {
+
+							Log log = new Log();
+							log.setCollection("coupons");
+							log.setDetails("Coupon " + coupon.get_id() + " removed from orderId " + order.get_id()
+							+ ". Coupon usage decreased");
+							log.setDate(Calendar.getInstance().getTime());
+							log.setKey(0);
+							log.setUser("System");
+
+							logDao.save(log);					
+						}
+						catch(Exception e){
+							logger.error(Exceptions.giveStackTrace(e));
+						}
+
+
+
+						cr.setSuccess(true);																	
+
+
 
 					}
-					
+
 					else{
-						cr.setMessage("No items found in the order.");
+						cr.setMessage("Coupon not found in this order.");
 					}
+
 				}
-				
+
 				else{
-					cr.setMessage("Order not found.");
+					cr.setMessage("No items found in the order.");
 				}
 			}
-			
+
 			else{
-				cr.setMessage("Coupon code not found.");
+				cr.setMessage("Order not found.");
 			}
 		}
-		
+
+		else{
+			cr.setMessage("Coupon code not found.");
+		}
+
 		return cr;
 	}
 	
@@ -217,7 +242,7 @@ public class CouponManager {
 			if("".equals(preValidate)){
 				
 				
-				String postValidate = postValidateCoupon(coupon, orderId);
+				String postValidate = postValidateCoupon(coupon, orderId, null, true); //saveOrder
 				if("".equals(postValidate)){
 					cr.setSuccess(true);
 					
@@ -281,7 +306,7 @@ public class CouponManager {
 	}
 	
 	
-	private String postValidateCoupon(Coupon coupon, long orderId){
+	private String postValidateCoupon(Coupon coupon, long orderId, CartOrder order, boolean saveOrder){
 		
 		String resp = "";
 		List<Long> pids = new ArrayList<Long>();
@@ -301,7 +326,10 @@ public class CouponManager {
 				}
 			}
 			
-			CartOrder order = cartDao.get(orderId);
+			if(order == null){
+				order = cartDao.get(orderId);
+			}
+			
 			if(order !=null){
 				
 				boolean matchingProductsFound = false,
@@ -380,7 +408,7 @@ public class CouponManager {
 					 **/
 					if(resp.equals("")){
 						
-						resp = applyDiscount(coupon, order, true);
+						resp = applyDiscount(coupon, order, saveOrder);
 						
 					}
 					
@@ -448,6 +476,12 @@ public class CouponManager {
 			
 			/* There the orderTotal is less then there is something wrong */
 			if(orderTotal <= 0d) return "Order total is invalid";
+			
+			
+			/* if pids containes products, but productItems = 0, it means there are no valid products in the cart*/
+			if(productItems == 0 && !pids.isEmpty()){
+				return "This promotion doesn't apply to the products in your cart.";
+			}
 			
 			if(productItems > 0){ 
 				applicableTotal = productTotal;
