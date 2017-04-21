@@ -34,8 +34,7 @@
 .healthline-slider .bnr-txt{position:absolute;top:12px;width:100%;text-align:center;font-size:27px;color:#00b7ed;text-shadow:1px 1px 1px black;font-family: 'Catamaran', sans-serif;}
 .junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix-home-xs.jpg);background-color:black !important;}
 .junglemix-slider a{background-color: #fb6a00;border-color: #ea680a;bottom: 20px !important;}
-.jungle-420-slider{background-image: url(https://lbrit.co/static/imgs/sliders/jungle-420-banner-xs.jpg)}
-.jungle-420-slider a{background-color: #fb6a00;border-color: #ea680a;}
+
 @media (min-width: 768px){	
 	.carousel-inner .mx300{max-width:768px;}
 	
@@ -53,8 +52,6 @@
 	.healthline-slider{background-image: url(https://lbrit.co/static/imgs/sliders/luvbrite-healthline.jpg)}
 	.healthline-slider a{font-size:14px}
 	.healthline-slider .bnr-txt{font-size:45px;top:35px;text-shadow:2px 2px 1px black}
-		
-	.jungle-420-slider{background-image: url(https://lbrit.co/static/imgs/sliders/jungle-420-banner.jpg)}
 }
 @media (min-width: 1000px){	
 	.newarrivals-slider{background-image: url(https://lbrit.co/static/imgs/sliders/newarrivals-slider-lg.jpg)}
@@ -78,18 +75,13 @@
 			<!-- Wrapper for slides -->
 			<div class="carousel-inner" role="listbox">
 
-				<div class="jungle-420-slider item active">
-					<a href="" class="btn btn-warning" data-toggle="modal"
-						data-target="#offer420Modal">LEARN MORE</a>
-				</div>
-
-				<div class="endofeight-slider item">
+				<div class="endofeight-slider item active">
 					<a href="" data-toggle="modal" data-target="#endOfEightModal"></a>
 				</div>
 
-				<!-- <div class="junglemix-slider item">
+				<div class="junglemix-slider item">
 					<a href="/product/jungle-mix-10-gram-special" class="btn btn-warning">SHOP NOW</a>
-				</div> -->
+				</div>
 
 				<div class="newarrivals-slider item">
 					<a href="/category/new-arrivals" class="btn btn-sm btn-lb">TAKE
@@ -245,7 +237,7 @@
 	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
 	<script type="text/javascript">
 		$(document).ready(function(){			
-			$('#doubleDownModal, #endOfEightModal, #offHourOfferModal, #offer420Modal')
+			$('#doubleDownModal, #endOfEightModal, #offHourOfferModal')
 			.on('shown.bs.modal', function() {
 				$('#home-sliders').carousel('pause');
 			}).on('hide.bs.modal', function() {
@@ -285,39 +277,6 @@
 			</div>
 		</div>
 
-		<div class="modal fade" id="offer420Modal" tabindex="-1"
-			role="dialog">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-						<h3 class="modal-title">4/20 Special!</h3>
-					</div>
-					<div class="modal-body">
-						<div class="marg-b2">
-							<p>
-								Get our 10g special of Jungle Mix for $50 when you use code:
-								<code>420JUNGLE</code>
-								at checkout. Offer is available from 4/19/17, 11am until
-								4/20/17, 11:00pm. Available while supplies last, so place your
-								order now! Limited to one per customer.
-							</p>
-							<p>*Luvbrite reserves the right to retract or refuse the
-								order at any time for any reason.</p>
-						</div>
-						<div class="marg-b2 text-center">
-							<a href="/product/jungle-mix-10-gram-special"
-								class="btn btn-warning">Shop Now</a>
-						</div>
-
-					</div>
-				</div>
-			</div>
-		</div>
-		
 		<div class="modal fade" id="offHourOfferModal" tabindex="-1"
 			role="dialog">
 			<div class="modal-dialog" role="document">
