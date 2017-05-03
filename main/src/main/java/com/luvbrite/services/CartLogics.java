@@ -17,6 +17,7 @@ import com.luvbrite.utils.Utility;
 import com.luvbrite.web.models.Address;
 import com.luvbrite.web.models.CartOrder;
 import com.luvbrite.web.models.ControlOptions;
+import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Order;
 import com.luvbrite.web.models.OrderLineItemCart;
 
@@ -142,7 +143,11 @@ public class CartLogics {
 		return dealStat;
 	}
 	
-	
+	private CouponManager couponManager;
+	public void applyDeals(CartOrder order, ControlOptions cOps, boolean saveOrder, HttpSession sess, CouponManager couponManager){
+		this.couponManager = couponManager;
+		applyDeals(order, cOps, saveOrder, sess);
+	}
 	
 	public void applyDeals(CartOrder order, ControlOptions cOps, boolean saveOrder, HttpSession sess){
 		
@@ -164,7 +169,8 @@ public class CartLogics {
 				doubleDownItemIndex = -1,
 				briteBoxIndex = -1,
 				fifthFlowerIndex = -1;
-
+			
+			String couponCode = "";
 
 			if(sess != null && 
 					sess.getAttribute("autoBriteBoxAdd") != null && 
@@ -177,8 +183,13 @@ public class CartLogics {
 			 * Any coupons applied will be removed if doubledown or britebox is applied.
 			 * That done by calling remove coupon before applying either of it.
 			 * 
-			 * If a coupon is applied to an existing order which has britebox or doubledown,
+			 * If a coupon is applied to an existing order which has doubledown,
 			 * coupon takes precedence.
+			 * 
+			 * Option to apply coupon or double down is disabled for order with britebox.
+			 * 
+			 * If an order has coupon and then later qualified for britebox, then coupon has
+			 * to be removed and britebox applied (provided autoAddBriteBox is true).
 			 * 
 			 * */
 		
@@ -222,53 +233,63 @@ public class CartLogics {
 						}
 						
 					}
+					
+					else if(item.getType().equals("coupon")){
+						couponCode = item.getName();
+					}
 				}
 			}
 			
-			
-			if(!couponPresent 
-					&& doubleDownItemIndex == -1
-					&& fifthFlowerIndex == -1){
 				
-				//First BriteBoxcheck
-				if(order.getCustomer() != null && 
-						order.getCustomer().get_id() != 0 && 
-						total >= 75d){
+			//First BriteBoxcheck
+			if(order.getCustomer() != null && 
+					order.getCustomer().get_id() != 0 && 
+					total >= 75d){
+				
+				if(firstOrderCheck(order.getCustomer().get_id())
+						.equalsIgnoreCase("Y")){
+					briteBoxEligible = true;	
 					
-					if(firstOrderCheck(order.getCustomer().get_id())
-							.equalsIgnoreCase("Y")){
-						briteBoxEligible = true;	
-						
 
-						// If britebox eligible and not yet added to the order, add it
-						if(briteBoxIndex == -1 && autoAddBriteBox){
+					// If britebox eligible and not yet added to the order, add it
+					if(briteBoxIndex == -1 && autoAddBriteBox){
 
-							//Add fresh new item
-							OrderLineItemCart newItem = new OrderLineItemCart();
-							newItem.setTaxable(false);
-							newItem.setInstock(true);
-							newItem.setType("item");
-							newItem.setName("Brite Box");
-							newItem.setPromo("firsttimepatient");
-							newItem.setProductId(11839);
-							newItem.setVariationId(0);
-							newItem.setQty(1);
-							newItem.setCost(50d);
-							newItem.setPrice(0d);
-							newItem.setImg("/products/brite-box-img.jpg");
+						//Add fresh new item
+						OrderLineItemCart newItem = new OrderLineItemCart();
+						newItem.setTaxable(false);
+						newItem.setInstock(true);
+						newItem.setType("item");
+						newItem.setName("Brite Box");
+						newItem.setPromo("firsttimepatient");
+						newItem.setProductId(11839);
+						newItem.setVariationId(0);
+						newItem.setQty(1);
+						newItem.setCost(50d);
+						newItem.setPrice(0d);
+						newItem.setImg("/products/brite-box-img.jpg");
 
-							items.add(newItem);
+						items.add(newItem);
 
-							/*Update order with lineItems*/
-							order.setLineItems(items);
+						/*Update order with lineItems*/
+						order.setLineItems(items);
 
-							orderChanged = true;
-							briteBoxIndex = items.size() - 1;	
+						orderChanged = true;
+						briteBoxIndex = items.size() - 1;
+					}
+					
+					
+					if(briteBoxIndex != -1){
+						//if any coupons are present, remove it.
+						if(couponPresent && couponManager != null){
+							GenericResponse cgr = couponManager.removeCoupon(couponCode, order);
+							System.out.println(" GR MSG : " + cgr.isSuccess() + " : " + cgr.getMessage());
 						}
 					}
 				}
-			}			
+			}	
 			
+			
+			//If briteBox is not eligible, but present
 			if(!briteBoxEligible && briteBoxIndex != -1){
 				
 				//Removed Item
@@ -370,7 +391,7 @@ public class CartLogics {
 	
 	public String firstOrderCheck(long customerId){
 		
-		String response = "";
+		String response = "Y";
 		
 		Query<Order> q = completedOrderdao.createQuery()
 				.field("status").notEqual("cancelled")

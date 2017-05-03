@@ -1,7 +1,7 @@
 var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootScope){
 	var m = this,
 	deliveryLoaded = false,	
-	cmcVersion = 'v0004'; //Math.random();
+	cmcVersion = Math.random();//'v0004'; //
 	
 	m.order = {};	
 	m.ddprds = [];
@@ -190,15 +190,18 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 		console.log("2" + (m.doubleDownEligible && (m.order.total >= m.config.doubleDown)));
 		console.log("3" + m.promosAvailable);
 		console.log("4" + !m.couponApplied);*/
-		
+
 		//Promotab
-		if((m.briteBoxEligible && (m.order.total >= m.briteBoxThreshold)) || 
-			(m.doubleDownEligible && (m.order.total >= m.config.doubleDown)) || 
-			(m.fifthFlowerActive && !m.fifthFlowerApplied && (m.flowerCount >= 4)) || 
-			(m.promosAvailable && !m.couponApplied) || 
-			!m.couponApplied){
-			
-			m.showPromoTab = true;
+		 if(m.briteBoxApplied){
+				m.showPromoTab = false;
+		}
+		else if((m.briteBoxEligible && (m.order.total >= m.briteBoxThreshold)) || 
+				(m.doubleDownEligible && (m.order.total >= m.config.doubleDown)) || 
+				(m.fifthFlowerActive && !m.fifthFlowerApplied && (m.flowerCount >= 4)) || 
+				(m.promosAvailable && !m.couponApplied) || 
+				!m.couponApplied){
+				
+				m.showPromoTab = true;
 		}
 		else{
 			m.showPromoTab = false;

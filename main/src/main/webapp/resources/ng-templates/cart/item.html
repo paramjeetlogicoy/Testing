@@ -271,6 +271,16 @@
 						</div>
 					</div>
 				</div>
+
+				<div ng-show="!m.showPromoTab && m.briteBoxApplied">
+					<div class="alert alert-warning">
+						<i class="fa fa-bullhorn fa-2x pull-left" aria-hidden="true"></i>
+						Other promotions are disabled because <strong>Britebox</strong>,
+						our best promotion is currently applied to your order. If you
+						still would like to apply a coupon, please remove <strong>Britebox</strong>
+						from the cart options to apply coupons will reappear.
+					</div>
+				</div>
 			</div>
 		</div>
 		
@@ -297,9 +307,10 @@
 					</div>
 				</div>
 			</div>
-		
+
+
 			<div class="alert alert-info text-center"
-				ng-if="m.doubleDownEligible && (m.order.total < m.config.doubleDown)">
+				ng-if="!m.briteBoxApplied && m.doubleDownEligible && (m.order.total < m.config.doubleDown)">
 				<h5>You're {{(m.config.doubleDown - m.order.total) | currency}} away
 					from qualifying for Double Down Offer!</h5>
 				<div>

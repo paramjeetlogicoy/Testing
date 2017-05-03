@@ -86,6 +86,19 @@ public class CouponManager {
 	}
 	
 	
+	public GenericResponse removeCoupon(String couponCode, CartOrder order){
+		GenericResponse gr = new GenericResponse();
+		gr.setSuccess(false);
+
+		if(couponCode == null || couponCode.equals("") || order == null || order.get_id() == 0){
+			gr.setMessage("Invalid promocode / order id.");
+			return gr;
+		}
+		
+		return removeCouponPrivate(couponCode, null, order);
+	}
+	
+	
 	private GenericResponse removeCouponPrivate(String couponCode, Long orderId, CartOrder order){
 
 		GenericResponse cr = new GenericResponse();

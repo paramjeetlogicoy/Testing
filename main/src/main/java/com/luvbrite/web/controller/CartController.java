@@ -1450,7 +1450,7 @@ public class CartController {
 			}
 			
 			if((variationId == null || variationId == 0) 
-					&& (productId == null || productId == 0) ){
+					&& (productId == null || productId == 0 || productId == 11839) ){ //11839 - britebox
 				cr.setMessage(cr.getMessage() + " - Invalid item/product ID.");
 			}
 			
@@ -1926,7 +1926,7 @@ public class CartController {
 			
 			
 			//Run through deal logic
-			if(itemsPresent) cartLogics.applyDeals(order, ccs.getcOps(), false, sess);
+			if(itemsPresent) cartLogics.applyDeals(order, ccs.getcOps(), false, sess, couponManager);
 			
 			
 			//Update orderTotals
