@@ -3,23 +3,41 @@
 	<div class="cart-details">
 		<h4 class="cart-steps">Step5: Confirm Your Order</h4>
 		<div class="cart-confirmation text-center">
+
+			<div class="marg-b2 size13 pad2 border1">
+				<h5 class="red1">IMPORTANT NOTICE</h5>
+				<ol class="text-left styled">
+					<li class="marg-b1">Any order placed after 10:30pm PST will be
+						scheduled for next day delivery and will count as an off hour
+						order qualifying for our off hour promotion.</li>
+					<li class="marg-b1">Our divers only carry $20 in change. If
+						you will need specific change greater than $20, please specify in
+						our delivery instructions above.</li>
+					<li>If your residence is an apartment, please meet our drivers
+						by the main door/entrance, with the exception of special needs
+						patients and/or houses.</li>
+				</ol>
+			</div>
+
+
+			<div class="alert alert-danger text-center marg-b5"
+				ng-if="!m.briteBoxApplied && m.briteBoxEligible && (m.order.total >= m.briteBoxThreshold)">
+				<h5>You're qualified to receive our first time patient offer.
+					But the offer is not applied to your cart. Re-visit promotions to
+					see more options</h5>
+				<div>
+					<button class="btn btn-sm btn-lb marg-b05"
+						ng-click="scrollToPromo()">Re-visit promotions</button>
+				</div>
+			</div>
+
 			<h4>
 				<span class="green1">Your order total is {{m.order.total |
 					currency}} <span ng-show="m.pmtCOD"> and the donation is due
 						on product delivery</span>.
 				</span>
 			</h4>
-
-			<div class="marg-b2 mx500 red1 size13">PLEASE NOTE: Our divers
-				only carry $20 in change. If you will need specific change greater
-				than $20, please specify in our delivery instructions above.</div>
-
-
-			<div class="marg-b2 mx600 blue1 size13 bold">LAST CALL: Any
-				order placed after 10:30pm PST will be scheduled for next day
-				delivery and will count as an off hour order qualifying for our off
-				hour promotion.</div>
-
+			
 			<div>
 
 				<div>

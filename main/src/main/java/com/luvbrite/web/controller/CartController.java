@@ -706,6 +706,8 @@ public class CartController {
 				
 				dao.save(order);
 				
+				sess.setAttribute("autoBriteBoxAdd", "true");
+				
 				r.setSuccess(true);
 				r.setCartCount(totalItems);				
 				r.setOrder(order);

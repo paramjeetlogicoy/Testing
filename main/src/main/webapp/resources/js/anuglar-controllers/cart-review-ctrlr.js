@@ -2,7 +2,7 @@ var cartReviewCtrlr = function($scope, $http, $rootScope){
 	
 	var m = $scope.m;
 	
-	$scope.reviewErrors = '';	
+	$scope.reviewErrors = '';
 	
 	$scope.placeOrder = function(){
 		
@@ -66,5 +66,11 @@ var cartReviewCtrlr = function($scope, $http, $rootScope){
 				'you are logged in to your account?';
 		}
 		
+	};
+	
+	$scope.scrollToPromo = function(){
+		var x = $('.avaliablepromos-tab').offset().top,
+		offset = parseInt($('.header-offset').css('margin-top'));
+		$("html, body").animate({'scrollTop': (x - offset)},400);
 	};
 };
