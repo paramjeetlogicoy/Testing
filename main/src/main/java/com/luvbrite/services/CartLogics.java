@@ -17,7 +17,6 @@ import com.luvbrite.utils.Utility;
 import com.luvbrite.web.models.Address;
 import com.luvbrite.web.models.CartOrder;
 import com.luvbrite.web.models.ControlOptions;
-import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Order;
 import com.luvbrite.web.models.OrderLineItemCart;
 
@@ -281,8 +280,7 @@ public class CartLogics {
 					if(briteBoxIndex != -1){
 						//if any coupons are present, remove it.
 						if(couponPresent && couponManager != null){
-							GenericResponse cgr = couponManager.removeCoupon(couponCode, order);
-							System.out.println(" GR MSG : " + cgr.isSuccess() + " : " + cgr.getMessage());
+							couponManager.removeCoupon(couponCode, order);
 						}
 					}
 				}
