@@ -175,7 +175,7 @@
 						</div>
 					</div>
 
-					<div class="prdpage-prices" th:if="*{variation}">
+					<div class="prdpage-prices" th:if="*{variation} and *{status}=='publish'">
 						<div>
 							<small>Options:</small>
 						</div>
@@ -197,7 +197,7 @@
 
 					</div>
 
-					<div class="prdpage-prices" th:if="not *{variation}">
+					<div class="prdpage-prices" th:if="not *{variation} and *{status}=='publish'">
 						<div class="marg-b1">
 							<strong class="size24 orange1"><span
 								th:if="*{salePrice}"><del class="grey7"
@@ -209,7 +209,7 @@
 						</div>
 					</div>
 
-					<div class="marg-b3 prdpage-action ng-cloak">
+					<div class="marg-b3 prdpage-action ng-cloak" th:if="*{status}=='publish'">
 
 						<!--/* Cannot use ng-if here, as it messes up the data binding for $scope.quantity */-->
 						<div ng-hide="outofstock">
@@ -228,6 +228,11 @@
 								<span class="grey7">Out of Stock</span>
 							</h4>
 						</div>
+					</div>
+
+					<div class="marg-b3 pad-t1" th:if="*{status}!='publish'">
+						<div class="alert alert-warning">Sorry, this item is not
+							currently available!</div>
 					</div>
 
 					<div ng-show="errorMsg"
