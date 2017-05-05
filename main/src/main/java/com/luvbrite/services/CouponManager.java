@@ -754,11 +754,11 @@ public class CouponManager {
 			/* Check if the coupon is applied to this order.*/
 			List<OrderLineItemCart> olis = order.getLineItems();
 			for(OrderLineItemCart item: olis){
-				if(item.getProductId() == 9910 && item.isInstock()){
+				if(item.getProductId() == 11856 && item.isInstock()){
 					qualifyingProductFound = true;
 				}
 				
-				else if(item.getProductId() == 11856 && item.isInstock()){
+				else if(item.getProductId() == 11872 && item.isInstock()){
 					promoProductFound = true;
 				}
 				
