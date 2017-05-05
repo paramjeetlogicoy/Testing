@@ -618,95 +618,20 @@ nav#pagination-nav{
     	}
 	}
 }
-.home-categories:extend(.automarg,.text-center){
-	max-width: 830px;
-	padding-left: 15px;
-	padding-right: 15px;
 
-	>div:extend(.pad-t3){}
+.home-category-sections h2 {
+    text-align:center;
 
-	h2{
-		a{
-			.size20;
-
-			color:white;
-			text-decoration:none;
-			display: inline-block;
-			border:1px solid black;
-			padding:10px 20px;
-			background: black;
-
-			&:focus,
-			&:hover, 
-			&:active{
-				.green1;
-
-				text-decoration: underline;
-   				border-color: transparent;
-   				background: transparent;
-			}
-		}	
-	}
-
-	.hc-img{		
-		.marg-b1;
-		.show;
-		.automarg;
-
-		background-repeat: no-repeat;
-		background-position: center right;
-		background-size: 200% auto;
-		height:270px;
-		max-width: 256px;
-	}
-
-	.hc-topicals,
-	.hc-concentrates,
-	.hc-prerolls{
-		.hc-img{
-			height:165px;
-    		max-width:185px;
-		}		
-	}
-
-	li:extend(.marg-b3){
-
-		>a {
-
-			display: inline-block;
-			width:256px;
-			color:black;
-
-			@media(min-width:768px){
-	    		width: auto;
-	    		display: block;
-    		}
-
-			strong{
-				display: inline-block;
-				padding: 5px 10px;
-			}
-
-			&:focus,
-			&:hover,
-			&:active{
-				.hc-img{
-					background-position: center left;
-				}
-
-				strong{
-					color:white;
-					.bg-green1;
-				}
-			}
-		}
-	}
-
-	hr:extend(.automarg){
-		border-bottom: 1px solid black;
-		max-width: 780px;
+	a {
+		.size24;
+		color: #000;
+		border-bottom: 1px solid #000;
+		padding: 10px 0 5px;
+		text-decoration:none;
 	}
 }
+
+.home-category-sections h2 
 
 .hc-img-baked{background-image:url(https://lbrit.co/static/imgs/baked.jpg)}
 .hc-img-candy{background-image:url(https://lbrit.co/static/imgs/candies.jpg)}

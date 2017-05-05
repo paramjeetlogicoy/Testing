@@ -1,4 +1,4 @@
-/*2017-04-04 4:02 PM*/
+/*2017-05-05 9:10 AM*/
 .ui-pnotify{top:36px;right:36px;position:absolute;height:auto;z-index:2}body>.ui-pnotify{position:fixed;z-index:100040}.ui-pnotify-modal-overlay{background-color:rgba(0,0,0,.4);top:0;left:0;position:absolute;height:100%;width:100%;z-index:1}body>.ui-pnotify-modal-overlay{position:fixed;z-index:100039}.ui-pnotify.ui-pnotify-in{display:block!important}.ui-pnotify.ui-pnotify-move{transition:left .5s ease,top .5s ease,right .5s ease,bottom .5s ease}.ui-pnotify.ui-pnotify-fade-slow{transition:opacity .6s linear;opacity:0}.ui-pnotify.ui-pnotify-fade-slow.ui-pnotify.ui-pnotify-move{transition:opacity .6s linear,left .5s ease,top .5s ease,right .5s ease,bottom .5s ease}.ui-pnotify.ui-pnotify-fade-normal{transition:opacity .4s linear;opacity:0}.ui-pnotify.ui-pnotify-fade-normal.ui-pnotify.ui-pnotify-move{transition:opacity .4s linear,left .5s ease,top .5s ease,right .5s ease,bottom .5s ease}.ui-pnotify.ui-pnotify-fade-fast{transition:opacity .2s linear;opacity:0}.ui-pnotify.ui-pnotify-fade-fast.ui-pnotify.ui-pnotify-move{transition:opacity .2s linear,left .5s ease,top .5s ease,right .5s ease,bottom .5s ease}.ui-pnotify.ui-pnotify-fade-in{opacity:1}.ui-pnotify .ui-pnotify-shadow{-webkit-box-shadow:0 6px 28px 0 rgba(0,0,0,.1);-moz-box-shadow:0 6px 28px 0 rgba(0,0,0,.1);box-shadow:0 6px 28px 0 rgba(0,0,0,.1)}.ui-pnotify-container{background-position:0 0;padding:.8em;height:100%;margin:0}.ui-pnotify-container:after{content:" ";visibility:hidden;display:block;height:0;clear:both}.ui-pnotify-container.ui-pnotify-sharp{-webkit-border-radius:0;-moz-border-radius:0;border-radius:0}.ui-pnotify-title{display:block;margin-bottom:.4em;margin-top:0}.ui-pnotify-text{display:block}.ui-pnotify-icon,.ui-pnotify-icon span{display:block;float:left;margin-right:.2em}.ui-pnotify.stack-bottomleft,.ui-pnotify.stack-topleft{left:25px;right:auto}.ui-pnotify.stack-bottomleft,.ui-pnotify.stack-bottomright{bottom:25px;top:auto}.ui-pnotify.stack-modal{left:50%;right:auto;margin-left:-150px}.ui-pnotify-closer,.ui-pnotify-sticker{float:right;margin-left:.2em}.ui-pnotify-container{position:relative;left:0}@media (max-width:480px){.ui-pnotify-mobile-able.ui-pnotify{position:fixed;top:0;right:0;left:0;width:auto!important;font-size:1.2em;-webkit-font-smoothing:antialiased;-moz-font-smoothing:antialiased;-ms-font-smoothing:antialiased;font-smoothing:antialiased}.ui-pnotify-mobile-able.ui-pnotify .ui-pnotify-shadow{-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none;border-bottom-width:5px}.ui-pnotify-mobile-able .ui-pnotify-container{-webkit-border-radius:0;-moz-border-radius:0;border-radius:0}.ui-pnotify-mobile-able.ui-pnotify.stack-bottomleft,.ui-pnotify-mobile-able.ui-pnotify.stack-topleft{left:0;right:0}.ui-pnotify-mobile-able.ui-pnotify.stack-bottomleft,.ui-pnotify-mobile-able.ui-pnotify.stack-bottomright{left:0;right:0;bottom:0;top:auto}.ui-pnotify-mobile-able.ui-pnotify.stack-bottomleft .ui-pnotify-shadow,.ui-pnotify-mobile-able.ui-pnotify.stack-bottomright .ui-pnotify-shadow{border-top-width:5px;border-bottom-width:1px}}
 /***** Luvbrite Admin - Type setting *****/
 /*Base size for desktop*/
@@ -233,8 +233,7 @@ img.fit,
   padding-top: 1.4285714285714286rem;
 }
 .pad-t3,
-.page-container,
-.home-categories > div {
+.page-container {
   padding-top: 2.142857142857143rem;
 }
 .pad-h1 {
@@ -290,8 +289,6 @@ img.fit,
 }
 .automarg,
 hr,
-.home-categories,
-.home-categories hr,
 .prdpage-img-container,
 .prdpage-img,
 .nav-search-form {
@@ -351,7 +348,6 @@ label.fa-label,
 }
 .marg-b3,
 .generic-container,
-.home-categories li,
 .cart-details,
 .cart-totals,
 .confirmationPage header,
@@ -534,7 +530,6 @@ footer,
 .footer-disclaimer,
 .fgw-file-list > ul > li,
 .home-britebox,
-.home-categories,
 .pi-cards h3,
 .pi-cards .tocart,
 .stamp,
@@ -1727,76 +1722,17 @@ nav#pagination-nav > pre {
   width: 120px;
   margin-left: -60px;
 }
-.home-categories {
-  max-width: 830px;
-  padding-left: 15px;
-  padding-right: 15px;
+.home-category-sections h2 {
+  text-align: center;
 }
-.home-categories h2 a {
-  font-size: 1.4285714285714286rem;
-  color: white;
+.home-category-sections h2 a {
+  font-size: 1.7142857142857144rem;
+  color: #000;
+  border-bottom: 1px solid #000;
+  padding: 10px 0 5px;
   text-decoration: none;
-  display: inline-block;
-  border: 1px solid black;
-  padding: 10px 20px;
-  background: black;
 }
-.home-categories h2 a:focus,
-.home-categories h2 a:hover,
-.home-categories h2 a:active {
-  color: #008c77 !important;
-  text-decoration: underline;
-  border-color: transparent;
-  background: transparent;
-}
-.home-categories .hc-img {
-  margin-bottom: 0.7142857142857143rem;
-  display: block !important;
-  margin-left: auto;
-  margin-right: auto;
-  background-repeat: no-repeat;
-  background-position: center right;
-  background-size: 200% auto;
-  height: 270px;
-  max-width: 256px;
-}
-.home-categories .hc-topicals .hc-img,
-.home-categories .hc-concentrates .hc-img,
-.home-categories .hc-prerolls .hc-img {
-  height: 165px;
-  max-width: 185px;
-}
-.home-categories li > a {
-  display: inline-block;
-  width: 256px;
-  color: black;
-}
-@media (min-width: 768px) {
-  .home-categories li > a {
-    width: auto;
-    display: block;
-  }
-}
-.home-categories li > a strong {
-  display: inline-block;
-  padding: 5px 10px;
-}
-.home-categories li > a:focus .hc-img,
-.home-categories li > a:hover .hc-img,
-.home-categories li > a:active .hc-img {
-  background-position: center left;
-}
-.home-categories li > a:focus strong,
-.home-categories li > a:hover strong,
-.home-categories li > a:active strong {
-  color: white;
-  background: #008c77;
-}
-.home-categories hr {
-  border-bottom: 1px solid black;
-  max-width: 780px;
-}
-.hc-img-baked {
+.home-category-sections h2 .hc-img-baked {
   background-image: url(https://lbrit.co/static/imgs/baked.jpg);
 }
 .hc-img-candy {

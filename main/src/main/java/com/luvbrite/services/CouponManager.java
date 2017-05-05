@@ -17,6 +17,7 @@ import com.luvbrite.dao.CouponDAO;
 import com.luvbrite.dao.LogDAO;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.Utility;
+import com.luvbrite.web.models.AttrValue;
 import com.luvbrite.web.models.CartOrder;
 import com.luvbrite.web.models.Coupon;
 import com.luvbrite.web.models.Log;
@@ -350,6 +351,9 @@ public class CouponManager {
 				double orderTotal = 0d;
 				boolean noValidItemsFound = true;
 				
+				String specialHandling = specialApplyHandlers(order, coupon);
+				if(!specialHandling.equals("")) return specialHandling;
+				
 				List<OrderLineItemCart> olics = order.getLineItems();
 				if(olics != null && olics.size() > 0){
 					for(OrderLineItemCart olic : olics){
@@ -381,7 +385,8 @@ public class CouponManager {
 				if(noValidItemsFound) return "No eligible items found in the cart.";
 				
 				
-				/*	If there matching Products or 
+				/**
+				 * 	If there matching Products or 
 				 * 	if the promo applies to all products i.e. pids.size() == 0 
 				 */
 				if(matchingProductsFound || pids.size() == 0){
@@ -734,6 +739,71 @@ public class CouponManager {
 				&& olic.isInstock() 
 				&& (olic.getPromo() == null 
 					|| !olic.getPromo().equals("s")); //Item is not already discounted
+	}
+	
+	
+	private String specialApplyHandlers(CartOrder order, Coupon coupon){
+		
+		String message = "";
+		String couponCode = coupon.get_id().toUpperCase();
+		if(couponCode.equals("WMPOWER")){
+			
+			boolean qualifyingProductFound = false,
+					promoProductFound = false;
+			
+			/* Check if the coupon is applied to this order.*/
+			List<OrderLineItemCart> olis = order.getLineItems();
+			for(OrderLineItemCart item: olis){
+				if(item.getProductId() == 9910 && item.isInstock()){
+					qualifyingProductFound = true;
+				}
+				
+				else if(item.getProductId() == 11856 && item.isInstock()){
+					promoProductFound = true;
+				}
+				
+				if(qualifyingProductFound && promoProductFound)
+					break;
+			}
+			
+			
+			if(!qualifyingProductFound){
+				message = "No eligible items found in the cart";
+			}
+			
+			else{
+				
+				if(!promoProductFound){
+					//Add promo product
+				
+					OrderLineItemCart newItem = new OrderLineItemCart();
+					newItem.setTaxable(false);
+					newItem.setInstock(true);
+					newItem.setType("item");
+					newItem.setName("Power Puff Roll (Single House Roll)");
+					newItem.setProductId(11872);
+					newItem.setVariationId(7619);
+					newItem.setQty(1);
+					newItem.setCost(10d);
+					newItem.setPrice(0d);
+					newItem.setImg("/products/PowerPuffNewImage-1.jpg");
+					
+					List<AttrValue> attrValList = new ArrayList<>();
+					AttrValue attrVal = new AttrValue();
+					attrVal.setAttr("Type");
+					attrVal.setValue("Jungle Mix");
+					
+					attrValList.add(attrVal);
+					
+					newItem.setSpecs(attrValList);
+
+					olis.add(newItem);
+				}
+			}
+			
+		}
+		
+		return message;
 	}
 
 }
