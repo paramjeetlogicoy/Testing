@@ -475,13 +475,17 @@
 						ng-hide="!item.instock">
 						<div class="clearfix">
 							<div class="sci-qty">
-								<a href="" ng-click="updateCart(+1)"><i
+								<a href="" ng-click="updateCart(+1)"
+									ng-hide="item.productId == '11839' || item.productId == '11871' || item.productId == '11939'"><i
 									class="fa fa-caret-up" aria-hidden="true"></i></a>
 								<div>{{item.qty}}</div>
-								<a href="" ng-hide="item.qty==1" ng-click="updateCart(-1)"><i
-									class="fa fa-caret-down" aria-hidden="true"></i></a> <a href=""
-									ng-show="item.qty==1" ng-click="itemRemove()"><i
-									class="fa fa-caret-down" aria-hidden="true"></i></a>
+								<a href=""
+									ng-hide="item.qty==1"
+									ng-click="updateCart(-1)"><i class="fa fa-caret-down"
+									aria-hidden="true"></i></a> <a href=""
+									ng-show="item.qty==1 &amp;&amp; item.productId != '11839' &amp;&amp; item.productId != '11871'  &amp;&amp; item.productId != '11939'"
+									ng-click="itemRemove()"><i class="fa fa-caret-down"
+									aria-hidden="true"></i></a>
 							</div>
 
 							<div class="sci-img">
