@@ -33,7 +33,9 @@
 .healthline-slider a{bottom:35px !important;}
 .healthline-slider .bnr-txt{position:absolute;top:12px;width:100%;text-align:center;font-size:27px;color:#00b7ed;text-shadow:1px 1px 1px black;font-family: 'Catamaran', sans-serif;}
 .junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix-home-xs.jpg);background-color:black !important;}
+.waxpromo-slider .btn,
 .junglemix-slider a{background-color: #fb6a00;border-color: #ea680a;bottom: 20px !important;}
+.waxpromo-slider{background-image: url(https://lbrit.co/static/imgs/sliders/wax-promo-xs.jpg)}
 
 @media (min-width: 768px){	
 	.carousel-inner .mx300{max-width:768px;}
@@ -52,9 +54,11 @@
 	.healthline-slider{background-image: url(https://lbrit.co/static/imgs/sliders/luvbrite-healthline.jpg)}
 	.healthline-slider a{font-size:14px}
 	.healthline-slider .bnr-txt{font-size:45px;top:35px;text-shadow:2px 2px 1px black}
+	.waxpromo-slider{background-image: url(https://lbrit.co/static/imgs/sliders/wax-promo-sm.jpg)}
 }
 @media (min-width: 1000px){	
 	.newarrivals-slider{background-image: url(https://lbrit.co/static/imgs/sliders/newarrivals-slider-lg.jpg)}
+	.waxpromo-slider{background-image: url(https://lbrit.co/static/imgs/sliders/wax-promo.jpg)}
 }
 @media (min-width: 1200px){	
 	.junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix-home.jpg);}
@@ -75,7 +79,14 @@
 			<!-- Wrapper for slides -->
 			<div class="carousel-inner" role="listbox">
 
-				<div class="endofeight-slider item active">
+				<div class="waxpromo-slider item active">
+					<div class="mx300 rel pch100">
+						<button data-toggle="modal" data-target="#waxPromoModal"
+							class="btn btn-sm btn-warning">DETAILS</button>
+					</div>
+				</div>
+
+				<div class="endofeight-slider item">
 					<a href="" data-toggle="modal" data-target="#endOfEightModal"></a>
 				</div>
 
@@ -222,7 +233,7 @@
 	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
 	<script type="text/javascript">
 		$(document).ready(function(){			
-			$('#doubleDownModal, #endOfEightModal, #offHourOfferModal')
+			$('#doubleDownModal, #endOfEightModal, #offHourOfferModal, #waxPromoModal')
 			.on('shown.bs.modal', function() {
 				$('#home-sliders').carousel('pause');
 			}).on('hide.bs.modal', function() {
@@ -320,6 +331,42 @@
 							the Baked Bees medicated honey. Until further notice, we will be
 							substituting the honey with a 60mg kiva chocolate. Thank you for
 							understanding.</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="modal fade" id="waxPromoModal" tabindex="-1"
+			role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h3 class="modal-title">Offer Details</h3>
+					</div>
+					<div class="modal-body">
+						<div class="marg-b2">
+							Every order containing one of our wax/shatter based concentrates
+							will receive a <strong class="orange1">FREE glass globe
+								atomizer</strong> that attaches to any 510 thread vape pen. Glass globe
+							atomizers are an easy way to smoke any wax, shatter, or budder
+							based cannabis products conveniently with your vape pen.
+						</div>
+						<div class="small marg-b2 grey7">
+							<p>*Only one (1) glass globe atomizer per order, regardless
+								of the qty of wax/shatter based concentrates are included in
+								that order. Valid while supplies last. Luvbrite has the right to
+								remove or void this offer at any time with or without reason.</p>
+							<p><u>Safety Tip</u>: Whether using the recommended eGo-C Twist
+								battery available on luvbrite.com or using your own device,
+								please exercise caution when using the glass globe atomizer. We
+								advise visiting sources online (YouTube or Google) for info on
+								how to safely use your glass globe atomizer with a compatible
+								device.</p>
+						</div>
 					</div>
 				</div>
 			</div>

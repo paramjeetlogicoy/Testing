@@ -33,12 +33,13 @@
 							time patient offer</div>
 						<div ng-if="item.promo == 'fifthflower'" class="orange1 size13">Holiday
 							special offer</div>
+						<div ng-if="item.promo == 'waxpromo'" class="orange1 size13">Waxpromo offer</div>
 					</div>
 					
 					<div class="item-qty">
 						Qty: <span
-							ng-if="item.productId == '11839' || item.productId == '11871'">1</span><span
-							ng-if="item.productId != '11839' && item.productId != '11871'"><input
+							ng-if="item.productId == '11839' || item.productId == '11871' || item.productId == '11939'">1</span><span
+							ng-if="item.productId != '11839' && item.productId != '11871' && item.productId != '11939'"><input
 							type="number" min="1" step="1" ng-model="item.qty"
 							class="form-control" ng-change="updateCart()" /></span>
 					</div>
@@ -47,7 +48,7 @@
 						<strong>{{item.price*item.qty | currency}}</strong>
 					</div>
 					
-					<div class="item-remove">
+					<div class="item-remove" ng-hide="item.productId == '11939'">
 						<a href="" ng-click="itemRemove()">Delete Item</a>
 					</div>
 				</li>

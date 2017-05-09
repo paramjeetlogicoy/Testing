@@ -234,6 +234,20 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 	
 	$scope.noop = function(){};
 
+	$scope.duplicateProduct = function(){
+		$http.post('/admin/products/json/duplicateproduct/' + $scope.p._id)
+		.then(function(resp){
+			if(resp.data && resp.data.success){
+				$location.path('/details/' + resp.data.message);
+			}
+			else{
+				$scope.errorMsg = resp.data.message;
+			}
+		},function(){
+			$scope.errorMsg  = "There was some error duplicating the product. "
+				+"Please contact G";
+		})
+	};
 	
 	$scope.removePrdVisual = function(){
 		var currItem = this.pVisual;

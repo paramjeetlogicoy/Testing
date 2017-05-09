@@ -30,6 +30,51 @@ public class CartLogics {
 	
 	@Autowired
 	private OrderDAO completedOrderdao;
+
+	
+	private int doubleDownItemIndex = -1,
+		briteBoxIndex = -1,
+		fifthFlowerIndex = -1,
+		waxPromoIndex = -1;
+	
+	
+	private void updateIndexes(List<OrderLineItemCart> items){
+		
+		int index = -1;
+		
+		doubleDownItemIndex = -1;
+		briteBoxIndex = -1;
+		fifthFlowerIndex = -1;
+		waxPromoIndex = -1;
+		
+		for(OrderLineItemCart item : items){
+			
+			index++;
+			
+			if(item.getType().equals("item") && item.isInstock()){
+				
+				if(item.getProductId() == 11839){
+					briteBoxIndex = index;
+				}
+				
+				else if(item.getProductId() == 11871){
+					fifthFlowerIndex = index;
+				}
+				
+				else if(item.getProductId() == 11939){
+					waxPromoIndex = index;
+				}
+				
+				
+				if( item.getPromo() != null 
+						&& "doubledownoffer".equals(item.getPromo()) ){
+					
+					doubleDownItemIndex = index;
+				}
+				
+			}
+		}
+	}
 	
 	public void calculateSummary(CartOrder order){
 		
@@ -162,12 +207,9 @@ public class CartLogics {
 			boolean orderChanged = false,
 					couponPresent = false,
 					briteBoxEligible = false,
-					autoAddBriteBox = true;
-			
-			int index = -1,
-				doubleDownItemIndex = -1,
-				briteBoxIndex = -1,
-				fifthFlowerIndex = -1;
+					autoAddBriteBox = true,
+					waxPromoActive = true,
+					waxPromoEligible = false;
 			
 			String couponCode = "";
 
@@ -198,8 +240,6 @@ public class CartLogics {
 			if(items != null){
 				for(OrderLineItemCart item : items){
 					
-					index++;
-					
 					if( item.getPromo() != null 
 							&& "p".equals(item.getPromo()) ){
 						
@@ -211,18 +251,13 @@ public class CartLogics {
 						
 						double itemPrice = item.getPrice();
 						
-						if(item.getProductId() == 11839){
-							briteBoxIndex = index;
-						}
-						
-						else if(item.getProductId() == 11871){
-							fifthFlowerIndex = index;
+						if(item.getProductId() == 11889 || 
+								item.getProductId() == 11881){
+							waxPromoEligible = true;
 						}
 						
 						if( item.getPromo() != null 
 								&& "doubledownoffer".equals(item.getPromo()) ){
-							
-							doubleDownItemIndex = index;
 							
 							itemPrice = item.getCost();
 						}
@@ -237,7 +272,10 @@ public class CartLogics {
 						couponCode = item.getName();
 					}
 				}
+				
+				updateIndexes(items);
 			}
+
 			
 				
 			//First BriteBoxcheck
@@ -269,9 +307,6 @@ public class CartLogics {
 
 						items.add(newItem);
 
-						/*Update order with lineItems*/
-						order.setLineItems(items);
-
 						orderChanged = true;
 						briteBoxIndex = items.size() - 1;
 					}
@@ -290,12 +325,12 @@ public class CartLogics {
 			//If briteBox is not eligible, but present
 			if(!briteBoxEligible && briteBoxIndex != -1){
 				
-				//Removed Item
-				List<OrderLineItemCart> olic = order.getLineItems();
-				olic.remove(briteBoxIndex);
+				items.remove(briteBoxIndex);
 				
-				orderChanged = true;	
-				briteBoxIndex = -1;		
+				orderChanged = true;
+				
+				//Now since the item is remove all the indices need to be updated
+				updateIndexes(items);	
 			}
 			
 			
@@ -347,6 +382,50 @@ public class CartLogics {
 					}
 				}				
 			}
+			
+			
+			/**
+			 * Wax Promo 
+			 **/
+			//If waxpromo eligible and not applied, apply it.
+			if(waxPromoActive && 
+					waxPromoEligible && 
+					waxPromoIndex == -1){
+				
+				//Add new item
+				OrderLineItemCart newItem = new OrderLineItemCart();
+				newItem.setTaxable(false);
+				newItem.setInstock(true);
+				newItem.setType("item");
+				newItem.setName("Glass Globe Atomizer (Promo)");
+				newItem.setPromo("waxpromo");
+				newItem.setProductId(11939);
+				newItem.setVariationId(0);
+				newItem.setQty(1);
+				newItem.setCost(5d);
+				newItem.setPrice(0d);
+				newItem.setImg("/products/GlassGlobe1.jpg");
+
+				items.add(newItem);
+
+				orderChanged = true;
+			}
+
+			
+			//If promo is not active/eligible, but applied, remove it
+			if( (!waxPromoActive && waxPromoIndex > -1) || 
+					(!waxPromoEligible && waxPromoIndex > -1)){
+				
+				//Removed Item
+				List<OrderLineItemCart> olic = order.getLineItems();
+				olic.remove(waxPromoIndex);
+				
+				orderChanged = true;	
+				
+				//Now since the item is remove all the indices need to be updated
+				updateIndexes(items);
+			}
+			
 			
 			
 			

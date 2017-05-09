@@ -336,6 +336,65 @@ public class ProductsController {
 		return product;		
 	}
 
+	@RequestMapping(value = "/json/duplicateproduct/{productId}", method = RequestMethod.POST)
+	public @ResponseBody GenericResponse duplicateProduct(
+			@PathVariable long productId, 
+			@AuthenticationPrincipal UserDetailsExt user){
+		
+		GenericResponse gr = new GenericResponse();
+		gr.setSuccess(false);
+		
+		if(productId != 0l){
+			
+			Product existingProduct = prdDao.get(productId);
+			if(existingProduct != null){
+				
+				//Generate new productId
+				long newProductId = prdDao.getNextSeq();
+				existingProduct.set_id(newProductId);
+				existingProduct.setName("Copy of " + existingProduct.getName());
+				
+				String productUrl = existingProduct.getName().toLowerCase()
+						.replaceAll("[^a-z0-9 ]", "").replaceAll("\\s+", "-");
+				existingProduct.setUrl(productUrl);
+				
+				prdDao.save(existingProduct);
+				/**
+				 * Update Log
+				 * */
+				try {
+					
+					Log log = new Log();
+					log.setCollection("products");
+					log.setDetails("New product created. Duplicated from " + productId);
+					log.setDate(Calendar.getInstance().getTime());
+					log.setKey(newProductId);
+					log.setUser(user.getUsername());
+					
+					logDao.save(log);					
+				}
+				catch(Exception e){
+					logger.error(Exceptions.giveStackTrace(e));
+				}
+				
+				gr.setSuccess(true);
+				gr.setMessage(newProductId+"");
+			}
+			
+			else{
+				
+				gr.setMessage("No product found for id " + productId);
+			}
+		}
+		
+		else{
+			
+			gr.setMessage("Invalid product Id " + productId);
+		}
+		
+		return gr;		
+	}
+
 	@RequestMapping(value = "/json/{productId}/price")
 	public @ResponseBody List<Price> price(@PathVariable long productId){			
 		return priceDao.findPriceByProduct(productId);		
