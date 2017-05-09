@@ -619,19 +619,25 @@ nav#pagination-nav{
 	}
 }
 
-.home-category-sections h2 {
-    text-align:center;
+.home-category-sections {
+    h2 {
+		text-align:center;
 
-	a {
-		.size24;
-		color: #000;
-		border-bottom: 1px solid #000;
-		padding: 10px 0 5px;
-		text-decoration:none;
+		a {
+			.size(2.8);
+			color: #000;
+			border-bottom: 1px solid #000;
+			padding: 10px 0 5px;
+			text-decoration:none;
+		}
+	}
+	
+	.fh-cols {
+		@media(min-width:768px){
+			min-height: 90px;
+		}
 	}
 }
-
-.home-category-sections h2 
 
 .hc-img-baked{background-image:url(https://lbrit.co/static/imgs/baked.jpg)}
 .hc-img-candy{background-image:url(https://lbrit.co/static/imgs/candies.jpg)}
