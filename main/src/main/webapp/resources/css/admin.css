@@ -1,4 +1,4 @@
-/*2017-04-04 10:44 AM*/
+/*2017-05-09 1:55 PM*/
 /***** Luvbrite Admin - Type setting *****/
 /*Base size for desktop*/
 /* @basesizeD / 10. Division by 10 because 10px would come as 1, and 15px as 1.5*/
@@ -928,6 +928,12 @@ label.fa-label > input:checked + .fa:before {
   font-size: inherit;
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
+}
+.svg-wrapper {
+  display: inline-block;
+}
+.svg-wrapper svg {
+  fill: currentColor;
 }
 /***** Sprites *****/
 .s1,
