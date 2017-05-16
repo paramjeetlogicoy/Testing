@@ -3,7 +3,13 @@ package com.luvbrite.utils;
 import java.net.URL;
 import java.net.URLEncoder;
 
-
+/**
+ * 05/16/2017
+ * This code was to support the legacy system.
+ * The legacy system has been completely phased out
+ * and this code is not used anymore! 
+ * 
+ **/
 public class OldHashEncoder  {
 	
 	private GenericConnection conn = new GenericConnection();

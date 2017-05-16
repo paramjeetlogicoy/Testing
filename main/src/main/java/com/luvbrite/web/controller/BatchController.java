@@ -79,6 +79,9 @@ public class BatchController {
 				.field("role").equal("customer")
 				.field("identifications.recoExpiry").doesNotExist()
 				.asList();
+
+		//Deactivate these no expiry users
+		deactivateUser(usersN);
 		
 
 		rc.setInvalid(usersN);

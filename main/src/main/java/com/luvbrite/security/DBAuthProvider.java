@@ -16,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.luvbrite.dao.UserDAO;
-import com.luvbrite.utils.OldHashEncoder;
 import com.luvbrite.web.models.User;
 import com.luvbrite.web.models.UserDetailsExt;
 
@@ -71,7 +70,14 @@ public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 					}
 					else {
 						
-						if(encodedPwd.indexOf("$P$B")==0){
+						/**
+						 * 05/16/2017
+						 * Below code was to support the legacy system.
+						 * The legacy system has been completely phased out
+						 * and this code section is not used anymore! 
+						 **/
+						
+/*						if(encodedPwd.indexOf("$P$B")==0){
 							
 							OldHashEncoder ohe = new OldHashEncoder();
 							if(ohe.isValid(actualUsername, rawPassword)){							
@@ -85,12 +91,13 @@ public class DBAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 							}						
 						}
 						
-						else if(!encoder.matches(rawPassword, encodedPwd)){
+						else */
+						
+						if(!encoder.matches(rawPassword, encodedPwd)){
 				            
 							throw new 
 				            InternalAuthenticationServiceException("Invalid username and/or password");
 							
-							//password reset
 						}					
 					}
 
