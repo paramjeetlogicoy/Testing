@@ -175,7 +175,8 @@ nav.admin-navbar {
     	font-weight: 600;
     	text-transform: uppercase;
     	white-space: nowrap;
-		padding: 7px 15px;
+		padding: 8.5px 5px;
+    	font-size: 12px;
 
     	&:focus,
     	&:hover,
@@ -183,6 +184,11 @@ nav.admin-navbar {
     		.green1;
     		background: none;
     	}
+
+		@media(min-width:1160px){
+			padding: 7px 15px;
+    		font-size: 14px;
+		}
     }
 
     .nav>li.active>a{
@@ -1023,7 +1029,7 @@ nav#pagination-nav{
 }
 
 .sidecart:extend(.fix,.bg-white){
-	top:92px;
+	top:98px;
 	bottom:0;
     right:-290px;
     width:290px;
