@@ -90,6 +90,15 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 							
 							flowerCount = flowerCount + item.qty;
 						}
+						
+						if(item.productId == 11839 || 
+								item.productId == 11871 || 
+								item.productId == 11939 || 
+								item.productId == 11951 ){
+							
+							item.notEditable = true;
+							
+						}
 					}
 					
 					

@@ -104,6 +104,7 @@
 													<div th:if="${ol.promo=='fifthflower'}">Holiday Promo</div>
 													<div th:if="${ol.promo=='ValentinesDayPromos'}">Valentines Day Promo</div>
 													<div th:if="${ol.promo=='waxpromo'}">Waxpromo Offer</div>
+													<div th:if="${ol.promo=='freepowerpuff'}">Free Power Puff Offer</div>
 												</td>
 												<td style="text-align: right;">-$<span
 													th:text="${#numbers.formatDecimal(((ol.cost-ol.price)*ol.qty), 1, 'COMMA', 2, 'POINT')}"></span></td>

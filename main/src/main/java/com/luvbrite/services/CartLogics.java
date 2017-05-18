@@ -1,5 +1,6 @@
 package com.luvbrite.services;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.luvbrite.dao.CartOrderDAO;
 import com.luvbrite.dao.OrderDAO;
+import com.luvbrite.dao.ProductDAO;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.Utility;
 import com.luvbrite.web.models.Address;
@@ -19,6 +21,7 @@ import com.luvbrite.web.models.CartOrder;
 import com.luvbrite.web.models.ControlOptions;
 import com.luvbrite.web.models.Order;
 import com.luvbrite.web.models.OrderLineItemCart;
+import com.luvbrite.web.models.Product;
 
 @Service
 public class CartLogics {
@@ -30,12 +33,16 @@ public class CartLogics {
 	
 	@Autowired
 	private OrderDAO completedOrderdao;
+	
+	@Autowired
+	private ProductDAO prdDao;
 
 	
 	private int doubleDownItemIndex = -1,
 		briteBoxIndex = -1,
 		fifthFlowerIndex = -1,
-		waxPromoIndex = -1;
+		waxPromoIndex = -1,
+		fiveGPromoIndex = -1;
 	
 	
 	private void updateIndexes(List<OrderLineItemCart> items){
@@ -46,6 +53,7 @@ public class CartLogics {
 		briteBoxIndex = -1;
 		fifthFlowerIndex = -1;
 		waxPromoIndex = -1;
+		fiveGPromoIndex = -1;
 		
 		for(OrderLineItemCart item : items){
 			
@@ -63,6 +71,10 @@ public class CartLogics {
 				
 				else if(item.getProductId() == 11939){
 					waxPromoIndex = index;
+				}
+				
+				else if(item.getProductId() == 11951){
+					fiveGPromoIndex = index;
 				}
 				
 				
@@ -209,7 +221,18 @@ public class CartLogics {
 					briteBoxEligible = false,
 					autoAddBriteBox = true,
 					waxPromoActive = true,
-					waxPromoEligible = false;
+					waxPromoEligible = false,
+					fiveGPromoActive = true,
+					fiveGPromoEligible = false;
+			
+			
+			List<Product> fivegProducts = new ArrayList<>();
+			if(fiveGPromoActive){
+				fivegProducts = prdDao.createQuery()
+						.field("categories").equal("Exclusive")
+						.retrievedFields(true, "_id")
+						.asList();
+			}
 			
 			String couponCode = "";
 
@@ -266,6 +289,13 @@ public class CartLogics {
 							total += (itemPrice*item.getQty());								
 						}
 						
+						if(!fivegProducts.isEmpty()){
+							for(Product p : fivegProducts){
+								if(p.get_id() == item.getProductId()){
+									fiveGPromoEligible = true;
+								}
+							}
+						}
 					}
 					
 					else if(item.getType().equals("coupon")){
@@ -413,12 +443,57 @@ public class CartLogics {
 
 			
 			//If promo is not active/eligible, but applied, remove it
-			if( (!waxPromoActive && waxPromoIndex > -1) || 
-					(!waxPromoEligible && waxPromoIndex > -1)){
+			if( waxPromoIndex > -1 && 
+					(!waxPromoActive  || !waxPromoEligible)){
 				
 				//Removed Item
 				List<OrderLineItemCart> olic = order.getLineItems();
 				olic.remove(waxPromoIndex);
+				
+				orderChanged = true;	
+				
+				//Now since the item is remove all the indices need to be updated
+				updateIndexes(items);
+			}
+			
+			
+			
+			
+			/**
+			 * 5g Promo 
+			 **/
+			//If 5gpromo eligible and not applied, apply it.
+			if(fiveGPromoActive && 
+					fiveGPromoEligible && 
+					fiveGPromoIndex == -1){
+				
+				//Add new item
+				OrderLineItemCart newItem = new OrderLineItemCart();
+				newItem.setTaxable(false);
+				newItem.setInstock(true);
+				newItem.setType("item");
+				newItem.setName("Power Puff Roll Promo ");
+				newItem.setPromo("freepowerpuff");
+				newItem.setProductId(11951);
+				newItem.setVariationId(0);
+				newItem.setQty(1);
+				newItem.setCost(10d);
+				newItem.setPrice(0d);
+				newItem.setImg("/products/PowerPuff.jpg");
+
+				items.add(newItem);
+
+				orderChanged = true;
+			}
+
+			
+			//If promo is not active/eligible, but applied, remove it
+			if( fiveGPromoIndex > -1 && 
+					(!fiveGPromoActive  || !fiveGPromoEligible)){
+				
+				//Removed Item
+				List<OrderLineItemCart> olic = order.getLineItems();
+				olic.remove(fiveGPromoIndex);
 				
 				orderChanged = true;	
 				
