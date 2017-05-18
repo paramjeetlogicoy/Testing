@@ -220,7 +220,7 @@ public class CartLogics {
 					couponPresent = false,
 					briteBoxEligible = false,
 					autoAddBriteBox = true,
-					waxPromoActive = true,
+					waxPromoActive = false,
 					waxPromoEligible = false,
 					fiveGPromoActive = true,
 					fiveGPromoEligible = false;

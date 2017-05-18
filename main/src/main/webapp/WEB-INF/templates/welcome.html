@@ -19,8 +19,6 @@
 <meta th:include="fragments/layout::fragment-head" />
 <link href="https://fonts.googleapis.com/css?family=Catamaran:900" rel="stylesheet" />
 <style type="text/css">
-.endofeight-slider{background-image: url(https://lbrit.co/static/imgs/sliders/end-of-8ths-slider-xs.jpg)}
-.endofeight-slider a{display:block;width:100%;height:100%;}
 .offhouroffer-slider{background-image: url(https://lbrit.co/static/imgs/sliders/off-hour-offer.jpg)}
 .doubledown-slider{background-image: url(https://lbrit.co/static/imgs/sliders/double-down-offer-v1.jpg);background-color:white !important;}
 .doubledown-slider.item button.btn {bottom:5px;right:0;font-size:10px;left:auto;}
@@ -31,7 +29,6 @@
 .junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix-home-xs.jpg);background-color:black !important;}
 .waxpromo-slider .btn,
 .junglemix-slider a{background-color: #fb6a00;border-color: #ea680a;bottom: 20px !important;}
-.waxpromo-slider{background-image: url(https://lbrit.co/static/imgs/sliders/wax-promo-xs.jpg)}
 .fiveplus1-slider{background-image: url(https://lbrit.co/static/imgs/sliders/5plus1-deal-xs.jpg)}
 
 @media (min-width: 768px){	
@@ -39,7 +36,6 @@
 	
 	.junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix-home-sm.jpg?v001);}
 
-	.endofeight-slider{background-image: url(https://lbrit.co/static/imgs/sliders/end-of-8ths-slider-sm.jpg)}
 	.offhouroffer-slider.item button.btn {bottom:70px}
 	.doubledown-slider.item button.btn {bottom:25px;right:20%;font-size:12px;}
 	.localbox-slider.item a.btn{right:19%;;bottom:25%;}
@@ -47,15 +43,10 @@
 	.britebox-slider.item {background-position:50% 50%;}
 	.britebox-slider.item button.btn{right:10%;bottom: 15px;}
 	
-	.waxpromo-slider{background-image: url(https://lbrit.co/static/imgs/sliders/wax-promo-sm.jpg)}
-.fiveplus1-slider{background-image: url(https://lbrit.co/static/imgs/sliders/5plus1-deal.jpg)}
-}
-@media (min-width: 1000px){	
-	.waxpromo-slider{background-image: url(https://lbrit.co/static/imgs/sliders/wax-promo.jpg)}
+	.fiveplus1-slider{background-image: url(https://lbrit.co/static/imgs/sliders/5plus1-deal.jpg)}
 }
 @media (min-width: 1200px){	
 	.junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix-home.jpg);}
-	.endofeight-slider{background-image: url(https://lbrit.co/static/imgs/sliders/end-of-8ths-slider-lg.jpg)}
 }
 </style>
 </head>
@@ -76,17 +67,6 @@
 
 				<div class="junglemix-slider item">
 					<a href="/product/jungle-mix-10-gram-special" class="btn btn-warning">SHOP NOW</a>
-				</div>
-
-				<div class="waxpromo-slider item">
-					<div class="mx300 rel pch100">
-						<button data-toggle="modal" data-target="#waxPromoModal"
-							class="btn btn-sm btn-warning">DETAILS</button>
-					</div>
-				</div>
-
-				<div class="endofeight-slider item">
-					<a href="" data-toggle="modal" data-target="#endOfEightModal"></a>
 				</div>
 
 				<div class="doubledown-slider item">
@@ -499,32 +479,6 @@
 		<div th:replace="fragments/layout::fragment-doubledownmodal"></div>
 		<div th:replace="fragments/layout::fragment-briteboxmodal"></div>
 
-		<div class="modal fade" id="endOfEightModal" tabindex="-1"
-			role="dialog">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-						<h3 class="modal-title">End of Eighth</h3>
-					</div>
-					<div class="modal-body">
-						<div class="marg-b2">Say goodbye to the standard eight and hello
-							to the new 5g standard. From this point on, you will find all our
-							flowers available in 5grams. The best part is, prices are
-							relative for what most 3.5g's cost elsewhere! Don't miss out,
-							select your flower and get that extra 1.5.g in added value.</div>
-						<div class="marg-b2 text-center">
-							<a href="/category/flowers" class="btn btn-warning">Browse
-								Flowers</a>
-						</div>
-
-					</div>
-				</div>
-			</div>
-		</div>
 
 		<div class="modal fade" id="offHourOfferModal" tabindex="-1"
 			role="dialog">
@@ -609,43 +563,7 @@
 				</div>
 			</div>
 		</div>
-
-
-		<div class="modal fade" id="waxPromoModal" tabindex="-1"
-			role="dialog">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-						<h3 class="modal-title">Offer Details</h3>
-					</div>
-					<div class="modal-body">
-						<div class="marg-b2">
-							Every order containing one of our wax/shatter based concentrates
-							will receive a <strong class="orange1">FREE glass globe
-								atomizer</strong> that attaches to any 510 thread vape pen. Glass globe
-							atomizers are an easy way to smoke any wax, shatter, or budder
-							based cannabis products conveniently with your vape pen.
-						</div>
-						<div class="small marg-b2 grey7">
-							<p>*Only one (1) glass globe atomizer per order, regardless
-								of the qty of wax/shatter based concentrates are included in
-								that order. Valid while supplies last. Luvbrite has the right to
-								remove or void this offer at any time with or without reason.</p>
-							<p><u>Safety Tip</u>: Whether using the recommended eGo-C Twist
-								battery available on luvbrite.com or using your own device,
-								please exercise caution when using the glass globe atomizer. We
-								advise visiting sources online (YouTube or Google) for info on
-								how to safely use your glass globe atomizer with a compatible
-								device.</p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+		
 	</div>
 </body>
 </html>
