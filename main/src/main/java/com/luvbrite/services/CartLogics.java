@@ -464,26 +464,47 @@ public class CartLogics {
 			 **/
 			//If 5gpromo eligible and not applied, apply it.
 			if(fiveGPromoActive && 
-					fiveGPromoEligible && 
-					fiveGPromoIndex == -1){
+					fiveGPromoEligible){
 				
-				//Add new item
-				OrderLineItemCart newItem = new OrderLineItemCart();
-				newItem.setTaxable(false);
-				newItem.setInstock(true);
-				newItem.setType("item");
-				newItem.setName("Power Puff Roll Promo ");
-				newItem.setPromo("freepowerpuff");
-				newItem.setProductId(11951);
-				newItem.setVariationId(0);
-				newItem.setQty(1);
-				newItem.setCost(10d);
-				newItem.setPrice(0d);
-				newItem.setImg("/products/PowerPuff.jpg");
+				
+				if(fiveGPromoIndex == -1){
+					
+					//Add new item
+					OrderLineItemCart newItem = new OrderLineItemCart();
+					newItem.setTaxable(false);
+					newItem.setInstock(true);
+					newItem.setType("item");
+					newItem.setName("Power Puff Roll Promo ");
+					newItem.setPromo("freepowerpuff");
+					newItem.setProductId(11951);
+					newItem.setVariationId(0);
+					newItem.setQty(1);
+					newItem.setCost(10d);
+					newItem.setPrice(0d);
+					newItem.setImg("/products/PowerPuff.jpg");
 
-				items.add(newItem);
+					items.add(newItem);
 
-				orderChanged = true;
+					orderChanged = true;
+				}
+				else {
+					
+					//Check if the product has valid promo details (Some other logic might change the promo details)
+					
+					OrderLineItemCart promoItem = items.get(fiveGPromoIndex);
+					if(promoItem.getQty() != 1 || 
+							promoItem.getCost() != 10d ||
+							promoItem.getPrice() != 0){
+						
+						promoItem.setQty(1);
+						promoItem.setCost(10d);
+						promoItem.setPrice(0d);
+						promoItem.setName("Power Puff Roll Promo ");
+						promoItem.setPromo("freepowerpuff");
+
+						orderChanged = true;
+					}
+				}
 			}
 
 			

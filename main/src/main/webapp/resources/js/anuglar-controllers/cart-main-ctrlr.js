@@ -116,7 +116,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 							(item.promo == 's' || 
 									item.promo == 'doubledownoffer'  || 
 									item.promo == 'firsttimepatient' || 
-									item.promo == 'fifthflower')){
+									item.promo == 'freepowerpuff')){
 						
 						//var productName = item.name.length>15?item.name.substr(0,15)+'...':item.name,
 						var productName = item.name,
@@ -135,9 +135,8 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 						}
 						
 						
-						else if(item.promo == 'fifthflower'){
-							productName = 'Holiday Special Offer';
-							fifthFlowerApplied = true;
+						else if(item.promo == 'freepowerpuff'){
+							productName = 'Power Puff Roll Promo';
 						}
 						
 							

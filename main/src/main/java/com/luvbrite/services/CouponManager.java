@@ -734,11 +734,13 @@ public class CouponManager {
 	}
 	
 	private boolean validPromoItem(OrderLineItemCart olic){
+		
 		return 
 				olic.getType().equals("item")
 				&& olic.isInstock() 
 				&& (olic.getPromo() == null 
-					|| !olic.getPromo().equals("s")); //Item is not already discounted
+					|| olic.getPromo().equals("")
+					|| olic.getPromo().equals("p")); //Item is not already a promo item other than coupon
 	}
 	
 	
