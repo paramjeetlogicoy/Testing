@@ -410,6 +410,63 @@ public class UsersController {
 	}
 
 	
+	@RequestMapping(value = "json/deny/{userId}", method = RequestMethod.GET)
+	public @ResponseBody GenericResponse denyUser(
+			@PathVariable Long userId, 
+			@AuthenticationPrincipal UserDetailsExt user){
+		
+		GenericResponse r = new GenericResponse();
+		r.setSuccess(false);
+		r.setMessage("");
+			
+		if(userId == null){
+			r.setMessage("Invalid user ID");			
+		}
+		else{
+			
+			User userDb = dao.get(userId);			
+			if(userDb!=null){		
+				
+				userDb.setActive(false);
+				userDb.setStatus("declined");
+				
+				/**
+				 * Here we are only changing the status to declined
+				 * and setting active flag to false.
+				 * Remaining information is same as that 
+				 * pulled from DB
+				 **/			
+				dao.save(userDb);
+				
+				/* Update Log */
+				try {
+					
+					Log log = new Log();
+					log.setCollection("users");
+					log.setDetails("user declines via direct URL");
+					log.setDate(Calendar.getInstance().getTime());
+					log.setKey(userDb.get_id());
+					log.setUser(user.getUsername());
+					
+					logDao.save(log);					
+				}
+				catch(Exception e){
+					logger.error(Exceptions.giveStackTrace(e));
+				}
+				
+				r.setSuccess(true);
+			}
+			
+			else {
+				r.setMessage("No valid user found with ID - " + userId);
+			}
+		}
+		
+		
+		return r;		
+	}
+
+	
 	@RequestMapping(value = "/json/save", method = RequestMethod.POST)
 	public @ResponseBody GenericResponse saveUser(
 			@Validated @RequestBody User user, 

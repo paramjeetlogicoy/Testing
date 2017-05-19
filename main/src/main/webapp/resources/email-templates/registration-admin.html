@@ -43,12 +43,22 @@
 									Reco</a></span>
 						</div>
 						<div th:replace="fragments::spacer(width=1, padding=1, size=10)"></div>
-						<div>
+						<div style="color:green;">
 							Activate User by clicking <a
 								th:href="@{'https://www.luvbrite.com/admin/user/json/activate-n-email/' + *{_id} + '?c=coupon'}"
 								href="">this activate link</a>. (This will also send the
 							activation email along with first time user coupon)
 						</div>
+						<div th:replace="fragments::spacer(width=1, padding=1, size=10)"></div>
+						<div th:replace="fragments::spacer(width=1, padding=1, size=10)"></div>
+						<div th:replace="fragments::spacer(width=1, padding=1, size=10)"></div>
+						<div style="color:red;">
+							Decline/Deny User by clicking <a
+								th:href="@{'https://www.luvbrite.com/admin/user/json/deny/' + *{_id}}"
+								href="">this decline/deny link</a>. (NO email sent)
+						</div>
+						<div th:replace="fragments::spacer(width=1, padding=1, size=10)"></div>
+						<div th:replace="fragments::spacer(width=1, padding=1, size=10)"></div>
 						<div th:replace="fragments::spacer(width=1, padding=1, size=10)"></div>
 						<div>
 							View user details by clicking <a
