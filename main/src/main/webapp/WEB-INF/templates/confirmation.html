@@ -52,11 +52,115 @@
 				</div>
 			</div>
 
-			<div class="marg-b10 text-center">
+			<div class="marg-b5 text-center">
 				<a th:href="@{'/customer#/details/' + ${order.orderNumber}}"
 					class="btn btn-lb btn-lb-w">VIEW ORDER DETAILS</a>
 			</div>
 
+			<div class="mx800 marg-b10" ng-controller="surveyCtrlr">
+
+				<div class="marg-b3">Please take a few moments to answer the
+					questions below. These questions will help us determine the right
+					actions to take moving forward with products and services. Your
+					opinions are highly valued and appreciated. Completion of the
+					survey will activate a courtesy gift which will be confirmed upon
+					submittal.</div>
+
+				<div class="survey-wrapper">
+					<div class="survey-item">
+						<div class="survey-question">1. Use numbers 1-5 to let us know
+							how each quality plays a roll when shopping for flowers. The
+							number 1 will represent the most important, 2 represents the
+							second most important, and so on.</div>
+						<div class="survey-options">
+							<ul>
+								<li><span>Nose</span>
+									<button class="btn">1</button>
+									<button class="btn">2</button>
+									<button class="btn">3</button>
+									<button class="btn">4</button>
+									<button class="btn">5</button></li>
+							
+								<li><span>Price</span>
+									<button class="btn">1</button>
+									<button class="btn">2</button>
+									<button class="btn">3</button>
+									<button class="btn">4</button>
+									<button class="btn">5</button></li>
+							
+								<li><span>Structure</span>
+									<button class="btn">1</button>
+									<button class="btn">2</button>
+									<button class="btn">3</button>
+									<button class="btn">4</button>
+									<button class="btn">5</button></li>
+						
+								<li><span>Amount</span>
+									<button class="btn">1</button>
+									<button class="btn">2</button>
+									<button class="btn">3</button>
+									<button class="btn">4</button>
+									<button class="btn">5</button></li>
+							
+								<li><span>Familiarity/Reputability</span>
+									<button class="btn">1</button>
+									<button class="btn">2</button>
+									<button class="btn">3</button>
+									<button class="btn">4</button>
+									<button class="btn">5</button></li>
+							</ul>
+						</div>
+					</div>
+					
+					<div class="survey-item">
+						<div class="survey-question">2. Bud appearance means a lot to me.</div>
+						<div class="survey-options">
+							<ul>
+								<li><button class="btn">Strongly Agree</button>
+									<button class="btn">Agree</button>
+									<button class="btn">Neutral</button>
+									<button class="btn">Disagree</button>
+									<button class="btn">Strong Disagree</button></li>
+							</ul>
+						</div>
+					</div>
+					
+					<div class="survey-item">
+						<div class="survey-question">3. If you could choose only one
+							category to see more of, which would it be? You can select 1 bold
+							category and up to 2 subcategories within that chosen category..</div>
+						<div class="survey-options">
+							<ul>
+								<li><div class="radio">
+										<label> <input type="radio" name="categories" />
+											Flowers
+										</label>
+									</div>
+									<ul>
+										<li><div class="checkbox">
+										<label> <input type="checkbox" name="Sativa" />
+											Sativa
+										</label>
+									</div></li>
+										<li><div class="checkbox">
+										<label> <input type="checkbox" name="Indica" />
+											Indica
+										</label>
+									</div></li>
+										<li><div class="checkbox">
+										<label> <input type="checkbox" name="Hybrid" />
+											Hybrid
+										</label>
+									</div></li>
+									</ul></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<button class="btn btn-primary" ng-click="submitSurvey()">Submit Survey</button>
+			</div>
+			
 			<div class="pad-h2">
 				<h3 class="split-lines">Popular This Month</h3>
 			</div>
@@ -166,6 +270,67 @@
 	</div>
 
 	<div th:replace="fragments/layout::fragment-footer"></div>
-	<script type="text/javascript"></script>
+	<div th:replace="fragments/layout::fragment-foot(angular=true)"></div>
+	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
+	<script type="text/javascript">
+		var surveyCtrlr = function($scope, $http){
+			
+			var saveResponse = {"sr":{"_id":null,"sid":1,"date":new Date(),"customer":null,"orderNumber":0,"otherRef":null,
+				"details":[
+						{"qid":1,"response":"Nose,2|Price,1|Structure,3|Amount,5|Familiarity/Reputability,4","comment":null},
+						{"qid":2,"response":"Agree","comment":null},
+						{"qid":3,"response":"Flowers,Sativa,Indica,Drinks","comment":null},
+						{"qid":4,"response":"Yes","comment":null},
+						{"qid":5,"response":"No","comment":"Some reason"},
+						{"qid":6,"response":"Yes","comment":null},
+						{"qid":7,"response":"Not sure yet","comment":""}
+					]
+				},
+				"sfs":[
+					{ "_id":null, "sid":1, "qid":1, "resp":"Nose", "value":2},
+					{ "_id":null, "sid":1, "qid":1, "resp":"Price", "value":1},
+					{ "_id":null, "sid":1, "qid":1, "resp":"Structure", "value":3},
+					{ "_id":null, "sid":1, "qid":1, "resp":"Amount", "value":5},
+					{ "_id":null, "sid":1, "qid":1, "resp":"Familiarity/Reputability", "value":4},
+					
+					{ "_id":null, "sid":1, "qid":2, "resp":"Agree", "value":1},
+
+					{ "_id":null, "sid":1, "qid":3, "resp":"Flowers", "value":1},
+					{ "_id":null, "sid":1, "qid":3, "resp":"Sativa", "value":1},
+					{ "_id":null, "sid":1, "qid":3, "resp":"Indica", "value":1},
+					{ "_id":null, "sid":1, "qid":3, "resp":"Drinks", "value":1},
+					
+					{ "_id":null, "sid":1, "qid":4, "resp":"Yes", "value":1},
+					{ "_id":null, "sid":1, "qid":5, "resp":"No", "value":1},
+					{ "_id":null, "sid":1, "qid":6, "resp":"Yes", "value":1},
+					{ "_id":null, "sid":1, "qid":7, "resp":"Not sure yet", "value":1}
+				]
+			};
+			
+			
+			$scope.submitSurvey = function(){
+				
+				$http.post("/survey/savesurvey",saveResponse)
+				.then(function(resp){
+					if(resp.data){
+						if(resp.data.success){
+							alert('Survey Saved');
+						}
+						else{
+							alert(resp.data.message);
+						}
+					}
+					
+				}, function(){
+					alert("Sorry there was some error updating the Survey.");
+				});
+			};
+			
+			
+		};
+		
+		lbApp.controller('surveyCtrlr', 	 ['$scope', '$http', surveyCtrlr])
+	
+	</script>
 </body>
 </html>
