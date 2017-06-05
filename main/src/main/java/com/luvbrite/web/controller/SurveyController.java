@@ -19,7 +19,9 @@ import com.luvbrite.dao.SurveyDAO;
 import com.luvbrite.dao.SurveyFormattedDAO;
 import com.luvbrite.dao.SurveyQuestionDAO;
 import com.luvbrite.dao.SurveyResponseDAO;
+import com.luvbrite.services.PostOrderMeta;
 import com.luvbrite.web.models.GenericResponse;
+import com.luvbrite.web.models.InventoryUpdates;
 import com.luvbrite.web.models.SaveSurvey;
 import com.luvbrite.web.models.Survey;
 import com.luvbrite.web.models.SurveyFormatted;
@@ -44,6 +46,9 @@ public class SurveyController {
 	@Autowired
 	private SurveyFormattedDAO surveyFormattedDao;
 	
+	@Autowired
+	private PostOrderMeta postOrderMeta;
+	
 	
 	@RequestMapping(value = "/savesurvey", method = RequestMethod.POST)
 	public @ResponseBody GenericResponse savesurvey(@RequestBody SaveSurvey ss){
@@ -59,6 +64,17 @@ public class SurveyController {
 		}
 		
 		SurveyResponse sr = ss.getSr();
+		if(sr.getOrderNumber() != 0){
+			if(surveyResponseDao.createQuery()
+					.field("orderNumber").equal(sr.getOrderNumber())
+					.countAll() > 0){
+
+				gr.setMessage("Duplicate survey response! Survey has been already received for this Order. "
+						+ "If you haven't received your free gram, please contact customer service.");
+				return gr;
+			}
+		}
+		
 		surveyResponseDao.save(sr);
 		
 		List<SurveyFormatted> sfs = ss.getSfs();
@@ -66,6 +82,20 @@ public class SurveyController {
 			surveyFormattedDao.save(sf);
 		}
 		
+		gr.setSuccess(true);
+		
+		
+		//Sent update to Inv
+		try {
+			
+			InventoryUpdates invUpdts = new InventoryUpdates();
+			invUpdts.setOrderNumber(sr.getOrderNumber());
+			invUpdts.setAttr("additional_info");
+			invUpdts.setValue("Add a free gram to the order (Completed Survey) ");
+			
+			postOrderMeta.updateInfo(invUpdts);
+			
+		}catch(Exception e){}
 		
 		return gr;
 	}

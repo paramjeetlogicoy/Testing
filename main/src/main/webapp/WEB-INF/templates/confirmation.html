@@ -57,214 +57,231 @@
 					class="btn btn-lb btn-lb-w">VIEW ORDER DETAILS</a>
 			</div>
 
-			<div class="mx800 marg-b10" ng-controller="surveyCtrlr">
+			<div class="mx800 marg-b10 ng-cloak" ng-controller="surveyCtrlr">
+				<input type="hidden" id="orderNumber" th:value="${order.orderNumber}" />
+				<input type="hidden" id="customerName" th:value="${order.customer.name}" />
+				
+				<div ng-hide="takeSurvey" class="alert alert-info">
+					<div class="marg-b3">Please take a few moments to answer the
+						questions below. These questions will help us determine the right
+						actions to take moving forward with products and services. Your
+						opinions are highly valued and appreciated. Completion of the
+						survey will activate a courtesy gift which will be confirmed upon
+						submittal.</div>
 
-				<div class="marg-b3">Please take a few moments to answer the
-					questions below. These questions will help us determine the right
-					actions to take moving forward with products and services. Your
-					opinions are highly valued and appreciated. Completion of the
-					survey will activate a courtesy gift which will be confirmed upon
-					submittal.</div>
-
-				<div class="survey-wrapper">
-					<div class="survey-item">
-						<div class="survey-question">1. Use numbers 1-5 to let us know
-							how each quality plays a roll when shopping for flowers. The
-							number 1 will represent the most important, 2 represents the
-							second most important, and so on.</div>
-						<div class="survey-options">
-							<ul>
-								<li><span>Nose</span>
-									<button class="btn">1</button>
-									<button class="btn">2</button>
-									<button class="btn">3</button>
-									<button class="btn">4</button>
-									<button class="btn">5</button></li>
-							
-								<li><span>Price</span>
-									<button class="btn">1</button>
-									<button class="btn">2</button>
-									<button class="btn">3</button>
-									<button class="btn">4</button>
-									<button class="btn">5</button></li>
-							
-								<li><span>Structure</span>
-									<button class="btn">1</button>
-									<button class="btn">2</button>
-									<button class="btn">3</button>
-									<button class="btn">4</button>
-									<button class="btn">5</button></li>
-						
-								<li><span>Amount</span>
-									<button class="btn">1</button>
-									<button class="btn">2</button>
-									<button class="btn">3</button>
-									<button class="btn">4</button>
-									<button class="btn">5</button></li>
-							
-								<li><span>Familiarity/Reputability</span>
-									<button class="btn">1</button>
-									<button class="btn">2</button>
-									<button class="btn">3</button>
-									<button class="btn">4</button>
-									<button class="btn">5</button></li>
-							</ul>
-						</div>
-					</div>
-					
-					<div class="survey-item">
-						<div class="survey-question">2. Bud appearance means a lot to me.</div>
-						<div class="survey-options">
-							<ul>
-								<li><button class="btn">Strongly Agree</button>
-									<button class="btn">Agree</button>
-									<button class="btn">Neutral</button>
-									<button class="btn">Disagree</button>
-									<button class="btn">Strong Disagree</button></li>
-							</ul>
-						</div>
-					</div>
-					
-					<div class="survey-item">
-						<div class="survey-question">3. If you could choose only one
-							category to see more of, which would it be? You can select 1 bold
-							category and up to 2 subcategories within that chosen category..</div>
-						<div class="survey-options">
-							<ul>
-								<li><div class="radio">
-										<label> <input type="radio" name="categories" />
-											Flowers
-										</label>
-									</div>
-									<ul>
-										<li><div class="checkbox">
-										<label> <input type="checkbox" name="Sativa" />
-											Sativa
-										</label>
-									</div></li>
-										<li><div class="checkbox">
-										<label> <input type="checkbox" name="Indica" />
-											Indica
-										</label>
-									</div></li>
-										<li><div class="checkbox">
-										<label> <input type="checkbox" name="Hybrid" />
-											Hybrid
-										</label>
-									</div></li>
-									</ul></li>
-							</ul>
-						</div>
+					<div class="text-center">
+						<button class="btn btn-info" ng-click="takeSurvey = true">Take
+							Survey</button>
 					</div>
 				</div>
 
-				<button class="btn btn-primary" ng-click="submitSurvey()">Submit Survey</button>
+				<div class="survey-wrapper ng-cloak"
+					ng-show="takeSurvey &amp;&amp; !surveyCompleted">
+					<h3 class="text-center">Luvbrite Customer Survey</h3>
+					<div class="survey-item">
+						<div class="survey-question">
+							<strong>1.</strong>Use numbers 1-5 to let us know how each
+							quality plays a roll when shopping for flowers. The number 1 will
+							represent the most important, 2 represents the second most
+							important, and so on.
+						</div>
+						<div class="survey-options">
+							<ul class="multi-options">
+								<li ng-repeat="so in surveyOptions.q1.options"
+									ng-class="{'has-error' : so.error &amp;&amp; !so.value}"><span
+									class="qn-span">{{so.name}}</span> <label class="radio-inline"
+									ng-repeat="n in [1,2,3,4,5]"> <input type="radio"
+										name="{{so.name}}" ng-model="so.value" value="{{n}}" /> {{n}}
+								</label></li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="survey-item">
+						<div class="survey-question">
+							<strong>2.</strong>Bud appearance means a lot to me.
+						</div>
+						<div class="survey-options">
+							<ul>
+								<li
+									ng-class="{'has-error' : surveyOptions.q2.error &amp;&amp; !surveyOptions.q2.selected}"><label
+									class="radio-inline"
+									ng-repeat="option in surveyOptions.q2.options"> <input
+										type="radio" name="q1-appear" value="{{option}}"
+										ng-model="surveyOptions.q2.selected" /> {{option}}
+								</label></li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="survey-item">
+						<div class="survey-question">
+							<strong>3.</strong>If you could choose only one category to see
+							more of, which would it be? You can select 1 bold category and up
+							to 2 subcategories within that chosen category.
+						</div>
+						<div class="survey-options">
+							<ul
+								ng-class="{'has-error' : surveyOptions.q3.error &amp;&amp; !surveyOptions.q3.selected.cat}">
+
+								<li ng-repeat="so in surveyOptions.q3.options">
+									<div class="radio">
+										<label ng-click="catClick()"> <input type="radio"
+											name="categories" ng-model="surveyOptions.q3.selected"
+											ng-value="so" /> <strong class="black">{{so.cat}}</strong>
+										</label>
+									</div>
+
+									<div class="survey-subcats" ng-if="so.subCat.length">
+										<label class="radio-inline" ng-repeat="subcat in so.subCat"
+											ng-click="subCatClick($event)"> <input
+											type="checkbox" name="sub-category" ng-model="subcat.checked" />
+											{{subcat.value}}
+										</label>
+									</div>
+								</li>
+
+							</ul>
+						</div>
+					</div>
+
+
+					<div class="survey-item">
+						<div class="survey-question">
+							<strong>4.</strong>The site is easy to navigate.
+						</div>
+						<div class="survey-options">
+							<ul>
+								<li
+									ng-class="{'has-error' : surveyOptions.q4.error &amp;&amp; !surveyOptions.q4.selected}"><label
+									class="radio-inline" ng-repeat="so in surveyOptions.q4.options">
+										<input type="radio" name="easy_to_navigate" ng-value="so"
+										ng-model="surveyOptions.q4.selected" /> {{so}}
+								</label></li>
+							</ul>
+							<div class="survey-comments" ng-if="surveyOptions.q4.comments">
+								<p>{{surveyOptions.q4.comments.text}}</p>
+								<textarea name="easy_to_navigate_comments" class="form-control"
+									id="" cols="30" rows="5"
+									ng-model="surveyOptions.q4.comments.value"></textarea>
+							</div>
+						</div>
+					</div>
+
+
+
+					<div class="survey-item">
+						<div class="survey-question">
+							<strong>5.</strong>I plan to continue purchasing through
+							Luvbrite.
+						</div>
+						<div class="survey-options">
+							<ul>
+								<li
+									ng-class="{'has-error' : surveyOptions.q5.error &amp;&amp; !surveyOptions.q5.selected}"><label
+									class="radio-inline" ng-repeat="so in surveyOptions.q5.options">
+										<input type="radio" name="continue_with_luvbrite"
+										ng-model="surveyOptions.q5.selected" ng-value="so" /> {{so}}
+								</label></li>
+							</ul>
+							<div class="survey-comments" ng-if="surveyOptions.q5.comments">
+								<p>{{surveyOptions.q5.comments.text}}</p>
+								<textarea name="continue_with_luvbrite_comments"
+									class="form-control" id="" cols="30" rows="5"
+									ng-model="surveyOptions.q5.comments.value"></textarea>
+							</div>
+						</div>
+					</div>
+
+
+
+					<div class="survey-item">
+						<div class="survey-question">
+							<strong>6.</strong>I am happy with the service provided by
+							Luvbrite. This includes condition of products delivered, delivery
+							times, staff knowledge and courtesy.
+						</div>
+						<div class="survey-options">
+							<ul>
+								<li
+									ng-class="{'has-error' : surveyOptions.q6.error &amp;&amp; !surveyOptions.q6.selected}"><label
+									class="radio-inline" ng-repeat="so in surveyOptions.q6.options">
+										<input type="radio" name="happy_with_service"
+										ng-model="surveyOptions.q6.selected" ng-value="so" /> {{so}}
+								</label></li>
+							</ul>
+							<div class="survey-comments" ng-if="surveyOptions.q6.comments">
+								<p>{{surveyOptions.q6.comments.text}}</p>
+								<textarea name="happy_with_service_comments"
+									class="form-control" id="" cols="30" rows="5"
+									ng-model="surveyOptions.q6.comments.value"></textarea>
+							</div>
+						</div>
+					</div>
+
+
+
+					<div class="survey-item">
+						<div class="survey-question">
+							<strong>7.</strong>Luvbrite is or will be the only place where I
+							plan on acquiring my cannabis.
+						</div>
+						<div class="survey-options">
+							<ul>
+								<li
+									ng-class="{'has-error' : surveyOptions.q7.error &amp;&amp; !surveyOptions.q7.selected}"><label
+									class="radio-inline" ng-repeat="so in surveyOptions.q7.options">
+										<input type="radio" name="loyal_to_luvbrite"
+										ng-model="surveyOptions.q7.selected" ng-value="so" /> {{so}}
+								</label></li>
+							</ul>
+							<div class="survey-comments" ng-if="surveyOptions.q7.comments">
+								<p>{{surveyOptions.q7.comments.text}}</p>
+								<textarea name="loyal_to_luvbrite_comments" class="form-control"
+									id="" cols="30" rows="5"
+									ng-model="surveyOptions.q7.comments.value"></textarea>
+							</div>
+						</div>
+					</div>
+
+
+
+					<div class="survey-item">
+						<div class="survey-question">Optional: Please let us know if
+							there's anything you feel you want to add. If there's anything
+							you think can be improved, anything you don't like, anything you
+							want added to the site you didn't see mentioned, please list it
+							below.</div>
+						<div class="survey-options">
+							<div class="survey-comments">
+								<textarea name="other_comments" class="form-control" id=""
+									cols="30" rows="5" ng-model="surveyOptions.q8.comments"></textarea>
+							</div>
+						</div>
+					</div>
+
+					<div class="text-center">
+						<button class="btn btn-primary" ng-click="validateSurvey()">Submit
+							Survey</button>
+					</div>
+
+					<div class="alert alert-danger marg-t1" ng-if="surveyErrorMsg">{{surveyErrorMsg}}</div>
+
+				</div>
+
+				<div class="alert alert-success" ng-if="surveyCompleted">Thank
+					you for helping us serve you better! Our goal is to better our
+					service and make sure you get what you need in terms of cannabis
+					product. As a token of our appreciation, a free gram has been added
+					to your order.</div>
+
 			</div>
 			
-			<div class="pad-h2">
-				<h3 class="split-lines">Popular This Month</h3>
+
+			<div class="abs" id="twosubalertmsg" style="display:none;">
+				<div class="alert alert-warning pad1"><small>Only two sub categories need
+					to be selected.</small></div>
 			</div>
-			<div class="yml-container">
-				<ul class="row products-container">
-					<li>
-						<div class="product-item-container">
-							<div class="product-item-card">
-								<div class="cards product-item">
-									<div>
-										<a href="/product/chemdawg-diesel" class="pc-img-holder"><span>
-												<img class="featured-img"
-												th:src="${_lbGlobalCDNPath} + '/uploads/2016/06/chemdawg-diesel.jpg'" />
-										</span> </a>
-									</div>
-									<div class="pc-info">
-										<h3>
-											<a href="/product/chemdawg-diesel">Chemdawg Diesel 5g
-												Special</a>
-										</h3>
-										<hr />
-										<div class="clearfix">
-											<div class="pull-left pc-price-range">$45.00</div>
-											<div class="pull-right pc-action">
-												<a class="btn btn-lb btn-sm" href="/product/chemdawg-diesel">
-													<span class="white">Details</span>
-												</a>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</li>
-
-					<li>
-						<div class="product-item-container">
-							<div class="product-item-card">
-								<div class="cards product-item">
-									<div>
-										<a href="/product/highlighter-vape-cartridge"
-											class="pc-img-holder"><span> <img
-												class="featured-img"
-												th:src="${_lbGlobalCDNPath} + '/uploads/2016/01/highlighter-vape-cartridge.jpg'" />
-										</span> </a>
-									</div>
-									<div class="pc-info">
-										<h3>
-											<a href="/product/highlighter-vape-cartridge"
-												title="Highlighter Vape Cartridge">Highlighter Vape
-												Cartridge</a>
-										</h3>
-										<hr />
-										<div class="clearfix">
-											<div class="pull-left pc-price-range">$35.00</div>
-											<div class="pull-right pc-action">
-												<a class="btn btn-lb btn-sm"
-													href="/product/highlighter-vape-cartridge"> <span
-													class="white">Details</span>
-												</a>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</li>
-
-					<li>
-						<div class="product-item-container">
-							<div class="product-item-card">
-								<div class="cards product-item">
-									<div>
-										<a href="/product/2020-knockout-pre-roll"
-											class="pc-img-holder"><span> <img
-												class="featured-img"
-												th:src="${_lbGlobalCDNPath} + '/uploads/2016/02/2020-knockout-pre-roll.jpg'" />
-										</span> </a>
-									</div>
-									<div class="pc-info">
-										<h3>
-											<a href="/product/2020-knockout-pre-roll"
-												title="2020 Knockout Pre Roll">2020 Knockout Pre Roll</a>
-										</h3>
-										<hr />
-										<div class="clearfix">
-											<div class="pull-left pc-price-range">$15.00 - $25.00</div>
-											<div class="pull-right pc-action">
-												<a class="btn btn-lb btn-sm"
-													href="/product/2020-knockout-pre-roll"> <span
-													class="white">Details</span>
-												</a>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</li>
-				</ul>
-
-			</div>
-			<!-- .yml-container ends -->
-
 		</div>
 
 	</div>
@@ -272,65 +289,5 @@
 	<div th:replace="fragments/layout::fragment-footer"></div>
 	<div th:replace="fragments/layout::fragment-foot(angular=true)"></div>
 	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
-	<script type="text/javascript">
-		var surveyCtrlr = function($scope, $http){
-			
-			var saveResponse = {"sr":{"_id":null,"sid":1,"date":new Date(),"customer":null,"orderNumber":0,"otherRef":null,
-				"details":[
-						{"qid":1,"response":"Nose,2|Price,1|Structure,3|Amount,5|Familiarity/Reputability,4","comment":null},
-						{"qid":2,"response":"Agree","comment":null},
-						{"qid":3,"response":"Flowers,Sativa,Indica,Drinks","comment":null},
-						{"qid":4,"response":"Yes","comment":null},
-						{"qid":5,"response":"No","comment":"Some reason"},
-						{"qid":6,"response":"Yes","comment":null},
-						{"qid":7,"response":"Not sure yet","comment":""}
-					]
-				},
-				"sfs":[
-					{ "_id":null, "sid":1, "qid":1, "resp":"Nose", "value":2},
-					{ "_id":null, "sid":1, "qid":1, "resp":"Price", "value":1},
-					{ "_id":null, "sid":1, "qid":1, "resp":"Structure", "value":3},
-					{ "_id":null, "sid":1, "qid":1, "resp":"Amount", "value":5},
-					{ "_id":null, "sid":1, "qid":1, "resp":"Familiarity/Reputability", "value":4},
-					
-					{ "_id":null, "sid":1, "qid":2, "resp":"Agree", "value":1},
-
-					{ "_id":null, "sid":1, "qid":3, "resp":"Flowers", "value":1},
-					{ "_id":null, "sid":1, "qid":3, "resp":"Sativa", "value":1},
-					{ "_id":null, "sid":1, "qid":3, "resp":"Indica", "value":1},
-					{ "_id":null, "sid":1, "qid":3, "resp":"Drinks", "value":1},
-					
-					{ "_id":null, "sid":1, "qid":4, "resp":"Yes", "value":1},
-					{ "_id":null, "sid":1, "qid":5, "resp":"No", "value":1},
-					{ "_id":null, "sid":1, "qid":6, "resp":"Yes", "value":1},
-					{ "_id":null, "sid":1, "qid":7, "resp":"Not sure yet", "value":1}
-				]
-			};
-			
-			
-			$scope.submitSurvey = function(){
-				
-				$http.post("/survey/savesurvey",saveResponse)
-				.then(function(resp){
-					if(resp.data){
-						if(resp.data.success){
-							alert('Survey Saved');
-						}
-						else{
-							alert(resp.data.message);
-						}
-					}
-					
-				}, function(){
-					alert("Sorry there was some error updating the Survey.");
-				});
-			};
-			
-			
-		};
-		
-		lbApp.controller('surveyCtrlr', 	 ['$scope', '$http', surveyCtrlr])
-	
-	</script>
 </body>
 </html>

@@ -19,6 +19,7 @@ import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.GenericConnection;
 import com.luvbrite.web.models.Address;
 import com.luvbrite.web.models.AttrValue;
+import com.luvbrite.web.models.InventoryUpdates;
 import com.luvbrite.web.models.Log;
 import com.luvbrite.web.models.Order;
 import com.luvbrite.web.models.OrderLineItem;
@@ -38,6 +39,7 @@ public class PostOrderMeta {
 	
 	private final String newOrderURL = "https://www.luvbrite.com/inventory/apps/a-ordermeta?json";
 	private final String updateOrderURL = "https://www.luvbrite.com/inventory/apps/a-c-ordermeta?json";
+	private final String infoUpdateURL = "https://www.luvbrite.com/inventory/apps/a-i-ordermeta?json";
 	private NumberFormat nf = NumberFormat.getCurrencyInstance();
 	
 	public String postOrder(Order order){
@@ -177,6 +179,57 @@ public class PostOrderMeta {
 				log.setDetails("Meta send. " + resp);
 				log.setDate(Calendar.getInstance().getTime());
 				log.setKey(order.get_id());
+				log.setUser("System");
+				
+				logDao.save(log);					
+			}
+			catch(Exception e){
+				logger.error(Exceptions.giveStackTrace(e));
+			}
+			
+			
+			response = "success";
+			
+		}catch(Exception e){
+			
+			response = "There was some error creating the order, please try later.";
+			logger.error(Exceptions.giveStackTrace(e));
+		}
+
+		return response;
+	}
+	
+	
+	
+	public String updateInfo(InventoryUpdates invUpdts){
+		
+		String response = "";
+		String postURL = infoUpdateURL;
+		
+		try {
+			
+			if(invUpdts == null) return "Invalid inventory update parameters";
+			if(invUpdts.getOrderNumber() == 0) return "Invalid orderNumber";
+			
+			
+			/* Convert OrderMain to JSON */
+			ObjectMapper mapper = new ObjectMapper();
+			String invUpdtsString = mapper.writeValueAsString(invUpdts); 
+			
+			
+			/* POST TO INVENTORY SERVER */
+			GenericConnection conn = new GenericConnection();
+			String resp = conn.contactService(invUpdtsString, new URL(postURL), false);
+			
+			
+			/* Update Log */
+			try {
+				
+				Log log = new Log();
+				log.setCollection("orders");
+				log.setDetails("Inv Update send. " + resp + ". " + invUpdtsString);
+				log.setDate(Calendar.getInstance().getTime());
+				log.setKey(invUpdts.getOrderNumber());
 				log.setUser("System");
 				
 				logDao.save(log);					

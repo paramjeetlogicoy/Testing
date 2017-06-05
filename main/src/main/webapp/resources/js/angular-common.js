@@ -34,6 +34,7 @@ var lbApp = angular.module(
 .controller('localBoxCtrlr', 		 ['$scope', '$http', '$rootScope', localBoxCtrlr])
 .controller('homeCtrlr', 			 ['$scope', '$http', '$rootScope', homeCtrlr])
 .controller('acctExpiredCtrlr', 	 ['$scope', '$http', 'Upload', acctExpiredCtrlr])
+.controller('surveyCtrlr', 	 		 ['$scope', '$http', surveyCtrlr])
 
 // This directive is implemented in angular-general-functions.js
 .directive('remainingTime', ['$interval', remainingTime])

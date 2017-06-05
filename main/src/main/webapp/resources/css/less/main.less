@@ -1737,6 +1737,68 @@ nav#pagination-nav{
 	.pad-v4;
 }
 
+.survey-wrapper{
+	padding: 30px;
+    background: #f4f4f4;
+    border-radius: 5px;
+}
+
+.survey-item{
+	.marg-b3;
+
+	.qn-span{
+		display: inline-block;
+		min-width: 200px;
+	}
+
+	.multi-options>li{
+		margin-bottom: 10px;
+		
+		@media(min-width:768px){
+			margin-bottom: 5px;
+		}
+	}
+
+	.multi-options>li:nth-of-type(odd){
+		background-color: #fbfbfb;
+	}
+
+	li{
+		border: 1px solid transparent;
+
+		.has-error>&,
+		&.has-error{
+			color: #a94442;
+			border-color: #a94442;
+		}
+	}
+}
+
+.survey-question{
+	.marg-b1;
+
+	>strong{
+		float:left;
+		margin-right: 10px;
+	}
+}
+
+.survey-options{
+	.marg-l(2);
+}
+
+.survey-subcats>label,
+.survey-options li>label{
+	min-width: 60px;
+	margin: 0 0 5px 10px;
+	display:block;
+	
+	@media(min-width:768px){
+		display: inline-block;
+		margin: 0 0 0 10px;
+	}
+}
+
 /*Registration Page*/
 .register-container:extend(.pad3){
 }
