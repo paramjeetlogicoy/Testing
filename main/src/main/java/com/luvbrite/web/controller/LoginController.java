@@ -89,6 +89,20 @@ public class LoginController {
 
 		return "login";	
 	}
+
+
+	@RequestMapping(value = "/login/customer")
+	public String loginCorrection(
+			ModelMap model,
+			@AuthenticationPrincipal UserDetailsExt user,
+		    RedirectAttributes ra) {
+
+		if(user!=null){
+			return "redirect:/customer";
+		}
+		
+		return "login";	
+	}
 	
 
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
