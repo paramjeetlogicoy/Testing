@@ -322,9 +322,15 @@
 		<div class="marg-b5 ng-cloak" ng-if="showReviews">
 			<h4 class="split-lines">Most Recent Reviews</h4>
 			<div class="marg-b2 text-center size15">
-				Average product rating - <strong class="orange1"
-					th:text="${avgRating}"></strong> stars from <span
-					th:text="${product.reviewCount}"></span> reviews.
+				Average product rating - <strong
+					class="orange1" th:text="${avgRating}"></strong> stars from
+				<span th:text="${product.reviewCount}"></span> reviews. <a
+					class="btn btn-warning btn-sm marg-l1"
+					th:href="@{'/customer/#/product-reviews/' + ${product._id}}"
+					th:if="${userId != null}">Write a custom review</a><a
+					class="btn btn-warning btn-sm marg-l1"
+					th:href="@{'/login/?ret=/customer/%23/product-reviews/' + ${product._id}}"
+					th:if="${userId == null}">Write a custom review</a>
 			</div>
 
 			<div>
