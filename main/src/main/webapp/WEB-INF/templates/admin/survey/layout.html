@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+
+
+	<div th:fragment="fragment-allsurvey">
+		<div class="customers-container pad2">
+			<h2>Surveys</h2>
+			<div class="pad-v2">
+				<div class="surveyelement-wrapper">
+					<div ng-repeat="survey in surveys">
+						<a href="#/details/{{survey._id}}">{{$index + 1}}.
+							{{survey.description}}</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+	<div th:fragment="fragment-surveydetails">
+
+		<div class="customers-container pad2">
+			<div class="marg-b3">
+				<a href="#/all">Back to all Surveys</a>
+			</div>
+
+			<h2>
+				Survey# {{surveyId}} Details 
+			</h2>
+			
+			<div ng-if="totalSurveys" class="marg-b1">
+				<em>Total Surveys: {{totalSurveys | number}}</em>
+			</div>
+			
+			<div class="pad-v2">
+				<div class="surveyelement-wrapper row">
+					<div class="col-sm-4"
+						ng-repeat="sr in surveyResponse | orderBy: sr.questionId">
+						<div class="survey-element well well-sm">
+							<div google-chart="PieChart" ng-model="sr"
+								trigger="activateChart"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

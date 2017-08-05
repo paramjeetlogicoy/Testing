@@ -19,40 +19,7 @@ var showPopUp = function(event){
 
 surveyCtrlr = function($scope, $http){
 	
-	var saveResponse = {"sr":{"_id":null,"sid":1,"date":new Date(),"customer":null,"orderNumber":0,"otherRef":null,
-		"details":[
-				{"qid":1,"response":"Nose,2|Price,1|Structure,3|Amount,5|Familiarity/Reputability,4","comment":null},
-				{"qid":2,"response":"Agree","comment":null},
-				{"qid":3,"response":"Flowers,Sativa,Indica,Drinks","comment":null},
-				{"qid":4,"response":"Yes","comment":null},
-				{"qid":5,"response":"No","comment":"Some reason"},
-				{"qid":6,"response":"Yes","comment":null},
-				{"qid":7,"response":"Not sure yet","comment":""},
-				{"qid":8,"response":"","comment":"General"}
-			]
-		},
-		"sfs":[
-			{ "_id":null, "sid":1, "qid":1, "resp":"Nose", "value":2},
-			{ "_id":null, "sid":1, "qid":1, "resp":"Price", "value":1},
-			{ "_id":null, "sid":1, "qid":1, "resp":"Structure", "value":3},
-			{ "_id":null, "sid":1, "qid":1, "resp":"Amount", "value":5},
-			{ "_id":null, "sid":1, "qid":1, "resp":"Familiarity/Reputability", "value":4},
-			
-			{ "_id":null, "sid":1, "qid":2, "resp":"Agree", "value":1},
-
-			{ "_id":null, "sid":1, "qid":3, "resp":"Flowers", "value":1},
-			{ "_id":null, "sid":1, "qid":3, "resp":"Sativa", "value":1},
-			{ "_id":null, "sid":1, "qid":3, "resp":"Indica", "value":1},
-			{ "_id":null, "sid":1, "qid":3, "resp":"Drinks", "value":1},
-			
-			{ "_id":null, "sid":1, "qid":4, "resp":"Yes", "value":1},
-			{ "_id":null, "sid":1, "qid":5, "resp":"No", "value":1},
-			{ "_id":null, "sid":1, "qid":6, "resp":"Yes", "value":1},
-			{ "_id":null, "sid":1, "qid":7, "resp":"Not sure yet", "value":1}
-		]
-	},
-	
-	submitSurvey = function(surveyData){
+	var submitSurvey = function(surveyData){
 		
 		$http.post("/survey/savesurvey",surveyData)
 		.then(function(resp){
@@ -276,7 +243,13 @@ surveyCtrlr = function($scope, $http){
 			err = true;
 		}
 		
-		if(err) return;
+		if(err) {
+//			setTimeout(1000, function(){
+//				$('html,body').scrollTop($('.has-error').offset().top);
+//			});
+			
+			return;
+		}
 		
 		var details = [],
 		sfs = [];
@@ -363,7 +336,7 @@ surveyCtrlr = function($scope, $http){
 				"sfs" : sfs
 		};
 		
-		console.log(surveyResponse);
+		//console.log(surveyResponse);
 		submitSurvey(surveyResponse);
 
 	};
