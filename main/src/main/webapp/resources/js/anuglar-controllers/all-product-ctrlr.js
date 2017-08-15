@@ -151,7 +151,7 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 			p.priceRange = $e.data("price-range");
 			p.description = $e.data("desc");
 			
-			p.newBatchArrival= $e.data("newBatchArrival");
+			p.newBatchArrival= $e.data("newest");
 			
 			p.productFilters = {
 					price : parseFloat($e.data("filter-price")),
