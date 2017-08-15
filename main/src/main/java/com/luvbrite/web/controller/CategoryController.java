@@ -70,7 +70,7 @@ public class CategoryController {
 					.field("categories").equal(categoryName)
 					.filter("status", "publish")
 					.filter("stockStat", "instock")
-					.order("-_id")
+					.order("-newBatchArrival")
 					.asList();
 			
 			model.addAttribute("products", products);

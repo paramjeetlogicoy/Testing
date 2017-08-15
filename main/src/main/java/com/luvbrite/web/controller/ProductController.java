@@ -92,7 +92,7 @@ public class ProductController {
 				.filter("status", "publish")
 				.filter("stockStat", "instock")
 				.field("name").equal(regExp)
-				.order("-_id")
+				.order("-newBatchArrival")
 				.asList();
 		
 		model.addAttribute("products", products);
