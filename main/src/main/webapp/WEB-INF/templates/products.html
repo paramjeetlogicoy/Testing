@@ -259,9 +259,9 @@
 								{{buildList.orderTxt}} <span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu" aria-labelledby="productSortMenu">
-								<li ng-class="{'disabled' : buildList.order == '-_id'}"><a
+								<li ng-class="{'disabled' : buildList.order == '-newBatchArrival'}"><a
 									href=""
-									ng-click="buildList.order = '-_id'; buildList.orderTxt = 'Newest'">Newest</a></li>
+									ng-click="buildList.order = '-newBatchArrival'; buildList.orderTxt = 'Newest'">Newest</a></li>
 								<li
 									ng-class="{'disabled' : buildList.order == 'productFilters.price'}"><a
 									href=""
@@ -321,6 +321,7 @@
 					data-review-count=${product.reviewCount},
 					data-price-range=${product.priceRange},
 					data-desc=${product.description},
+					data-newest=${product.newBatchArrival != null ? product.newBatchArrival.getTime() : '0'},
 					data-filter-price=${product.productFilters != null ? product.productFilters.price : ''},
 					data-filter-cbd=${product.productFilters != null ? product.productFilters.cbd : ''},
 					data-filter-thc=${product.productFilters != null ? product.productFilters.thc : ''}">

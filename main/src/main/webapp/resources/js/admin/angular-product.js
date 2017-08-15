@@ -77,6 +77,7 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 	$scope.mode = mode; //Mode will be 'new' while adding a product, and 'edit', if editing a product.
 	$scope.productId = $scope.params.productId;
 	$scope.defaultAttr = -1;
+	$scope.newBatchDate;
 	
 	/**UPLOAD SPECIFIC FUNCTIONS*/
 	$scope.cdnPath = uploadService.cdnPath;
@@ -182,6 +183,10 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 			$('#product-editor').show(0, function(){
 				$('.admin-editor-container')[0].scrollIntoView();
 			});
+			
+			//Remove millisecond part
+			$scope.newBatchDate = new Date(Math.floor( $scope.p.newBatchArrival / (1000*60) )*1000*60)
+			
 			$scope.correctVarValues();
 			
 			if($scope.p.attrs){
@@ -201,6 +206,10 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 		});		
 	};
 	
+	$scope.updateScopeDate = function(){
+		$scope.p.newBatchArrival = $scope.newBatchDate.getTime();
+		console.log('$scope.p.newBatchArrival - ' + $scope.p.newBatchArrival);
+	};
 	
 	$scope.getCurrentVarValues = function(attr){
 		var values = [];
@@ -276,7 +285,7 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 		 **/
 		if($scope.mode == 'new'){
 			
-			$http.post('/admin/products/json/createproduct', $scope.p)
+			$http.post('/admin/products/json/createproduct')
 			.success(function(product){
 				if(product._id && product._id != 0){
 					$location.path('/details/' + product._id);

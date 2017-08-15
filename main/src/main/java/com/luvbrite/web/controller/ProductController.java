@@ -48,7 +48,7 @@ public class ProductController {
 		return prdDao.createQuery()
 				.filter("status", "publish")
 				.filter("stockStat", "instock")
-				.order("-_id")
+				.order("-newBatchArrival")
 				.asList();
 	}
 	

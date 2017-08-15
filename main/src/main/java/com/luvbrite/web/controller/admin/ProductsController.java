@@ -1,6 +1,7 @@
 package com.luvbrite.web.controller.admin;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -234,6 +235,7 @@ public class ProductsController {
 				productDb.setRps(product.getRps());
 				productDb.setProductFilters(product.getProductFilters());
 				productDb.setPrdVisuals(product.getPrdVisuals());
+				productDb.setNewBatchArrival(product.getNewBatchArrival());
 				
 				if(product.isVariation()){
 					productDb.setAttrs(product.getAttrs());
@@ -295,15 +297,20 @@ public class ProductsController {
 	}
 
 	@RequestMapping(value = "/json/createproduct", method = RequestMethod.POST)
-	public @ResponseBody Product createProduct(
-			@RequestBody Product product, 
-			BindingResult result, @AuthenticationPrincipal 
+	public @ResponseBody Product createProduct(@AuthenticationPrincipal 
 			UserDetailsExt user){
-			
+		
+		Product product = new Product();
+		
 		//Generate productId
 		long productId = prdDao.getNextSeq();
 		if(productId != 0l){
+			
+			Date dateCreated = Calendar.getInstance().getTime();
+			
 			product.set_id(productId);
+			product.setDateCreated(dateCreated);
+			product.setNewBatchArrival(dateCreated);
 			
 			
 			/**
@@ -314,7 +321,7 @@ public class ProductsController {
 				Log log = new Log();
 				log.setCollection("products");
 				log.setDetails("product created");
-				log.setDate(Calendar.getInstance().getTime());
+				log.setDate(dateCreated);
 				log.setKey(productId);
 				log.setUser(user.getUsername());
 				
