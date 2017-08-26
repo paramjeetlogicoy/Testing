@@ -54,6 +54,9 @@
 					</div>
 				</li>
 
+				<li class="item-li" ng-if="m.freeGramPromo"
+					ng-include="'/resources/ng-templates/cart/free-gram.html'"></li>
+
 				<li class="item-li offhouritem" ng-if="itsOffHour"
 					ng-include="'/resources/ng-templates/cart/off-hour-item.html?v002'"></li>
 			</ul>

@@ -1,7 +1,7 @@
 var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootScope){
 	var m = this,
 	deliveryLoaded = false,	
-	cmcVersion = 'v0005'; //Math.random();//
+	cmcVersion = Math.random();//'v0006'; //Math.random();//
 	
 	m.order = {};	
 	m.ddprds = [];
@@ -53,6 +53,8 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 	
 	m.valentinePromoActive = false;
 	m.valentinePromoApplied = false;
+	
+	m.freeGramPromo = true;
 	
 	/* When ever there is a change in m.order, this function needs to be called 
 	 * most of the logic control flags are set here. */

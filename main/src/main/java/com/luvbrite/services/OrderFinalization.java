@@ -23,6 +23,7 @@ public class OrderFinalization {
 	private static Logger logger = Logger.getLogger(OrderFinalization.class);
 	private static boolean offhourPromoActive = true;
 	private static boolean valentinesPromoActive = false;
+	private static boolean freeGramPromo = true;
 	
 	private long orderNumber = 0;	
 	public long getOrderNumber() {
@@ -191,6 +192,30 @@ public class OrderFinalization {
 			newItem.setCost(13d);
 			newItem.setPrice(0d);
 			newItem.setImg("/uploads/2015/12/sensi-chew-amore.jpg");
+
+			List<OrderLineItemCart> olic = co.getLineItems();
+			olic.add(newItem);
+			co.setLineItems(olic);				
+			
+			//Update orderTotals
+			cartLogics.calculateSummary(co);
+		}
+		
+		if(freeGramPromo){
+				
+			//Add the new item
+			OrderLineItemCart newItem = new OrderLineItemCart();
+			newItem.setTaxable(false);
+			newItem.setInstock(true);
+			newItem.setType("item");
+			newItem.setName("1 Gram - Assorted Variety");
+			newItem.setPromo("Free Gram Promo");
+			newItem.setProductId(10504);
+			newItem.setVariationId(0);
+			newItem.setQty(1);
+			newItem.setCost(20d);
+			newItem.setPrice(0d);
+			newItem.setImg("/products/1GramAssortedVariety.jpg");
 
 			List<OrderLineItemCart> olic = co.getLineItems();
 			olic.add(newItem);
