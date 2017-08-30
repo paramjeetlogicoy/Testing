@@ -92,7 +92,8 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 	
 	$scope.selectImage = function(){
 		uploadService.config.cb = $scope.afterSelect;
-		uploadService.config.fields = {path : '/products/'};		
+		uploadService.config.fields = {path : '/products/'};
+		uploadService.config.productUploader = true;
 		uploadService.showGallery($rootScope);
 	};
 	
@@ -208,7 +209,7 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 	
 	$scope.updateScopeDate = function(){
 		$scope.p.newBatchArrival = $scope.newBatchDate.getTime();
-		console.log('$scope.p.newBatchArrival - ' + $scope.p.newBatchArrival);
+		//console.log('$scope.p.newBatchArrival - ' + $scope.p.newBatchArrival);
 	};
 	
 	$scope.getCurrentVarValues = function(attr){
@@ -285,7 +286,7 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 		 **/
 		if($scope.mode == 'new'){
 			
-			$http.post('/admin/products/json/createproduct')
+			$http.post('/admin/products/json/createproduct', $scope.p)
 			.success(function(product){
 				if(product._id && product._id != 0){
 					$location.path('/details/' + product._id);
@@ -805,8 +806,17 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 		$scope.getProductDetails();
 		$scope.reloadMemos();
 	}
-	else
-		$('#product-editor').show();
+	else {
+		
+		//Get date after removing the milli seconds
+		$scope.newBatchDate = new Date(Math.floor( new Date().getTime() / (1000*60) )*1000*60);
+		
+		//initialize product obj
+		$scope.p = {"_id":0, "status":"private","stockStat":"instock","newBatchArrival":$scope.newBatchDate.getTime()};			
+		$('#product-editor').show(0, function(){
+			$('.admin-editor-container')[0].scrollIntoView();
+		});
+	}
 
 },
 

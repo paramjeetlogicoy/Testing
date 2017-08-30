@@ -57,7 +57,8 @@ var uploadCtrlr = function ($scope, $http, Upload, uploadService) {
 		$http.get('/files/list/',{params :{
 			'c' : $scope.sfiles.length,
 			'l' : 15 ,
-			'q' : $scope.search
+			'q' : $scope.search,
+			'p' : $scope.productUploader
 		}})
 		.success(function(data){
 			if(!data || data.length === 0){

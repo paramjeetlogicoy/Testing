@@ -59,7 +59,8 @@ public class FilesController implements HandlerExceptionResolver {
 	public @ResponseBody List<Upload> listFiles(
 			@RequestParam(value="c", required=false) Integer offset,
 			@RequestParam(value="l", required=false) Integer limit,
-			@RequestParam(value="q", required=false) String search){
+			@RequestParam(value="q", required=false) String search,
+			@RequestParam(value="p", required=false) Boolean productUploader){
 		
 		if(limit==null) limit = 50;
 		if(offset==null) offset = 0;
@@ -74,6 +75,11 @@ public class FilesController implements HandlerExceptionResolver {
 			
 			/*When there is a query, then offset is removed*/
 			offset = 0;
+		}
+		
+		//If it's for products, then hide the USER uploads which have locType as internal
+		if(productUploader != null && productUploader.booleanValue()){
+			query.field("locType").notEqual("internal");
 		}
 		
 		return query
