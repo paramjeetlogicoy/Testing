@@ -295,7 +295,7 @@ public class ProductsController {
 			}
 			
 		}catch(Exception e){
-			Exceptions.giveStackTrace(e);
+			logger.error(Exceptions.giveStackTrace(e));
 			r.setSuccess(false);
 			r.setMessage("There was some error updating the product, please contact G.");
 		}
