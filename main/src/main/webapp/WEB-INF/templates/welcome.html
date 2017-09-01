@@ -5,6 +5,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Luvbrite | Health &amp; Happiness Delivered</title>
+<style>.async-hide { opacity: 0 !important} </style>
+<script>(function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;h.start=1*new Date;
+h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
+(a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
+})(window,document.documentElement,'async-hide','dataLayer',4000,
+{'GTM-5H4W872':true});</script>
+<div th:replace="fragments/layout::fragment-google-analytics"></div>
 <meta name="description"
 	content="LuvBrite Collective is a therapeutic cannabis collective committed to serving patient needs with the highest level of compassion and professionalism." />
 <link href="https://www.luvbrite.com" rel="canonical" />
@@ -26,31 +33,35 @@
 .localbox-slider.item a.btn{right:0;bottom:20%;}
 .britebox-slider.item {background-image: url(https://lbrit.co/static/imgs/sliders/brite-box-temp.jpg);background-color:white !important;background-position:62% 50%;}
 .britebox-slider.item button.btn{right:0;bottom:5px;}
-.junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix-home-xs.jpg);background-color:black !important;}
-.waxpromo-slider .btn,
-.junglemix-slider a{background-color: #fb6a00;border-color: #ea680a;bottom: 20px !important;}
-.benjamin_oz-slider{background-image: url(https://lbrit.co/static/imgs/sliders/benjamins_ounce_lg.jpg)}
+.junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix_slider_welcome_xs.jpg)}
+.junglemix-slider a{background-color:#f7941d;border-color:#ff920e;border-radius:0;margin-left:65px !important;padding:3px 5px;font-size:10px;width:77px !important;height:20px;line-height:1.2;bottom:18px !important}
+.junglemix-slider.abtest{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix_slider_truckload_xs.jpg)}
+.junglemix-slider.abtest a{margin-left:95px !important;bottom:48px !important}
+
+.laborday-slider{background-image: url(https://lbrit.co/static/imgs/sliders/laborday-slider-xs.jpg)}
+.laborday-slider.item a.btn{width:150px;margin-left:-75px;}
 a.fullon-a{display:block;height:100%}
 
 @media (min-width: 768px){	
 	.carousel-inner .mx300{max-width:768px;}
 	
-	.junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix-home-sm.jpg?v001);}
+	.junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix_slider_welcome.jpg);}
+	.junglemix-slider a{bottom:25px !important;margin-left:130px !important;height:30px;font-size:14px;width:144px !important;padding:6px}
+	.junglemix-slider.abtest{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix_slider_truckload.jpg);}
+	.junglemix-slider.abtest a{bottom:89px !important;margin-left:200px !important}
+	
+	.laborday-slider{background-image: url(https://lbrit.co/static/imgs/sliders/laborday-slider.jpg)}
 
 	.offhouroffer-slider.item button.btn {bottom:70px}
-	.doubledown-slider.item button.btn {bottom:25px;right:20%;font-size:12px;}
+	.doubledown-slider.item button.btn {bottom:25px;right:20%;font-size:12px}
 	.localbox-slider.item a.btn{right:19%;;bottom:25%;}
 	
 	.britebox-slider.item {background-position:50% 50%;}
 	.britebox-slider.item button.btn{right:10%;bottom: 15px;}
 }
-@media (min-width: 1200px){	
-	.junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix-home.jpg);}
-}
 </style>
 </head>
 <body ng-app="lbApp" ng-controller="homeCtrlr">
-	<div th:replace="fragments/layout::fragment-google-analytics"></div>
 	<div th:replace="fragments/layout::fragment-header"></div>
 	<div class="homepage-container">
 
@@ -59,9 +70,9 @@ a.fullon-a{display:block;height:100%}
 			<!-- Wrapper for slides -->
 			<div class="carousel-inner" role="listbox">
 
-				<div class="benjamin_oz-slider item active">
-						<button data-toggle="modal" data-target="#benjaminOz"
-							class="btn btn-sm btn-lb-o">VIEW DETAILS</button>
+				<div class="laborday-slider item active">
+						<a href="/category/labor-day-promo"
+							class="btn btn-sm btn-danger">BROWSE PRODUCTS</a>
 				</div>
 
 				<div class="junglemix-slider item">
