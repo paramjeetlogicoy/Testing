@@ -75,12 +75,12 @@ var cartItemCtrlr = function($scope, $http, $rootScope, $timeout){
 	$scope.updateCart = function(per){
 		
 		$scope.$parent.$parent.pageLevelAlert = '';
-		
-		if(!m.cartPage && per){
+
+		if(per && parseInt(per) == per){
 			this.item.qty = this.item.qty + parseInt(per);
 		}
 		
-		if(this.item && this.item.qty && this.item.qty !==0){
+		if(this.item && this.item.qty && this.item.qty > 0){
 			$http.get(_lbUrls.cart + 'updatecart', {
 				params : { 
 					'oid' : m.order._id,
@@ -103,8 +103,8 @@ var cartItemCtrlr = function($scope, $http, $rootScope, $timeout){
 				}
 			});
 		}
-		else if(!this.item.qty){
-			$scope.$parent.$parent.pageLevelAlert = "Please provide a valid quantity";
+		else if(!this.item.qty || this.item.qty <= 0){
+			this.item.qty = 1;
 			return false;
 		}
 		else {
