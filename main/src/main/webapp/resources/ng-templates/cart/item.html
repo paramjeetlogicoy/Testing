@@ -40,10 +40,10 @@
 					<div class="item-qty item-qty-ctrls">
 						Qty: <span ng-if="item.notEditable">1</span><span class="nowrap"><span
 							ng-if="!item.notEditable"><a href="" ng-hide="item.qty==1"
-								ng-click="updateCart(-1)"><i class="fa fa-minus-square"
+								ng-click="qtyMinus()"><i class="fa fa-minus-square"
 									aria-hidden="true"></i></a><a href="" ng-show="item.qty==1"><i
 									class="fa fa-minus-square disabled" aria-hidden="true"></i></a><span>{{item.qty}}</span><a
-								href="" ng-click="updateCart(+1)"><i
+								href="" ng-click="qtyPlus()"><i
 									class="fa fa-plus-square" aria-hidden="true"></i></a></span></span>
 					</div>
 

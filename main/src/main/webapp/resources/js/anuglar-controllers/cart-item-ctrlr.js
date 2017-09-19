@@ -113,6 +113,20 @@ var cartItemCtrlr = function($scope, $http, $rootScope, $timeout){
 	};
 	
 	
+	$scope.qtyPlus = function(){
+		this.item.qty++;
+		$scope.updateCart.call(this);
+	};
+	
+	
+	$scope.qtyMinus = function(){
+		this.item.qty--;
+		if(this.item.qty < 1) this.item.qty = 1;
+
+		$scope.updateCart.call(this);
+	};
+	
+	
 	$scope.addDoubleDown = function(){
 		
 		var pid = this.prd._id, 
