@@ -247,7 +247,7 @@ public class CartController {
 					
 					/* Reapply coupons if any! */
 					if(!couponCode.equals("")){
-						couponManager.reapplyCoupon(couponCode, order, false, "additem");
+						couponManager.reapplyCoupon(couponCode, order, false);
 					}
 
 					
@@ -412,7 +412,7 @@ public class CartController {
 					
 					/* Reapply coupons if any! */
 					if(!couponCode.equals("")){
-						couponManager.reapplyCoupon(couponCode, order, false, "additem");
+						couponManager.reapplyCoupon(couponCode, order, false);
 					}
 
 					
@@ -1055,7 +1055,7 @@ public class CartController {
 		 **/
 		
 		if(order !=null) 
-			cartPostProcessing(order, true /*reapply coupon*/, sess, "getcart");
+			cartPostProcessing(order, true /*reapply coupon*/, sess);
 		
 		
 		cr.setOrder(order);
@@ -1534,7 +1534,7 @@ public class CartController {
 			if(itemFound){
 				
 				/*Run through the post processing logic*/
-				cartPostProcessing(order, true /*Check and re-apply coupons*/, sess, "updateqty");		
+				cartPostProcessing(order, true /*Check and re-apply coupons*/, sess);		
 
 				cr.setSuccess(true);
 				cr.setCartCount(totalItems);			
@@ -1574,7 +1574,7 @@ public class CartController {
 			
 			CartOrder order = dao.get(orderId);
 			if(order != null){
-				cartPostProcessing(order, false /*No need to re-apply coupon, hence false*/, sess, "removecoupon");
+				cartPostProcessing(order, false /*No need to re-apply coupon, hence false*/, sess);
 				
 				cr.setOrder(order);
 			}
@@ -1601,7 +1601,7 @@ public class CartController {
 			
 			CartOrder order = dao.get(orderId);
 			if(order != null){
-				cartPostProcessing(order, false /*No need to re-apply coupon, hence false*/, sess, "applycoupon");
+				cartPostProcessing(order, false /*No need to re-apply coupon, hence false*/, sess);
 				
 				cr.setOrder(order);
 			}
@@ -1702,7 +1702,7 @@ public class CartController {
 				}
 				
 				/*Run through the post processing logic*/
-				cartPostProcessing(order, true /*Check and re-apply coupons*/, sess, "removeitem");
+				cartPostProcessing(order, true /*Check and re-apply coupons*/, sess);
 
 				cr.setSuccess(true);
 				cr.setCartCount(totalItems);			
@@ -1909,7 +1909,7 @@ public class CartController {
 		return newItem;
 	}
 	
-	private void cartPostProcessing(CartOrder order, boolean couponReapply, HttpSession sess, String action){
+	private void cartPostProcessing(CartOrder order, boolean couponReapply, HttpSession sess){
 		
 		String couponCode = "";
 		boolean itemsPresent = false;
@@ -1934,7 +1934,7 @@ public class CartController {
 			
 			/* Reapply coupons if any! */
 			if(!couponCode.equals("") && couponReapply){
-				couponManager.reapplyCoupon(couponCode, order, false, action);
+				couponManager.reapplyCoupon(couponCode, order, false);
 			}				
 			
 			
