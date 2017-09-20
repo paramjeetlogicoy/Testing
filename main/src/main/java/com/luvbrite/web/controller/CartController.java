@@ -247,7 +247,7 @@ public class CartController {
 					
 					/* Reapply coupons if any! */
 					if(!couponCode.equals("")){
-						couponManager.reapplyCoupon(couponCode, order, false);
+						couponManager.reapplyCoupon(couponCode, order, false, "additem");
 					}
 
 					
@@ -412,7 +412,7 @@ public class CartController {
 					
 					/* Reapply coupons if any! */
 					if(!couponCode.equals("")){
-						couponManager.reapplyCoupon(couponCode, order, false);
+						couponManager.reapplyCoupon(couponCode, order, false, "additem");
 					}
 
 					
@@ -901,11 +901,18 @@ public class CartController {
 	
 	@RequestMapping(value = "/validatezip", method = RequestMethod.GET)
 	public @ResponseBody GenericResponse validateZipcode(
-			@RequestParam(value="zip", required=true) int zipcode) {
+			@RequestParam(value="zip", required=true) String zipcode) {
 
 		GenericResponse gr = new GenericResponse();
 		gr.setSuccess(true);
-		gr.setMessage(zipValidation(zipcode));
+		
+		//validate zipcode
+		String zipCode = zipcode.replaceAll("\\D+", "");
+		if(zipCode.length() > 5){
+			zipCode = zipCode.substring(0, 5);
+		}
+		
+		gr.setMessage(zipValidation(Utility.getInteger(zipCode)));
 		
 		return gr;
 	}
@@ -1048,7 +1055,7 @@ public class CartController {
 		 **/
 		
 		if(order !=null) 
-			cartPostProcessing(order, true /*reapply coupon*/, sess);
+			cartPostProcessing(order, true /*reapply coupon*/, sess, "getcart");
 		
 		
 		cr.setOrder(order);
@@ -1232,7 +1239,11 @@ public class CartController {
 				else {
 					
 					//validate zipcode
-					String zipVal = zipValidation(Utility.getInteger(shipping.getAddress().getZip()));
+					String zipCode = shipping.getAddress().getZip().replaceAll("\\D+", "");
+					if(zipCode.length() > 5){
+						zipCode = zipCode.substring(0, 5);
+					}
+					String zipVal = zipValidation(Utility.getInteger(zipCode));
 					if(zipVal.equals("invalid")){
 						gr.setMessage("Sorry, we currently don't service your area. " 
 								+ "We are working very hard on expanding to your city. ");	
@@ -1523,7 +1534,7 @@ public class CartController {
 			if(itemFound){
 				
 				/*Run through the post processing logic*/
-				cartPostProcessing(order, true /*Check and re-apply coupons*/, sess);		
+				cartPostProcessing(order, true /*Check and re-apply coupons*/, sess, "updateqty");		
 
 				cr.setSuccess(true);
 				cr.setCartCount(totalItems);			
@@ -1563,7 +1574,7 @@ public class CartController {
 			
 			CartOrder order = dao.get(orderId);
 			if(order != null){
-				cartPostProcessing(order, false /*No need to re-apply coupon, hence false*/, sess);
+				cartPostProcessing(order, false /*No need to re-apply coupon, hence false*/, sess, "removecoupon");
 				
 				cr.setOrder(order);
 			}
@@ -1590,7 +1601,7 @@ public class CartController {
 			
 			CartOrder order = dao.get(orderId);
 			if(order != null){
-				cartPostProcessing(order, false /*No need to re-apply coupon, hence false*/, sess);
+				cartPostProcessing(order, false /*No need to re-apply coupon, hence false*/, sess, "applycoupon");
 				
 				cr.setOrder(order);
 			}
@@ -1691,7 +1702,7 @@ public class CartController {
 				}
 				
 				/*Run through the post processing logic*/
-				cartPostProcessing(order, true /*Check and re-apply coupons*/, sess);
+				cartPostProcessing(order, true /*Check and re-apply coupons*/, sess, "removeitem");
 
 				cr.setSuccess(true);
 				cr.setCartCount(totalItems);			
@@ -1898,7 +1909,7 @@ public class CartController {
 		return newItem;
 	}
 	
-	private void cartPostProcessing(CartOrder order, boolean couponReapply, HttpSession sess){
+	private void cartPostProcessing(CartOrder order, boolean couponReapply, HttpSession sess, String action){
 		
 		String couponCode = "";
 		boolean itemsPresent = false;
@@ -1923,7 +1934,7 @@ public class CartController {
 			
 			/* Reapply coupons if any! */
 			if(!couponCode.equals("") && couponReapply){
-				couponManager.reapplyCoupon(couponCode, order, false);
+				couponManager.reapplyCoupon(couponCode, order, false, action);
 			}				
 			
 			
