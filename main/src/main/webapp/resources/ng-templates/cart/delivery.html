@@ -140,8 +140,9 @@
 						<div class="form-group">
 							<label class="control-label">Zip Code<sup>*</sup></label> <input
 								type="text" required="required" ng-blur="formElemValidate($event)"
+								ng-maxlength="5" maxlength="5"
 								class="form-control" ng-model="m.order.shipping.address.zip" />
-							<p class="help-block onerror">Zipcode is required</p>
+							<p class="help-block onerror">Valid 5 digit zip-code is required</p>
 						</div>
 					</div>
 				</div>
