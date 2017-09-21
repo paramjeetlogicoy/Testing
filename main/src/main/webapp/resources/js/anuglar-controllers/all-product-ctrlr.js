@@ -32,7 +32,7 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 		if($scope.angularListOn && this.p){
 			variation = this.p.variation;
 			price = this.p.price;
-			salePrice = this.p.salesPrice;
+			salePrice = this.p.salePrice;
 			$scope.currentPid = this.p._id;			
 		}
 		
