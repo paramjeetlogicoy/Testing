@@ -3,6 +3,8 @@ package com.luvbrite.config;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.SimpleJobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
@@ -20,6 +22,7 @@ import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
@@ -33,7 +36,15 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 	
 	@Autowired
 	private Environment env;
-    
+	
+	@Autowired
+	private RequestMappingHandlerAdapter requestMappingHandlerAdapter;
+
+	@PostConstruct
+	public void init() {
+	    requestMappingHandlerAdapter.setIgnoreDefaultModelOnRedirect(true);
+	}
+
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		

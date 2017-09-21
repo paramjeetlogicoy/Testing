@@ -1,6 +1,11 @@
 package com.luvbrite.web.controller;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,8 +17,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.luvbrite.dao.CouponDAO;
 import com.luvbrite.dao.OrderDAO;
 import com.luvbrite.services.EmailService;
+import com.luvbrite.utils.CouponGen;
+import com.luvbrite.web.models.Coupon;
 import com.luvbrite.web.models.Email;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Order;
@@ -271,4 +279,110 @@ public class MainController {
 
 		return "layout";
 	}
+	
+
+
+	@Autowired
+	private CouponDAO couponDao;
+
+	@RequestMapping(value = "/surveymonkey/coupon/1")
+	public String generateCouponForSurvey(HttpSession sess, ModelMap model){
+	
+		try {
+			
+			//Check if a coupon was already generated for this session.
+			if(sess != null && sess.getAttribute("surveycoupon") != null){
+				String existingCoupon = (String) sess.getAttribute("surveycoupon");
+				
+				if(couponDao.get(existingCoupon) != null){
+					
+					return "redirect:/surveymonkey/showcoupon/" + existingCoupon;
+				}
+			}
+			
+
+			boolean createCoupon = true,
+					proceed = false;
+			
+			int safetyCounter = 0;
+			
+			String newCouponCode = "";
+			
+			while(createCoupon){
+
+				newCouponCode = ("freejoint-" + CouponGen.getNewCoupon(7)).toLowerCase();
+				if(couponDao.get(newCouponCode) == null){
+					createCoupon = false;
+					proceed = true;
+				}
+				else{
+					safetyCounter++;
+				}
+				
+				if(safetyCounter > 20) createCoupon = false; 
+					
+			}
+			
+			
+			if(proceed){
+				
+				Coupon coupon = new Coupon();
+				coupon.set_id(newCouponCode);
+				coupon.setActive(true);
+				coupon.setCouponValue(10d);
+				coupon.setDescription("jointpromo");
+				
+				Calendar now = Calendar.getInstance();
+				now.add(Calendar.MONTH, 1);
+				coupon.setExpiry(now.getTime());
+				
+				coupon.setMaxUsageCount(1);
+				
+				List<Long> pids = new ArrayList<Long>();
+				pids.add(11872l);
+				coupon.setPids(pids);
+				
+				coupon.setType("PO");
+				coupon.setUsageCount(0);
+				
+				sess.setAttribute("surveycoupon", newCouponCode);
+				
+				couponDao.save(coupon);
+				
+				return "redirect:/surveymonkey/showcoupon/" + newCouponCode;
+			}
+			
+			else {
+
+				model.addAttribute("error", "There was some erorr creating the coupon. Please contact customer care.");
+			}
+			
+			
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+
+		return "404";
+	}
+
+	@RequestMapping(value = "/surveymonkey/showcoupon/{couponCode}")
+	public String showCouponForSurvey(@PathVariable String couponCode, 
+			@AuthenticationPrincipal UserDetailsExt user, ModelMap model){
+		
+		if(user!=null && user.isEnabled())
+			model.addAttribute("userId", user.getId());
+		
+		Coupon cp = couponDao.get(couponCode);
+		if(cp != null){
+			
+			model.addAttribute("cp", cp);
+		}
+		else{
+
+			model.addAttribute("error", couponCode + " is not a valid coupon code.");
+		}
+		
+		return "show-coupon";
+	}
+	
 }

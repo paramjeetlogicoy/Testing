@@ -14,12 +14,14 @@ import org.springframework.stereotype.Service;
 
 import com.luvbrite.dao.CartOrderDAO;
 import com.luvbrite.dao.CouponDAO;
+import com.luvbrite.dao.CouponSpecialDAO;
 import com.luvbrite.dao.LogDAO;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.Utility;
 import com.luvbrite.web.models.AttrValue;
 import com.luvbrite.web.models.CartOrder;
 import com.luvbrite.web.models.Coupon;
+import com.luvbrite.web.models.CouponSpecial;
 import com.luvbrite.web.models.Log;
 import com.luvbrite.web.models.OrderLineItemCart;
 import com.luvbrite.web.models.GenericResponse;
@@ -42,6 +44,9 @@ public class CouponManager {
 	@Autowired
 	private LogDAO logDao;
 	
+	@Autowired
+	private CouponSpecialDAO couponSpecialDao;
+	
 	
 	private SimpleDateFormat sd = new SimpleDateFormat("yyyyMMdd");
 	private NumberFormat nf = NumberFormat.getCurrencyInstance();
@@ -49,20 +54,27 @@ public class CouponManager {
 	
 	/**
 	 * Called during cart update
-	 **/
-	public String reapplyCoupon(String couponCode, CartOrder order, boolean saveOrder){
+	 *
+	 * @param saveOrder - Whether the order should be saved here or not. This is to avoid multiple updates in database
+	 * @param action - What action caused the re-application of coupon. (ex: update qty, add item, remove item, etc)
+	 * 
+	 * @return Any error or resp message from the methods.
+	 */
+	public String reapplyCoupon(String couponCode, CartOrder order, boolean saveOrder, String action){
 		
 		if(couponCode == null) couponCode = "";
 		Coupon coupon = dao.get(couponCode);
 
-		String resp = preValidateCoupon(coupon, couponCode);
+		String resp = preValidateCoupon(coupon, couponCode, action);
 		if(!resp.equals("")){ //if there was some issue during coupon application, remove coupon
 			removeCouponPrivate(couponCode, null, order);
+			//System.out.println("Remove in preValidate");
 		}
 		else{
-			resp = postValidateCoupon(coupon, order.get_id(), order, saveOrder);
+			resp = postValidateCoupon(coupon, order.get_id(), order, saveOrder, action);
 			if(!resp.equals("")){ //if there was some issue during coupon application, remove coupon
 				removeCouponPrivate(couponCode, null, order);
+				//System.out.println("Remove in postValidate");
 			}
 		}
 		
@@ -251,12 +263,12 @@ public class CouponManager {
 		if(!couponCode.equals("") && orderId != 0){
 			
 			Coupon coupon = dao.get(couponCode);
-			String preValidate = preValidateCoupon(coupon, couponCode);
+			String preValidate = preValidateCoupon(coupon, couponCode, "applycoupon");
 			
 			if("".equals(preValidate)){
 				
 				
-				String postValidate = postValidateCoupon(coupon, orderId, null, true); //saveOrder
+				String postValidate = postValidateCoupon(coupon, orderId, null, true, "applycoupon"); //saveOrder
 				if("".equals(postValidate)){
 					cr.setSuccess(true);
 					
@@ -287,7 +299,7 @@ public class CouponManager {
 	}	
 	
 	
-	private String preValidateCoupon(Coupon coupon, String couponCode){
+	private String preValidateCoupon(Coupon coupon, String couponCode, String action){
 		
 		String resp = "";
 		if(coupon != null){
@@ -296,8 +308,10 @@ public class CouponManager {
 				resp = couponCode + " is not Active";
 			}
 			
-			
-			else if(coupon.getMaxUsageCount() !=0 
+			//Coupon count need to be checked only during applycoupon
+			//during other scenarios, usageCount includes current use.
+			else if(action.equals("applycoupon") 
+					&& coupon.getMaxUsageCount() !=0 
 					&& (coupon.getUsageCount() >= coupon.getMaxUsageCount()) ){
 				resp = couponCode + " maxed out";
 			}
@@ -320,7 +334,7 @@ public class CouponManager {
 	}
 	
 	
-	private String postValidateCoupon(Coupon coupon, long orderId, CartOrder order, boolean saveOrder){
+	private String postValidateCoupon(Coupon coupon, long orderId, CartOrder order, boolean saveOrder, String action){
 		
 		String resp = "";
 		List<Long> pids = new ArrayList<Long>();
@@ -351,7 +365,7 @@ public class CouponManager {
 				double orderTotal = 0d;
 				boolean noValidItemsFound = true;
 				
-				String specialHandling = specialApplyHandlers(order, coupon);
+				String specialHandling = specialApplyHandlers(order, coupon, action);
 				if(!specialHandling.equals("")) return specialHandling;
 				
 				List<OrderLineItemCart> olics = order.getLineItems();
@@ -525,8 +539,8 @@ public class CouponManager {
 			
 			switch (coupon.getType()){
 			
-			
-			case "F" :
+			case "PO" :
+			case "F"  :
 
 				/**
 				 * We divide the coupon value across all eligible products.
@@ -744,7 +758,7 @@ public class CouponManager {
 	}
 	
 	
-	private String specialApplyHandlers(CartOrder order, Coupon coupon){
+	private String specialApplyHandlers(CartOrder order, Coupon coupon, String action){
 		
 		String message = "";
 		String couponCode = coupon.get_id().toUpperCase();
@@ -803,6 +817,189 @@ public class CouponManager {
 				}
 			}
 			
+		}
+		
+		else if(coupon.getType().equals("PO")){ //Offer
+			productOfferCoupon(order, coupon, action);
+		}
+		
+		return message;
+	}
+	
+	
+	
+	/**
+	 * LOGIC
+	 * 
+	 * Product offer coupons works like Fixed Discount coupons.
+	 * The coupon value will be the value of the discount offered on the product. The coupon
+	 * will be only applicable to the offered product, i.e. coupon.pids will have the product_id of the
+	 * offered product (more clarification on the example below).
+	 * The details about the offered product and it's option will be saved in another
+	 * collection called coupon_specials.
+	 * 
+	 * 
+	 * Lets assume we are giving a free joint (product_id = 101) worth $10 for any purchase of 
+	 * jungle mix (product_id = 201).
+	 * The coupon will be created like this.
+	 * 
+	  
+	       {
+				"_id" : "somecouponcode",
+				"description" : "JOINTPROMO",
+				"type" : "PO",
+				"usageCount" : 0,
+				"maxUsageCount" : 1,
+				"amt" : 10,
+				"active" : true,
+				"minAmt" : 0,
+				"pids" : [
+					NumberLong(101)
+				],
+				"maxDiscAmt" : 0
+			}
+			
+	 * 
+	 * Here note the following fields
+	 * 		amt 		- The value of the product offered. If a $20 product is offered at $8, then amt will be $12.
+	 * 		description - This is the reference to 'coupon_specials' collection. Should be same for all coupons 
+	 * 					  created for this particular promo.
+	 * 		type 		- PO for this offer
+	 * 		pids 		- The product which is offered, in this case joint (product_id = 101)
+	 * 
+	 * maxDiscAmt and minAmt can be used to control the coupon further just like any normal coupon.
+	 * 
+	 * The corresponding coupon_specials entry will look like this:
+	 * 
+	 
+		{
+			"_id" : "JOINTPROMO",
+			"validProductIds" : [
+				NumberLong(201)
+			],
+			"olic" : {
+				"instock" : true,
+				"type" : "item",
+				"name" : "Joint",
+				"itemId" : NumberLong(0),
+				"qty" : 1,
+				"pid" : NumberLong(101),
+				"vid" : NumberLong(7081),
+				"cost" : 10,
+				"price" : 10,
+				"taxable" : false,
+				"img" : "/uploads/2015/09/joint.jpg",
+				"specs" : [
+					{
+						"attr" : "some attr",
+						"value" : "some value"
+					}
+				]
+			}
+		}
+	 
+	 * 
+	 * Here note the following fields
+	 * 	_id 			- This is the reference to 'coupons' collection's description field. 
+	 * validProductIds	- The products for which this promo is valid. In our example jungle mix (product_id = 201)
+	 * 					  if this field is empty, it means the offer applies to all products.
+	 * 
+	 * olic				- The OrderLineItemCart object that will be added to the order when offer is applied
+	 * 
+	 * 
+	 * Control flows to the below method when the coupon.type if PO
+	 * First it checks if there is any qualifying products in the cart.
+	 * Then it checks to see if the offer product is already in the cart, 
+	 * 	if yes, we keep it as it is,
+	 * 	else, we add the product.
+	 * 
+	 * The control goes back to applying coupon and follows the logic of the Fixed Coupon
+	 * 
+	 * In case of removing the coupon, the discount is removed, but the item stays in the cart
+	 * at full price.
+	 * */
+	
+	
+	private String productOfferCoupon(CartOrder order, Coupon coupon, String action){
+		
+		String message = "";
+		
+			
+		boolean qualifyingProductFound = false,
+				promoProductFound = false;
+		
+		
+		//get the coupon_specials details
+		CouponSpecial cs = couponSpecialDao.findOne("couponCode", 
+				coupon.getDescription().trim().toLowerCase());
+		if(cs == null){
+			message = "No valid specials found for this coupon.";
+			return message;
+		}
+		
+		List<Long> pids = new ArrayList<Long>();
+		if(cs.getValidProductIds() != null 
+				&& cs.getValidProductIds().size()>0){				
+			pids = cs.getValidProductIds();
+		}
+		
+		//If there is no qualifying products listed, it means all products qualify
+		if(pids.size() == 0){
+			qualifyingProductFound = true;
+		}
+		
+		
+		/* Check if the coupon is applied to this order.*/
+		List<OrderLineItemCart> olis = order.getLineItems();
+		for(OrderLineItemCart item: olis){
+
+			if(pids.contains(item.getProductId())){
+				qualifyingProductFound = true;
+			}
+			
+			else if(cs.getOlic().getProductId() == item.getProductId() 
+					&& item.isInstock()){
+				
+				if(cs.getOlic().getVariationId() != 0){
+					
+					if(cs.getOlic().getVariationId() == item.getVariationId()){
+						promoProductFound = true;
+					}
+					
+				} else {
+					
+					promoProductFound = true;
+				}
+			}
+			
+			if(qualifyingProductFound && promoProductFound)
+				break;
+		}
+		
+		
+		if(!qualifyingProductFound){
+			message = "No eligible items found in the cart";
+		}
+		
+		else{
+			
+			/**
+			 * action.equals("applycoupon") 
+			 * 
+			 * Coupon logic is re-applied whenever there is a change to the cart.
+			 * For example if an item removed and that item was the offer item, 
+			 * we need to make sure it's not added back into the cart.
+			 * 
+			 * So don't add the offer item unless the action is "applycoupon"
+			 **/
+			
+			if(!promoProductFound 
+					&& action.equals("applycoupon")){
+				//Add promo product
+			
+				OrderLineItemCart newItem = cs.getOlic();
+				olis.add(newItem);
+			}
 		}
 		
 		return message;

@@ -13,7 +13,7 @@ public class Coupon {
 	@Id
 	private String _id; //Coupon Code
 	private String description;
-	private String type;
+	private String type;   //F fixed, R percentage rate, PO offers
 	
 	private Date expiry;
 	
