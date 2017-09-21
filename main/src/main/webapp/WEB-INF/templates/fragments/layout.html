@@ -445,7 +445,13 @@
 									class="splribbon"><span>special</span></span><span
 									ng-if="p.categories &amp;&amp; p.categories.indexOf('Super Special') > -1"
 									class="splribbon sspl"><span>super <br />special
-									</span></span>
+									</span></span><span
+									ng-if="p.categories &amp;&amp; p.categories.indexOf('Exclusive') > -1"
+									class="splribbon exclusive"><span>Exclusive! </span></span><span
+									ng-if="p.categories &amp;&amp; p.categories.indexOf('Clearance') > -1"
+									class="splribbon sspl"><span>Clearance! </span></span><span
+									ng-if="p.categories &amp;&amp; p.categories.indexOf('5g') > -1"
+									class="stamp fivegram"><span>5g</span></span>
 								</a>
 							</div>
 
