@@ -462,7 +462,8 @@
 									Price: <strong ng-if="p.priceRange"> {{ (p.categories
 										&amp;&amp; p.categories.indexOf('Flowers') > -1) ?
 										p.priceRange.split('-')[0] : p.priceRange}} </strong><span
-										ng-if="!p.priceRange"><strong>{{p.price |
+										ng-if="!p.priceRange"><strong ng-if="p.salePrice">{{p.salePrice |
+											currency}}</strong><strong ng-if="!p.salePrice">{{p.price |
 											currency}}</strong></span>
 								</div>
 

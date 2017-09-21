@@ -1,7 +1,7 @@
 var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $compile, categoryFltrFilter){
 
 	$scope.prices = [];
-	$scope.productPrices = {};
+	$scope.productPrices = {}; //this object is populated in allProductPriceCtrlr
 	$scope.currentPid = 0;
 	$scope._lbGlobalCDNPath = _lbGlobalCDNPath;
 	
@@ -39,7 +39,7 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 		if($scope.currentPid !== 0){	
 			
 			$scope.prices = [];
-			
+
 			if(!$scope.productPrices[$scope.currentPid]){				
 
 				
@@ -183,6 +183,8 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 		      
 		      $scope.angularListOn = true;
 		      $('#thymeleaf-productlist').hide();
+		      
+		      $scope.productPrices = {}; //reset this object (populated in allProductPriceCtrlr)
 		      
 		 });
 	};

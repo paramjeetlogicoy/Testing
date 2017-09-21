@@ -382,7 +382,9 @@
 										<div class="text-center size16 marg-b1">
 											Price: <strong th:if="*{priceRange}"
 												th:text="${(product.categories!=null) and (#lists.contains(product.categories, 'Flowers'))} ? ${#strings.listSplit(product.priceRange,' - ').get(0)} : *{priceRange}"></strong><span
-												th:unless="*{priceRange}"><strong
+												th:unless="*{priceRange}"><strong th:if="*{salePrice} != 0"
+												th:text="${'$' + #numbers.formatDecimal(product.salePrice,0,2)}"></strong>
+												<strong th:unless="*{salePrice} != 0"
 												th:text="${'$' + #numbers.formatDecimal(product.price,0,2)}"></strong></span>
 										</div>
 
