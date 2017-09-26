@@ -118,6 +118,17 @@ _lbUrls = {
 	'creset' : '/createreset',
 	'rsavep' : '/reset/savep',
 	'recoreupload' : '/reco-reupload'
+},
+_lbConstants = {
+	'productspage_orderAndOrderTxt' : {
+				'-newBatchArrival':'Newest',
+				'productFilters.price':'Lowest Price',
+				'-productFilters.price':'Highest Price',
+				'-rating':'Highly rated',
+				'-reviewCount':'Most reviews',
+				'-productFilters.thc':'High THC',
+				'-productFilters.cbd':'High CBD'
+		}	
 };
 
 $(document).ready(function(){

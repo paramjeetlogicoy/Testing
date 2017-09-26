@@ -19,6 +19,8 @@ public class Category {
 	private long parent;
 	
 	private SeoElem seoElem;
+	
+	private String sortOrder = "-newBatchArrival";
 
 	public long get_id() {
 		return _id;
@@ -55,5 +57,11 @@ public class Category {
 	}
 	public void setSeoElem(SeoElem seoElem) {
 		this.seoElem = seoElem;
+	}
+	public String getSortOrder() {
+		return sortOrder;
+	}
+	public void setSortOrder(String sortOrder) {
+		this.sortOrder = sortOrder;
 	}
 }

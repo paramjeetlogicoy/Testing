@@ -39,6 +39,12 @@
 								uib-tooltip="Parent Category"></select>
 						</div>
 						<div class="form-group form-group-sm">
+							<select ng-options="orderAndOrderTxt for orderAndOrderTxt in orderAndOrderTxts"
+								class="form-control" ng-model="orderSelect"
+								ng-change="changeEvent()"
+								uib-tooltip="Ordering during intial page load"></select>
+						</div>
+						<div class="form-group form-group-sm">
 							<textarea class="form-control" ng-model="catDesc"
 								placeholder="Description"></textarea>
 						</div>
@@ -64,7 +70,7 @@
 											ng-show="sortReverse" class="fa fa-caret-up"></i></span>
 											<i ng-show="sortType != '_id'" class="fa fa-sort"></i>
 								</a></th>
-								<th class="col-sm-3"><a class="sortables"
+								<th class="col-sm-2"><a class="sortables"
 									ng-click="sortType = 'name'; sortReverse = !sortReverse;">
 										Name <span ng-show="sortType == 'name'"><i
 											ng-show="!sortReverse" class="fa fa-caret-down"></i> <i
@@ -79,7 +85,8 @@
 											<i ng-show="sortType != 'parent'" class="fa fa-sort"></i>
 								</a></th>
 								<th class="col-sm-2">Url</th>
-								<th class="col-sm-3">Description</th>
+								<th class="col-sm-2">Sort Order</th>
+								<th class="col-sm-2">Description</th>
 								<th class="col-sm-1"></th>
 							</tr>
 						</thead>
@@ -90,6 +97,7 @@
 								<td>{{ (c.parent && c.parent!=0)? getParentCat(c.parent) :
 									' - '}}</td>
 								<td>{{c.url}}</td>
+								<td>{{orderAndOrderTxts[c.sortOrder]}}</td>
 								<td>{{c.description}}</td>
 								<td><a href="" ng-click="editCat()" title="Edit Category"><i
 										class="fa fa-pencil"></i></a><a class="marg-l1" href=""
