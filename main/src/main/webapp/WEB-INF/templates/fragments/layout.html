@@ -474,8 +474,8 @@
 										first to review</a>
 								</div>
 
-								<div class="text-center size16 marg-b1">
-									Price: <strong ng-if="p.priceRange"> {{ (p.categories
+								<div class="text-center size24 marg-b1">
+									<strong ng-if="p.priceRange"> {{ (p.categories
 										&amp;&amp; p.categories.indexOf('Flowers') > -1) ?
 										p.priceRange.split('-')[0] : p.priceRange}} </strong><span
 										ng-if="!p.priceRange"><strong ng-if="p.salePrice">{{p.salePrice |
