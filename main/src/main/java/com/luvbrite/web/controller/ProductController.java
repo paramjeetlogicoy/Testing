@@ -48,12 +48,12 @@ public class ProductController {
 	private ReviewDAO reviewDao;
 	
 	
-	private List<Product> returnActiveProducts(){
+	private List<Product> returnActiveProducts(String sortOrder){
 		
 		return prdDao.createQuery()
 				.filter("status", "publish")
 				.filter("stockStat", "instock")
-				.order("-newBatchArrival")
+				.order(sortOrder)
 				.asList();
 	}
 	
@@ -65,11 +65,14 @@ public class ProductController {
 		
 		if(user!=null && user.isEnabled())
 			model.addAttribute("userId", user.getId());
+		
+		String sortOrder = "-newBatchArrival";
 
-		List<Product> products = returnActiveProducts();
+		List<Product> products = returnActiveProducts(sortOrder);
 		
 		model.addAttribute("products", products);
 		model.addAttribute("page", "product");
+		model.addAttribute("sortOrder", sortOrder);
 		
 		return "products";	
 	}
@@ -89,6 +92,7 @@ public class ProductController {
 			ModelMap model, @RequestParam(value="s", required=false) String query) {	
 
 		List<Product> products = new ArrayList<Product>();
+		String sortOrder = "productFilters.price";
 		
 		try {
 			
@@ -101,15 +105,16 @@ public class ProductController {
 					.filter("status", "publish")
 					.filter("stockStat", "instock")
 					.field("name").equal(regExp)
-					.order("-newBatchArrival")
+					.order(sortOrder)
 					.asList();
 			
 			model.addAttribute("products", products);
 			model.addAttribute("page", "search");
 			model.addAttribute("query", query);
+			model.addAttribute("sortOrder", sortOrder);
 			
 		} catch(Exception e){
-			logger.error("Search - " + query + Exceptions.giveStackTrace(e));
+			logger.error("Search - $" + query + "$" + Exceptions.giveStackTrace(e));
 		}
 		
 		return "products";
@@ -120,7 +125,7 @@ public class ProductController {
 	public @ResponseBody ProdCatResponse ListPublishedProductsCategories() {		
 		ProdCatResponse pcr = new ProdCatResponse();
 		
-		List<Product> products = returnActiveProducts();
+		List<Product> products = returnActiveProducts("-newBatchArrival");
 		List<Category> categories = catDao.find().asList();
 		
 		pcr.setSuccess(true);
