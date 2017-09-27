@@ -56,7 +56,7 @@
 					</div>
 				</li>
 
-				<li class="item-li" ng-if="m.freeGramPromo"
+				<li class="item-li" ng-if="m.freeGramPromoApplied"
 					ng-include="'/resources/ng-templates/cart/free-gram.html'"></li>
 
 				<li class="item-li offhouritem" ng-if="itsOffHour"
@@ -105,7 +105,7 @@
 					<div class="marg-b2">
 						<h5 class="marg-b05">Congratulations, you are eligible to
 							select <span class="orange1">one</span> of the following promos.</h5>
-						<div ng-if="m.offersApplied" class="size13 grey3">
+						<div ng-if="m.offersOtherThanProductSaleApplied" class="size13 grey3">
 							<strong>Note:</strong> <em>Applying any of the available
 								promotions will remove already applied promotion</em> <em
 								class="marg-r1 size13 u"
@@ -187,6 +187,46 @@
 									<div class="text-center pad-t2">
 										<button class="btn btn-lb btn-sm" ng-click="addFifthFlower()">Apply
 											Promotion</button>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+					
+					
+					<div class="cart-promo-options"
+						ng-show="m.freeGramPromoEligible && !m.freeGramPromoApplied"
+						ng-class="{'promoSelected' : m.promoOptions == 'freeGramPromo'}">
+
+						<label class="fa-label"><input type="radio"
+							name="promoOptions" ng-model="m.promoOptions"
+							value="freeGramPromo" /><i class="fa fa-circle-o"
+							aria-hidden="true"></i> Black Jack Promo, 1 Gram - Slymer - Exclusive <span
+							class="orange1">$20 value.</span></label>
+
+						<div class="cart-promo-details">
+							<div class="cart-offers-bb">
+								<h4 class="text-center">BLACK JACK OFFER!</h4>
+								<div class="size13">
+									When you hit black jack on an order--your order hits $150 or
+									more--you'll receive a
+									<strong class="orange1">FREE</strong> exclusive gram of
+									<a href="https://www.luvbrite.com/product/slymer-exclusive">Slymer</a>
+									with your order. Only once the order total in the cart reaches
+									$150 or greater, will the free gram be added to your order.
+
+									<div class="bold orange1 pad-t2" ng-if="m.briteBoxApplied">
+										Delete the Britebox item from cart to auto-apply this offer!
+									</div>
+
+									<div class="bold orange1 pad-t2" ng-if="m.doubleDownApplied">
+										Remove the double down item from cart to auto-apply this offer!
+									</div>
+
+									<div class="bold orange1 pad-t2" ng-if="m.couponApplied">
+										Delete the applied coupon <em>({{m.appliedCouponCode}})</em>
+										to auto-apply this offer!
 									</div>
 								</div>
 							</div>

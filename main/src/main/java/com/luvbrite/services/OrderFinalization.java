@@ -23,7 +23,8 @@ public class OrderFinalization {
 	private static Logger logger = Logger.getLogger(OrderFinalization.class);
 	private static boolean offhourPromoActive = true;
 	private static boolean valentinesPromoActive = false;
-	private static boolean freeGramPromo = false;
+	private static boolean freeGramPromo = true;
+	private static double freeGramPromoMin = 150d;
 	
 	private long orderNumber = 0;	
 	public long getOrderNumber() {
@@ -201,28 +202,53 @@ public class OrderFinalization {
 			cartLogics.calculateSummary(co);
 		}
 		
-		if(freeGramPromo){
-				
-			//Add the new item
-			OrderLineItemCart newItem = new OrderLineItemCart();
-			newItem.setTaxable(false);
-			newItem.setInstock(true);
-			newItem.setType("item");
-			newItem.setName("1 Gram - Assorted Variety");
-			newItem.setPromo("Free Gram Promo");
-			newItem.setProductId(10504);
-			newItem.setVariationId(0);
-			newItem.setQty(1);
-			newItem.setCost(20d);
-			newItem.setPrice(0d);
-			newItem.setImg("/products/1GramAssortedVariety.jpg");
-
-			List<OrderLineItemCart> olic = co.getLineItems();
-			olic.add(newItem);
-			co.setLineItems(olic);				
+		
+		
+		if(freeGramPromo && co.getTotal() >= freeGramPromoMin){
 			
-			//Update orderTotals
-			cartLogics.calculateSummary(co);
+			boolean applyFreeGram = true;
+
+			List<OrderLineItemCart> items = co.getLineItems();
+			for(OrderLineItemCart item : items){
+				
+				if(item.getType().equals("item") && item.isInstock()){
+					
+					if(item.getPromo() != null && 
+							!item.getPromo().trim().equals("") && 
+							!item.getPromo().trim().equals("s") && 
+							!item.getPromo().trim().equals("offhourpromo")){
+						
+						applyFreeGram = false;
+						break;
+					}
+				}
+			}
+			
+			
+			if(applyFreeGram){
+				
+				//Add the new item
+				OrderLineItemCart newItem = new OrderLineItemCart();
+				newItem.setTaxable(false);
+				newItem.setInstock(true);
+				newItem.setType("item");
+				newItem.setName("1 Gram - Slymer - Exclusive (Black Jack Promo)");
+				newItem.setPromo("Free Gram Promo");
+				newItem.setProductId(10504);
+				newItem.setVariationId(0);
+				newItem.setQty(1);
+				newItem.setCost(20d);
+				newItem.setPrice(0d);
+				newItem.setImg("/products/Sylmer.jpg");
+	
+				List<OrderLineItemCart> olic = co.getLineItems();
+				olic.add(newItem);
+				co.setLineItems(olic);				
+				
+				//Update orderTotals
+				cartLogics.calculateSummary(co);
+				
+			}
 		}
 	}
 	

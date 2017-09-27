@@ -40,6 +40,8 @@ h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
 .junglemix-slider.abtest a{margin-left:95px !important;bottom:48px !important}
 .back2school-slider{background-image: url(https://lbrit.co/static/imgs/sliders/back2school-promo-xs.jpg)}
 .surveyprompt-slider{background-image: url(https://lbrit.co/static/imgs/sliders/survey_prompt_slider_xs.jpg)}
+.blackjack-slider{background-image: url(https://lbrit.co/static/imgs/sliders/black_jack_slider_xs.jpg)}
+.home-carousel .item.blackjack-slider button.btn{bottom: 30px;margin-left: 16px;width: 100px;font-size:10px}
 
 a.fullon-a{display:block;height:100%}
 
@@ -53,6 +55,8 @@ a.fullon-a{display:block;height:100%}
 	
 	.back2school-slider{background-image: url(https://lbrit.co/static/imgs/sliders/back2school-promo.jpg)}
 	.surveyprompt-slider{background-image: url(https://lbrit.co/static/imgs/sliders/survey_prompt_slider.jpg)}
+	.blackjack-slider{background-image: url(https://lbrit.co/static/imgs/sliders/black_jack_slider.jpg)}
+	.home-carousel .item.blackjack-slider button.btn{bottom: 90px;margin-left: 60px;width: 120px;font-size:14px}
 
 	.offhouroffer-slider.item button.btn {bottom:70px}
 	.doubledown-slider.item button.btn {bottom:25px;right:20%;font-size:12px}
@@ -72,7 +76,12 @@ a.fullon-a{display:block;height:100%}
 			<!-- Wrapper for slides -->
 			<div class="carousel-inner" role="listbox">
 
-				<div class="surveyprompt-slider item active">
+				<div class="blackjack-slider item active">
+					<button class="btn btn-danger" data-toggle="modal"
+						data-target="#blackjack">VIEW DETAILS</button>
+				</div>
+
+				<div class="surveyprompt-slider item">
 					<a href="https://www.surveymonkey.com/r/HR5JQFS" class="btn btn-warning">TAKE SURVEY</a>
 				</div>
 
@@ -487,7 +496,7 @@ a.fullon-a{display:block;height:100%}
 	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
 	<script type="text/javascript">
 		$(document).ready(function(){			
-			$('#doubleDownModal, #offHourOfferModal, #benjaminOz')
+			$('#doubleDownModal, #offHourOfferModal, #blackjack')
 			.on('shown.bs.modal', function() {
 				$('#home-sliders').carousel('pause');
 			}).on('hide.bs.modal', function() {
@@ -521,6 +530,40 @@ a.fullon-a{display:block;height:100%}
 			</div>
 		</div>
 		
+		<div class="modal fade" id="blackjack" tabindex="-1"
+			role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h3 class="modal-title">Black Jack Offer</h3>
+					</div>
+					<div class="modal-body">
+						<div class="marg-b2">
+							When you hit black jack on an order--your order hits $150 or
+							more--you'll receive a <strong class="orange1">FREE</strong>
+							exclusive gram of <a
+								href="https://www.luvbrite.com/product/slymer-exclusive">Slymer</a>
+							with your order. Only once the order total in the cart reaches
+							$150 or greater, will the free gram be added to your order.
+						</div>
+
+						<div class="marg-b2 small mute">
+							*Offer valid while supplies last. In order to qualify, the
+							donation total reflected in the cart must be $150 or greater. If
+							an item is removed/cancelled from the order brining the total
+							below $150, the free assorted gram will be forfeited. This offer
+							cannot be combined with other coupons or discounts, and is valid
+							while supplies last. <span class="orange1">Cannot be
+								combined with other offers.</span>
+						</div>
+					</div>
+				</div>
+		</div>
+		
 		<div class="modal fade" id="briteboxuse" tabindex="-1"
 			role="dialog">
 			<div class="modal-dialog" role="document">
@@ -538,6 +581,7 @@ a.fullon-a{display:block;height:100%}
 							Loyalist Rewards card. The $100 will be available through your
 							new online account as a $10 coupon which can be used for 10
 							future online orders.</div>
+						</div>
 					</div>
 				</div>
 			</div>

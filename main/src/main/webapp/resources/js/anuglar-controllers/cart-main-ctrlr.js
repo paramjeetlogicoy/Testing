@@ -28,6 +28,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 	m.couponApplied = true;  //Only refers to coupons
 	m.appliedCouponCode = "";
 	m.offersApplied = false; //Refers to all kinds of offers
+	m.offersOtherThanProductSaleApplied = false; //Refers to all kinds of offers except promo = 's'
 	m.orderAboveOrderMin = false;
 	m.emptyCart = true;
 	m.addressSaved = false;
@@ -54,7 +55,10 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 	m.valentinePromoActive = false;
 	m.valentinePromoApplied = false;
 	
-	m.freeGramPromo = false;
+	m.freeGramPromo = true;
+	m.freeGramPromoApplied = false;
+	m.freeGramPromoEligible = false;
+	m.freeGramPromoMin = 150;
 	
 	/* When ever there is a change in m.order, this function needs to be called 
 	 * most of the logic control flags are set here. */
@@ -69,6 +73,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 			doubleDownApplied = false,
 			briteBoxApplied = false,
 			fifthFlowerApplied = false,
+			offersOtherThanProductSaleApplied = false,
 			emptyCart = true,
 			flowerCount = 0;
 		
@@ -112,6 +117,10 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 					
 					if(item.promo && item.promo !== ''){					
 						offersApplied = true;
+						
+						if(item.promo != 's'){
+							offersOtherThanProductSaleApplied = true;
+						}
 					}
 					
 					if(item.type=='item' && 
@@ -158,6 +167,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 		m.doubleDownApplied = doubleDownApplied;
 		m.couponApplied = couponApplied;
 		m.offersApplied = offersApplied;
+		m.offersOtherThanProductSaleApplied = offersOtherThanProductSaleApplied;
 		m.emptyCart = emptyCart;
 		m.briteBoxApplied = briteBoxApplied;
 		m.fifthFlowerApplied = fifthFlowerApplied;
@@ -193,6 +203,19 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 		}
 		else {
 			m.briteBoxEligible = false;
+		}
+		
+		//FreeGramCheck
+		m.freeGramPromoApplied = false;
+		m.freeGramPromoEligible = false;
+		if(m.freeGramPromo && 
+				m.order.total && 
+				(m.order.total >= m.freeGramPromoMin)){
+
+			m.freeGramPromoEligible = true;
+			
+			if(!m.offersOtherThanProductSaleApplied)
+				m.freeGramPromoApplied = true;
 		}
 		
 		
