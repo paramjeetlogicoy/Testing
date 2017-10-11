@@ -23,7 +23,7 @@ nav.admin-navbar {
 	}
 }
 
-.header-navbar:extend(.fix,.bg-black,.white,.pc100){
+.header-navbar:extend(.bg-black,.white,.pc100){
 
 	padding-right: inherit;
 	top:0;
@@ -31,6 +31,7 @@ nav.admin-navbar {
 	z-index:20;
 
 	@media(min-width:768px){
+		.fix;
 		.size13;
 	}
 
@@ -79,7 +80,6 @@ nav.admin-navbar {
 }
 
 .nav-notifications{
-	.fix;
 	.pc100;
 
 	top:67px;
@@ -90,6 +90,7 @@ nav.admin-navbar {
     line-height: 16px;
 
 	@media(min-width:768px){
+		.fix;
 		top:75px;
 		z-index: 20;
 	}
@@ -107,7 +108,7 @@ nav.admin-navbar {
 .navbar-nav-logout:extend(a.inherit,.nopadi){
 	.size14;	
 	.bold;
-	
+
 	&:hover{
 		text-decoration:none;
 		.green1;
@@ -208,7 +209,7 @@ nav.admin-navbar {
 }
 
 .header-offset{
-	margin-top:89px;
+	//margin-top:89px;
 
 	@media(min-width:768px){
 		margin-top:132px;		
@@ -289,11 +290,16 @@ footer:extend(.text-center,.white){
     border: 2px solid #444;
     border-radius: 2px;
 
-    bottom: 7%;
-    right: 7%;
+    bottom: 5%;
+    right: 10%;
     z-index: 10;    
     opacity: .6;
     color: #000 !important;
+	
+	@media(min-width:768px){
+		bottom: 7%;
+		right: 7%;
+	}
 }
 
 .footer-disclaimer:extend(.size16,.white,.pad2,.fix,.pc100,.text-center){
