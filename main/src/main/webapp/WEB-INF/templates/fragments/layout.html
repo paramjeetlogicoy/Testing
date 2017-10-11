@@ -157,27 +157,29 @@
 				</div>
 				<div class="navbar-collapse collapse" id="xs-navbar">
 					<ul class="nav navbar-nav visible-xs-block">
-					<li><a href="/products">ALL PRODUCTS</a></li>
-					<li><a href="/category/specials">SPECIALS</a></li>
-					<li><a href="/category/new-arrivals">NEW ARRIVALS</a></li>
-					<li><a href="/category/pets">PETS</a></li>
-					<li><a href="/category/clearance">CLEARANCE</a></li>
-					<li><a href="/category/flowers">FLOWERS</a></li>
-					<li><a href="/category/edibles">EDIBLES</a></li>
-					<li><a href="/category/concentrates">CONCENTRATES</a></li>
-					<li><a href="/category/tinctures">TINCTURES</a></li>
-					<li><a href="/category/topicals">TOPICALS</a></li>
-					<li><a href="/category/pre-rolls">PRE-ROLLS</a></li>
-					<li><a href="/category/gear">ACCESSORIES</a></li>
-					<li><a href="/contact-us">CONTACT US</a></li>
-						<li><a href="/login" th:if="not ${userId}">LOGIN / SIGN UP</a><a href="/customer" th:if="${userId}">MY ACCOUNT</a></li>
+						<li><a href="/login" th:if="not ${userId}" class="orange1">LOGIN
+								/ SIGN UP</a><a href="/customer" th:if="${userId}" class="orange1">MY
+								ACCOUNT</a></li>
 						<li><form method="post" action="/logout"
 								class="nav-logout-form" th:if="${userId}">
 								<input type="hidden" id="_lb_sec_tok"
 									th:name="*{_csrf.parameterName}" th:value="${_csrf.token}" />
-								<input type="submit" class="btn btn-link navbar-nav-logout"
-									value="LOGOUT" />
+								<input type="submit"
+									class="btn btn-link navbar-nav-logout orange1" value="LOGOUT" />
 							</form></li>
+						<li><a href="/products">ALL PRODUCTS</a></li>
+						<li><a href="/category/specials">SPECIALS</a></li>
+						<li><a href="/category/new-arrivals">NEW ARRIVALS</a></li>
+						<li><a href="/category/pets">PETS</a></li>
+						<li><a href="/category/clearance">CLEARANCE</a></li>
+						<li><a href="/category/flowers">FLOWERS</a></li>
+						<li><a href="/category/edibles">EDIBLES</a></li>
+						<li><a href="/category/concentrates">CONCENTRATES</a></li>
+						<li><a href="/category/tinctures">TINCTURES</a></li>
+						<li><a href="/category/topicals">TOPICALS</a></li>
+						<li><a href="/category/pre-rolls">PRE-ROLLS</a></li>
+						<li><a href="/category/gear">ACCESSORIES</a></li>
+						<li><a href="/contact-us">CONTACT US</a></li>
 					</ul>
 
 				</div>
