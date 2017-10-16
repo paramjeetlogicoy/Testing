@@ -9,6 +9,7 @@ public class BillingAddress {
 	private String last_name = "";
 	private String phone = "";
 	private String postcode = "";
+	private String state = "";
 	public String getAddress_1() {
 		return address_1;
 	}
@@ -50,5 +51,11 @@ public class BillingAddress {
 	}
 	public void setPostcode(String postcode) {
 		this.postcode = postcode;
+	}
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
 	}
 }

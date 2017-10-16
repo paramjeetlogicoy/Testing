@@ -14,12 +14,15 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.luvbrite.dao.CouponDAO;
 import com.luvbrite.dao.OrderDAO;
 import com.luvbrite.services.EmailService;
+import com.luvbrite.services.InOfficeOrderLogic;
 import com.luvbrite.utils.CouponGen;
 import com.luvbrite.web.models.Coupon;
 import com.luvbrite.web.models.Email;
@@ -28,6 +31,7 @@ import com.luvbrite.web.models.Order;
 import com.luvbrite.web.models.User;
 import com.luvbrite.web.models.UserDetailsExt;
 import com.luvbrite.web.models.UserIdentity;
+import com.luvbrite.web.models.ordermeta.OrderMain;
 
 
 @Controller
@@ -383,6 +387,30 @@ public class MainController {
 		}
 		
 		return "show-coupon";
+	}
+	
+	
+	
+	@Autowired
+	private InOfficeOrderLogic iool;
+
+	@RequestMapping(value = "/extapi/json/inofficepurchases/create", method = RequestMethod.POST)
+	public @ResponseBody GenericResponse 
+		inOfficePurchaseCreate(@RequestBody OrderMain orderMain){
+		
+		GenericResponse gr = new GenericResponse();
+		gr.setSuccess(false);
+		String resp = iool.create(orderMain);
+		if(resp.equals("")){
+			gr.setSuccess(true);
+			gr.setMessage("" + iool.getOrderNumber());
+		}
+		
+		else{
+			gr.setMessage(resp);
+		}
+		
+		return gr;
 	}
 	
 }
