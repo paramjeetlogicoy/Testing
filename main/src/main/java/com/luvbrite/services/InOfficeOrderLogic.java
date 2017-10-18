@@ -104,7 +104,7 @@ public class InOfficeOrderLogic {
 
 			//Customer Info
 			customer.setName(customerName);
-			customer.setEmail("info@luvbrite.com");
+			customer.setEmail("offline-orders@luvbrite.com");
 
 
 			//Build OrderLineItem from product
