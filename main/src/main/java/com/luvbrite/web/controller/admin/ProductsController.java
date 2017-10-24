@@ -205,7 +205,9 @@ public class ProductsController {
 					
 					boolean urlUnique = false;
 					String otherProductName = "";
-					if(product.getUrl() != null && productDb.getUrl().equals(product.getUrl())){
+					if(product.getUrl() != null && 
+							productDb.getUrl() != null && 
+							productDb.getUrl().equals(product.getUrl())){
 						urlUnique = true;
 					}
 					else{

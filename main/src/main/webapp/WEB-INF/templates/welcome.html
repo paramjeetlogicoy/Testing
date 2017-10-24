@@ -38,14 +38,14 @@ h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
 .junglemix-slider a{background-color:#f7941d;border-color:#ff920e;border-radius:0;margin-left:65px !important;padding:3px 5px;font-size:10px;width:77px !important;height:20px;line-height:1.2;bottom:18px !important}
 .junglemix-slider.abtest{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix_slider_truckload_xs.jpg)}
 .junglemix-slider.abtest a{margin-left:95px !important;bottom:48px !important}
-.surveyprompt-slider{background-image: url(https://lbrit.co/static/imgs/sliders/survey_prompt_slider_xs.jpg)}
 .blackjack-slider{background-image: url(https://lbrit.co/static/imgs/sliders/black_jack_slider_xs.jpg)}
 .powerpack-slider{background-image: url(https://lbrit.co/static/imgs/sliders/powerpack_slider.jpg);background-color:white !important;}
 .home-carousel .item.powerpack-slider a.btn{margin-left:-40px;width:80px;font-size:10px;bottom:5px}
 .home-carousel .item.blackjack-slider button.btn{bottom: 30px;margin-left: 16px;width: 100px;font-size:10px}
 .quality-product-slider{background-image:url(https://lbrit.co/static/imgs/sliders/quality-products-slider-xs.jpg);background-color:#ededed !important}
+.halloween-slider{background-image:url(https://lbrit.co/static/imgs/sliders/halloween-slider.jpg);background-color:#fefdfd !important}
 
-a.fullon-a{display:block;height:100%}
+a.fullon-a{display:block;height:100%;cursor:pointer}
 
 @media (min-width: 768px){	
 	.carousel-inner .mx300{max-width:768px;}
@@ -55,8 +55,7 @@ a.fullon-a{display:block;height:100%}
 	.junglemix-slider.abtest{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix_slider_truckload.jpg);}
 	.junglemix-slider.abtest a{bottom:89px !important;margin-left:200px !important}
 	.quality-product-slider{background-image:url(https://lbrit.co/static/imgs/sliders/quality-products-slider.jpg)}
-	
-	.surveyprompt-slider{background-image: url(https://lbrit.co/static/imgs/sliders/survey_prompt_slider.jpg)}
+
 	.blackjack-slider{background-image: url(https://lbrit.co/static/imgs/sliders/black_jack_slider.jpg)}
 	.home-carousel .item.blackjack-slider button.btn{bottom: 90px;margin-left: 60px;width: 120px;font-size:14px}
 	.home-carousel .item.powerpack-slider a.btn{margin-left:-60px;width:120px;font-size:14px}
@@ -79,7 +78,12 @@ a.fullon-a{display:block;height:100%}
 			<!-- Wrapper for slides -->
 			<div class="carousel-inner" role="listbox">
  
-				<div class="quality-product-slider item active">
+				<div class="halloween-slider item active">
+					<a  data-toggle="modal"
+						data-target="#halloweenDD" class="fullon-a"></a>
+				</div>
+ 
+				<div class="quality-product-slider item">
 					<a href="/products" class="fullon-a"></a>
 				</div>
  
@@ -90,10 +94,6 @@ a.fullon-a{display:block;height:100%}
 				<div class="blackjack-slider item">
 					<button class="btn btn-danger" data-toggle="modal"
 						data-target="#blackjack">VIEW DETAILS</button>
-				</div>
-
-				<div class="surveyprompt-slider item">
-					<a href="https://www.surveymonkey.com/r/HR5JQFS" class="btn btn-warning">TAKE SURVEY</a>
 				</div>
 
 				<div class="junglemix-slider item abtest">
@@ -615,7 +615,7 @@ a.fullon-a{display:block;height:100%}
 		</div>
 
 
-		<div class="modal fade" id="benjaminOz" tabindex="-1" role="dialog">
+		<div class="modal fade" id="halloweenDD" tabindex="-1" role="dialog">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -626,11 +626,10 @@ a.fullon-a{display:block;height:100%}
 						<h3 class="modal-title">Offer Details</h3>
 					</div>
 					<div class="modal-body">
-						<div class="marg-b2">
-							For a limited time, get 1 full ounce of organic outdoor grown
-							cannabis for just $100! Visit our <a href="/category/specials">Specials</a>
-							page to select your $100 ounce now!
-						</div>
+						<div class="marg-b2">For a limited time only, when you qualify for
+							our double down offer (donate $100 or more on your order), you'll
+							be able to choose an Edipure 100mg bag of pumpkin candies and 1 Starfire
+							Halloween themed doughnut edible.</div>
 					</div>
 				</div>
 			</div>
