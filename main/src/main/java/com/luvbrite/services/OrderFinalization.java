@@ -1,4 +1,4 @@
-package com.luvbrite.services;
+	package com.luvbrite.services;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -10,12 +10,14 @@ import org.springframework.stereotype.Service;
 
 import com.luvbrite.dao.CartOrderDAO;
 import com.luvbrite.dao.OrderDAO;
+import com.luvbrite.dao.UserDAO;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.web.models.CartOrder;
 import com.luvbrite.web.models.Order;
 import com.luvbrite.web.models.OrderLineItem;
 import com.luvbrite.web.models.OrderLineItemCart;
 import com.luvbrite.web.models.OrderNotes;
+import com.luvbrite.web.models.User;
 
 @Service
 public class OrderFinalization {
@@ -42,6 +44,9 @@ public class OrderFinalization {
 	@Autowired
 	private CartOrderDAO cartDAO;
 	
+	@Autowired
+	private UserDAO userDAO;
+	
 	
 	public String finalizeOrder(CartOrder cartOrder, CartLogics cartLogics){
 		String response = "";
@@ -65,6 +70,9 @@ public class OrderFinalization {
 				
 				//First Order Check
 				firstOrderCheck(cartOrder, cartLogics);
+				
+				//Order level check
+				orderLevelCheck(cartOrder.getCustomer().get_id());
 				
 				//Copy info from cartOrder to Order
 				copyCartOrder(cartOrder, order);
@@ -170,6 +178,36 @@ public class OrderFinalization {
 			
 			//System.out.println("Time - " + hour);
 		}
+	}
+	
+	/**
+	 * Order level update
+	 **/
+	private void orderLevelCheck(long userId){
+		
+		User user = userDAO.findOne("_id", userId);
+		if(user != null){
+			
+			int orderCount = user.getOrderCount();
+			orderCount++;
+			
+			user.setOrderCount(orderCount);
+			
+			if(orderCount == 10){
+				user.setLevel("Bronze");
+			}
+			
+			else if(orderCount == 20){
+				user.setLevel("Silver");
+			}
+			
+			else if(orderCount == 30){
+				user.setLevel("Gold");
+			}
+			
+			userDAO.save(user);
+		}
+		
 	}
 	
 	

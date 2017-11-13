@@ -43,6 +43,7 @@ h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
 .home-carousel .item.powerpack-slider a.btn{margin-left:-40px;width:80px;font-size:10px;bottom:5px}
 .home-carousel .item.blackjack-slider button.btn{bottom: 30px;margin-left: 16px;width: 100px;font-size:10px}
 .quality-product-slider{background-image:url(https://lbrit.co/static/imgs/sliders/quality-products-slider-xs.jpg);background-color:#ededed !important}
+.loyalist-rewards-slider{background-image:url(https://lbrit.co/static/imgs/sliders/loyalist-reward-slider-xs.jpg);background-color:#34587a !important}
 
 a.fullon-a{display:block;height:100%;cursor:pointer}
 
@@ -54,6 +55,7 @@ a.fullon-a{display:block;height:100%;cursor:pointer}
 	.junglemix-slider.abtest{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix_slider_truckload.jpg);}
 	.junglemix-slider.abtest a{bottom:89px !important;margin-left:200px !important}
 	.quality-product-slider{background-image:url(https://lbrit.co/static/imgs/sliders/quality-products-slider.jpg)}
+	.loyalist-rewards-slider{background-image:url(https://lbrit.co/static/imgs/sliders/loyalist-reward-slider.jpg)}
 
 	.blackjack-slider{background-image: url(https://lbrit.co/static/imgs/sliders/black_jack_slider.jpg)}
 	.home-carousel .item.blackjack-slider button.btn{bottom: 90px;margin-left: 60px;width: 120px;font-size:14px}
@@ -77,7 +79,12 @@ a.fullon-a{display:block;height:100%;cursor:pointer}
 			<!-- Wrapper for slides -->
 			<div class="carousel-inner" role="listbox">
  
-				<div class="quality-product-slider item active">
+				<div class="loyalist-rewards-slider item active">
+					<a data-toggle="modal"
+						data-target="#loyalistRewardDetails" class="fullon-a"></a>
+				</div>
+ 
+				<div class="quality-product-slider item">
 					<a href="/products" class="fullon-a"></a>
 				</div>
  
@@ -609,7 +616,9 @@ a.fullon-a{display:block;height:100%;cursor:pointer}
 		</div>
 
 
-		<div class="modal fade" id="halloweenDD" tabindex="-1" role="dialog">
+
+		<div class="modal fade" id="loyalistRewardDetails" tabindex="-1"
+			role="dialog">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -620,15 +629,33 @@ a.fullon-a{display:block;height:100%;cursor:pointer}
 						<h3 class="modal-title">Offer Details</h3>
 					</div>
 					<div class="modal-body">
-						<div class="marg-b2">For a limited time only. Every order
-							meeting the double down requirements (hitting a total of $100 or
-							more) will receive TWO (2) Halloween themed Starfire Edibles
-							donuts!</div>
+						<div class="marg-b2">Hello loyal customers! We are happy to
+							announce the initiation of our
+							<strong>Loyalist Rewards</strong> program here at
+							Luvbrite. Please refer to the following for a guideline as to how
+							this program will be implemented:</div>
+
+						<ul class="marg-b2">
+							<li><strong class="orange1">Bronze</strong> - Every patient
+								who completes their 10th order with our collective will receive
+								a <span class="u">15% coupon to be used on their next
+									order</span>.</li>
+							<li><strong class="orange1">Silver</strong> - Every patient
+								who completes their 20th order with our collective will receive
+								a <span class="u">"Brite Box" with that order</span>.</li>
+							<li><strong class="orange1">Gold</strong> - Every patient
+								who completes their 30th order with our collective will receive
+								a permanent <span class="u">5% discount on all their
+									future orders</span>.</li>
+						</ul>
+
+						<div class="small marg-b2">*Luvbrite has the right to refuse or
+							terminate this offer at any time with or without reason.</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		
+
 	</div>
 </body>
 </html>
