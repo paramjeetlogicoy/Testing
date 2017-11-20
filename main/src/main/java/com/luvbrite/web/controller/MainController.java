@@ -1,5 +1,6 @@
 package com.luvbrite.web.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luvbrite.dao.CouponDAO;
 import com.luvbrite.dao.OrderDAO;
 import com.luvbrite.services.EmailService;
@@ -28,6 +30,7 @@ import com.luvbrite.web.models.Coupon;
 import com.luvbrite.web.models.Email;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Order;
+import com.luvbrite.web.models.SliderInfo;
 import com.luvbrite.web.models.User;
 import com.luvbrite.web.models.UserDetailsExt;
 import com.luvbrite.web.models.UserIdentity;
@@ -50,6 +53,69 @@ public class MainController {
 		
 		if(user!=null && user.isEnabled())
 			model.addAttribute("userId", user.getId());
+		
+		String bannerData = "[{ \"name\": \"quality-product\", \"order\": 1, \"modal\": false,\"modalHtml\": \"\", \"linkUrl\": \"/products\", \"sliderImg\": \"https://lbrit.co/static/imgs/sliders/quality-products-slider-xs.jpg\", \"sliderImgSM\": \"https://lbrit.co/static/imgs/sliders/quality-products-slider.jpg\", \"backgroundColor\": \"#ededed\" },"
+				+ "{ \"name\": \"powerpack\", \"order\": 2, \"modal\": false, \"modalHtml\": \"\", \"linkUrl\": \"/product/power-puff-power-plug\", \"sliderImg\": \"https://lbrit.co/static/imgs/sliders/powerpack_slider.jpg\", \"sliderImgSM\": \"\", \"backgroundColor\": \"white\" },"
+				+ "{ \"name\": \"blackjack\", \"order\": 3, \"modal\": true, \"modalHtml\": \"\", \"linkUrl\": \"\", \"sliderImg\": \"https://lbrit.co/static/imgs/sliders/black_jack_slider_xs.jpg\", \"sliderImgSM\": \"https://lbrit.co/static/imgs/sliders/black_jack_slider.jpg\", \"backgroundColor\": \"\" },"
+				+ "{ \"name\": \"junglemix\", \"order\": 4, \"modal\": false, \"modalHtml\": \"\", \"linkUrl\": \"/product/jungle-mix-10-gram-special\", \"sliderImg\": \"https://lbrit.co/static/imgs/sliders/junglemix_slider_truckload_xs.jpg\", \"sliderImgSM\": \"https://lbrit.co/static/imgs/sliders/junglemix_slider_truckload.jpg\", \"backgroundColor\": \"\" },"
+				+ "{ \"name\": \"doubledown\", \"order\": 5, \"modal\": true, \"modalHtml\": \"\", \"linkUrl\": \"\", \"sliderImg\": \"https://lbrit.co/static/imgs/sliders/double-down-offer-v1.jpg\", \"sliderImgSM\": \"\", \"backgroundColor\": \"\" },"
+				+ "{ \"name\": \"offhouroffer\", \"order\": 6, \"modal\": true, \"modalHtml\": \"\", \"linkUrl\": \"\", \"sliderImg\": \"https://lbrit.co/static/imgs/sliders/off-hour-offer.jpg\", \"sliderImgSM\": \"\", \"backgroundColor\": \"\" }]";
+		
+		ObjectMapper mapper = new ObjectMapper();
+		SliderInfo[] sliderInfos = null;
+		try {
+			sliderInfos = mapper.readValue(bannerData, SliderInfo[].class);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		if(sliderInfos != null) {
+			model.addAttribute("slides", sliderInfos);
+			
+			
+			StringBuilder styles = new StringBuilder();
+			StringBuilder mediaStyles = new StringBuilder();
+			
+			for(SliderInfo sf : sliderInfos){
+				
+				String sliderClassName = sf.getName().toLowerCase().replaceAll(" ", "-") + "-slider";
+				
+				styles.append(".")
+						.append(sliderClassName)
+						.append("{")
+							.append("background-image:url(")
+							.append(sf.getSliderImg())
+							.append(");");
+				
+				
+				if(sf.getBackgroundColor() != null 
+						&& !sf.getBackgroundColor().equals("")){
+					
+					styles.append("background-color:")
+					.append(sf.getBackgroundColor())
+					.append(" !important;");
+				}
+				
+				
+				if(sf.getSliderImgSM() != null 
+						&& !sf.getSliderImgSM().equals("")){
+					
+					mediaStyles.append(".")
+						.append(sliderClassName)
+						.append("{")
+							.append("background-image:url(")
+							.append(sf.getSliderImgSM())
+							.append(");")
+						.append("}");
+				}
+				
+				
+				styles.append("}");
+			}
+			
+			model.addAttribute("somestyles", styles.toString() + "@media (min-width: 768px) { " + mediaStyles.toString() + "}");
+		}
+		
 		
 		return "welcome";		
 	}	

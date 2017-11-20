@@ -60,7 +60,8 @@ public class FilesController implements HandlerExceptionResolver {
 			@RequestParam(value="c", required=false) Integer offset,
 			@RequestParam(value="l", required=false) Integer limit,
 			@RequestParam(value="q", required=false) String search,
-			@RequestParam(value="p", required=false) Boolean productUploader){
+			@RequestParam(value="p", required=false) Boolean productUploader,
+			@RequestParam(value="f", required=false) String filter){
 		
 		if(limit==null) limit = 50;
 		if(offset==null) offset = 0;
@@ -76,6 +77,16 @@ public class FilesController implements HandlerExceptionResolver {
 			/*When there is a query, then offset is removed*/
 			offset = 0;
 		}
+		
+		
+		if(filter != null){
+			if(filter.equals("slider")){
+				query
+				.field("locType").notEqual("internal") //hide the USER uploads which have locType as internal
+				.field("location").startsWith("/sliders");
+			}
+		}
+		
 		
 		//If it's for products, then hide the USER uploads which have locType as internal
 		if(productUploader != null && productUploader.booleanValue()){

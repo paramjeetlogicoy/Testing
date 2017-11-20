@@ -1,4 +1,4 @@
-/*2017-09-18 3:58 PM*/
+/*2017-11-16 1:38 PM*/
 /***** Luvbrite Admin - Type setting *****/
 /*Base size for desktop*/
 /* @basesizeD / 10. Division by 10 because 10px would come as 1, and 15px as 1.5*/
@@ -99,7 +99,8 @@
   width: 100%;
 }
 img.fit,
-.thumbnail-holder img {
+.thumbnail-holder img,
+.slide-holder img {
   max-width: 100%;
   max-height: 100%;
 }
@@ -1400,4 +1401,12 @@ nav#pagination-nav > pre {
 }
 .memos-wrapper .memos:nth-of-type(odd) {
   background-color: #f9f9f9;
+}
+/* CMS Pages */
+.slide-holder {
+  height: 150px;
+  margin: 0 -2px;
+}
+.slide-holder img {
+  margin: 2px;
 }

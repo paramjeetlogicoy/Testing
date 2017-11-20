@@ -27,47 +27,19 @@ h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
 <meta th:include="fragments/layout::fragment-head" />
 <link href="https://fonts.googleapis.com/css?family=Catamaran:900" rel="stylesheet" />
 <style type="text/css">
-.offhouroffer-slider{background-image: url(https://lbrit.co/static/imgs/sliders/off-hour-offer.jpg)}
-.doubledown-slider{background-image: url(https://lbrit.co/static/imgs/sliders/double-down-offer-v1.jpg);background-color:white !important;}
-.doubledown-slider.item button.btn {bottom:5px;right:0;font-size:10px;left:auto;}
-.localbox-slider{background-image: url(https://lbrit.co/static/imgs/sliders/local-box-banner.jpg);}
-.localbox-slider.item a.btn{right:0;bottom:20%;}
 .britebox-slider.item {background-image: url(https://lbrit.co/static/imgs/sliders/brite-box-temp.jpg);background-color:white !important;background-position:62% 50%;}
 .britebox-slider.item button.btn{right:0;bottom:5px;}
-.junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix_slider_welcome_xs.jpg)}
-.junglemix-slider a{background-color:#f7941d;border-color:#ff920e;border-radius:0;margin-left:65px !important;padding:3px 5px;font-size:10px;width:77px !important;height:20px;line-height:1.2;bottom:18px !important}
-.junglemix-slider.abtest{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix_slider_truckload_xs.jpg)}
-.junglemix-slider.abtest a{margin-left:95px !important;bottom:48px !important}
-.blackjack-slider{background-image: url(https://lbrit.co/static/imgs/sliders/black_jack_slider_xs.jpg)}
-.powerpack-slider{background-image: url(https://lbrit.co/static/imgs/sliders/powerpack_slider.jpg);background-color:white !important;}
-.home-carousel .item.powerpack-slider a.btn{margin-left:-40px;width:80px;font-size:10px;bottom:5px}
-.home-carousel .item.blackjack-slider button.btn{bottom: 30px;margin-left: 16px;width: 100px;font-size:10px}
-.quality-product-slider{background-image:url(https://lbrit.co/static/imgs/sliders/quality-products-slider-xs.jpg);background-color:#ededed !important}
 .loyalist-rewards-slider{background-image:url(https://lbrit.co/static/imgs/sliders/loyalist-reward-slider-xs.jpg);background-color:#34587a !important}
-
 a.fullon-a{display:block;height:100%;cursor:pointer}
 
 @media (min-width: 768px){	
 	.carousel-inner .mx300{max-width:768px;}
-	
-	.junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix_slider_welcome.jpg);}
-	.junglemix-slider a{bottom:25px !important;margin-left:130px !important;height:30px;font-size:14px;width:144px !important;padding:6px}
-	.junglemix-slider.abtest{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix_slider_truckload.jpg);}
-	.junglemix-slider.abtest a{bottom:89px !important;margin-left:200px !important}
-	.quality-product-slider{background-image:url(https://lbrit.co/static/imgs/sliders/quality-products-slider.jpg)}
-	.loyalist-rewards-slider{background-image:url(https://lbrit.co/static/imgs/sliders/loyalist-reward-slider.jpg)}
 
-	.blackjack-slider{background-image: url(https://lbrit.co/static/imgs/sliders/black_jack_slider.jpg)}
-	.home-carousel .item.blackjack-slider button.btn{bottom: 90px;margin-left: 60px;width: 120px;font-size:14px}
-	.home-carousel .item.powerpack-slider a.btn{margin-left:-60px;width:120px;font-size:14px}
-
-	.offhouroffer-slider.item button.btn {bottom:70px}
-	.doubledown-slider.item button.btn {bottom:25px;right:20%;font-size:12px}
-	.localbox-slider.item a.btn{right:19%;;bottom:25%;}
-	
 	.britebox-slider.item {background-position:50% 50%;}
 	.britebox-slider.item button.btn{right:10%;bottom: 15px;}
 }
+</style>
+<style type="text/css" th:utext="${somestyles}">
 </style>
 </head>
 <body ng-app="lbApp" ng-controller="homeCtrlr">
@@ -78,35 +50,14 @@ a.fullon-a{display:block;height:100%;cursor:pointer}
 
 			<!-- Wrapper for slides -->
 			<div class="carousel-inner" role="listbox">
- 
-				<div class="quality-product-slider item active">
-					<a href="/products" class="fullon-a"></a>
+				<div  
+					th:each="slide,iterStat : ${slides}" 
+					class="item" 
+					th:classappend="${iterStat.first} ? ' ' + ${slide.name} + '-slider active' : ' ' + ${slide.name} + '-slider'">
+					
+					<a class="fullon-a"></a>
 				</div>
- 
-				<div class="powerpack-slider item">
-					<a href="/product/power-puff-power-plug" class="btn btn-danger">POWER UP</a>
-				</div>
-
-				<div class="blackjack-slider item">
-					<button class="btn btn-danger" data-toggle="modal"
-						data-target="#blackjack">VIEW DETAILS</button>
-				</div>
-
-				<div class="junglemix-slider item abtest">
-					<a href="/product/jungle-mix-10-gram-special" class="btn btn-warning">SHOP NOW</a>
-				</div>
-
-				<div class="doubledown-slider item">
-					<div class="mx300 rel pch100">
-						<button data-toggle="modal" data-target="#doubleDownModal"
-							class="btn btn-sm btn-black">VIEW DETAILS</button>
-					</div>
-				</div>
-
-				<div class="offhouroffer-slider item">
-					<button data-toggle="modal" data-target="#offHourOfferModal"
-						class="btn btn-warning btn-sm">VIEW DETAILS</button>
-				</div>
+				
 			</div>
 
 			<!-- Controls -->

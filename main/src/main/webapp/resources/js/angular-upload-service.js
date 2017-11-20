@@ -26,7 +26,8 @@ var uploadServiceFn = function($templateRequest, $compile){
 		"fields" : {path : '', ctrl : ''},
 		"listFiles" : true, //Whether the provide option to listFiles
 		"multipleSelect" : false,   //Select only one file at a time
-		"productUploader" : false  //If the upload is for products
+		"productUploader" : false,  //If the upload is for products
+		"filter" : null  //Any filter that needs to be applied during listing
 	};
 	
 	return service;	
@@ -58,7 +59,8 @@ var uploadCtrlr = function ($scope, $http, Upload, uploadService) {
 			'c' : $scope.sfiles.length,
 			'l' : 15 ,
 			'q' : $scope.search,
-			'p' : $scope.productUploader
+			'p' : $scope.productUploader,
+			'f' : uploadService.config.filter
 		}})
 		.success(function(data){
 			if(!data || data.length === 0){
