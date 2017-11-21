@@ -85,8 +85,8 @@ public class ContentManagementController {
 				 
 				 if(pg.getSliderName() != null && 
 						 !pg.getSliderName().equals("") && 
-						 pg.getSliderInfo() != null && 
-						 pg.getSliderInfo().getName() != null && !pg.getSliderInfo().getName().equals("")){
+						 pg.getTitle() != null && 
+						 !pg.getTitle().equals("")){
 
 					 dao.save(pg);
 
@@ -150,6 +150,66 @@ public class ContentManagementController {
 						 
 						 //reload configuration after publishing
 						 ccs.reConfigControl();
+					 }
+				 }
+				 
+				 else{
+
+					 message = "Invalid slider name";
+				 }
+			 }
+		}
+		
+		gr.setMessage(message);
+		return gr;
+	}
+	
+	
+	@RequestMapping(value = "/slides/changestatus", method = RequestMethod.POST)
+	public @ResponseBody GenericResponse changeStatus(@AuthenticationPrincipal 
+			UserDetailsExt user, @RequestBody PageSlider pg) {
+
+		GenericResponse gr = new GenericResponse();
+		gr.setSuccess(false);
+		
+		String message = "Not authorized";
+		
+		if(user != null){
+			
+			Set<String> authorities = AuthorityUtils.authorityListToSet(user.getAuthorities());
+			 if (authorities.contains("ROLE_ADMIN")) {
+				 
+				 if(pg.get_id() != null){
+					 PageSlider pgDb = dao.get(pg.get_id());
+					 if(pgDb != null){
+						 pgDb.setActive(pg.isActive());
+						 
+						 dao.save(pgDb);
+						 gr.setSuccess(true);
+						 message = "";
+						 
+
+						 /**
+						  * Update Log
+						  * */
+						 try {
+
+							 Log log = new Log();
+							 log.setCollection("pagesliders");
+							 log.setDetails("Slider status changed to active = " 
+									 + pg.isActive() + " for slider id = " + pg.get_id());
+							 log.setDate(Calendar.getInstance().getTime());
+							 log.setKey(0);
+							 log.setUser(user.getUsername());
+
+							 logDao.save(log);					
+						 }
+						 catch(Exception e){
+							 logger.error(Exceptions.giveStackTrace(e));
+						 }
+					 }
+					 else{
+						 message = "Not a valid slide!";
 					 }
 				 }
 				 

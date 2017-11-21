@@ -74,15 +74,16 @@ public class MainController {
 	}	
 	
 	
-	@RequestMapping(value = "/preview-home")
+	@RequestMapping(value = "/previewslides/{sliderName}")
 	public String homePagePreview(
+			@PathVariable String sliderName, 
 			@AuthenticationPrincipal UserDetailsExt user, 
 			ModelMap model) {
 		
 		if(user!=null && user.isEnabled()){
 			model.addAttribute("userId", user.getId());
 			
-			SliderObject so = shf.getSliderFinalObject("homepage");
+			SliderObject so = shf.getSliderFinalObject(sliderName);
 			if(so != null){
 				model.addAttribute("sliders", so);
 			}

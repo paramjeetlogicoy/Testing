@@ -1,4 +1,4 @@
-/*2017-11-16 1:38 PM*/
+/*2017-11-21 11:15 AM*/
 /***** Luvbrite Admin - Type setting *****/
 /*Base size for desktop*/
 /* @basesizeD / 10. Division by 10 because 10px would come as 1, and 15px as 1.5*/
@@ -1133,6 +1133,9 @@ h6 {
 .x-ng-cloak {
   display: none !important;
 }
+[ng-click] {
+  cursor: pointer;
+}
 /* PNotify*/
 @media (max-width: 480px) {
   .ui-pnotify-mobile-able.ui-pnotify {
@@ -1409,4 +1412,7 @@ nav#pagination-nav > pre {
 }
 .slide-holder img {
   margin: 2px;
+}
+.slider-info-img img {
+  margin-bottom: 0.7142857142857143rem;
 }

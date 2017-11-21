@@ -19,17 +19,14 @@ var
 defaultCtrlr = function($scope, $http, $filter, uploadService, $rootScope){
 	
 	$scope.pageLevelError = '';
-	$scope.slides = [];
+	$scope.sliders = [];
 	$scope.newSlider;
 	$scope.saveSliderText = "Save Slide";
 	$scope.modalHtmlErr = false;
 	
 	$scope.resetSliderVar = function(){
 		$scope.newSlider = { 
-				active: true,
-				sliderInfo: {
-					modal: false 
-				}
+				active: true
 			};
 	};
 	$scope.resetSliderVar();
@@ -37,9 +34,24 @@ defaultCtrlr = function($scope, $http, $filter, uploadService, $rootScope){
 	
 	$scope.getSlides = function(){
 		
+		$scope.sliders = [];
+		
 		$http.get('/admin/cms/slides/json/all')
 		.then(function(resp){			
-			$scope.slides = resp.data;
+			var sliders = resp.data;
+			
+			var homeSliders = [];
+			if(sliders != null && sliders.length > 0){
+				sliders.forEach(function(slider){
+					if(slider.sliderName == 'homepage')
+						homeSliders.push(slider)
+				});
+				
+				$scope.sliders.push({
+					name: 'homepage',
+					slides: homeSliders
+				});
+			}
 		});	
 		
 	};	
@@ -50,10 +62,10 @@ defaultCtrlr = function($scope, $http, $filter, uploadService, $rootScope){
 
 		var formScope = this;
 		$scope.modalHtmlErr = false;
-		if($scope.newSlider.sliderInfo && $scope.newSlider.sliderInfo.modal){
-			$scope.newSlider.sliderInfo.modalHtml = modalHtmlEditor.getData();
+		if($scope.newSlider.modal){
+			$scope.newSlider.modalHtml = modalHtmlEditor.getData();
 			
-			if($scope.newSlider.sliderInfo.modalHtml == '') {
+			if($scope.newSlider.modalHtml == '') {
 				$scope.modalHtmlErr = true;
 				return;
 			}
@@ -76,6 +88,7 @@ defaultCtrlr = function($scope, $http, $filter, uploadService, $rootScope){
 				_lbFns.pSuccess('Slide added');
 				
 				$scope.getSlides();
+				modalHtmlEditor.setData("");
 			}
 			else{
 				alert(data.message);
@@ -89,10 +102,61 @@ defaultCtrlr = function($scope, $http, $filter, uploadService, $rootScope){
 		$scope.showAddSlide = true;
 		
 		if(modalHtmlEditor) 
-			modalHtmlEditor.setData($scope.newSlider.sliderInfo.modalHtml);
+			modalHtmlEditor.setData($scope.newSlider.modalHtml);
+		
+		/* Scroll up to the form*/
+	     $('html,body').animate({scrollTop:250},500);
 	};
 	
 	
+	$scope.activateSlide = function(){
+		var pg = this.slide;
+		pg.active = true;
+		
+		changeActiveStatus(pg);
+	};
+	
+	
+	$scope.deactivateSlide = function(){
+		var pg = this.slide;
+		pg.active = false;
+		
+		changeActiveStatus(pg);
+	};
+	
+	var changeActiveStatus = function(pg){
+		
+		$http.post('/admin/cms/slides/changestatus', pg)
+		.then(function(resp){
+			var data = resp.data;
+			if(data.success){
+				_lbFns.pSuccess('Slide status changed');
+				
+				$scope.getSlides();
+			}
+			else{
+				alert(data.message);
+			}
+		});
+	};
+	
+	$scope.publishSlide = function(){
+
+		var sliderName = this.slider.name,
+		pageSlider = { 'sliderName': sliderName };
+		
+		$http.post('/admin/cms/slides/publish', JSON.stringify(pageSlider))
+		.then(function(resp){
+			var data = resp.data;
+			if(data.success){
+				_lbFns.pSuccess('Publish successful');
+			}
+			else{
+				alert(data.message);
+			}
+		});
+		
+	};
 	
 	
 	/**UPLOAD SPECIFIC FUNCTIONS*/
@@ -101,7 +165,7 @@ defaultCtrlr = function($scope, $http, $filter, uploadService, $rootScope){
 	
 	$scope.afterSelect = function(){
 		if(uploadService.selectedFiles){
-			$scope.newSlider.sliderInfo.sliderImg = uploadService.selectedFiles[0].location;
+			$scope.newSlider.sliderImg = uploadService.selectedFiles[0].location;
 			$scope.newSlideForm.$setDirty();
 		}
 	};
@@ -116,7 +180,7 @@ defaultCtrlr = function($scope, $http, $filter, uploadService, $rootScope){
 	
 	$scope.afterSelectSM = function(){
 		if(uploadService.selectedFiles){
-			$scope.newSlider.sliderInfo.sliderImgSM = uploadService.selectedFiles[0].location;
+			$scope.newSlider.sliderImgSM = uploadService.selectedFiles[0].location;
 			$scope.newSlideForm.$setDirty();
 		}
 	};

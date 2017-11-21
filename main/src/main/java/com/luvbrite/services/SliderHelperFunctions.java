@@ -18,7 +18,6 @@ import com.luvbrite.web.models.AttrValue;
 import com.luvbrite.web.models.ControlRecord;
 import com.luvbrite.web.models.Log;
 import com.luvbrite.web.models.PageSlider;
-import com.luvbrite.web.models.SliderInfo;
 import com.luvbrite.web.models.SliderObject;
 
 
@@ -45,19 +44,14 @@ public class SliderHelperFunctions {
 		SliderObject so = new SliderObject();
 		
 		try{
-			
-			List<SliderInfo> sliderInfos = new ArrayList<>();
+
 			List<PageSlider> pageSliders = pageSliderDao.createQuery()
 						.filter("sliderName", sliderName)
 						.filter("active", true)
-						.order("sliderInfo.order")
+						.order("order")
 						.asList();
-
-			for(PageSlider ps: pageSliders){
-				sliderInfos.add(ps.getSliderInfo());
-			}
 			
-			if(!sliderInfos.isEmpty()) {
+			if(!pageSliders.isEmpty()) {
 				
 				StringBuilder styles = new StringBuilder();
 				StringBuilder mediaStyles = new StringBuilder();
@@ -66,9 +60,9 @@ public class SliderHelperFunctions {
 				
 				boolean firstSlide = true;
 				
-				for(SliderInfo sf : sliderInfos){
+				for(PageSlider pg : pageSliders){
 
-					String sliderClassName = sf.getName().toLowerCase().replaceAll(" ", "-") + "-slider";
+					String sliderClassName = pg.getTitle().toLowerCase().replaceAll(" ", "-") + "-slider";
 					
 					
 					//Setup styles
@@ -77,28 +71,28 @@ public class SliderHelperFunctions {
 							.append("{")
 								.append("background-image:url(")
 								.append(env.getProperty("cdnPath"))
-								.append(sf.getSliderImg())
+								.append(pg.getSliderImg())
 								.append(");");
 					
 					
-					if(sf.getBackgroundColor() != null 
-							&& !sf.getBackgroundColor().equals("")){
+					if(pg.getBackgroundColor() != null 
+							&& !pg.getBackgroundColor().equals("")){
 						
 						styles.append("background-color:")
-						.append(sf.getBackgroundColor())
+						.append(pg.getBackgroundColor())
 						.append(" !important;");
 					}
 					
 
-					if(sf.getSliderImgSM() != null 
-							&& !sf.getSliderImgSM().equals("")){
+					if(pg.getSliderImgSM() != null 
+							&& !pg.getSliderImgSM().equals("")){
 						
 						mediaStyles.append(".")
 							.append(sliderClassName)
 							.append("{")
 								.append("background-image:url(")
 								.append(env.getProperty("cdnPath"))
-								.append(sf.getSliderImgSM())
+								.append(pg.getSliderImgSM())
 								.append(");")
 							.append("}");
 					}
@@ -118,7 +112,7 @@ public class SliderHelperFunctions {
 					.append(sliderClass)
 					.append("\">");
 					
-					if(sf.isModal()){
+					if(pg.isModal()){
 						html.append("<a class=\"fullon-a\" data-toggle=\"modal\" data-target=\"#")
 						.append(sliderClassName)
 						.append("\"></a>");
@@ -140,7 +134,7 @@ public class SliderHelperFunctions {
 							.append("</div>") //.modal-header ends
 							
 							.append("<div class=\"modal-body\">")
-							.append(sf.getModalHtml())
+							.append(pg.getModalHtml())
 							.append("</div>")  //.modal-body ends
 							
 							.append("</div>") //.modal-content ends
@@ -152,7 +146,7 @@ public class SliderHelperFunctions {
 					
 					else{
 						html.append("<a class=\"fullon-a\" href=\"")
-						.append(sf.getLinkUrl())
+						.append(pg.getLinkUrl())
 						.append("\"></a>");
 					}
 					
@@ -199,14 +193,17 @@ public class SliderHelperFunctions {
 			ar.setValue(sliderName);
 			params.add(ar);
 			
+			ar = new AttrValue();
 			ar.setAttr("styles");
 			ar.setValue(so.getStyles());
 			params.add(ar);
 			
+			ar = new AttrValue();
 			ar.setAttr("html");
 			ar.setValue(so.getHtml());
 			params.add(ar);
 			
+			ar = new AttrValue();
 			ar.setAttr("modalHtml");
 			ar.setValue(so.getModalHtml());
 			params.add(ar);
