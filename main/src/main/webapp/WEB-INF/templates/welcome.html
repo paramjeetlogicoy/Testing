@@ -49,7 +49,7 @@ a.fullon-a{display:block;height:100%;cursor:pointer}
 		<div id="home-sliders" class="home-carousel carousel slide" data-ride="carousel">
 
 			<!-- Wrapper for slides -->
-			<div class="carousel-inner" role="listbox">
+			<div class="carousel-inner" role="listbox">				
 				<div  
 					th:each="slide,iterStat : ${slides}" 
 					class="item" 
@@ -73,9 +73,9 @@ a.fullon-a{display:block;height:100%;cursor:pointer}
 		</div>
 
 		<div class="text-center pad2">
-			<a href="/category/radical-buds"><img
-				src="https://lbrit.co/static/imgs/sliders/radical-buds.jpg"
-				alt="Reduced pricing on all cannabis flowers" class="fit" /></a></div>
+			<a href="/category/daily-deals"><img
+				src="https://lbrit.co/static/imgs/sliders/daily-deals.jpg"
+				alt="Daily deals on all cannabis flowers" class="fit" /></a></div>
 
 		<div class="home-britebox">
 			<div class="rel container">
@@ -449,7 +449,7 @@ a.fullon-a{display:block;height:100%;cursor:pointer}
 	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
 	<script type="text/javascript">
 		$(document).ready(function(){			
-			$('#doubleDownModal, #offHourOfferModal, #blackjack')
+			$('#doubleDownModal, #offHourOfferModal, #blackjack, #thanksgiving')
 			.on('shown.bs.modal', function() {
 				$('#home-sliders').carousel('pause');
 			}).on('hide.bs.modal', function() {
@@ -478,6 +478,33 @@ a.fullon-a{display:block;height:100%;cursor:pointer}
 						<div class="marg-b2">When you order during off hours (11:00
 							PM - 11:00 AM PST) a 60mg Kiva Dark or Milk Chocolate will be added to
 							your order for FREE!</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="modal fade" id="thanksgiving" tabindex="-1"
+			role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h3 class="modal-title">Thanksgiving Special</h3>
+					</div>
+					<div class="modal-body">
+						<div class="marg-b2">From now until Thanksgiving, you will
+							receive a free Cheeba Chew Pumpkin Spice Caramel Chew with double
+							down order (orders reaching a total of $100 or more). The chews
+							will be added to the double down orders on top of the free double
+							down gift selected! Offer valid from Monday Nov. 20, 11am until
+							Thursday Nov. 23 10:30pm or while supplies last.</div>
+
+						<div class="marg-b2 small mute">*Luvbrite has the right to
+							refuse or terminate this offer at any time with or without
+							reason.</div>
 					</div>
 				</div>
 			</div>
@@ -515,6 +542,7 @@ a.fullon-a{display:block;height:100%;cursor:pointer}
 						</div>
 					</div>
 				</div>
+			</div>
 		</div>
 		
 		<div class="modal fade" id="briteboxuse" tabindex="-1"
@@ -533,7 +561,7 @@ a.fullon-a{display:block;height:100%;cursor:pointer}
 							and are verified, you'll also automatically receive a $100
 							Loyalist Rewards card. The $100 will be available through your
 							new online account as a $10 coupon which can be used for 10
-							future online orders.</div>
+							future online orders.
 						</div>
 					</div>
 				</div>
