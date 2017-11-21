@@ -39,25 +39,23 @@ a.fullon-a{display:block;height:100%;cursor:pointer}
 	.britebox-slider.item button.btn{right:10%;bottom: 15px;}
 }
 </style>
-<style type="text/css" th:utext="${somestyles}">
+<style type="text/css" 
+	th:if="${sliders} != null and ${sliders.styles} != ''" 
+	th:utext="${sliders.styles}">
 </style>
 </head>
 <body ng-app="lbApp" ng-controller="homeCtrlr">
 	<div th:replace="fragments/layout::fragment-header"></div>
 	<div class="homepage-container">
 
-		<div id="home-sliders" class="home-carousel carousel slide" data-ride="carousel">
+		<div id="home-sliders" class="home-carousel carousel slide" data-ride="carousel" th:if="${sliders} != null">
 
 			<!-- Wrapper for slides -->
-			<div class="carousel-inner" role="listbox">				
-				<div  
-					th:each="slide,iterStat : ${slides}" 
-					class="item" 
-					th:classappend="${iterStat.first} ? ' ' + ${slide.name} + '-slider active' : ' ' + ${slide.name} + '-slider'">
-					
-					<a class="fullon-a"></a>
-				</div>
-				
+			<div 
+				class="carousel-inner" 
+				role="listbox" 
+				th:if="${sliders.html} != ''"
+				th:utext="${sliders.html}">	
 			</div>
 
 			<!-- Controls -->
@@ -461,89 +459,6 @@ a.fullon-a{display:block;height:100%;cursor:pointer}
 	<div class="modalholder">		
 		<div th:replace="fragments/layout::fragment-doubledownmodal"></div>
 		<div th:replace="fragments/layout::fragment-briteboxmodal"></div>
-
-
-		<div class="modal fade" id="offHourOfferModal" tabindex="-1"
-			role="dialog">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-						<h3 class="modal-title">Orders during Off Hours</h3>
-					</div>
-					<div class="modal-body">
-						<div class="marg-b2">When you order during off hours (11:00
-							PM - 11:00 AM PST) a 60mg Kiva Dark or Milk Chocolate will be added to
-							your order for FREE!</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="modal fade" id="thanksgiving" tabindex="-1"
-			role="dialog">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-						<h3 class="modal-title">Thanksgiving Special</h3>
-					</div>
-					<div class="modal-body">
-						<div class="marg-b2">From now until Thanksgiving, you will
-							receive a free Cheeba Chew Pumpkin Spice Caramel Chew with double
-							down order (orders reaching a total of $100 or more). The chews
-							will be added to the double down orders on top of the free double
-							down gift selected! Offer valid from Monday Nov. 20, 11am until
-							Thursday Nov. 23 10:30pm or while supplies last.</div>
-
-						<div class="marg-b2 small mute">*Luvbrite has the right to
-							refuse or terminate this offer at any time with or without
-							reason.</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="modal fade" id="blackjack" tabindex="-1"
-			role="dialog">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-						<h3 class="modal-title">Black Jack Offer</h3>
-					</div>
-					<div class="modal-body">
-						<div class="marg-b2">
-							When you hit black jack on an order--your order hits $150 or
-							more--you'll receive a <strong class="orange1">FREE</strong>
-							exclusive gram of <a
-								href="https://www.luvbrite.com/product/slymer-exclusive">Slymer</a>
-							with your order. Only once the order total in the cart reaches
-							$150 or greater, will the free gram be added to your order.
-						</div>
-
-						<div class="marg-b2 small mute">
-							*Offer valid while supplies last. In order to qualify, the
-							donation total reflected in the cart must be $150 or greater. If
-							an item is removed/cancelled from the order brining the total
-							below $150, the free assorted gram will be forfeited. This offer
-							cannot be combined with other coupons or discounts, and is valid
-							while supplies last. <span class="orange1">Cannot be
-								combined with other offers.</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
 		
 		<div class="modal fade" id="briteboxuse" tabindex="-1"
 			role="dialog">
@@ -588,8 +503,7 @@ a.fullon-a{display:block;height:100%;cursor:pointer}
 				</div>
 			</div>
 		</div>
-
-
+		
 
 		<div class="modal fade" id="loyalistRewardDetails" tabindex="-1"
 			role="dialog">
@@ -628,6 +542,11 @@ a.fullon-a{display:block;height:100%;cursor:pointer}
 					</div>
 				</div>
 			</div>
+		</div>
+		
+		<div 
+			th:if="${sliders} != null and ${sliders.modalHtml} != ''"
+			th:utext="${sliders.modalHtml}">
 		</div>
 
 	</div>

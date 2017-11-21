@@ -22,6 +22,7 @@ defaultCtrlr = function($scope, $http, $filter, uploadService, $rootScope){
 	$scope.slides = [];
 	$scope.newSlider;
 	$scope.saveSliderText = "Save Slide";
+	$scope.modalHtmlErr = false;
 	
 	$scope.resetSliderVar = function(){
 		$scope.newSlider = { 
@@ -46,9 +47,20 @@ defaultCtrlr = function($scope, $http, $filter, uploadService, $rootScope){
 	
 	
 	$scope.saveSlideRecord = function(){
+
+		var formScope = this;
+		$scope.modalHtmlErr = false;
+		if($scope.newSlider.sliderInfo && $scope.newSlider.sliderInfo.modal){
+			$scope.newSlider.sliderInfo.modalHtml = modalHtmlEditor.getData();
+			
+			if($scope.newSlider.sliderInfo.modalHtml == '') {
+				$scope.modalHtmlErr = true;
+				return;
+			}
+		}
+		
 		
 		$scope.saveSliderText = "Saving...";
-		var formScope = this;
 		
 		$http.post('/admin/cms/slides/saverecord', $scope.newSlider)
 		.then(function(resp){
@@ -75,6 +87,9 @@ defaultCtrlr = function($scope, $http, $filter, uploadService, $rootScope){
 	$scope.editSlide = function(){
 		$scope.newSlider = this.slide;
 		$scope.showAddSlide = true;
+		
+		if(modalHtmlEditor) 
+			modalHtmlEditor.setData($scope.newSlider.sliderInfo.modalHtml);
 	};
 	
 	

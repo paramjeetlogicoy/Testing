@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.luvbrite.dao.LogDAO;
 import com.luvbrite.dao.PageSliderDAO;
+import com.luvbrite.services.ControlConfigService;
+import com.luvbrite.services.SliderHelperFunctions;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Log;
@@ -34,7 +36,13 @@ public class ContentManagementController {
 	private PageSliderDAO dao;
 	
 	@Autowired
+	private SliderHelperFunctions shf;
+	
+	@Autowired
 	private LogDAO logDao;
+	
+	@Autowired
+	private ControlConfigService ccs;
 	
 	
 	@RequestMapping(method = RequestMethod.GET)
@@ -62,7 +70,7 @@ public class ContentManagementController {
 	
 	
 	@RequestMapping(value = "/slides/saverecord", method = RequestMethod.POST)
-	public @ResponseBody GenericResponse reloadConfig(@AuthenticationPrincipal 
+	public @ResponseBody GenericResponse saveSlider(@AuthenticationPrincipal 
 			UserDetailsExt user, @RequestBody PageSlider pg) {
 
 		GenericResponse gr = new GenericResponse();
@@ -112,6 +120,45 @@ public class ContentManagementController {
 			 }
 		}
 		
+		
+		gr.setMessage(message);
+		return gr;
+	}
+	
+	
+	@RequestMapping(value = "/slides/publish", method = RequestMethod.POST)
+	public @ResponseBody GenericResponse publishSlider(@AuthenticationPrincipal 
+			UserDetailsExt user, @RequestBody PageSlider pg) {
+
+		GenericResponse gr = new GenericResponse();
+		gr.setSuccess(false);
+		
+		String message = "Not authorized";
+		
+		if(user != null){
+			
+			Set<String> authorities = AuthorityUtils.authorityListToSet(user.getAuthorities());
+			 if (authorities.contains("ROLE_ADMIN")) {
+				 
+				 if(pg.getSliderName() != null && 
+						 !pg.getSliderName().equals("")){
+
+					 message = shf.publishSlider(pg.getSliderName(), user.getUsername());
+					 if(message.equals("")){
+						 gr.setSuccess(true);
+						 
+						 
+						 //reload configuration after publishing
+						 ccs.reConfigControl();
+					 }
+				 }
+				 
+				 else{
+
+					 message = "Invalid slider name";
+				 }
+			 }
+		}
 		
 		gr.setMessage(message);
 		return gr;

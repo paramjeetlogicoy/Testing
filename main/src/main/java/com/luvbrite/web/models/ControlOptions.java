@@ -1,6 +1,7 @@
 package com.luvbrite.web.models;
 
 import java.util.List;
+import java.util.Map;
 
 public class ControlOptions {
 
@@ -8,6 +9,7 @@ public class ControlOptions {
 	private double doubleDownOfferValue = 0d;
 	private double orderMinimum = 0d;
 	private List<Integer> doubleDownEligibleProducts;
+	private Map<String, SliderObject> sliderObjs;
 	
 	public double getDoubleDown() {
 		return doubleDown;
@@ -60,5 +62,11 @@ public class ControlOptions {
 	}
 	public void setDev(boolean dev) {
 		this.dev = dev;
+	}
+	public Map<String, SliderObject> getSliderObjs() {
+		return sliderObjs;
+	}
+	public void setSliderObjs(Map<String, SliderObject> sliderObjs) {
+		this.sliderObjs = sliderObjs;
 	}
 }

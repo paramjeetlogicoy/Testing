@@ -82,15 +82,13 @@
 									</div>
 
 									<div class="form-group" ng-show="newSlider.sliderInfo.modal"
-										ng-class="{ 'has-error' : newSlideForm.modalHtml.$invalid &amp;&amp; !newSlideForm.modalHtml.$pristine }">
+										ng-class="{ 'has-error' : modalHtmlErr }">
 										<label class="col-sm-4 control-label">Modal HTML *</label>
 										<div class="col-sm-8">
-											<textarea class="form-control"
-												ng-required="newSlider.sliderInfo.modal" name="modalHtml"
-												ng-model="newSlider.sliderInfo.modalHtml" rows="5"></textarea>
+											<textarea id="modalHtmlEditor" rows="5"></textarea>
 
 											<p
-												ng-show="newSlideForm.modalHtml.$invalid &amp;&amp; !newSlideForm.modalHtml.$pristine"
+												ng-show="modalHtmlErr"
 												class="help-block">Modal HTML is required</p>
 										</div>
 									</div>
@@ -146,7 +144,7 @@
 											<input type="hidden" name="sliderImgSM"
 												ng-model="newSlider.sliderInfo.sliderImgSM" />
 											<div class="slide-holder"
-												ng-if="newSlider.sliderInfo.sliderImg">
+												ng-if="newSlider.sliderInfo.sliderImgSM">
 												<img ng-src="{{cdnPath + newSlider.sliderInfo.sliderImgSM}}" />
 											</div>
 										</div>
@@ -198,8 +196,13 @@
 	
 	<script src="/resources/js/angular-upload-service.js?v002"></script>
 	<script src="/resources/js/admin/angular-content-management.js?v001"></script>
+	<script src="//cdn.ckeditor.com/4.5.9/standard/ckeditor.js"></script>
 	<script type="text/javascript">
 		$('.nav-cms').addClass('active');
+		var modalHtmlEditor = null;
+		$(document).ready(function(){
+			modalHtmlEditor = CKEDITOR.replace( 'modalHtmlEditor' );
+		});
 	</script>
 </body>
 </html>
