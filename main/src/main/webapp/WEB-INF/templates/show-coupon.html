@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Exclusive Coupon for You | Luvbrite Collective</title>
+<meta th:include="fragments/layout::fragment-head" />
+</head>
+<body ng-app="lbApp" class="bg-greyF0">
+	<div th:replace="fragments/layout::fragment-google-analytics"></div>
+	<div th:replace="fragments/layout::fragment-header"></div>
+
+	<div class="container page-container">
+		
+		<ol class="breadcrumb">
+			<li><a href="/">Home</a></li>
+			<li class="active">Coupons</li>
+		</ol>
+		
+		<div class="generic-container pad-v4 pad-h2">
+		
+			<h1 class="text-center" th:if="${cp}!=null">Thank you. Here is the coupon details</h1>
+			<h1 class="text-center" th:if="${error}!=null">Error</h1>
+			<div class="mx700">
+				<div class="text-center" th:if="${cp}!=null">
+					<div class="coupon-wrapper">
+						<h4 th:text="${cp._id}"></h4>
+						<div>
+							<em>Coupon expires on <span
+								th:text="${#dates.format(cp.expiry, 'MMM dd, yyyy')}"></span></em>
+						</div>
+					</div>
+				</div>
+				<div class="text-center" th:if="${error}!=null">
+					<div class="alert alert-danger" th:text="${error}">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div th:replace="fragments/layout::fragment-footer"></div>
+	<div th:include="fragments/layout::fragment-foot(angular=true)"></div>
+	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
+</body>
+</html>

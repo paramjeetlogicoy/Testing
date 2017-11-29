@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Content Management</title>
+<meta th:include="fragments/admin/layout::fragment-head" />
+</head>
+<body ng-app="contentManagementApp" th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
+	<div class="admin-container">
+		<div th:replace="fragments/admin/layout::fragment-header"></div>
+		<div th:replace="fragments/admin/layout::fragment-subnav"></div>
+		<div class="container-fluid" ng-controller="defaultRouteCtrl">
+
+			<div class="page-level-alert ng-cloak">
+				<div class="alert alert-danger alert-dismissible" role="alert"
+					ng-show="pageLevelError">
+					<button type="button" class="close" data-dismiss="alert"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<span ng-bind-html="pageLevelError"></span>
+				</div>
+			</div>
+
+			<div class="orders-container ng-cloak"
+				th:if="${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_ADMIN')}">
+				<div class="row">
+					<div class="col-md-10">
+						<div class="marg-b3 well well">
+							<div class="text-right" ng-init="showAddSlide = false">
+								<button class="btn btn-warning btn-xs"
+									ng-click="showAddSlide = !showAddSlide">
+									<span ng-hide="showAddSlide">ADD SLIDE</span><span
+										ng-show="showAddSlide">DISMISS</span>
+								</button>
+							</div>
+
+							<div ng-show="showAddSlide">
+								<h4>Add Slide</h4>
+								<form class="form-horizontal newSlideForm" name="newSlideForm"
+									ng-submit="saveSlideRecord()">
+									<div class="form-group"
+										ng-class="{ 'has-error' : newSlideForm.sliderTitle.$invalid &amp;&amp; !newSlideForm.sliderTitle.$pristine }">
+										<label class="col-sm-4 control-label">Slider Title <sup>*</sup></label>
+										<div class="col-sm-8">
+											<input type="text" class="form-control" name="sliderTitle"
+												required="required" ng-model="newSlider.title"
+												placeholder="Slider Title" />
+											<p
+												ng-show="newSlideForm.sliderTitle.$invalid &amp;&amp; !newSlideForm.sliderTitle.$pristine"
+												class="help-block">Slider Title is required</p>
+										</div>
+									</div>
+
+									<div class="form-group"
+										ng-class="{ 'has-error' : newSlideForm.sliderPosition.$invalid &amp;&amp; !newSlideForm.sliderPosition.$pristine }">
+										<label class="col-sm-4 control-label">Slider Position
+											<sup>*</sup></label>
+										<div class="col-sm-8">
+											<input type="number" step="1" min="1" max="9"
+												name="sliderPosition" required="required"
+												class="form-control" ng-model="newSlider.order"
+												placeholder="Enter a number 1 - 9" />
+
+											<p
+												ng-show="newSlideForm.sliderPosition.$invalid &amp;&amp; !newSlideForm.sliderPosition.$pristine"
+												class="help-block">Slider position requires a number
+												between 1 and 9</p>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-4 col-sm-8">
+											<div class="checkbox">
+												<label> <input type="checkbox"
+													ng-model="newSlider.modal" /> Modal based
+													(Check the box if this clicking on slider needs to show a
+													pop-up)
+												</label>
+											</div>
+										</div>
+									</div>
+
+									<div class="form-group" ng-show="newSlider.modal"
+										ng-class="{ 'has-error' : modalHtmlErr }">
+										<label class="col-sm-4 control-label">Modal HTML <sup>*</sup></label>
+										<div class="col-sm-8">
+											<textarea id="modalHtmlEditor" rows="5"></textarea>
+
+											<p ng-show="modalHtmlErr" class="help-block">Modal HTML
+												is required</p>
+										</div>
+									</div>
+
+									<div class="form-group" ng-show="!newSlider.modal"
+										ng-class="{ 'has-error' : newSlideForm.linkUrl.$invalid &amp;&amp; !newSlideForm.linkUrl.$pristine }">
+										<label class="col-sm-4 control-label">Link URL <sup>*</sup></label>
+										<div class="col-sm-8">
+											<input type="text" class="form-control" name="linkUrl"
+												ng-required="!newSlider.modal"
+												ng-model="newSlider.linkUrl"
+												placeholder="URL Link" />
+
+											<p
+												ng-show="newSlideForm.linkUrl.$invalid &amp;&amp; !newSlideForm.linkUrl.$pristine"
+												class="help-block">Link URL is required</p>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-4 control-label">Slider Image Main<br/>
+											(for smaller screens and/or large screen)
+											(780 x 170 or 1600 x 315)</label>
+										<div class="col-sm-8">
+											<button type="button"
+												ng-hide="newSlider.sliderImg"
+												class="btn btn-xs btn-info" ng-click="selectImage()">Set
+												Image</button>
+											<button type="button"
+												ng-show="newSlider.sliderImg"
+												class="btn btn-xs btn-info" ng-click="selectImage()">Change
+												Image</button>
+											<input type="hidden" name="sliderImg"
+												ng-model="newSlider.sliderImg" />
+											<div class="slide-holder"
+												ng-if="newSlider.sliderImg">
+												<img ng-src="{{cdnPath + newSlider.sliderImg}}" />
+											</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-4 control-label">Slider Image
+											Large (only if there is different images for small and large
+											screens 1600 x 315)</label>
+										<div class="col-sm-8">
+											<button type="button"
+												ng-hide="newSlider.sliderImgSM"
+												class="btn btn-xs btn-info" ng-click="selectImageSM()">Set
+												Image</button>
+											<button type="button"
+												ng-show="newSlider.sliderImgSM"
+												class="btn btn-xs btn-info" ng-click="selectImageSM()">Change
+												Image</button>
+											<input type="hidden" name="sliderImgSM"
+												ng-model="newSlider.sliderImgSM" />
+											<div class="slide-holder"
+												ng-if="newSlider.sliderImgSM">
+												<img ng-src="{{cdnPath + newSlider.sliderImgSM}}" />
+											</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-4 control-label">Background Color</label>
+										<div class="col-sm-8">
+											<input type="text" class="form-control"
+												ng-model="newSlider.backgroundColor"
+												placeholder="ex. #23FD33 or rgb(0,0,0) or rgba(0,0,0,.1)" />
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-4 col-sm-8">
+											<button type="submit" ng-disabled="newSlideForm.$invalid"
+												class="btn btn-success marg-r3">{{saveSliderText}}</button>
+											<button type="button" class="btn btn-danger"
+												ng-click="resetSliderVar()">RESET</button>
+										</div>
+									</div>
+								</form>
+
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+				<div class="row ng-cloak" ng-show="sliders.length">
+					<div class="col-md-10">
+						<div class="panel panel-info" ng-repeat="slider in sliders">
+							<div class="panel-heading">
+								{{slider.name}}-slider
+								<button class="btn pull-right btn-xs btn-default"
+									ng-click="publishSlide()">Publish</button>
+								<a href="/previewslides/{{slider.name}}" target="_blank"
+									class="btn pull-right btn-xs btn-warning marg-r2">Preview</a>
+							</div>
+							<div class="panel-body">
+								<div
+									ng-repeat="slide in slider.slides | orderBy:['-active','order']" ng-class="slide.active ? '' : 'well'">
+
+									<div class="pad1 border1 marg-b1 cms-slides-holder">
+										<div class="row">
+											<div class="col-sm-3">
+												<div>
+													<em class="orange1">Slider Title:</em> {{slide.title}}
+												</div>
+												<div>
+													<em class="orange1">Order:</em> {{slide.order}}
+												</div>
+											</div>
+											<div class="col-sm-4">
+												<div>
+													<em class="orange1">Slider Background color:</em>
+													{{slide.backgroundColor}}
+												</div>
+												<div class="marg-b1">
+													<em class="orange1">Slider Imgs:</em>
+												</div>
+												<div class="marg-l2 slider-info-img">
+													<img ng-if="slide.sliderImg"
+														ng-src="{{cdnPath + slide.sliderImg}}" src="" class="fit" />
+													<img ng-if="slide.sliderImgSM"
+														ng-src="{{cdnPath + slide.sliderImgSM}}" src=""
+														class="fit" />
+												</div>
+											</div>
+											<div class="col-sm-3" ng-if="slide.modal">
+												<div>
+													<em class="orange1">Slider Modal</em>
+												</div>
+												<div class="border1 pad2">
+													<span ng-bind-html="slide.modalHtml"></span>
+												</div>
+											</div>
+											<div class="col-sm-3" ng-if="!slide.modal">
+												<em class="orange1">Slide Link:</em> {{slide.linkUrl}}
+											</div>
+											<div class="col-sm-2 text-right">
+												<a ng-click="editSlide()">Edit</a> | <a
+													ng-click="deactivateSlide()" ng-show="slide.active">deactivate</a><a
+													ng-click="activateSlide()" ng-hide="slide.active">Activate</a>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+
+
+
+			</div>
+		</div>
+
+		<div class="marg-b3"></div>
+
+		<div th:replace="fragments/admin/layout::fragment-footer"></div>
+		<div th:include="fragments/admin/layout::fragment-foot(angular=true)"></div>
+	</div>
+
+	<script src="/resources/js/angular-upload-service.js?v002"></script>
+	<script src="/resources/js/admin/angular-content-management.js?v001"></script>
+	<script src="//cdn.ckeditor.com/4.7.3/full/ckeditor.js"></script>
+	<script type="text/javascript">
+		$('.nav-cms').addClass('active');
+		var modalHtmlEditor = null;
+		$(document).ready(function(){
+			modalHtmlEditor = CKEDITOR.replace( 'modalHtmlEditor' );
+		});
+	</script>
+</body>
+</html>

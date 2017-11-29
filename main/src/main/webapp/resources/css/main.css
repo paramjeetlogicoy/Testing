@@ -1,4 +1,4 @@
-/*2017-06-01 5:38 PM*/
+/*2017-11-29 10:46 AM*/
 .ui-pnotify{top:36px;right:36px;position:absolute;height:auto;z-index:2}body>.ui-pnotify{position:fixed;z-index:100040}.ui-pnotify-modal-overlay{background-color:rgba(0,0,0,.4);top:0;left:0;position:absolute;height:100%;width:100%;z-index:1}body>.ui-pnotify-modal-overlay{position:fixed;z-index:100039}.ui-pnotify.ui-pnotify-in{display:block!important}.ui-pnotify.ui-pnotify-move{transition:left .5s ease,top .5s ease,right .5s ease,bottom .5s ease}.ui-pnotify.ui-pnotify-fade-slow{transition:opacity .6s linear;opacity:0}.ui-pnotify.ui-pnotify-fade-slow.ui-pnotify.ui-pnotify-move{transition:opacity .6s linear,left .5s ease,top .5s ease,right .5s ease,bottom .5s ease}.ui-pnotify.ui-pnotify-fade-normal{transition:opacity .4s linear;opacity:0}.ui-pnotify.ui-pnotify-fade-normal.ui-pnotify.ui-pnotify-move{transition:opacity .4s linear,left .5s ease,top .5s ease,right .5s ease,bottom .5s ease}.ui-pnotify.ui-pnotify-fade-fast{transition:opacity .2s linear;opacity:0}.ui-pnotify.ui-pnotify-fade-fast.ui-pnotify.ui-pnotify-move{transition:opacity .2s linear,left .5s ease,top .5s ease,right .5s ease,bottom .5s ease}.ui-pnotify.ui-pnotify-fade-in{opacity:1}.ui-pnotify .ui-pnotify-shadow{-webkit-box-shadow:0 6px 28px 0 rgba(0,0,0,.1);-moz-box-shadow:0 6px 28px 0 rgba(0,0,0,.1);box-shadow:0 6px 28px 0 rgba(0,0,0,.1)}.ui-pnotify-container{background-position:0 0;padding:.8em;height:100%;margin:0}.ui-pnotify-container:after{content:" ";visibility:hidden;display:block;height:0;clear:both}.ui-pnotify-container.ui-pnotify-sharp{-webkit-border-radius:0;-moz-border-radius:0;border-radius:0}.ui-pnotify-title{display:block;margin-bottom:.4em;margin-top:0}.ui-pnotify-text{display:block}.ui-pnotify-icon,.ui-pnotify-icon span{display:block;float:left;margin-right:.2em}.ui-pnotify.stack-bottomleft,.ui-pnotify.stack-topleft{left:25px;right:auto}.ui-pnotify.stack-bottomleft,.ui-pnotify.stack-bottomright{bottom:25px;top:auto}.ui-pnotify.stack-modal{left:50%;right:auto;margin-left:-150px}.ui-pnotify-closer,.ui-pnotify-sticker{float:right;margin-left:.2em}.ui-pnotify-container{position:relative;left:0}@media (max-width:480px){.ui-pnotify-mobile-able.ui-pnotify{position:fixed;top:0;right:0;left:0;width:auto!important;font-size:1.2em;-webkit-font-smoothing:antialiased;-moz-font-smoothing:antialiased;-ms-font-smoothing:antialiased;font-smoothing:antialiased}.ui-pnotify-mobile-able.ui-pnotify .ui-pnotify-shadow{-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none;border-bottom-width:5px}.ui-pnotify-mobile-able .ui-pnotify-container{-webkit-border-radius:0;-moz-border-radius:0;border-radius:0}.ui-pnotify-mobile-able.ui-pnotify.stack-bottomleft,.ui-pnotify-mobile-able.ui-pnotify.stack-topleft{left:0;right:0}.ui-pnotify-mobile-able.ui-pnotify.stack-bottomleft,.ui-pnotify-mobile-able.ui-pnotify.stack-bottomright{left:0;right:0;bottom:0;top:auto}.ui-pnotify-mobile-able.ui-pnotify.stack-bottomleft .ui-pnotify-shadow,.ui-pnotify-mobile-able.ui-pnotify.stack-bottomright .ui-pnotify-shadow{border-top-width:5px;border-bottom-width:1px}}
 /***** Luvbrite Admin - Type setting *****/
 /*Base size for desktop*/
@@ -126,7 +126,6 @@ footer,
 }
 .fix,
 .page-level-alert,
-.header-navbar,
 .header-sub,
 .footer-disclaimer,
 .pop-gallery-overlay,
@@ -211,7 +210,8 @@ img.fit,
 .pad3,
 .cart-details,
 .register-container,
-.article-container {
+.article-container,
+.coupon-wrapper {
   padding: 2.142857142857143rem;
 }
 .pad5 {
@@ -291,7 +291,8 @@ img.fit,
 hr,
 .prdpage-img-container,
 .prdpage-img,
-.nav-search-form {
+.nav-search-form,
+.coupon-wrapper {
   display: block !important;
   margin-left: auto;
   margin-right: auto;
@@ -522,6 +523,9 @@ label.fa-label {
 .overflow-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.nowrap {
   white-space: nowrap;
 }
 .text-center,
@@ -1232,6 +1236,9 @@ h6 {
 .x-ng-cloak {
   display: none !important;
 }
+[ng-click] {
+  cursor: pointer;
+}
 /* PNotify*/
 @media (max-width: 480px) {
   .ui-pnotify-mobile-able.ui-pnotify {
@@ -1262,11 +1269,12 @@ nav.admin-navbar .navbar-nav > li > a {
 }
 @media (min-width: 768px) {
   .header-navbar {
+    position: fixed;
     font-size: 0.9285714285714287rem;
   }
 }
 .header-navbar .container {
-  padding: 0;
+  /*padding:0; //causing a gao in mobile vies*/
 }
 .header-navbar .navbar-toggle {
   font-size: 2.142857142857143rem;
@@ -1299,7 +1307,6 @@ nav.admin-navbar .navbar-nav > li > a {
   }
 }
 .nav-notifications {
-  position: fixed;
   width: 100%;
   top: 67px;
   background-color: #f9edbe;
@@ -1310,6 +1317,7 @@ nav.admin-navbar .navbar-nav > li > a {
 }
 @media (min-width: 768px) {
   .nav-notifications {
+    position: fixed;
     top: 75px;
     z-index: 20;
   }
@@ -1324,7 +1332,9 @@ nav.admin-navbar .navbar-nav > li > a {
   }
 }
 .navbar-nav-logout {
-  font-size: 0.9285714285714287rem;
+  font-size: 1rem;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 600;
 }
 .navbar-nav-logout:hover {
   text-decoration: none;
@@ -1418,9 +1428,6 @@ nav.admin-navbar .navbar-nav > li > a {
   top: -10px;
   color: #ffa500;
 }
-.header-offset {
-  margin-top: 89px;
-}
 @media (min-width: 768px) {
   .header-offset {
     margin-top: 132px;
@@ -1486,11 +1493,17 @@ footer a + a {
   padding-right: 0.7142857142857143rem;
   border: 2px solid #444;
   border-radius: 2px;
-  bottom: 7%;
-  right: 7%;
+  bottom: 5%;
+  right: 10%;
   z-index: 10;
   opacity: .6;
   color: #000 !important;
+}
+@media (min-width: 768px) {
+  .to-top {
+    bottom: 7%;
+    right: 7%;
+  }
 }
 .footer-disclaimer {
   bottom: -250px;
@@ -2517,6 +2530,15 @@ nav#pagination-nav > pre {
     width: 25%;
   }
 }
+.cart-details .item-qty-ctrls .fa {
+  font-size: 1.7142857142857144rem;
+  color: #70b100 !important;
+  margin: 0 13px;
+  vertical-align: middle;
+}
+.cart-details .item-qty-ctrls .fa.disabled {
+  color: #ccc!important;
+}
 .cart-details .item-price {
   color: black !important;
 }
@@ -2963,4 +2985,10 @@ ul.img-thumbnails img {
   #videoPlayerModal iframe {
     width: 600px !important;
   }
+}
+/* Show coupon page */
+.coupon-wrapper {
+  max-width: 300px;
+  border: 2px dashed #ffe066;
+  background: #fffcef;
 }

@@ -4,7 +4,9 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.core.env.Environment;
 import com.luvbrite.dao.ControlRecordDAO;
@@ -13,6 +15,7 @@ import com.luvbrite.web.models.AttrValue;
 import com.luvbrite.web.models.ControlOptions;
 import com.luvbrite.web.models.ControlRecord;
 import com.luvbrite.web.models.ModifiedDate;
+import com.luvbrite.web.models.SliderObject;
 
 
 public class ControlConfigService {
@@ -38,10 +41,13 @@ public class ControlConfigService {
 	private void configureControl(){
 		
 		cOps = new ControlOptions();
+		Map<String, SliderObject> sliderObjs = new HashMap<>();
 		
 		List<ControlRecord> crs = dao.find().asList();
+		
 		if(crs != null && crs.size()>0){
-			for(ControlRecord cr : crs)
+			
+			for(ControlRecord cr : crs){
 				if(cr != null){
 
 					
@@ -155,7 +161,38 @@ public class ControlConfigService {
 					}
 					
 					
+					
+					
+					else if(cr.get_id().startsWith("slider_")){
+						
+						String sliderName = cr.get_id().substring("slider_".length());
+						SliderObject so = new SliderObject();
+						
+						List<AttrValue> params = cr.getParams();
+						for(AttrValue ar: params){
+							if(ar.getAttr().equals("name")){
+								so.setName(ar.getValue());
+							}
+							else if(ar.getAttr().equals("styles")){
+								so.setStyles(ar.getValue());
+							}
+							else if(ar.getAttr().equals("html")){
+								so.setHtml(ar.getValue());
+							}
+							else if(ar.getAttr().equals("modalHtml")){
+								so.setModalHtml(ar.getValue());
+							}
+						}
+						
+						sliderObjs.put(sliderName, so);
+						
+						System.out.println("Slider info put into config");
+					}
 				}
+			}
+			
+			cOps.setSliderObjs(sliderObjs);
+			
 		}
 		
 		cOps.setDev(false);

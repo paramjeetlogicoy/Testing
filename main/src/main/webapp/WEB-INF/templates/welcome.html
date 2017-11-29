@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -5,6 +6,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Luvbrite | Health &amp; Happiness Delivered</title>
+<style>.async-hide { opacity: 0 !important} </style>
+<script>(function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;h.start=1*new Date;
+h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
+(a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
+})(window,document.documentElement,'async-hide','dataLayer',4000,
+{'GTM-5H4W872':true});</script>
+<div th:replace="fragments/layout::fragment-google-analytics"></div>
 <meta name="description"
 	content="LuvBrite Collective is a therapeutic cannabis collective committed to serving patient needs with the highest level of compassion and professionalism." />
 <link href="https://www.luvbrite.com" rel="canonical" />
@@ -19,67 +27,36 @@
 <meta th:include="fragments/layout::fragment-head" />
 <link href="https://fonts.googleapis.com/css?family=Catamaran:900" rel="stylesheet" />
 <style type="text/css">
-.offhouroffer-slider{background-image: url(https://lbrit.co/static/imgs/sliders/off-hour-offer.jpg)}
-.doubledown-slider{background-image: url(https://lbrit.co/static/imgs/sliders/double-down-offer-v1.jpg);background-color:white !important;}
-.doubledown-slider.item button.btn {bottom:5px;right:0;font-size:10px;left:auto;}
-.localbox-slider{background-image: url(https://lbrit.co/static/imgs/sliders/local-box-banner.jpg);}
-.localbox-slider.item a.btn{right:0;bottom:20%;}
 .britebox-slider.item {background-image: url(https://lbrit.co/static/imgs/sliders/brite-box-temp.jpg);background-color:white !important;background-position:62% 50%;}
 .britebox-slider.item button.btn{right:0;bottom:5px;}
-.junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix-home-xs.jpg);background-color:black !important;}
-.waxpromo-slider .btn,
-.junglemix-slider a{background-color: #fb6a00;border-color: #ea680a;bottom: 20px !important;}
-.fiveplus1-slider{background-image: url(https://lbrit.co/static/imgs/sliders/5plus1-deal-xs.jpg)}
+.loyalist-rewards-slider{background-image:url(https://lbrit.co/static/imgs/sliders/loyalist-reward-slider-xs.jpg);background-color:#34587a !important}
+
+a.fullon-a{display:block;height:100%;cursor:pointer}
 
 @media (min-width: 768px){	
 	.carousel-inner .mx300{max-width:768px;}
-	
-	.junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix-home-sm.jpg?v001);}
 
-	.offhouroffer-slider.item button.btn {bottom:70px}
-	.doubledown-slider.item button.btn {bottom:25px;right:20%;font-size:12px;}
-	.localbox-slider.item a.btn{right:19%;;bottom:25%;}
-	
 	.britebox-slider.item {background-position:50% 50%;}
 	.britebox-slider.item button.btn{right:10%;bottom: 15px;}
-	
-	.fiveplus1-slider{background-image: url(https://lbrit.co/static/imgs/sliders/5plus1-deal.jpg)}
 }
-@media (min-width: 1200px){	
-	.junglemix-slider{background-image: url(https://lbrit.co/static/imgs/sliders/junglemix-home.jpg);}
-}
+</style>
+<style type="text/css" 
+	th:if="${sliders} != null and ${sliders.styles} != ''" 
+	th:utext="${sliders.styles}">
 </style>
 </head>
 <body ng-app="lbApp" ng-controller="homeCtrlr">
-	<div th:replace="fragments/layout::fragment-google-analytics"></div>
 	<div th:replace="fragments/layout::fragment-header"></div>
 	<div class="homepage-container">
 
-		<div id="home-sliders" class="home-carousel carousel slide" data-ride="carousel">
+		<div id="home-sliders" class="home-carousel carousel slide" data-ride="carousel" th:if="${sliders} != null">
 
 			<!-- Wrapper for slides -->
-			<div class="carousel-inner" role="listbox">
-
-				<div class="fiveplus1-slider item active">
-						<button data-toggle="modal" data-target="#fivePlusOne"
-							class="btn btn-sm btn-lb-o">VIEW DETAILS</button>
-				</div>
-
-				<div class="junglemix-slider item">
-					<a href="/product/jungle-mix-10-gram-special" class="btn btn-warning">SHOP NOW</a>
-				</div>
-
-				<div class="doubledown-slider item">
-					<div class="mx300 rel pch100">
-						<button data-toggle="modal" data-target="#doubleDownModal"
-							class="btn btn-sm btn-black">VIEW DETAILS</button>
-					</div>
-				</div>
-
-				<div class="offhouroffer-slider item">
-					<button data-toggle="modal" data-target="#offHourOfferModal"
-						class="btn btn-warning btn-sm">VIEW DETAILS</button>
-				</div>
+			<div 
+				class="carousel-inner" 
+				role="listbox" 
+				th:if="${sliders.html} != ''"
+				th:utext="${sliders.html}">	
 			</div>
 
 			<!-- Controls -->
@@ -93,6 +70,11 @@
 				aria-hidden="true"></span> <span class="sr-only">Next</span>
 			</a>
 		</div>
+
+		<div class="text-center pad2">
+			<a href="/category/daily-deals"><img
+				src="https://lbrit.co/static/imgs/sliders/daily-deals.jpg"
+				alt="Daily deals on all cannabis flowers" class="fit" /></a></div>
 
 		<div class="home-britebox">
 			<div class="rel container">
@@ -466,7 +448,7 @@
 	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
 	<script type="text/javascript">
 		$(document).ready(function(){			
-			$('#doubleDownModal, #endOfEightModal, #offHourOfferModal, #waxPromoModal')
+			$('#doubleDownModal, #offHourOfferModal, #blackjack')
 			.on('shown.bs.modal', function() {
 				$('#home-sliders').carousel('pause');
 			}).on('hide.bs.modal', function() {
@@ -476,29 +458,7 @@
 	</script>
 	
 	<div class="modalholder">		
-		<div th:replace="fragments/layout::fragment-doubledownmodal"></div>
 		<div th:replace="fragments/layout::fragment-briteboxmodal"></div>
-
-
-		<div class="modal fade" id="offHourOfferModal" tabindex="-1"
-			role="dialog">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-						<h3 class="modal-title">Orders during Off Hours</h3>
-					</div>
-					<div class="modal-body">
-						<div class="marg-b2">When you order during off hours (11:00
-							PM - 11:00 AM PST) a 60mg Kiva Dark or Milk Chocolate will be added to
-							your order for FREE!</div>
-					</div>
-				</div>
-			</div>
-		</div>
 		
 		<div class="modal fade" id="briteboxuse" tabindex="-1"
 			role="dialog">
@@ -516,7 +476,8 @@
 							and are verified, you'll also automatically receive a $100
 							Loyalist Rewards card. The $100 will be available through your
 							new online account as a $10 coupon which can be used for 10
-							future online orders.</div>
+							future online orders.
+						</div>
 					</div>
 				</div>
 			</div>
@@ -542,9 +503,10 @@
 				</div>
 			</div>
 		</div>
+		
 
-
-		<div class="modal fade" id="fivePlusOne" tabindex="-1" role="dialog">
+		<div class="modal fade" id="loyalistRewardDetails" tabindex="-1"
+			role="dialog">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -555,16 +517,38 @@
 						<h3 class="modal-title">Offer Details</h3>
 					</div>
 					<div class="modal-body">
-						<div class="marg-b2">
-							Buy any "Exclusive" marked flower and receive a <strong>
-								<span class="orange1">Power Puff pre-roll</span> FREE!
-							</strong> Offer limited to one per order. Valid while supplies last.
-						</div>
+						<div class="marg-b2">Hello loyal customers! We are happy to
+							announce the initiation of our
+							<strong>Loyalist Rewards</strong> program here at
+							Luvbrite. Please refer to the following for a guideline as to how
+							this program will be implemented:</div>
+
+						<ul class="marg-b2">
+							<li><strong class="orange1">Bronze</strong> - Every patient
+								who completes their 10th order with our collective will receive
+								a <span class="u">15% coupon to be used on their next
+									order</span>.</li>
+							<li><strong class="orange1">Silver</strong> - Every patient
+								who completes their 20th order with our collective will receive
+								a <span class="u">"Brite Box" with that order</span>.</li>
+							<li><strong class="orange1">Gold</strong> - Every patient
+								who completes their 30th order with our collective will receive
+								a permanent <span class="u">5% discount on all their
+									future orders</span>.</li>
+						</ul>
+
+						<div class="small marg-b2">*Luvbrite has the right to refuse or
+							terminate this offer at any time with or without reason.</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		
+		<div 
+			th:if="${sliders} != null and ${sliders.modalHtml} != ''"
+			th:utext="${sliders.modalHtml}">
+		</div>
+
 	</div>
 </body>
 </html>

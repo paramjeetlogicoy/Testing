@@ -78,7 +78,7 @@
 
 							<button class="btn btn-sm btn-default dropdown-toggle"
 								type="button" id="productFilterMenu" data-toggle="dropdown"
-								ng-click="filterActions()" aria-haspopup="true"
+								aria-haspopup="true"
 								aria-expanded="true">
 								<i class="fa fa-sliders fa-rotate-90 marg-r1"
 									ng-class="{'orange1' : buildList.catFilter}" aria-hidden="true"></i>
@@ -254,41 +254,42 @@
 						<div class="dropdown pull-right" th:if="${page} == 'product' or ${category} != 'Pre-Rolls'">
 							<span>Sort by:</span>
 							<button class="btn btn-sm btn-default dropdown-toggle" type="button"
-								id="productSortMenu" data-toggle="dropdown" aria-haspopup="true"
-								ng-click="filterActions()" aria-expanded="true">
+								id="productSortMenu" data-toggle="dropdown" aria-haspopup="true" 
+								th:attr="data-order=${sortOrder}" 
+								aria-expanded="true">
 								{{buildList.orderTxt}} <span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu" aria-labelledby="productSortMenu">
-								<li ng-class="{'disabled' : buildList.order == '-_id'}"><a
+								<li ng-class="{'disabled' : buildList.order == '-newBatchArrival'}"><a
 									href=""
-									ng-click="buildList.order = '-_id'; buildList.orderTxt = 'Newest'">Newest</a></li>
+									ng-click="sortOrderChange('-newBatchArrival')">Newest</a></li>
 								<li
 									ng-class="{'disabled' : buildList.order == 'productFilters.price'}"><a
 									href=""
-									ng-click="buildList.order = 'productFilters.price'; buildList.orderTxt = 'Lowest Price'">Lowest
+									ng-click="sortOrderChange('productFilters.price')">Lowest
 										Price</a></li>
 								<li
 									ng-class="{'disabled' : buildList.order == '-productFilters.price'}"><a
 									href=""
-									ng-click="buildList.order = '-productFilters.price'; buildList.orderTxt = 'Highest Price'">Highest
+									ng-click="sortOrderChange('-productFilters.price')">Highest
 										Price</a></li>
 								<li ng-class="{'disabled' : buildList.order == '-rating'}"><a
 									href=""
-									ng-click="buildList.order = '-rating'; buildList.orderTxt = 'Highly rated'">Highly
+									ng-click="sortOrderChange('-rating')">Highly
 										rated</a></li>
 								<li ng-class="{'disabled' : buildList.order == '-reviewCount'}"><a
 									href=""
-									ng-click="buildList.order = '-reviewCount'; buildList.orderTxt = 'Most reviews'">Most
+									ng-click="sortOrderChange('-reviewCount')">Most
 										reviews</a></li>
 								<li th:if="${page}=='product' or ${category}!='Gear'"
 									ng-class="{'disabled' : buildList.order == '-productFilters.thc'}"><a
 									href=""
-									ng-click="buildList.order = '-productFilters.thc'; buildList.orderTxt = 'High THC'">High
+									ng-click="sortOrderChange('-productFilters.thc')">High
 										THC</a></li>
 								<li th:if="${page}=='product' or ${category}!='Gear'"
 									ng-class="{'disabled' : buildList.order == '-productFilters.cbd'}"><a
 									href=""
-									ng-click="buildList.order = '-productFilters.cbd'; buildList.orderTxt = 'High CBD'">High
+									ng-click="sortOrderChange('-productFilters.cbd')">High
 										CBD</a></li>
 							</ul>
 						</div>
@@ -300,7 +301,8 @@
 
 			<div class="products-listing"
 				th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
-
+				<input type="hidden" id="lb_role_admin"
+					th:if="${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_ADMIN')}" />
 				<div th:if="${page}=='search'" class="text-center">
 					<div th:if="${#lists.size(products)==0}">
 						<em class="size16">No results found</em>
@@ -315,12 +317,14 @@
 					data-img=${product.featuredImg},
 					data-var=${product.variation},
 					data-p=${product.price},
+					data-sp=${product.salePrice},
 					data-url=${product.url},
 					data-cat=${#lists.isEmpty(product.categories) ? '' : #strings.listJoin(product.categories,',')},
 					data-rating=${product.rating},
 					data-review-count=${product.reviewCount},
 					data-price-range=${product.priceRange},
 					data-desc=${product.description},
+					data-newest=${product.newBatchArrival != null ? product.newBatchArrival.getTime() : '0'},
 					data-filter-price=${product.productFilters != null ? product.productFilters.price : ''},
 					data-filter-cbd=${product.productFilters != null ? product.productFilters.cbd : ''},
 					data-filter-thc=${product.productFilters != null ? product.productFilters.thc : ''}">
@@ -377,10 +381,12 @@
 												first to review</a>
 										</div>
 
-										<div class="text-center size16 marg-b1">
-											Price: <strong th:if="*{priceRange}"
+										<div class="text-center size24 marg-b1">
+											<strong th:if="*{priceRange}"
 												th:text="${(product.categories!=null) and (#lists.contains(product.categories, 'Flowers'))} ? ${#strings.listSplit(product.priceRange,' - ').get(0)} : *{priceRange}"></strong><span
-												th:unless="*{priceRange}"><strong
+												th:unless="*{priceRange}"><strong th:if="*{salePrice} != 0"
+												th:text="${'$' + #numbers.formatDecimal(product.salePrice,0,2)}"></strong>
+												<strong th:unless="*{salePrice} != 0"
 												th:text="${'$' + #numbers.formatDecimal(product.price,0,2)}"></strong></span>
 										</div>
 

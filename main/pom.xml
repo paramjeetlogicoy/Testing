@@ -99,11 +99,11 @@
 			<version>5.1.9</version>
 		</dependency>
 
-		<!-- MondoDB DB Driver -->
+		<!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
 		<dependency>
-			<groupId>org.mongodb</groupId>
-			<artifactId>mongodb-driver</artifactId>
-			<version>3.2.1</version>
+		    <groupId>org.mongodb</groupId>
+		    <artifactId>mongo-java-driver</artifactId>
+		    <version>3.4.3</version>
 		</dependency>
 
 		<!-- Need this for json to/from object -->

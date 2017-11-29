@@ -157,27 +157,29 @@
 				</div>
 				<div class="navbar-collapse collapse" id="xs-navbar">
 					<ul class="nav navbar-nav visible-xs-block">
-					<li><a href="/products">ALL PRODUCTS</a></li>
-					<li><a href="/category/specials">SPECIALS</a></li>
-					<li><a href="/category/new-arrivals">NEW ARRIVALS</a></li>
-					<li><a href="/category/pets">PETS</a></li>
-					<li><a href="/category/clearance">CLEARANCE</a></li>
-					<li><a href="/category/flowers">FLOWERS</a></li>
-					<li><a href="/category/edibles">EDIBLES</a></li>
-					<li><a href="/category/concentrates">CONCENTRATES</a></li>
-					<li><a href="/category/tinctures">TINCTURES</a></li>
-					<li><a href="/category/topicals">TOPICALS</a></li>
-					<li><a href="/category/pre-rolls">PRE-ROLLS</a></li>
-					<li><a href="/category/gear">ACCESSORIES</a></li>
-					<li><a href="/contact-us">CONTACT US</a></li>
-						<li><a href="/login" th:if="not ${userId}">LOGIN / SIGN UP</a><a href="/customer" th:if="${userId}">MY ACCOUNT</a></li>
+						<li><a href="/login" th:if="not ${userId}" class="orange1">LOGIN
+								/ SIGN UP</a><a href="/customer" th:if="${userId}" class="orange1">MY
+								ACCOUNT</a></li>
 						<li><form method="post" action="/logout"
 								class="nav-logout-form" th:if="${userId}">
 								<input type="hidden" id="_lb_sec_tok"
 									th:name="*{_csrf.parameterName}" th:value="${_csrf.token}" />
-								<input type="submit" class="btn btn-link navbar-nav-logout"
-									value="LOGOUT" />
+								<input type="submit"
+									class="btn btn-link navbar-nav-logout orange1" value="LOGOUT" />
 							</form></li>
+						<li><a href="/products">ALL PRODUCTS</a></li>
+						<li><a href="/category/specials">SPECIALS</a></li>
+						<li><a href="/category/new-arrivals">NEW ARRIVALS</a></li>
+						<li><a href="/category/pets">PETS</a></li>
+						<li><a href="/category/clearance">CLEARANCE</a></li>
+						<li><a href="/category/flowers">FLOWERS</a></li>
+						<li><a href="/category/edibles">EDIBLES</a></li>
+						<li><a href="/category/concentrates">CONCENTRATES</a></li>
+						<li><a href="/category/tinctures">TINCTURES</a></li>
+						<li><a href="/category/topicals">TOPICALS</a></li>
+						<li><a href="/category/pre-rolls">PRE-ROLLS</a></li>
+						<li><a href="/category/gear">ACCESSORIES</a></li>
+						<li><a href="/contact-us">CONTACT US</a></li>
 					</ul>
 
 				</div>
@@ -267,6 +269,12 @@
 						href="/service-area">Service Area</a>
 				</div>
 			</div>
+			<div class="marg-b3">
+				<div class="mx600">Fast, FREE &amp; Discrete Marijuana Delivery to Pacific Palisades,
+					Santa Monica, Brentwood, Westwood/UCLA, Mar Vista, Venice, Marina
+					Del Rey, Playa Vista, Playa Del Mar, Culver City, West Hollywood
+					&amp; West Los Angeles.</div>
+			</div>
 			<div>&copy; LUVBRITE COLLECTIVE | WEST LOS ANGELES | TEL (424)
 				270-1560 | 11AM - 11PM PST 7 DAYS A WEEK - 365 DAYS A YEAR</div>
 		</div>
@@ -323,6 +331,7 @@
 	  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 	
 	  ga('create', 'UA-15927423-5', 'auto');
+	  ga('require', 'GTM-5H4W872');
 	  ga('send', 'pageview');
 	</script>
 	
@@ -424,6 +433,10 @@
 				<div class="product-item-container">
 					<div class="product-item-card showItem">
 						<div class="pi-cards product-item">
+							<a href="/admin/products#/details/{{p._id}}"
+								class="pull-right inhert"
+								ng-if="buildList.role=='admin'"><i
+								class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
 							<h3>
 								<a href="/product/{{p.url}}" title="{{p.name}}">{{p.name}}</a>
 							</h3>
@@ -438,7 +451,13 @@
 									class="splribbon"><span>special</span></span><span
 									ng-if="p.categories &amp;&amp; p.categories.indexOf('Super Special') > -1"
 									class="splribbon sspl"><span>super <br />special
-									</span></span>
+									</span></span><span
+									ng-if="p.categories &amp;&amp; p.categories.indexOf('Exclusive') > -1"
+									class="splribbon exclusive"><span>Exclusive! </span></span><span
+									ng-if="p.categories &amp;&amp; p.categories.indexOf('Clearance') > -1"
+									class="splribbon sspl"><span>Clearance! </span></span><span
+									ng-if="p.categories &amp;&amp; p.categories.indexOf('5g') > -1"
+									class="stamp fivegram"><span>5g</span></span>
 								</a>
 							</div>
 
@@ -457,11 +476,12 @@
 										first to review</a>
 								</div>
 
-								<div class="text-center size16 marg-b1">
-									Price: <strong ng-if="p.priceRange"> {{ (p.categories
+								<div class="text-center size24 marg-b1">
+									<strong ng-if="p.priceRange"> {{ (p.categories
 										&amp;&amp; p.categories.indexOf('Flowers') > -1) ?
 										p.priceRange.split('-')[0] : p.priceRange}} </strong><span
-										ng-if="!p.priceRange"><strong>{{p.price |
+										ng-if="!p.priceRange"><strong ng-if="p.salePrice">{{p.salePrice |
+											currency}}</strong><strong ng-if="!p.salePrice">{{p.price |
 											currency}}</strong></span>
 								</div>
 

@@ -1,4 +1,4 @@
-package com.luvbrite.services;
+	package com.luvbrite.services;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -10,12 +10,14 @@ import org.springframework.stereotype.Service;
 
 import com.luvbrite.dao.CartOrderDAO;
 import com.luvbrite.dao.OrderDAO;
+import com.luvbrite.dao.UserDAO;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.web.models.CartOrder;
 import com.luvbrite.web.models.Order;
 import com.luvbrite.web.models.OrderLineItem;
 import com.luvbrite.web.models.OrderLineItemCart;
 import com.luvbrite.web.models.OrderNotes;
+import com.luvbrite.web.models.User;
 
 @Service
 public class OrderFinalization {
@@ -23,6 +25,8 @@ public class OrderFinalization {
 	private static Logger logger = Logger.getLogger(OrderFinalization.class);
 	private static boolean offhourPromoActive = true;
 	private static boolean valentinesPromoActive = false;
+	private static boolean freeGramPromo = true;
+	private static double freeGramPromoMin = 150d;
 	
 	private long orderNumber = 0;	
 	public long getOrderNumber() {
@@ -39,6 +43,9 @@ public class OrderFinalization {
 	
 	@Autowired
 	private CartOrderDAO cartDAO;
+	
+	@Autowired
+	private UserDAO userDAO;
 	
 	
 	public String finalizeOrder(CartOrder cartOrder, CartLogics cartLogics){
@@ -63,6 +70,9 @@ public class OrderFinalization {
 				
 				//First Order Check
 				firstOrderCheck(cartOrder, cartLogics);
+				
+				//Order level check
+				orderLevelCheck(cartOrder.getCustomer().get_id());
 				
 				//Copy info from cartOrder to Order
 				copyCartOrder(cartOrder, order);
@@ -170,6 +180,36 @@ public class OrderFinalization {
 		}
 	}
 	
+	/**
+	 * Order level update
+	 **/
+	private void orderLevelCheck(long userId){
+		
+		User user = userDAO.findOne("_id", userId);
+		if(user != null){
+			
+			int orderCount = user.getOrderCount();
+			orderCount++;
+			
+			user.setOrderCount(orderCount);
+			
+			if(orderCount == 10){
+				user.setLevel("Bronze");
+			}
+			
+			else if(orderCount == 20){
+				user.setLevel("Silver");
+			}
+			
+			else if(orderCount == 30){
+				user.setLevel("Gold");
+			}
+			
+			userDAO.save(user);
+		}
+		
+	}
+	
 	
 	/**
 	 * Check for other adhoc promos 
@@ -199,6 +239,56 @@ public class OrderFinalization {
 			//Update orderTotals
 			cartLogics.calculateSummary(co);
 		}
+		
+		
+		
+		if(freeGramPromo && co.getTotal() >= freeGramPromoMin){
+			
+			boolean applyFreeGram = true;
+
+			List<OrderLineItemCart> items = co.getLineItems();
+			for(OrderLineItemCart item : items){
+				
+				if(item.getType().equals("item") && item.isInstock()){
+					
+					if(item.getPromo() != null && 
+							!item.getPromo().trim().equals("") && 
+							!item.getPromo().trim().equals("s") && 
+							!item.getPromo().trim().equals("offhourpromo")){
+						
+						applyFreeGram = false;
+						break;
+					}
+				}
+			}
+			
+			
+			if(applyFreeGram){
+				
+				//Add the new item
+				OrderLineItemCart newItem = new OrderLineItemCart();
+				newItem.setTaxable(false);
+				newItem.setInstock(true);
+				newItem.setType("item");
+				newItem.setName("1 Gram - Slymer - Exclusive (Black Jack Promo)");
+				newItem.setPromo("Free Gram Promo");
+				newItem.setProductId(10504);
+				newItem.setVariationId(0);
+				newItem.setQty(1);
+				newItem.setCost(20d);
+				newItem.setPrice(0d);
+				newItem.setImg("/products/Sylmer.jpg");
+	
+				List<OrderLineItemCart> olic = co.getLineItems();
+				olic.add(newItem);
+				co.setLineItems(olic);				
+				
+				//Update orderTotals
+				cartLogics.calculateSummary(co);
+				
+			}
+		}
+		
 	}
 	
 	/**

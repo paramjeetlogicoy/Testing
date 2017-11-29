@@ -10,7 +10,7 @@ public class OrderLineItem {
 	private String type = "";
 	private String name = "";
 	
-	private long itemId = 0;
+	private long itemId = 0; //Not used now. Used to reference the order_item_id of WP orders.
 	private int qty = 0;
 	
 	@Property("pid")

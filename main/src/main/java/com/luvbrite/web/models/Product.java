@@ -43,6 +43,8 @@ public class Product {
 	private SeoElem seoElem;
 	private List<ProductVisuals> prdVisuals; /*Additional Imgs and Videos*/
 	
+	private Date newBatchArrival;
+	
 	public long get_id() {
 		return _id;
 	}
@@ -186,5 +188,11 @@ public class Product {
 	}
 	public void setPrdVisuals(List<ProductVisuals> prdVisuals) {
 		this.prdVisuals = prdVisuals;
+	}
+	public Date getNewBatchArrival() {
+		return newBatchArrival;
+	}
+	public void setNewBatchArrival(Date newBatchArrival) {
+		this.newBatchArrival = newBatchArrival;
 	}
 }

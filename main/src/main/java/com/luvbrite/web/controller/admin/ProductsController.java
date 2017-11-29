@@ -1,6 +1,7 @@
 package com.luvbrite.web.controller.admin;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -172,122 +173,133 @@ public class ProductsController {
 		
 		GenericResponse r = new GenericResponse();
 		
-		if(result.hasErrors()){
+		try {
 			
+			if(result.hasErrors()){
+				
+				r.setSuccess(false);
+				
+				StringBuilder errMsg = new StringBuilder();
+				
+				List<FieldError> errors = result.getFieldErrors();
+				for (FieldError error : errors ) {
+					 errMsg
+					 .append(" - ")
+					 .append(error.getDefaultMessage())
+					 .append("<br />");
+				}
+				
+				r.setMessage(errMsg.toString());
+			
+			}
+			else{
+				
+				Product productDb = prdDao.get(product.get_id());
+				if(productDb != null){
+					
+					/**
+					 * Before saving the product, we need to make sure that the 
+					 * URL haven't changed. If it changed, then we 
+					 * need to make sure that it remains unique
+					 **/
+					
+					boolean urlUnique = false;
+					String otherProductName = "";
+					if(product.getUrl() != null && 
+							productDb.getUrl() != null && 
+							productDb.getUrl().equals(product.getUrl())){
+						urlUnique = true;
+					}
+					else{
+						Product p2 = prdDao.findOne("url", product.getUrl());
+						if(p2 == null) urlUnique = true;
+						else otherProductName = p2.getName();
+					}
+					
+					if(!urlUnique){
+						r.setMessage("Product URL is not unique. Product - " + otherProductName + " - has same URL.");
+						return r;
+					}
+					
+					String productDbString = "";
+					try {
+						/* Convert productDb to JSON */
+						ObjectMapper mapper = new ObjectMapper();
+						productDbString = mapper.writeValueAsString(productDb);
+					} catch (Exception e1) {} 
+					
+					productDb.setName(product.getName());
+					productDb.setDescription(product.getDescription());
+					productDb.setUrl(product.getUrl());
+					productDb.setStatus(product.getStatus());
+					productDb.setStockStat(product.getStockStat());
+					productDb.setCategories(product.getCategories());
+					productDb.setVariation(product.isVariation());
+					productDb.setFeaturedImg(product.getFeaturedImg());
+					productDb.setRps(product.getRps());
+					productDb.setProductFilters(product.getProductFilters());
+					productDb.setPrdVisuals(product.getPrdVisuals());
+					productDb.setNewBatchArrival(product.getNewBatchArrival());
+					
+					if(product.isVariation()){
+						productDb.setAttrs(product.getAttrs());
+						productDb.setDefaultAttr(product.getDefaultAttr());
+						productDb.setPriceRange(product.getPriceRange());
+					}
+					else{
+						productDb.setPrice(product.getPrice());
+						productDb.setSalePrice(product.getSalePrice());
+						productDb.setStock(product.getStock());
+					}
+					
+					
+					prdDao.save(productDb);
+					
+					
+					
+					/* Update Log */
+					try {
+						
+						Log log = new Log();
+						log.setCollection("products");
+						log.setDetails("product document updated.");
+						log.setDate(Calendar.getInstance().getTime());
+						log.setPreviousDoc(productDbString);
+						log.setKey(product.get_id());
+						log.setUser(user.getUsername());
+						
+						logDao.save(log);					
+					}
+					catch(Exception e){
+						logger.error(Exceptions.giveStackTrace(e));
+					}
+					
+					
+					
+					
+					/* Sync CartItems */
+					try {
+						syncCart.sync(productDb);				
+					}
+					catch(Exception e){
+						logger.error(Exceptions.giveStackTrace(e));
+					}
+					
+					
+					
+					
+					r.setSuccess(true);				
+				}
+				
+				else {
+					r.setMessage("Invalid Product ID");
+				}
+			}
+			
+		}catch(Exception e){
+			logger.error(Exceptions.giveStackTrace(e));
 			r.setSuccess(false);
-			
-			StringBuilder errMsg = new StringBuilder();
-			
-			List<FieldError> errors = result.getFieldErrors();
-			for (FieldError error : errors ) {
-				 errMsg
-				 .append(" - ")
-				 .append(error.getDefaultMessage())
-				 .append("<br />");
-			}
-			
-			r.setMessage(errMsg.toString());
-		
-		}
-		else{
-			
-			Product productDb = prdDao.get(product.get_id());
-			if(productDb != null){
-				
-				/**
-				 * Before saving the product, we need to make sure that the 
-				 * URL haven't changed. If it changed, then we 
-				 * need to make sure that it remains unique
-				 **/
-				
-				boolean urlUnique = false;
-				String otherProductName = "";
-				if(productDb.getUrl().equals(product.getUrl())){
-					urlUnique = true;
-				}
-				else{
-					Product p2 = prdDao.findOne("url", product.getUrl());
-					if(p2 == null) urlUnique = true;
-					else otherProductName = p2.getName();
-				}
-				
-				if(!urlUnique){
-					r.setMessage("Product URL is not unique. Product - " + otherProductName + " - has same URL.");
-					return r;
-				}
-				
-				String productDbString = "";
-				try {
-					/* Convert productDb to JSON */
-					ObjectMapper mapper = new ObjectMapper();
-					productDbString = mapper.writeValueAsString(productDb);
-				} catch (Exception e1) {} 
-				
-				productDb.setName(product.getName());
-				productDb.setDescription(product.getDescription());
-				productDb.setUrl(product.getUrl());
-				productDb.setStatus(product.getStatus());
-				productDb.setStockStat(product.getStockStat());
-				productDb.setCategories(product.getCategories());
-				productDb.setVariation(product.isVariation());
-				productDb.setFeaturedImg(product.getFeaturedImg());
-				productDb.setRps(product.getRps());
-				productDb.setProductFilters(product.getProductFilters());
-				productDb.setPrdVisuals(product.getPrdVisuals());
-				
-				if(product.isVariation()){
-					productDb.setAttrs(product.getAttrs());
-					productDb.setDefaultAttr(product.getDefaultAttr());
-					productDb.setPriceRange(product.getPriceRange());
-				}
-				else{
-					productDb.setPrice(product.getPrice());
-					productDb.setSalePrice(product.getSalePrice());
-					productDb.setStock(product.getStock());
-				}
-				
-				
-				prdDao.save(productDb);
-				
-				
-				
-				/* Update Log */
-				try {
-					
-					Log log = new Log();
-					log.setCollection("products");
-					log.setDetails("product document updated.");
-					log.setDate(Calendar.getInstance().getTime());
-					log.setPreviousDoc(productDbString);
-					log.setKey(product.get_id());
-					log.setUser(user.getUsername());
-					
-					logDao.save(log);					
-				}
-				catch(Exception e){
-					logger.error(Exceptions.giveStackTrace(e));
-				}
-				
-				
-				
-				
-				/* Sync CartItems */
-				try {
-					syncCart.sync(productDb);				
-				}
-				catch(Exception e){
-					logger.error(Exceptions.giveStackTrace(e));
-				}
-				
-				
-				
-				
-				r.setSuccess(true);				
-			}
-			
-			else {
-				r.setMessage("Invalid Product ID");
-			}
+			r.setMessage("There was some error updating the product, please contact G.");
 		}
 		
 		
@@ -303,7 +315,12 @@ public class ProductsController {
 		//Generate productId
 		long productId = prdDao.getNextSeq();
 		if(productId != 0l){
+			
+			Date dateCreated = Calendar.getInstance().getTime();
+			
 			product.set_id(productId);
+			product.setDateCreated(dateCreated);
+			product.setNewBatchArrival(dateCreated);
 			
 			
 			/**
@@ -314,7 +331,7 @@ public class ProductsController {
 				Log log = new Log();
 				log.setCollection("products");
 				log.setDetails("product created");
-				log.setDate(Calendar.getInstance().getTime());
+				log.setDate(dateCreated);
 				log.setKey(productId);
 				log.setUser(user.getUsername());
 				

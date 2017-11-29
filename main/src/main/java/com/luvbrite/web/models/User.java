@@ -12,7 +12,7 @@ public class User {
 
 	@Id
 	private long _id;
-	private int orderCount;
+	private int orderCount = 0; //Orders made since deployment date in Nov 2017
 	
 	private double moneySpent;
 	
@@ -39,6 +39,7 @@ public class User {
 	private String gender;
 	
 	private String status; //pending, active, reco-expired, closed, declined, etc
+	private String level; //bronze, silver, bronze,	etc
 	
 	public long get_id() {
 		return _id;
@@ -153,5 +154,11 @@ public class User {
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	public String getLevel() {
+		return level;
+	}
+	public void setLevel(String level) {
+		this.level = level;
 	}
 }

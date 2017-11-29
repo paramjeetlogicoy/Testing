@@ -65,17 +65,19 @@ public class CategoryController {
 		Category c = catDao.findOne("url", categoryUrl);		
 		if(c != null){
 			String categoryName = c.getName();
+			String sortOrder = c.getSortOrder();
 			
 			List<Product> products = prdDao.createQuery()
 					.field("categories").equal(categoryName)
 					.filter("status", "publish")
 					.filter("stockStat", "instock")
-					.order("-_id")
+					.order(sortOrder)
 					.asList();
 			
 			model.addAttribute("products", products);
 			model.addAttribute("category", categoryName);
 			model.addAttribute("page", "category");
+			model.addAttribute("sortOrder", sortOrder);
 			
 			return "products";
 		}		

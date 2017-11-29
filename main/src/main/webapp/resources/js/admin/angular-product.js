@@ -77,6 +77,7 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 	$scope.mode = mode; //Mode will be 'new' while adding a product, and 'edit', if editing a product.
 	$scope.productId = $scope.params.productId;
 	$scope.defaultAttr = -1;
+	$scope.newBatchDate;
 	
 	/**UPLOAD SPECIFIC FUNCTIONS*/
 	$scope.cdnPath = uploadService.cdnPath;
@@ -91,7 +92,8 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 	
 	$scope.selectImage = function(){
 		uploadService.config.cb = $scope.afterSelect;
-		uploadService.config.fields = {path : '/products/'};		
+		uploadService.config.fields = {path : '/products/'};
+		uploadService.config.productUploader = true;
 		uploadService.showGallery($rootScope);
 	};
 	
@@ -182,6 +184,10 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 			$('#product-editor').show(0, function(){
 				$('.admin-editor-container')[0].scrollIntoView();
 			});
+			
+			//Remove millisecond part
+			$scope.newBatchDate = new Date(Math.floor( $scope.p.newBatchArrival / (1000*60) )*1000*60)
+			
 			$scope.correctVarValues();
 			
 			if($scope.p.attrs){
@@ -201,6 +207,10 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 		});		
 	};
 	
+	$scope.updateScopeDate = function(){
+		$scope.p.newBatchArrival = $scope.newBatchDate.getTime();
+		//console.log('$scope.p.newBatchArrival - ' + $scope.p.newBatchArrival);
+	};
 	
 	$scope.getCurrentVarValues = function(attr){
 		var values = [];
@@ -796,8 +806,17 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 		$scope.getProductDetails();
 		$scope.reloadMemos();
 	}
-	else
-		$('#product-editor').show();
+	else {
+		
+		//Get date after removing the milli seconds
+		$scope.newBatchDate = new Date(Math.floor( new Date().getTime() / (1000*60) )*1000*60);
+		
+		//initialize product obj
+		$scope.p = {"_id":0, "status":"private","stockStat":"instock","newBatchArrival":$scope.newBatchDate.getTime()};			
+		$('#product-editor').show(0, function(){
+			$('.admin-editor-container')[0].scrollIntoView();
+		});
+	}
 
 },
 
@@ -811,6 +830,8 @@ catCtrlrs = function($scope, $http, $filter){
 	$scope.catDesc = '';
 	$scope.catParent = {_id:0, name:'No Parent'}
 	$scope.selCats = [];
+	$scope.orderAndOrderTxts = _lbConstants.productspage_orderAndOrderTxt; //defined in main.js
+	$scope.orderSelect = $scope.orderAndOrderTxts["-newBatchArrival"];
 	
 	$scope.resetSelCats = function(){		
 		$scope.selCats = $scope.categories.slice(0);
@@ -894,6 +915,7 @@ catCtrlrs = function($scope, $http, $filter){
 		$scope.catUrl = this.c.url;
 		$scope.catDesc = this.c.description;
 		$scope.catParent = $scope.getParent(this.c.parent);
+		$scope.orderSelect = $scope.orderAndOrderTxts[this.c.sortOrder];
 		
 		/**
 		 * Show subtle color change.
@@ -937,6 +959,13 @@ catCtrlrs = function($scope, $http, $filter){
 			if($scope.catDesc != '') cat.description = $scope.catDesc;
 			if($scope.catParent._id != 0) cat.parent = $scope.catParent._id;
 			
+			for(var x in $scope.orderAndOrderTxts){
+				if($scope.orderAndOrderTxts[x] === $scope.orderSelect){
+					cat.sortOrder = x + "";
+					break;
+				}
+			}
+			
 			$http.post('/admin/categories/json/create', cat)
 			.success(function(c){				
 				if(c._id == 0){				
@@ -959,6 +988,13 @@ catCtrlrs = function($scope, $http, $filter){
 			var cat = {'_id':$scope.categoryId, 'name': $scope.catName, 'url' : $scope.catUrl};
 			if($scope.catDesc != '') cat.description = $scope.catDesc;
 			if($scope.catParent._id != 0) cat.parent = $scope.catParent._id;
+			
+			for(var x in $scope.orderAndOrderTxts){
+				if($scope.orderAndOrderTxts[x] === $scope.orderSelect){
+					cat.sortOrder = x + "";
+					break;
+				}
+			}
 			
 			$http.post('/admin/categories/json/save', cat)
 			.success(function(resp){				

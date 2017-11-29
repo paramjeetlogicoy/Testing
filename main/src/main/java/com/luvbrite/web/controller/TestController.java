@@ -1,29 +1,15 @@
 package com.luvbrite.web.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.luvbrite.dao.CategoryDAO;
 import com.luvbrite.dao.OrderDAO;
-import com.luvbrite.dao.PriceDAO;
-import com.luvbrite.dao.ProductDAO;
-import com.luvbrite.dao.SeoDAO;
-import com.luvbrite.dao.UserDAO;
 import com.luvbrite.services.PostOrderMeta;
-import com.luvbrite.web.models.Category;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Order;
-import com.luvbrite.web.models.Price;
-import com.luvbrite.web.models.Product;
-import com.luvbrite.web.models.ProductFilters;
-import com.luvbrite.web.models.Seo;
-import com.luvbrite.web.models.SeoElem;
-import com.luvbrite.web.models.User;
 
 
 @Controller
@@ -32,23 +18,9 @@ public class TestController {
 	@Autowired
 	private OrderDAO orderDao;
 	
+	
 	@Autowired
 	private PostOrderMeta postService;	
-
-	@Autowired
-	private PriceDAO priceDao;
-
-	@Autowired
-	private ProductDAO prdDao;
-
-	@Autowired
-	private CategoryDAO catDao;
-
-	@Autowired
-	private UserDAO userDao;
-
-	@Autowired
-	private SeoDAO seoDao;
 	
 
 	@RequestMapping(value = "/test/meta/{orderNumber}")
@@ -75,201 +47,6 @@ public class TestController {
 			gr.setMessage("Ordernumber is null");
 		}
 
-		return gr;		
-	}
-	
-
-	@RequestMapping(value = "/onetimes/populateprices")
-	public @ResponseBody GenericResponse populateLowestPrice(){	
-
-		GenericResponse gr  = new GenericResponse();
-		gr.setSuccess(false);
-		gr.setMessage("");
-		
-		int processCounter = 0;
-		StringBuilder sb = new StringBuilder();
-		
-		List<Product> products = prdDao.createQuery().asList();
-		if(products != null){
-			
-			for(Product p : products){
-				
-				long productId = p.get_id();
-				
-				if(p.isVariation()){
-				
-					List<Price> prices = priceDao.findPriceByProduct(productId);
-					if(prices != null){
-						
-						double floorPrice = 9999d;
-						
-						for(Price z : prices){
-							
-							//Floor Price
-							if(z.getSalePrice() > 0 && z.getSalePrice() < floorPrice){
-								floorPrice = z.getSalePrice();
-							}
-							
-							else if(z.getRegPrice() <= floorPrice){
-								floorPrice = z.getRegPrice();
-							}
-						}
-						
-						
-						if(floorPrice != 9999d){
-							
-							ProductFilters pf = p.getProductFilters();
-							if(pf == null) pf = new ProductFilters();
-								
-							pf.setPrice(floorPrice);
-							p.setProductFilters(pf);
-							
-							prdDao.save(p);
-							processCounter++;
-						}
-						
-						else {
-							sb.append("Product id " + productId + ". No price found!");
-						}
-					}
-				}
-				
-				else{
-					
-					ProductFilters pf = p.getProductFilters();
-					if(pf == null) pf = new ProductFilters();
-					
-					if(p.getSalePrice() > 0){
-						pf.setPrice(p.getSalePrice());
-					}
-					else{
-						pf.setPrice(p.getPrice());
-					}
-					
-					p.setProductFilters(pf);
-					
-					prdDao.save(p);
-					processCounter++;
-				}
-				
-			}			
-			
-			sb.append(processCounter + " products updated!");
-			gr.setMessage(sb.toString());
-		}
-
-		return gr;		
-	}
-	
-	
-	@RequestMapping(value = "/onetime/populateproductseo")
-	public @ResponseBody GenericResponse populateProductSEO(){	
-
-		GenericResponse gr  = new GenericResponse();
-		gr.setSuccess(false);
-		gr.setMessage("");
-		
-		int processCounter = 0;
-		StringBuilder sb = new StringBuilder();
-		
-		List<Product> products = prdDao.createQuery().order("-_id").asList();
-		if(products != null){
-			
-			for(Product p : products){					
-				
-				String title = p.getName();
-				String url = p.getUrl();
-				
-				if(title != null && !title.equals("")
-						&& url != null && !url.equals("")){
-					
-					Seo seo = new Seo(); 
-					seo.setUrl(url);
-					seo.setPageType("product");
-					seoDao.save(seo);
-
-					SeoElem seoElem = new SeoElem();
-					seoElem.setTitle(title);
-					seoElem.setNobots(false);
-					
-					p.setSeoElem(seoElem);
-					prdDao.save(p);					
-
-					processCounter++;
-				}				
-			}			
-			
-			sb.append(processCounter + " products seo information updated ");
-		}
-		
-		processCounter = 0;
-		List<Category> categories = catDao.createQuery().order("-_id").asList();
-		if(categories != null){
-			
-			for(Category c : categories){					
-				
-				String title = c.getName();
-				String url = c.getUrl();
-				
-				if(title != null && !title.equals("")
-						&& url != null && !url.equals("")){
-					
-					Seo seo = new Seo(); 
-					seo.setUrl("category/" + url);
-					seo.setPageType("category");
-					seoDao.save(seo);
-
-					SeoElem seoElem = new SeoElem();
-					seoElem.setTitle(title);
-					seoElem.setNobots(false);
-					
-					c.setSeoElem(seoElem);
-					catDao.save(c);					
-
-					processCounter++;
-				}				
-			}			
-			
-			sb.append(processCounter + " category seo information updated ");
-		}
-
-		gr.setMessage(sb.toString());
-		return gr;		
-	}	
-	
-	@RequestMapping(value = "/onetime/setuserstatus")
-	public @ResponseBody GenericResponse setUserStatus(){	
-
-		GenericResponse gr  = new GenericResponse();
-		gr.setSuccess(false);
-		gr.setMessage("");
-		
-		int activeCounter = 0,
-				declineCounter = 0;
-		StringBuilder sb = new StringBuilder();
-		
-		List<User> users = userDao.createQuery().order("_id").asList();
-		if(users != null){
-			
-			for(User u : users){					
-				
-				if(u.isActive()){					
-					u.setStatus("active");
-					activeCounter++;
-				}
-				
-				else{
-					u.setStatus("declined");
-					declineCounter++;
-				}
-				
-				userDao.save(u);
-			}			
-			
-			sb.append(activeCounter + " Users marked active. " + declineCounter + " Users marked declined.");
-		}
-
-		gr.setMessage(sb.toString());
 		return gr;		
 	}
 }

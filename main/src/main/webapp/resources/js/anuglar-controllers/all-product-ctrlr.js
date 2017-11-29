@@ -1,7 +1,7 @@
 var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $compile, categoryFltrFilter){
 
 	$scope.prices = [];
-	$scope.productPrices = {};
+	$scope.productPrices = {}; //this object is populated in allProductPriceCtrlr
 	$scope.currentPid = 0;
 	$scope._lbGlobalCDNPath = _lbGlobalCDNPath;
 	
@@ -32,14 +32,14 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 		if($scope.angularListOn && this.p){
 			variation = this.p.variation;
 			price = this.p.price;
-			salePrice = this.p.salesPrice;
+			salePrice = this.p.salePrice;
 			$scope.currentPid = this.p._id;			
 		}
 		
 		if($scope.currentPid !== 0){	
 			
 			$scope.prices = [];
-			
+
 			if(!$scope.productPrices[$scope.currentPid]){				
 
 				
@@ -127,11 +127,23 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 	$scope.buildList = {
 			catFilter : '',
 			order : '',
-			orderTxt : 'Newest'
+			orderTxt : '',
+			role : ''
 	};
+	
+	$scope.orderAndOrderTxt = _lbConstants.productspage_orderAndOrderTxt; //defined in main.js
+	$scope.sortOrderChange = function(order){
+		$scope.buildList.order = order;
+		$scope.buildList.orderTxt = $scope.orderAndOrderTxt[order];
+	};
+	
 	//scan the page for all listing and build an array.
 	var scanListing = function(){
 		$scope.buildList.products = [];
+		$scope.buildList.order = $('#productSortMenu').data('order') ? $('#productSortMenu').data('order') : '';
+		$scope.buildList.orderTxt = $scope.orderAndOrderTxt[$scope.buildList.order];
+		$scope.buildList.role = document.getElementById('lb_role_admin') ? 'admin' : '';
+			
 		$('#thymeleaf-productlist>li').each(function(index){
 			var p = {},
 			$e = $(this);
@@ -151,6 +163,8 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 			p.priceRange = $e.data("price-range");
 			p.description = $e.data("desc");
 			
+			p.newBatchArrival= $e.data("newest");
+			
 			p.productFilters = {
 					price : parseFloat($e.data("filter-price")),
 					cbd : parseFloat($e.data("filter-cbd")), 
@@ -162,12 +176,15 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 			$scope.buildList.products.push(p);
 		});
 		
+		reBuildListing();
 		//console.log($scope.buildList);
 	},
 	
 	reBuildListing = function(){
 
 		if(!$scope.buildList.products || $scope.buildList.products.length === 0) return;
+
+		//console.log("Angular list build complete and off to template loading");
 		
 		//load productListTemplate		
 		$templateRequest("productListTemplate")
@@ -182,13 +199,9 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 		      $scope.angularListOn = true;
 		      $('#thymeleaf-productlist').hide();
 		      
+		      $scope.productPrices = {}; //reset this object (populated in allProductPriceCtrlr)
+		      
 		 });
-	};
-	
-	$scope.filterActions = function(){
-		if(!$scope.angularListOn){
-			reBuildListing();
-		}		
 	};
 	
 	
