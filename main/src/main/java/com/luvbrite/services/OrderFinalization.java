@@ -289,52 +289,6 @@ public class OrderFinalization {
 			}
 		}
 		
-		
-		
-		if(co.getTotal() >= 100){
-			
-			boolean applyThanksGivingOffer = false;
-
-			List<OrderLineItemCart> items = co.getLineItems();
-			for(OrderLineItemCart item : items){
-				
-				if(item.getType().equals("item") && item.isInstock()){
-					
-					if(item.getPromo() != null && 
-							item.getPromo().trim().equals("doubledownoffer")){
-						
-						applyThanksGivingOffer = true;
-						break;
-					}
-				}
-			}
-			
-			
-			if(applyThanksGivingOffer){
-				
-				//Add the new item
-				OrderLineItemCart newItem = new OrderLineItemCart();
-				newItem.setTaxable(false);
-				newItem.setInstock(true);
-				newItem.setType("item");
-				newItem.setName("Cheeba Chew Pumpkin Spice (100mg)");
-				newItem.setPromo("Thanks giving special");
-				newItem.setProductId(12042);
-				newItem.setVariationId(0);
-				newItem.setQty(1);
-				newItem.setCost(16d);
-				newItem.setPrice(0d);
-				newItem.setImg("/products/CheebaPumpkinSpice.jpg");
-	
-				List<OrderLineItemCart> olic = co.getLineItems();
-				olic.add(newItem);
-				co.setLineItems(olic);				
-				
-				//Update orderTotals
-				cartLogics.calculateSummary(co);
-				
-			}
-		}
 	}
 	
 	/**
