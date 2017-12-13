@@ -11,6 +11,7 @@ public class Order {
 
 	private Billing billing;
 	private Shipping shipping;
+	private OrderTax orderTax;
 
 	private List<OrderLineItem> lineItems;
 	private OrderNotes notes;
@@ -22,6 +23,7 @@ public class Order {
 	
 	private double subTotal = 0d;
 	private double total = 0d;
+	private double tax = 0d;
 	
 	private String status = "";
 	private String source = "";
@@ -99,5 +101,17 @@ public class Order {
 	}
 	public void setShipping(Shipping shipping) {
 		this.shipping = shipping;
+	}
+	public OrderTax getOrderTax() {
+		return orderTax;
+	}
+	public void setOrderTax(OrderTax orderTax) {
+		this.orderTax = orderTax;
+	}
+	public double getTax() {
+		return tax;
+	}
+	public void setTax(double tax) {
+		this.tax = tax;
 	}
 }

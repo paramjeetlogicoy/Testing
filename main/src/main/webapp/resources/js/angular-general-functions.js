@@ -216,4 +216,19 @@ remainingTime = function($interval) {
 			$interval.cancel(stopTime);
 		});
 	};
+},
+
+hashMapFilter = function(){
+	
+    return function(filter) {
+        var keys = [];
+        for (var key in filter) {
+        	if (filter.hasOwnProperty(key)) {
+        		keys.push({ 'key': key,  'value': filter[key]});
+        	}
+        }
+        
+        console.log("keys ", keys);
+        return keys;
+    };
 };

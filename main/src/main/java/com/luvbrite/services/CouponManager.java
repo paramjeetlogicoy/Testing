@@ -166,7 +166,7 @@ public class CouponManager {
 						if(updateOrderTotal){
 
 							//Update orderTotals
-							cartLogics.calculateSummary(order);
+							cartLogics.calculateSummary(order, null);
 							recalctxt = "recalculated and ";
 						}
 
@@ -684,7 +684,7 @@ public class CouponManager {
 				if(saveOrder){
 					
 					//Update orderTotals
-					cartLogics.calculateSummary(order);
+					cartLogics.calculateSummary(order, null);
 
 					//Save Order				
 					cartDao.save(order);

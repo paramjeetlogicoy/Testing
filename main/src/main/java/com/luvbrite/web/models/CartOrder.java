@@ -11,6 +11,7 @@ public class CartOrder {
 
 	private Billing billing;
 	private Shipping shipping;
+	private OrderTax orderTax;
 
 	private List<OrderLineItemCart> lineItems;
 	private OrderNotes notes;
@@ -22,6 +23,7 @@ public class CartOrder {
 	
 	private double subTotal = 0d;
 	private double total = 0d;
+	private double tax = 0d; //Applied tax (may be different from calculated tax)
 	
 	private String status = "";
 	private String source = "";
@@ -45,6 +47,12 @@ public class CartOrder {
 	}
 	public void setShipping(Shipping shipping) {
 		this.shipping = shipping;
+	}
+	public OrderTax getOrderTax() {
+		return orderTax;
+	}
+	public void setOrderTax(OrderTax orderTax) {
+		this.orderTax = orderTax;
 	}
 	public List<OrderLineItemCart> getLineItems() {
 		return lineItems;
@@ -75,6 +83,12 @@ public class CartOrder {
 	}
 	public void setTotal(double total) {
 		this.total = total;
+	}
+	public double getTax() {
+		return tax;
+	}
+	public void setTax(double tax) {
+		this.tax = tax;
 	}
 	public String getStatus() {
 		return status;

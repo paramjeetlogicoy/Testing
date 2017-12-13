@@ -38,4 +38,7 @@ var lbApp = angular.module(
 // This directive is implemented in angular-general-functions.js
 .directive('remainingTime', ['$interval', remainingTime])
 
-.filter('categoryFltr', categoryFilter);
+.filter('categoryFltr', categoryFilter)
+
+//This filter is implemented in angular-general-functions.js
+.filter('hashMapFilter', hashMapFilter);

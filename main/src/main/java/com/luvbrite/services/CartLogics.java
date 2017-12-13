@@ -1,6 +1,7 @@
 package com.luvbrite.services;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,9 @@ import com.luvbrite.web.models.CartOrder;
 import com.luvbrite.web.models.ControlOptions;
 import com.luvbrite.web.models.Order;
 import com.luvbrite.web.models.OrderLineItemCart;
+import com.luvbrite.web.models.OrderTax;
 import com.luvbrite.web.models.Product;
+import com.luvbrite.web.models.TaxComponent;
 
 @Service
 public class CartLogics {
@@ -97,6 +100,7 @@ public class CartLogics {
 				double subTotal = 0d, 
 						total = 0d, 
 						discount = 0d,
+						taxApplied = 0d,
 						couponDiscount = 0d;
 				
 				int index = -1,
@@ -154,6 +158,41 @@ public class CartLogics {
 					discount = subTotal;
 				
 				
+				//tax
+				double taxCalculated = 0d;
+				OrderTax orderTax = order.getOrderTax();
+				if(orderTax == null) orderTax = new OrderTax();
+				
+				List<TaxComponent> taxComponents = orderTax.getTaxComponents();
+				if(taxComponents != null){
+					
+					for(TaxComponent tc: taxComponents){
+						double thisRate = tc.getRate();
+						double thisTax = Utility.Round(total * thisRate/100, 2);
+						
+						tc.setValue(thisTax);
+						
+						taxCalculated+= thisTax;
+					}
+				}
+
+				orderTax.setApplicableTax(taxCalculated);
+				
+				
+				taxApplied = taxCalculated;
+				
+				//Tax applied only after Jan 1st, 2018
+				Calendar now = Calendar.getInstance();
+				Calendar taxStartDate = Calendar.getInstance();
+				taxStartDate.set(2018, 0, 1);
+				if(now.getTimeInMillis() < taxStartDate.getTimeInMillis()){
+					taxApplied = 0;
+				}
+
+				total+= taxApplied;
+
+				order.setOrderTax(orderTax);
+				order.setTax(taxApplied);
 				order.setSubTotal(subTotal);
 				order.setTotal(total);
 			}

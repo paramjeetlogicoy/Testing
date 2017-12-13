@@ -264,6 +264,9 @@ var cartDeliveryCtrlr = function($scope, $http, $rootScope, $filter, $timeout){
 									$scope.deliverySelected = false;
 								}
 							}
+
+							m.order = resp.data.order;
+							m.processOrder();
 							
 							proceedToPayment();
 						}

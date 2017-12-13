@@ -163,6 +163,23 @@ public class ControlConfigService {
 					
 					
 					
+					else if(cr.get_id().equals("ca_cannabis_excise_tax")){
+						
+						List<AttrValue> params = cr.getParams();
+						double exciseRate = 0d;
+						
+						if(params !=null && params.get(0) != null){
+							
+							AttrValue param = params.get(0);
+							exciseRate = Utility.getDouble(param.getValue());
+						}
+						
+						cOps.setCaCannabisExciseTax(exciseRate);						
+					}
+					
+					
+					
+					
 					else if(cr.get_id().startsWith("slider_")){
 						
 						String sliderName = cr.get_id().substring("slider_".length());

@@ -10,6 +10,7 @@ public class ControlOptions {
 	private double orderMinimum = 0d;
 	private List<Integer> doubleDownEligibleProducts;
 	private Map<String, SliderObject> sliderObjs;
+	private double caCannabisExciseTax = 0d;
 	
 	public double getDoubleDown() {
 		return doubleDown;
@@ -68,5 +69,11 @@ public class ControlOptions {
 	}
 	public void setSliderObjs(Map<String, SliderObject> sliderObjs) {
 		this.sliderObjs = sliderObjs;
+	}
+	public double getCaCannabisExciseTax() {
+		return caCannabisExciseTax;
+	}
+	public void setCaCannabisExciseTax(double caCannabisExciseTax) {
+		this.caCannabisExciseTax = caCannabisExciseTax;
 	}
 }

@@ -29,6 +29,7 @@ import com.luvbrite.dao.CouponDAO;
 import com.luvbrite.dao.LogDAO;
 import com.luvbrite.dao.PriceDAO;
 import com.luvbrite.dao.ProductDAO;
+import com.luvbrite.dao.TaxDAO;
 import com.luvbrite.dao.UserDAO;
 import com.luvbrite.services.CartLogics;
 import com.luvbrite.services.ControlConfigService;
@@ -54,9 +55,12 @@ import com.luvbrite.web.models.OrderCustomer;
 import com.luvbrite.web.models.OrderLineItemCart;
 import com.luvbrite.web.models.OrderNotes;
 import com.luvbrite.web.models.OrderPlaceResponse;
+import com.luvbrite.web.models.OrderTax;
 import com.luvbrite.web.models.Price;
 import com.luvbrite.web.models.Product;
 import com.luvbrite.web.models.Shipping;
+import com.luvbrite.web.models.Tax;
+import com.luvbrite.web.models.TaxComponent;
 import com.luvbrite.web.models.User;
 import com.luvbrite.web.models.UserDetailsExt;
 import com.luvbrite.web.models.squareup.AmountMoney;
@@ -85,10 +89,13 @@ public class CartController {
 	private LogDAO logDao;
 	
 	@Autowired
-	private CartLogics cartLogics;
+	private CouponDAO couponDao;
 	
 	@Autowired
-	private CouponDAO couponDao;
+	private TaxDAO taxDao;
+	
+	@Autowired
+	private CartLogics cartLogics;
 	
 	@Autowired
 	private CouponManager couponManager;
@@ -1214,12 +1221,12 @@ public class CartController {
 	
 	
 	@RequestMapping(value = "/{orderId}/savedeliveryaddr", method = RequestMethod.POST)
-	public @ResponseBody GenericResponse saveDeliveryAddr(
+	public @ResponseBody CreateOrderResponse saveDeliveryAddr(
 			@PathVariable long orderId, @RequestBody Shipping shipping){
 		
-		GenericResponse gr = new GenericResponse();
-		gr.setSuccess(false);
-		gr.setMessage("");
+		CreateOrderResponse or = new CreateOrderResponse();
+		or.setSuccess(false);
+		or.setMessage("");
 
 		try {
 
@@ -1227,13 +1234,13 @@ public class CartController {
 					|| shipping.getAddress() == null 
 					|| shipping.getDeliveryMethod() == null){
 
-				gr.setMessage("Please fill in all mandatory fields.");				
+				or.setMessage("Please fill in all mandatory fields.");				
 			}
 			else{
 				
 				CartOrder order = dao.findCartOrder(orderId);
 				if(order == null){
-					gr.setMessage("Invalid order id. Please refresh the page and try again.");
+					or.setMessage("Invalid order id. Please refresh the page and try again.");
 				}
 				
 				else {
@@ -1245,10 +1252,10 @@ public class CartController {
 					}
 					String zipVal = zipValidation(Utility.getInteger(zipCode));
 					if(zipVal.equals("invalid")){
-						gr.setMessage("Sorry, we currently don't service your area. " 
+						or.setMessage("Sorry, we currently don't service your area. " 
 								+ "We are working very hard on expanding to your city. ");	
 						
-						return gr;
+						return or;
 					}
 					
 					/**
@@ -1264,23 +1271,53 @@ public class CartController {
 					}
 					
 					
+					/* Validate City and State for Tax rate*/
+					double taxRate = 8.75d;
+					List<Tax> taxes = taxDao.createQuery()
+						.field("zipcode").equal(Utility.getInteger(zipCode))
+						.field("city").equal(shipping.getAddress().getCity().toLowerCase())
+						.asList();
+					if(taxes != null && !taxes.isEmpty()){
+						taxRate = taxes.get(0).getTaxRate();
+					}
+					
+					TaxComponent taxComponent = new TaxComponent();
+					taxComponent.setDescription("Excise Tax");
+					taxComponent.setRate(ccs.getcOps().getCaCannabisExciseTax());
+					
+					TaxComponent salesTaxComponent = new TaxComponent();
+					salesTaxComponent.setDescription("Sales Tax");
+					salesTaxComponent.setRate(taxRate);
+					
+					List<TaxComponent> taxComponents = new ArrayList<>();
+					taxComponents.add(taxComponent);
+					taxComponents.add(salesTaxComponent);
+
+					OrderTax orderTax = new OrderTax();
+					orderTax.setTaxComponents(taxComponents);
+					
+					order.setOrderTax(orderTax);
 					order.setShipping(shipping);
+					
+					//Update orderTotals
+					cartLogics.calculateSummary(order);
 					dao.save(order);
 					
 					//Send deliveryMethod back to client.
-					gr.setMessage(shipping.getDeliveryMethod());
-					gr.setSuccess(true);
+					or.setMessage(shipping.getDeliveryMethod());
+					or.setOrder(order);
+					or.setSuccess(true);
 				}				
 				
 			}
 			
 		}catch(Exception e){
 
-			gr.setMessage("There was some error updating the address, please try later.");
+			or.setMessage("There was some error updating the address, please try later.");
 			logger.error(Exceptions.giveStackTrace(e));
 		}
 		
-		return gr;
+		return or;
 	}
 	
 	
