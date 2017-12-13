@@ -25,7 +25,7 @@ public class OrderFinalization {
 	private static Logger logger = Logger.getLogger(OrderFinalization.class);
 	private static boolean offhourPromoActive = true;
 	private static boolean valentinesPromoActive = false;
-	private static boolean freeGramPromo = true;
+	private static boolean freeGramPromo = false;
 	private static double freeGramPromoMin = 150d;
 	
 	private long orderNumber = 0;	

@@ -55,7 +55,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 	m.valentinePromoActive = false;
 	m.valentinePromoApplied = false;
 	
-	m.freeGramPromo = true;
+	m.freeGramPromo = false;
 	m.freeGramPromoApplied = false;
 	m.freeGramPromoEligible = false;
 	m.freeGramPromoMin = 150;
