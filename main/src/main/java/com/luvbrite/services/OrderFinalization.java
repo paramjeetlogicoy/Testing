@@ -293,7 +293,6 @@ public class OrderFinalization {
 	
 	/**
 	 * Check is this is customers first order and update order notes accordingly
-	 * Also add the britebox to the order
 	 **/
 	
 	private void firstOrderCheck(CartOrder co, CartLogics cartLogics){

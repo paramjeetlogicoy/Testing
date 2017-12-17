@@ -168,18 +168,24 @@
 									class="btn btn-link navbar-nav-logout orange1" value="LOGOUT" />
 							</form></li>
 						<li><a href="/products">ALL PRODUCTS</a></li>
-						<li><a href="/category/specials">SPECIALS</a></li>
-						<li><a href="/category/new-arrivals">NEW ARRIVALS</a></li>
-						<li><a href="/category/pets">PETS</a></li>
-						<li><a href="/category/clearance">CLEARANCE</a></li>
+						<li><a href="" class="dropdown-toggle" data-toggle="dropdown"
+						role="button" aria-haspopup="true" aria-expanded="false">VIBES
+							<span class="caret"></span>
+						</a>
+							<ul class="dropdown-menu">
+								<li><a href="/category/sativa">Energize - Sativa</a></li>
+								<li><a href="/category/indica">Rejuvenate - Indica</a></li>
+								<li><a href="/category/hybrid">Balance - Hybrid</a></li>
+							</ul>
+						</li>
 						<li><a href="/category/flowers">FLOWERS</a></li>
-						<li><a href="/category/edibles">EDIBLES</a></li>
-						<li><a href="/category/concentrates">CONCENTRATES</a></li>
-						<li><a href="/category/tinctures">TINCTURES</a></li>
 						<li><a href="/category/vapes">VAPES</a></li>
 						<li><a href="/category/pre-rolls">PRE-ROLLS</a></li>
+						<li><a href="/category/edibles">EDIBLES</a></li>
+						<li><a href="/category/concentrates">CONCENTRATES</a></li>
 						<li><a href="/category/gear">ACCESSORIES</a></li>
-						<li><a href="/contact-us">CONTACT US</a></li>
+						<li><a href="/category/specials">SPECIALS</a></li>
+						<li><a href="/category/clearance">CLEARANCE</a></li>
 					</ul>
 
 				</div>
@@ -190,29 +196,27 @@
 			<div class="container">
 				<ul class="nav hidden-xs nav-justified">
 					<li class="nav-products"><a href="/products">ALL PRODUCTS</a></li>
-					<li class="nav-specials"><a href="/category/specials">SPECIALS<i class="fa fa-star star"
-							aria-hidden="true"></i></a></li>
-					<li class="nav-new-arrivals"><a href="/category/new-arrivals">NEW ARRIVALS</a></li>
-					<li class="nav-pets"><a href="/category/pets">PETS</a></li>
-					<li class="nav-clearance"><a href="/category/clearance">CLEARANCE<i
-							class="fa fa-star star red2" aria-hidden="true"></i></a></li>
+					<li class="has-dropdowns"><a href="" class="dropdown-toggle" data-toggle="dropdown"
+						role="button" aria-haspopup="true" aria-expanded="false">VIBES
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a href="/category/sativa">Energize - Sativa</a></li>
+							<li><a href="/category/indica">Rejuvenate - Indica</a></li>
+							<li><a href="/category/hybrid">Balance - Hybrid</a></li>
+						</ul>
+					</li>
 					<li class="nav-flowers"><a href="/category/flowers">FLOWERS</a></li>
-					<li class="nav-edibles"><a href="/category/edibles">EDIBLES</a></li>
-					<li class="nav-concentrates"><a href="/category/concentrates">CONCENTRATES</a></li>
 					<li class="nav-vapes"><a href="/category/vapes">VAPES</a></li>
 					<li class="nav-pre-rolls"><a href="/category/pre-rolls">PRE-ROLLS</a></li>
+					<li class="nav-edibles"><a href="/category/edibles">EDIBLES</a></li>
+					<li class="nav-concentrates"><a href="/category/concentrates">CONCENTRATES</a></li>
 					<li class="nav-gear"><a href="/category/gear">ACCESSORIES</a></li>
+					<li class="nav-specials"><a href="/category/specials">SPECIALS</a></li>
+					<li class="nav-clearance"><a href="/category/clearance">CLEARANCE</a></li>
 				</ul>
 			</div>
 		</nav>
-		
-		<div class="nav-notifications">
-			<marquee onmouseenter="this.stop();" onmouseleave="this.start();">Despite
-				prop 64 passing in November 2016, making medical cannabis
-				recreational, regulations and policies have still not been
-				developed. Therefore, we still require a medical cannabis
-				recommendation in order to register and receive deliveries.</marquee>
-		</div>
 
 		<nav class="nav-search">
 			<form method="GET" class="nav-search-form"
@@ -462,18 +466,13 @@
 							</div>
 
 							<div class="tocart">
-								<div class="rating-wrapper">
-									<span class="s2 rating-{{p.rating}}" ng-if="p.rating > 0"></span>
-									<a href="/product/{{p.url}}#reviews" class="review-count"
-										ng-if="p.reviewCount > 0"> <span
-										ng-if="p.reviewCount == 1">1 review</span> <span
-										ng-if="p.reviewCount != 1">{{p.reviewCount}} reviews</span>
-									</a> <a href="/customer/#/product-reviews/{{p._id}}"
-										ng-if="p.rating == -1 &amp;&amp; userId != null">Be the
-										first to review</a><a
-										href="/login/?ret=/customer/%23/product-reviews/{{p._id}}"
-										ng-if="p.rating == -1 &amp;&amp; userId == null">Be the
-										first to review</a>
+								<div class="vibes-wrapper">
+									<a href="/category/sativa"
+									ng-if="p.categories &amp;&amp; p.categories.indexOf('Sativa') > -1" class="vibe-sativa">Energize - Sativa</a>
+									<a href="/category/indica"
+									ng-if="p.categories &amp;&amp; p.categories.indexOf('Indica') > -1" class="vibe-indica">Rejuvenate - Indica</a>
+									<a href="/category/hybrid"
+									ng-if="p.categories &amp;&amp; p.categories.indexOf('Hybrid') > -1" class="vibe-hybrid">Balance - Hybrid</a>
 								</div>
 
 								<div class="text-center size24 marg-b1">
@@ -576,42 +575,6 @@
 					</div>
 				</div>
 			</div>
-		</div>
-		
-		<div th:fragment="fragment-briteboxmodal">		
-			<div class="modal fade" id="britebox" tabindex="-1"
-				role="dialog">
-				<div class="modal-dialog" role="document">
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal"
-								aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-							<h3 class="modal-title">Brite Box</h3>
-						</div>
-						<div class="modal-body">
-							<h4>What to expect:</h4>
-							<div class="marg-b2">
-								<ul class="styled">
-									<li>One (1) Baked Bees Medicated Honey with a generous
-										60mg of tender loving THC.</li>
-									<li>One (1) Premium Keif Roll: This little guy (or not so
-										little) packs in 1.5g of some of our top shelf hybrid medicine.</li>
-									<li>Three (3) Flower Samples: You'll get 0.35g of each of
-										our smoking hot Indica, Sativa, and Hybrid strains.</li>
-								</ul>
-							</div>
-							<div class="marg-b2 small">
-								Note: Offer only valid for donations $75 or above. Applies to
-								first time customers only.
-								<span class="orange1">Cannot be combined with other offers.</span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			
 		</div>
 
 	</div>

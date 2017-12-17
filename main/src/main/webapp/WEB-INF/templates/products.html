@@ -365,21 +365,14 @@
 									</div>
 
 									<div class="tocart">
-										<div class="rating-wrapper">
-											<span class="s2" th:if="*{rating > -1}"
-												th:classappend="|rating-*{rating}|"></span> <a
-												th:href="@{'/product/' + *{url} + '#reviews'}"
-												class="review-count" th:if="*{reviewCount > 0}"> <span
-												th:if="*{reviewCount == 1}">1 review</span> <span
-												th:if="*{reviewCount != 1}"><span
-													th:text="*{reviewCount}"></span> reviews</span>
-											</a> <a th:href="@{'/customer/#/product-reviews/' + *{_id}}"
-												th:if="*{rating == -1} and ${userId != null}">Be the
-												first to review</a><a
-												th:href="@{'/login/?ret=/customer/%23/product-reviews/' + *{_id}}"
-												th:if="*{rating == -1} and ${userId == null}">Be the
-												first to review</a>
-										</div>
+								<div class="vibes-wrapper">
+									<a href="/category/sativa"
+									th:if="${(product.categories!=null) and (#lists.contains(product.categories, 'Sativa'))}" class="vibe-sativa">Energize - Sativa</a>
+									<a href="/category/indica"
+									th:if="${(product.categories!=null) and (#lists.contains(product.categories, 'Indica'))}" class="vibe-indica">Rejuvenate - Indica</a>
+									<a href="/category/hybrid"
+									th:if="${(product.categories!=null) and (#lists.contains(product.categories, 'Hybrid'))}" class="vibe-hybrid">Balance - Hybrid</a>
+								</div>
 
 										<div class="text-center size24 marg-b1">
 											<strong th:if="*{priceRange}"

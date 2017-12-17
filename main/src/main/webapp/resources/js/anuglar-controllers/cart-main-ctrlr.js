@@ -45,9 +45,6 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 	m.fifthFlowerApplied = false;
 	m.fifthFlowerEligible = false;
 	
-	m.briteBoxApplied = false;
-	m.briteBoxEligible = false;
-	m.briteBoxThreshold = 75;
 	m.availableDeals = {};
 	
 	m.showPromoTab = true;
@@ -71,7 +68,6 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 		var couponApplied = false,
 			offersApplied = false,
 			doubleDownApplied = false,
-			briteBoxApplied = false,
 			fifthFlowerApplied = false,
 			offersOtherThanProductSaleApplied = false,
 			emptyCart = true,
@@ -140,12 +136,6 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 						}
 						
 						
-						else if(item.promo == 'firsttimepatient'){
-							productName = 'First Time Patient';
-							briteBoxApplied = true;
-						}
-						
-						
 						else if(item.promo == 'freepowerpuff'){
 							productName = 'Power Puff Roll Promo';
 						}
@@ -169,7 +159,6 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 		m.offersApplied = offersApplied;
 		m.offersOtherThanProductSaleApplied = offersOtherThanProductSaleApplied;
 		m.emptyCart = emptyCart;
-		m.briteBoxApplied = briteBoxApplied;
 		m.fifthFlowerApplied = fifthFlowerApplied;
 		m.flowerCount = flowerCount;
 		
@@ -196,15 +185,6 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 			m.doubleDownEligible = false;
 		}	
 		
-		
-		//BriteBox check
-		if(m.availableDeals.firstTimepatient && !m.briteBoxApplied){
-			m.briteBoxEligible = true;
-		}
-		else {
-			m.briteBoxEligible = false;
-		}
-		
 		//FreeGramCheck
 		m.freeGramPromoApplied = false;
 		m.freeGramPromoEligible = false;
@@ -219,17 +199,12 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 		}
 		
 		
-/*		console.log("1" + (m.briteBoxEligible && (m.order.total >= m.briteBoxThreshold)));
-		console.log("2" + (m.doubleDownEligible && (m.order.total >= m.config.doubleDown)));
+/*		console.log("2" + (m.doubleDownEligible && (m.order.total >= m.config.doubleDown)));
 		console.log("3" + m.promosAvailable);
 		console.log("4" + !m.couponApplied);*/
 
 		//Promotab
-		 if(m.briteBoxApplied){
-				m.showPromoTab = false;
-		}
-		else if((m.briteBoxEligible && (m.order.total >= m.briteBoxThreshold)) || 
-				(m.doubleDownEligible && (m.order.total >= m.config.doubleDown)) || 
+		 if((m.doubleDownEligible && (m.order.total >= m.config.doubleDown)) || 
 				(m.fifthFlowerActive && !m.fifthFlowerApplied && (m.flowerCount >= 4)) || 
 				(m.promosAvailable && !m.couponApplied) || 
 				!m.couponApplied){
@@ -241,11 +216,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 		}
 		
 		
-		//Set Britebox as the default if its firsttime patient.
-		if(!m.briteBoxApplied && m.availableDeals.firstTimepatient){
-			m.promoOptions = 'firsttimepatient';
-		}
-		else if(m.fifthFlowerActive && !m.fifthFlowerApplied && (m.flowerCount >= 4)){
+		if(m.fifthFlowerActive && !m.fifthFlowerApplied && (m.flowerCount >= 4)){
 			m.promoOptions = 'fifthflower';
 		}
 		else if(m.doubleDownEligible && (m.order.total >= m.config.doubleDown)){

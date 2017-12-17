@@ -199,9 +199,7 @@ public class CartLogics {
 		return dealStat;
 	}
 	
-	private CouponManager couponManager;
 	public void applyDeals(CartOrder order, ControlOptions cOps, boolean saveOrder, HttpSession sess, CouponManager couponManager){
-		this.couponManager = couponManager;
 		applyDeals(order, cOps, saveOrder, sess);
 	}
 	
@@ -218,8 +216,6 @@ public class CartLogics {
 			
 			boolean orderChanged = false,
 					couponPresent = false,
-					briteBoxEligible = false,
-					autoAddBriteBox = true,
 					waxPromoActive = false,
 					waxPromoEligible = false,
 					fiveGPromoActive = false,
@@ -234,14 +230,7 @@ public class CartLogics {
 						.asList();
 			}
 			
-			String couponCode = "";
-
-			if(sess != null && 
-					sess.getAttribute("autoBriteBoxAdd") != null && 
-					( (String) sess.getAttribute("autoBriteBoxAdd") ).equals("false")){
-				
-				autoAddBriteBox = false;
-			}
+			//String couponCode = "";
 			
 			/**
 			 * Any coupons applied will be removed if doubledown or britebox is applied.
@@ -297,10 +286,10 @@ public class CartLogics {
 							}
 						}
 					}
-					
-					else if(item.getType().equals("coupon")){
-						couponCode = item.getName();
-					}
+//					
+//					else if(item.getType().equals("coupon")){
+//						couponCode = item.getName();
+//					}
 				}
 				
 				updateIndexes(items);
@@ -308,52 +297,11 @@ public class CartLogics {
 
 			
 				
-			//First BriteBoxcheck
-			if(order.getCustomer() != null && 
-					order.getCustomer().get_id() != 0 && 
-					total >= 75d){
-				
-				if(firstOrderCheck(order.getCustomer().get_id())
-						.equalsIgnoreCase("Y")){
-					briteBoxEligible = true;	
-					
-
-					// If britebox eligible and not yet added to the order, add it
-					if(briteBoxIndex == -1 && autoAddBriteBox){
-
-						//Add fresh new item
-						OrderLineItemCart newItem = new OrderLineItemCart();
-						newItem.setTaxable(false);
-						newItem.setInstock(true);
-						newItem.setType("item");
-						newItem.setName("Brite Box");
-						newItem.setPromo("firsttimepatient");
-						newItem.setProductId(11839);
-						newItem.setVariationId(0);
-						newItem.setQty(1);
-						newItem.setCost(50d);
-						newItem.setPrice(0d);
-						newItem.setImg("/products/brite-box-img.jpg");
-
-						items.add(newItem);
-
-						orderChanged = true;
-						briteBoxIndex = items.size() - 1;
-					}
-					
-					
-					if(briteBoxIndex != -1){
-						//if any coupons are present, remove it.
-						if(couponPresent && couponManager != null){
-							couponManager.removeCoupon(couponCode, order);
-						}
-					}
-				}
-			}	
+			//First BriteBoxcheck	
 			
 			
-			//If briteBox is not eligible, but present
-			if(!briteBoxEligible && briteBoxIndex != -1){
+			//If briteBox is present remove it
+			if(briteBoxIndex != -1){
 				
 				items.remove(briteBoxIndex);
 				
