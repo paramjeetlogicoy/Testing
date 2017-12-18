@@ -120,6 +120,24 @@
 											</tr>
 											
 											<tr>
+												<td colspan="2" style="text-align: right;"><strong>Taxes</strong>
+													<div style="font-size:12px; color:#666666;"
+													th:if="*{orderTax}!=null and *{orderTax.applicableTax} != 0">
+													
+														<span th:each="tx,iterStat:*{orderTax.taxComponents}">
+															<span 
+															th:text="${tx.description} + ' (' + ${tx.rate} + '%) - $' + ${#numbers.formatDecimal(tx.value, 1, 'COMMA', 2, 'POINT')}">
+															</span><span th:if="not ${iterStat.last}">, </span>
+														</span>
+														<div style="color:indianred">**Taxes will be applicable from Jan 1st, 2018</div>
+													</div>
+												</td>
+												<td style="text-align: right;"><strong>$<span
+														th:text="*{#numbers.formatDecimal(tax, 1, 'COMMA', 2, 'POINT')}"></span></strong></td>
+
+											</tr>
+											
+											<tr>
 												<td colspan="2" style="text-align: right; color: #557da1;"><strong>Total</strong></td>
 												<td style="text-align: right; color: #557da1;"><strong>$<span
 														th:text="*{#numbers.formatDecimal(total, 1, 'COMMA', 2, 'POINT')}"></span></strong></td>

@@ -23,7 +23,7 @@ public class Order {
 	
 	private double subTotal = 0d;
 	private double total = 0d;
-	private double tax = 0d;
+	private double tax = 0d; //Applied tax (may be different from calculated tax)
 	
 	private String status = "";
 	private String source = "";

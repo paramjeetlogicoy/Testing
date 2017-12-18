@@ -109,11 +109,13 @@ public class OrderFinalization {
 	
 	private void copyCartOrder(CartOrder co, Order o){
 		
+		o.setTax(co.getTax());
 		o.setSubTotal(co.getSubTotal());
 		o.setTotal(co.getTotal());
 		o.setSource(co.getSource());
 		o.setDate(Calendar.getInstance().getTime());
 		
+		if(co.getOrderTax() != null)	o.setOrderTax(co.getOrderTax());
 		if(co.getBilling() != null) 	o.setBilling(co.getBilling());
 		if(co.getShipping() != null) 	o.setShipping(co.getShipping());
 		if(co.getNotes() != null) 		o.setNotes(co.getNotes());

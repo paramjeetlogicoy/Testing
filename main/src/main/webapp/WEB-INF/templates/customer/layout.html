@@ -479,6 +479,12 @@
 													| currency}}</td>
 
 											</tr>
+											<tr>
+												<td class="text-right">Tax</td>
+												<td class="text-right" colspan="3">{{(o.tax)
+													| currency}}</td>
+
+											</tr>
 											<tr class="blue1">
 												<th class="text-right size16">Total</th>
 												<th class="text-right size16" colspan="3">{{o.total |
@@ -488,6 +494,33 @@
 
 										</tbody>
 									</table>
+								</div>
+							</div>
+							<div class="clearfix">
+								<div class="mx300 pull-right">
+									<div class="cart-tax-info size12"
+										ng-if="o.orderTax &amp;&amp; o.orderTax.taxComponents">
+										<h5 class="marg-b0">Tax Breakdown</h5>
+										<div class="marg-b05 red2">
+											<em>Taxes will be applicable from Jan 1st, 2018</em>
+										</div>
+										<table class="table table-condensed">
+											<tbody>
+												<tr class="cart-taxcomponents"
+													ng-repeat="comp in o.orderTax.taxComponents">
+													<td>{{comp.description}} ({{comp.rate}}%)</td>
+													<td class="text-right">{{comp.value | currency}}</td>
+												</tr>
+											</tbody>
+											<tfoot>
+												<tr ng-if="o.orderTax.applicableTax">
+													<td>Total Tax</td>
+													<td class="text-right">{{o.orderTax.applicableTax
+														| currency}}</td>
+												</tr>
+											</tfoot>
+										</table>
+									</div>
 								</div>
 							</div>
 						</form>

@@ -224,6 +224,22 @@
 														| currency}}</td>
 
 												</tr>
+
+												<tr>
+													<td class="text-right">Tax
+														<div class="size12 grey7"
+															ng-if="o.orderTax &amp;&amp; o.orderTax.applicableTax">
+
+															<span ng-repeat="comp in o.orderTax.taxComponents">
+																{{comp.description}} ({{comp.rate}}%) - {{comp.value |
+																currency}} <br />
+															</span>
+														</div>
+													</td>
+													<td class="text-right" colspan="3">{{(o.tax) |
+														currency}}</td>
+												</tr>
+
 												<tr class="blue1">
 													<th class="text-right size16">Total</th>
 													<th class="text-right size16" colspan="3">{{o.total |
