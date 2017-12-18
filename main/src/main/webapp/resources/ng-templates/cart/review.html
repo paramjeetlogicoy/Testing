@@ -19,18 +19,6 @@
 				</ol>
 			</div>
 
-
-			<div class="alert alert-danger text-center marg-b5"
-				ng-if="!m.briteBoxApplied && m.briteBoxEligible && (m.order.total >= m.briteBoxThreshold)">
-				<h5>You're qualified to receive our first time patient offer.
-					But the offer is not applied to your cart. Re-visit promotions to
-					see more options</h5>
-				<div>
-					<button class="btn btn-sm btn-lb marg-b05"
-						ng-click="scrollToPromo()">Re-visit promotions</button>
-				</div>
-			</div>
-
 			<h4>
 				<span class="green1">Your order total is {{m.order.total |
 					currency}} <span ng-show="m.pmtCOD"> and the donation is due

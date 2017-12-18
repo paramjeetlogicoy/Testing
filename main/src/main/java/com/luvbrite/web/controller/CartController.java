@@ -621,110 +621,15 @@ public class CartController {
 	}
 	
 	
+	/** This method is not called anymore! **/
 	@RequestMapping(value = "/addbritebox", method = RequestMethod.POST)
 	public @ResponseBody CreateOrderResponse addBriteBoxItem(
 			@CookieValue(value = "lbbagnumber", defaultValue = "0") String orderIdS,
 			HttpSession sess){
 
 		CreateOrderResponse r = new CreateOrderResponse();
+		r.setMessage("Britebox offer no longer exists");
 		r.setSuccess(false);
-
-		
-		try {
-						
-			
-			long orderId = Utility.getLong(orderIdS);
-			CartOrder order = dao.get(orderId);
-			if(order == null || !order.getStatus().equals("incart")){
-				r.setMessage("No valid order found.");
-			}		
-			
-			else {
-
-				int totalItems = 0;
-
-				List<OrderLineItemCart> removeItems = new ArrayList<>();
-				
-				List<OrderLineItemCart> items = order.getLineItems();
-				if(items != null){
-					for(OrderLineItemCart item : items){
-						
-						//If Holiday Promo is there...remove it!
-						if( item.getPromo() != null 
-								&& "fifthflower".equals(item.getPromo()) ){
-							removeItems.add(item);
-						}
-
-						// If already present remove it. Any issue with item which is preventing it from 
-						// appearing in the cart will be solved this away
-						else if( item.getPromo() != null 
-								&& "firsttimepatient".equals(item.getPromo()) ){
-							removeItems.add(item);
-						}
-						
-						//If there is doubledownoffer, remove the promo.
-						if( item.getPromo() != null 
-								&& "doubledownoffer".equals(item.getPromo()) ){							
-							item.setPrice(item.getCost());
-							item.setPromo("");
-						}
-						
-						if(item.getType().equals("item")
-								&& item.isInstock()){
-							totalItems+= item.getQty();
-						}
-					}
-				}
-				
-				
-				if(removeItems.size() > 0){
-					items.removeAll(removeItems);
-					totalItems = totalItems - removeItems.size();
-				}
-				
-				
-				//Add fresh new item
-				OrderLineItemCart newItem = new OrderLineItemCart();
-				newItem.setTaxable(false);
-				newItem.setInstock(true);
-				newItem.setType("item");
-				newItem.setName("Brite Box");
-				newItem.setPromo("firsttimepatient");
-				newItem.setProductId(11839);
-				newItem.setVariationId(0);
-				newItem.setQty(1);
-				newItem.setCost(50d);
-				newItem.setPrice(0d);
-				newItem.setImg("/products/brite-box-img.jpg");
-
-				items.add(newItem);
-				
-				
-				/*Update order with lineItems*/
-				order.setLineItems(items);
-				
-				
-				//Run through deal logic
-				cartLogics.applyDeals(order, ccs.getcOps(), false, sess);
-				
-				
-				/*Update orderTotals*/
-				cartLogics.calculateSummary(order);
-				
-				dao.save(order);
-				
-				sess.setAttribute("autoBriteBoxAdd", "true");
-				
-				r.setSuccess(true);
-				r.setCartCount(totalItems);				
-				r.setOrder(order);
-			}
-			
-		}catch(Exception e){
-			
-			r.setMessage("There was some error creating the order, please try later.");
-			logger.error(Exceptions.giveStackTrace(e));
-		}
 		
 		return r;	
 	}
@@ -1716,10 +1621,6 @@ public class CartController {
 						
 						
 						itemFound = true;
-						
-						if(productId == 11839) {//Britebox
-							sess.setAttribute("autoBriteBoxAdd", "false");
-						}
 						
 						break;
 					}

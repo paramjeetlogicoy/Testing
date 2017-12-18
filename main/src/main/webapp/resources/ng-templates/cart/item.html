@@ -110,9 +110,7 @@
 								promotions will remove already applied promotion</em> <em
 								class="marg-r1 size13 u"
 								ng-if="m.couponApplied && m.appliedCouponCode">(Coupon
-								'{{m.appliedCouponCode}}' will be removed)</em> <em
-								class="marg-r1 size13 u" ng-if="m.briteBoxApplied">(Britebox
-								will be removed)</em> <em class="marg-r1 size13 u"
+								'{{m.appliedCouponCode}}' will be removed)</em> <em class="marg-r1 size13 u"
 								ng-if="m.doubleDownApplied">(Double down promotion will be
 								removed)</em> <em class="marg-r1 size13 u"
 								ng-if="m.fifthFlowerApplied">(Holiday promotion will be
@@ -127,41 +125,6 @@
 								<span aria-hidden="true">&times;</span>
 							</button>
 							<span ng-bind-html="couponErrors"></span>
-						</div>
-					</div>
-
-					<div class="cart-promo-options"
-						ng-show="m.briteBoxEligible && (m.order.total >= m.briteBoxThreshold)"
-						ng-class="{'promoSelected' : m.promoOptions == 'firsttimepatient'}">
-
-						<label class="fa-label"><input type="radio"
-							name="promoOptions" ng-model="m.promoOptions"
-							value="firsttimepatient" /><i class="fa fa-circle-o"
-							aria-hidden="true"></i> First time patient gift - Britebox - <span
-							class="orange1">$50 value.</span></label>
-
-						<div class="cart-promo-details">
-							<div class="cart-offers-bb">
-								<div class="row">
-									<div class="col-sm-4 m-marg-b2">
-										<img class="fit"
-											src="https://lbrit.co/static/imgs/uploads/2016/02/new-brite-box-t.png"
-											alt="welcome-kit" />
-									</div>
-									<div class="col-sm-8">
-										<div class="marg-b2">
-											Your first donation meets the $75 goal, earning you our
-											exclusive Brite Box.
-
-											<div class="text-center pad-t2">
-												<button class="btn btn-lb btn-sm" ng-click="addbriteBox()">Apply
-													Promotion</button>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-
 						</div>
 					</div>
 					
@@ -215,10 +178,6 @@
 									<a href="https://www.luvbrite.com/product/slymer-exclusive">Slymer</a>
 									with your order. Only once the order total in the cart reaches
 									$150 or greater, will the free gram be added to your order.
-
-									<div class="bold orange1 pad-t2" ng-if="m.briteBoxApplied">
-										Delete the Britebox item from cart to auto-apply this offer!
-									</div>
 
 									<div class="bold orange1 pad-t2" ng-if="m.doubleDownApplied">
 										Remove the double down item from cart to auto-apply this offer!
@@ -318,46 +277,15 @@
 						</div>
 					</div>
 				</div>
-
-				<div ng-show="!m.showPromoTab && m.briteBoxApplied">
-					<div class="alert alert-warning">
-						<i class="fa fa-bullhorn fa-2x pull-left" aria-hidden="true"></i>
-						Other promotions are disabled because <strong>Britebox</strong>,
-						our best promotion is currently applied to your order. If you
-						still would like to apply a coupon, please remove <strong>Britebox</strong>
-						from the cart and options to apply coupon will reappear.
-					</div>
-				</div>
 			</div>
 		</div>
 		
 
 		<div ng-if="m.orderAboveOrderMin && m.user._id">
 
-			<div class="alert alert-info text-center"
-				ng-if="m.briteBoxEligible && (m.order.total < m.briteBoxThreshold)">
-				<div class="row">
-					<div class="col-sm-4 m-marg-b2">
-						<img class="fit"
-							src="https://lbrit.co/static/imgs/uploads/2016/02/new-brite-box-t.png"
-							alt="welcome-kit" />
-					</div>
-					<div class="col-sm-8">
-						<h5>You're {{(m.briteBoxThreshold - m.order.total) |
-							currency}} away from qualifying for a "Brite Box"!</h5>
-						<div class="marg-b2">
-							Seeing as this is your first order with us, you could qualify for
-							our first time patient gift &ndash; the "Brite Box" if your total
-							reaches {{m.briteBoxThreshold | currency}}. <a href="" data-toggle="modal"
-						data-target="#britebox" class="inherit u">Offer
-						details.</a></div>
-					</div>
-				</div>
-			</div>
-
 
 			<div class="alert alert-info text-center"
-				ng-if="!m.briteBoxApplied && m.doubleDownEligible && (m.order.total < m.config.doubleDown)">
+				ng-if="m.doubleDownEligible && (m.order.total < m.config.doubleDown)">
 				<h5>You're {{(m.config.doubleDown - m.order.total) | currency}} away
 					from qualifying for Double Down Offer!</h5>
 				<div>

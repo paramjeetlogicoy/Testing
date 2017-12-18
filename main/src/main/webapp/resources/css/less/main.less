@@ -18,17 +18,20 @@ nav.admin-navbar {
 
     .navbar-nav>li>a {
     	padding: 5px 15px;
-    	color: white;
+    	color: black;
     	background: transparent !important;
 	}
 }
 
-.header-navbar:extend(.bg-black,.white,.pc100){
+.header-navbar:extend(.pc100){
 
 	padding-right: inherit;
 	top:0;
 	left:0;
 	z-index:20;
+
+	background: url(https://lbrit.co/static/imgs//sliders/nav_bg.jpg) no-repeat center;
+	background-size: cover;
 
 	@media(min-width:768px){
 		.fix;
@@ -36,7 +39,7 @@ nav.admin-navbar {
 	}
 
 	.container {
-		/*padding:0; //causing a gao in mobile vies*/
+		/*padding:0; //causing a gap in mobile views*/
 	}
 
 	.navbar-toggle:extend(.nopadi,.marg-l15){
@@ -53,9 +56,10 @@ nav.admin-navbar {
 
 	.nav{
 
-		.marg-t(3);
+		.marg-t(1);
 
-		>li>a{
+		>li>a,
+		>li li>a{
 
 			color:inherit;
     		font-weight: 600;
@@ -72,9 +76,9 @@ nav.admin-navbar {
 	.site-logo{
 		width:40px;
 
-		@media(min-width:768px){
-			width:50px;
-		}
+		// @media(min-width:768px){
+		// 	width:50px;
+		// }
 
 	}
 }
@@ -169,7 +173,7 @@ nav.admin-navbar {
 	.box-shadow(0 0 5px 0px rgba(0,0,0,.1));
 
 	padding-right: inherit;
-    top: 98px;
+    top: 67px;
 	z-index:20;
 
     .nav>li>a{
@@ -199,7 +203,30 @@ nav.admin-navbar {
 
     .nosubhead &{
     	display:none;
-    }
+	}
+	
+	li>.dropdown-menu {
+		margin-top:0;
+		border-top: 2px solid #008c77;
+		border-top-right-radius: 0;
+		border-top-left-radius: 0;
+		
+		>li>a {
+			padding: 7px 15px 7px 22px;
+			font-size: 14px;
+		}
+	}
+	
+	.dropdown-menu>li>a {
+		padding: 7px 15px 7px 22px;
+		font-size: 14px;
+		
+		&:focus, 
+		&:hover {
+			color: #008c77;
+			background-color: #fff;
+		}
+	}
 
     .star{
     	.rel;
@@ -212,10 +239,10 @@ nav.admin-navbar {
 	//margin-top:89px;
 
 	@media(min-width:768px){
-		margin-top:132px;		
+		margin-top:101px;		
 
 	    .nosubhead &{
-	    	margin-top:132px - 40;
+	    	margin-top:101px - 40;
 	    }
 	}
 }
@@ -554,7 +581,7 @@ nav#pagination-nav{
 
     h1{
     	padding: 0.6em 0 0.45rem;
-    	font-size: 3rem;
+    	font-size: 2rem;
     	letter-spacing: .3rem;
     	color:#777;
     	margin:0;
@@ -593,17 +620,7 @@ nav#pagination-nav{
 	}
 
 	.home-loyalistcard{
-		.marg-b1;
-
-		position: relative;
-		max-width: 215px;
-		
-		@media(min-width:768px){
-			.marg-b0;
-
-    		right:-40px;
-			top:-20px;
-    	}
+		.marg-b2;
 	}
 }
 .home-carousel{
@@ -611,15 +628,10 @@ nav#pagination-nav{
 
 	.item{
 		text-align: center;
-		height:170px;
 		background-repeat: no-repeat;
 		background-position: center;
 		background-size: auto 100%;
 		background-color: black;
-
-		@media(min-width:768px){
-			height:315px;
-		}
 
 		a.btn,
 		button.btn{
@@ -628,7 +640,19 @@ nav#pagination-nav{
     		left: 50%;
     		width: 120px;
     		margin-left: -60px;	
-    	}
+		}
+		
+		.fullon-a{
+			.automarg;
+			.text-center;
+			.pc100;
+
+			display: block;
+		}
+
+		img{
+			.pc100;
+		}
 	}
 }
 
@@ -658,14 +682,17 @@ nav#pagination-nav{
 	}
 	
 	.subhdr-icons{
-		
-		.bg-greyF9;
+
 		.text-center;
 		.marg-b2;
 
 		.svg-wrapper {
 			width: 120px;
 			height: 120px;
+		}
+
+		img{
+			width:100%;
 		}
 	}
 }
@@ -1035,8 +1062,33 @@ nav#pagination-nav{
     font-size: 12px;
 }
 
+.vibe-sativa{
+	.size12;
+	display: inline-block;
+	padding: 0 4px;
+	margin: 2px;
+	color: white;
+	background-color: #f9471c;
+
+	-ms-transform: skew(-10deg); /* IE 9 */
+    -webkit-transform: skew(-10deg); /* Safari */
+    transform: skew(-10deg); /* Standard syntax */
+
+	&:hover{
+		color: white;
+	}
+}
+
+.vibe-indica:extend(.vibe-sativa all){
+	background-color: #371d7f;
+}
+
+.vibe-hybrid:extend(.vibe-sativa all){
+	background-color:#007c35;
+}
+
 .sidecart:extend(.fix,.bg-white){
-	top:98px;
+	top:67px;
 	bottom:0;
     right:-290px;
     width:290px;
@@ -1060,7 +1112,7 @@ nav#pagination-nav{
 
     h4{
     	.bg-orange2;
-    	.pad-v1;
+    	.pad-v(.7);
     	.pad-h2;
     	.white;
     	.marg-b0;
@@ -1908,12 +1960,12 @@ ul.img-thumbnails {
 	z-index: 21;
     border-bottom: 1px solid #ddd;
     border-top: 1px solid #ddd;
-    top:67px;
+    top:66px;
     display:none;
 	font-size: 18px;
 	
 	@media(min-width:768px){
-		top:92px;
+		top:67px;
 		font-size: 40px;
 	}
 }

@@ -143,7 +143,11 @@ $(document).ready(function(){
 	.on('click', '.videoEmbed', _lbFns.playModalVideo)
     .on('change', '.rate input', _lbFns.ratingFunction);
 	
-	
+	$('.has-dropdowns').hover(function(){
+		$(this).find('.dropdown-menu').stop(true, true).delay(200).fadeIn(500);
+	}, function(){
+		$(this).find('.dropdown-menu').stop(true, true).delay(200).fadeOut(500);
+	});
 	
 	PNotify.prototype.options.styling = "fontawesome";
 });
