@@ -14,6 +14,7 @@ public class Order {
 	private String status = "";
 	private String paymentMethod = "";
 	private int order_number = 0;
+	private double tax = 0d;
 	
 	public BillingAddress getBilling_address() {
 		return billing_address;
@@ -74,5 +75,11 @@ public class Order {
 	}
 	public void setPaymentMethod(String paymentMethod) {
 		this.paymentMethod = paymentMethod;
+	}
+	public double getTax() {
+		return tax;
+	}
+	public void setTax(double tax) {
+		this.tax = tax;
 	}	
 }
