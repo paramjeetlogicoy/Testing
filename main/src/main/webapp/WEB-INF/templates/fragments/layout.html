@@ -92,7 +92,7 @@
 </head>
 <body>	
 	<header th:fragment="fragment-header" th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
-
+		
 		<nav class="admin-navbar hidden-xs" th:if="${sc!=null and #strings.contains(sc.authentication.authorities, 'ROLE_ADMIN')}">
 			<div class="container">
 				<div class="clearfix">
@@ -109,7 +109,15 @@
 							th:value="${_csrf.token}" />
 							
 		<nav class="header-navbar">
-
+			
+			<div class="nav-notifications">
+				<marquee onmouseenter="this.stop();" onmouseleave="this.start();">In
+					celebration of the Holidays, we will be closed Sunday, December
+					24th and will continue business as usual on Monday, December 25th @
+					11am. Thus, all orders placed after 10:30pm on Saturday, December
+					23rd will be scheduled for Monday, December 25th delivery.</marquee>
+			</div>
+			
 			<div class="container">
 				<div class="row">
 					<div class="col-sm-5 col-xs-4">
