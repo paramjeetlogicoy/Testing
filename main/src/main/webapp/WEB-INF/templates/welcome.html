@@ -38,7 +38,13 @@ h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
 
 			<div class="carousel-inner" role="listbox">
 
-				<div class="item active">
+				<div class="item active" data-toggle="modal" data-target="#newyear2018_offer">
+					<img
+						src="//lbrit.co/static/imgs/sliders/newyear_offer_2018.jpg"
+						alt="A New Year Offer" />
+				</div>
+
+				<div class="item">
 					<img
 						src="//lbrit.co/static/imgs/sliders/NewYear2018_A_315x1600-1.jpg"
 						alt="Happy New Year" />
@@ -203,7 +209,7 @@ h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
 	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
 	<script type="text/javascript">
 		$(document).ready(function(){			
-			$('#vibebanner')
+			$('#vibebanner, #newyear2018_offer')
 			.on('shown.bs.modal', function() {
 				$('#home-sliders').carousel('pause');
 			}).on('hide.bs.modal', function() {
@@ -232,6 +238,30 @@ h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
 							new online account as a $10 coupon which can be used for 10
 							future online orders.
 						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="modal fade" id="newyear2018_offer" tabindex="-1"
+			role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h3 class="modal-title">Offer Details</h3>
+					</div>
+					<div class="modal-body">
+						<div class="marg-b2">Upload a letter of recommendation or medical
+							cannabis id card that was issued in January 2018 and get $35 off
+							your first order of $100 or more in the month of January.</div>
+						<div class="marg-b2 muted small">*Offer ends January 31st 2018.
+							Discount applied only to the first order reaching a total of $100
+							or more before taxes. Luvbrite has the right to refuse or
+							terminate this offer at any time for any reason.</div>
 					</div>
 				</div>
 			</div>
