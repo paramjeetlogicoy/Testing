@@ -1,7 +1,6 @@
 package com.luvbrite.services;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -182,12 +181,12 @@ public class CartLogics {
 				taxApplied = taxCalculated;
 				
 				//Tax applied only after Jan 1st, 2018
-				Calendar now = Calendar.getInstance();
-				Calendar taxStartDate = Calendar.getInstance();
-				taxStartDate.set(2018, 0, 1);
-				if(now.getTimeInMillis() < taxStartDate.getTimeInMillis()){
-					taxApplied = 0;
-				}
+//				Calendar now = Calendar.getInstance();
+//				Calendar taxStartDate = Calendar.getInstance();
+//				taxStartDate.set(2018, 0, 1);
+//				if(now.getTimeInMillis() < taxStartDate.getTimeInMillis()){
+//					taxApplied = 0;
+//				}
 
 				total+= taxApplied;
 
