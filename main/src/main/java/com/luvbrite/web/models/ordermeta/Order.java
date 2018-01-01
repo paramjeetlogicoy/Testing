@@ -2,6 +2,8 @@ package com.luvbrite.web.models.ordermeta;
 
 import java.util.List;
 
+import com.luvbrite.web.models.OrderTax;
+
 public class Order {
 	private BillingAddress billing_address = null;
 	private List<LineItem> line_items = null;
@@ -15,6 +17,7 @@ public class Order {
 	private String paymentMethod = "";
 	private int order_number = 0;
 	private double tax = 0d;
+	private OrderTax orderTax;
 	
 	public BillingAddress getBilling_address() {
 		return billing_address;
@@ -81,5 +84,11 @@ public class Order {
 	}
 	public void setTax(double tax) {
 		this.tax = tax;
+	}
+	public OrderTax getOrderTax() {
+		return orderTax;
+	}
+	public void setOrderTax(OrderTax orderTax) {
+		this.orderTax = orderTax;
 	}	
 }

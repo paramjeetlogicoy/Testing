@@ -1,6 +1,8 @@
 var registerCtrlr = function($scope, $http, Upload){
 	
 	var today = new Date();
+	$scope.medicalUser = false;
+	$scope.recreationalUser = false;
 	
 	$scope.user = {'identifications':{}, 'marketing':{}};
 	$scope.reco = {year:new Date().getFullYear()};
@@ -12,6 +14,11 @@ var registerCtrlr = function($scope, $http, Upload){
 	
 	$scope.register = function(){
 		
+		if(!$scope.medicalUser && !$scope.recreationalUser){
+			alert("Invalid user selection. Please refresh the page and try again");
+			return false;
+		}
+		
 		var proceed = true;
 		$scope.pageLevelAlert = "";
 		$('.recofile-group, .idfile-group, .dobWrapper, .recoWrapper').removeClass('has-error');		
@@ -22,15 +29,18 @@ var registerCtrlr = function($scope, $http, Upload){
 			$('.dobWrapper').addClass('has-error');
 		}
 		
-		if($scope.invalidReco()){
+		if($scope.medicalUser && $scope.invalidReco()){
 			proceed = false;
 			$('.recoWrapper').addClass('has-error');
 		}
 		
 		if($scope.registerForm.$valid && 
-				$scope.recoFile && 
+				(($scope.medicalUser && $scope.recoFile) || $scope.recreationalUser) &&
 				$scope.idFile && 
 				proceed){
+			
+			$scope.user.memberType = "medical";
+			if($scope.recreationalUser) $scope.user.memberType = "recreational";
 			
 			$http.post(_lbUrls.register, $scope.user)
 			.then(function(response){
@@ -56,7 +66,7 @@ var registerCtrlr = function($scope, $http, Upload){
 		
 		else{
 			
-			if(!$scope.recoFile){
+			if($scope.medicalUser && !$scope.recoFile){
 				$('.recofile-group').addClass('has-error');
 			}
 			

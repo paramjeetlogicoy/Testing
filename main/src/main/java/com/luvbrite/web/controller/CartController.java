@@ -29,8 +29,8 @@ import com.luvbrite.dao.CouponDAO;
 import com.luvbrite.dao.LogDAO;
 import com.luvbrite.dao.PriceDAO;
 import com.luvbrite.dao.ProductDAO;
-import com.luvbrite.dao.TaxDAO;
 import com.luvbrite.dao.UserDAO;
+import com.luvbrite.dao.ZiptaxDAO;
 import com.luvbrite.services.CartLogics;
 import com.luvbrite.services.ControlConfigService;
 import com.luvbrite.services.CouponManager;
@@ -59,10 +59,10 @@ import com.luvbrite.web.models.OrderTax;
 import com.luvbrite.web.models.Price;
 import com.luvbrite.web.models.Product;
 import com.luvbrite.web.models.Shipping;
-import com.luvbrite.web.models.Tax;
 import com.luvbrite.web.models.TaxComponent;
 import com.luvbrite.web.models.User;
 import com.luvbrite.web.models.UserDetailsExt;
+import com.luvbrite.web.models.Ziptax;
 import com.luvbrite.web.models.squareup.AmountMoney;
 import com.luvbrite.web.models.squareup.Charge;
 
@@ -92,7 +92,7 @@ public class CartController {
 	private CouponDAO couponDao;
 	
 	@Autowired
-	private TaxDAO taxDao;
+	private ZiptaxDAO taxDao;
 	
 	@Autowired
 	private CartLogics cartLogics;
@@ -1177,13 +1177,24 @@ public class CartController {
 					
 					
 					/* Validate City and State for Tax rate*/
-					double taxRate = 8.75d;
-					List<Tax> taxes = taxDao.createQuery()
-						.field("zipcode").equal(Utility.getInteger(zipCode))
+					double taxRate = 9.5d;
+					List<Ziptax> taxes = taxDao.createQuery()
+						.field("zipcode").equal(zipCode)
 						.field("city").equal(shipping.getAddress().getCity().toLowerCase())
 						.asList();
 					if(taxes != null && !taxes.isEmpty()){
+						//System.out.println("Tax found " + taxes.get(0).getTaxRate());
 						taxRate = taxes.get(0).getTaxRate();
+					}
+					
+					/** Check the user type to see if its medical or recreational. Medical users pay 0 sales tax **/
+					User userDb = userDao.createQuery()
+							.field("_id").equal(order.getCustomer().get_id())
+							.field("memberType").equal("medical")
+							.retrievedFields(true, "_id")
+							.get();
+					if(userDb != null){
+						taxRate = 0d;
 					}
 					
 					TaxComponent taxComponent = new TaxComponent();

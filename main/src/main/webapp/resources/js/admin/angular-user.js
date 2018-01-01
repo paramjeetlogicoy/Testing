@@ -79,6 +79,7 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 	$scope.errorMsg = '';
 	$scope.p = {};
 	$scope.roles = ["customer","admin"];
+	$scope.memberTypes = ["medical","recreational"];
 	$scope.statuses = ['pending','active','declined','reco-expired','new-reco-uploaded','closed'];
 	$scope.mode = mode; //Mode will be 'new' while adding a user, and 'edit', if editing a user.
 	$scope.userId = $scope.params.userId;

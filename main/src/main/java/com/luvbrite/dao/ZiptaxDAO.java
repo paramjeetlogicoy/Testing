@@ -6,13 +6,13 @@ import org.mongodb.morphia.dao.BasicDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.luvbrite.web.models.Tax;
+import com.luvbrite.web.models.Ziptax;
 
 @Service
-public class TaxDAO extends BasicDAO<Tax, ObjectId> {
+public class ZiptaxDAO extends BasicDAO<Ziptax, ObjectId> {
 
 	@Autowired
-	protected TaxDAO(Datastore ds) {
+	protected ZiptaxDAO(Datastore ds) {
 		super(ds);
 	}
 
