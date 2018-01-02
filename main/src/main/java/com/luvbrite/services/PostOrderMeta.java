@@ -79,6 +79,8 @@ public class PostOrderMeta {
 			o.setTotal_discount((order.getSubTotal() + order.getTax() - order.getTotal()) + "");		
 			o.setTax(order.getTax());
 			
+			o.setOrderTax(order.getOrderTax());
+			
 			Address billing = order.getShipping().getAddress();
 			if(billing != null){
 				BillingAddress bi = new BillingAddress();
