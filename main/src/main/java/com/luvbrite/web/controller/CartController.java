@@ -1187,14 +1187,16 @@ public class CartController {
 						taxRate = taxes.get(0).getTaxRate();
 					}
 					
-					/** Check the user type to see if its medical or recreational. Medical users pay 0 sales tax **/
-					User userDb = userDao.createQuery()
-							.field("_id").equal(order.getCustomer().get_id())
-							.field("memberType").equal("medical")
-							.retrievedFields(true, "_id")
-							.get();
-					if(userDb != null){
-						taxRate = 0d;
+					if(order.getCustomer() != null){
+						/** Check the user type to see if its medical or recreational. Medical users pay 0 sales tax **/
+						User userDb = userDao.createQuery()
+								.field("_id").equal(order.getCustomer().get_id())
+								.field("memberType").equal("medical")
+								.retrievedFields(true, "_id")
+								.get();
+						if(userDb != null){
+							taxRate = 0d;
+						}
 					}
 					
 					TaxComponent taxComponent = new TaxComponent();
