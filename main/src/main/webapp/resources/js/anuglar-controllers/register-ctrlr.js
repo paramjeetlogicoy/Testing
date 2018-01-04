@@ -4,13 +4,13 @@ var registerCtrlr = function($scope, $http, Upload){
 	$scope.medicalUser = false;
 	$scope.recreationalUser = false;
 	
-	$scope.user = {'identifications':{}, 'marketing':{}};
+	$scope.user = {'identifications':{}, 'marketing':{ 'subscribe': true}};
 	$scope.reco = {year:new Date().getFullYear()};
 	$scope.dob = {};
 	$scope.today = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
 		
 	
-	$scope.hearAboutOptions = ['WeedMaps', 'Yelp', 'Facebook', 'Leafly', 'Friends & Family', 'La Weekly', 'Other'];
+	$scope.hearAboutOptions = ['WeedMaps', 'Google', 'Instagram', 'Yelp', 'Facebook', 'Leafly', 'Friends & Family', 'La Weekly', 'Other'];
 	
 	$scope.register = function(){
 		
