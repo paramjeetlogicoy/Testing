@@ -195,7 +195,7 @@ public class CartLogics {
 				 * Check for rush delivery
 				 **/
 				double rushFee = 0d;
-				if(order.getShipping().isRushDelivery()){
+				if(order.getShipping() != null && order.getShipping().isRushDelivery()){
 					rushFee = order.getShipping().getRushFee();
 				}
 
