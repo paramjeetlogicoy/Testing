@@ -180,6 +180,23 @@ public class ControlConfigService {
 					
 					
 					
+					else if(cr.get_id().equals("rush_delivery_charge")){
+						
+						List<AttrValue> params = cr.getParams();
+						double rushFee = 0d;
+						
+						if(params !=null && params.get(0) != null){
+							
+							AttrValue param = params.get(0);
+							rushFee = Utility.getDouble(param.getValue());
+						}
+						
+						cOps.setRushDeliveryCharge(rushFee);						
+					}
+					
+					
+					
+					
 					else if(cr.get_id().startsWith("slider_")){
 						
 						String sliderName = cr.get_id().substring("slider_".length());

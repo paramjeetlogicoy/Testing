@@ -189,6 +189,17 @@ public class CartLogics {
 //				}
 
 				total+= taxApplied;
+				
+				
+				/**
+				 * Check for rush delivery
+				 **/
+				double rushFee = 0d;
+				if(order.getShipping().isRushDelivery()){
+					rushFee = order.getShipping().getRushFee();
+				}
+
+				total+= rushFee;
 
 				order.setOrderTax(orderTax);
 				order.setTax(taxApplied);

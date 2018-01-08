@@ -4,54 +4,6 @@
 		Options
 	</h4>
 
-<!-- 	<div class="clearfix deliveryOptions rel"
-		ng-hide="deliveryOptionSelected">
-		<div class="col-xs-6 delivery">
-			<p>Local Delivery</p>
-			<div ng-show="deliveryEligible">
-				Awesome! We do local delivery at your zipcode.
-				<div class="marg-t1">
-					<a href="" class="btn btn-sm btn-default"
-						ng-click="deliverySelected=true;selectDeliveryOption()">Let's
-						Go</a>
-				</div>
-			</div>
-		</div>
-		<div class="col-xs-6 shipping">
-			<p>Overnight Shipping</p>
-			<div ng-show="shippingEligible">
-				Awesome! We currently do overnight shipping to your zipcode.
-				<div class="marg-t1">
-					<a href="" class="btn btn-sm btn-default"
-						ng-click="shippingSelected=true;selectDeliveryOption()">Let's
-						Go</a>
-				</div>
-			</div>
-		</div>
-		<form class="abs" ng-submit="checkDeliveryOptions()"
-			ng-hide="deliveryEligible || shippingEligible">
-			<div class="input-group">
-				<input type="text" class="form-control" ng-model="mainZip"
-					placeholder="Enter Zipcode" /><span class="input-group-btn">
-					<button class="btn btn-default" type="submit">Check!</button>
-				</span>
-			</div>
-		</form>
-		<div class="col-xs-12 text-center marg-t1"
-			ng-show="deliveryEligible || shippingEligible">
-			<a href="" class="u" ng-click="resetDeliveryOptions()">Try
-				another Zipcode.</a>
-		</div>
-	</div>
-
-	<div ng-if="invalidZip">
-		<div class="marg-t2">
-			<div class="alert alert-warning" role="alert">
-				<span ng-bind-html="invalidZip"></span>
-			</div>
-		</div>
-	</div> -->
-
 	<div class="cart-address" ng-show="deliveryOptionSelected">
 		<div class="cart-address" ng-hide="m.addressSaved">
 
@@ -146,10 +98,20 @@
 					</div>
 				</div>
 
+				<div class="marg-b2" ng-show="m.config.rushDeliveryCharge">
+					<label class="fa-label show"><input type="checkbox"
+						ng-model="m.order.shipping.rushDelivery" value="true" /><i
+						class="fa fa-square-o" aria-hidden="true"></i> Expedite your order
+						(Deliver within 60 minutes or less) <span class="pull-right">+{{m.config.rushDeliveryCharge
+							| currency}}</span> <br />
+					<span style="margin-left: 26px;">Guaranteed or rush fee
+							waived!</span></label>
+				</div>
+
 				<div class="text-center">
 					<button type="submit" class="btn btn-lb btn-lb-w"
 						ng-disabled="cartAddress.$invalid">
-						<strong>Save Address</strong>
+						<strong>Save Delivery Options</strong>
 					</button>
 				</div>
 
@@ -206,6 +168,10 @@
 								<a href="" ng-click="editAddress()" class="inlineb pad1 inherit"><i
 									class="fa fa-pencil" aria-hidden="true"></i> <em>edit</em></a>
 							</div>
+						</div>
+						<div ng-if="m.order.shipping.rushDelivery" class="marg-t2 orange1 small">
+							<span>Expedited Delivery Requested 
+								<strong>+{{m.order.shipping.rushFee | currency}}</strong></span>
 						</div>
 					</div>
 					<div>

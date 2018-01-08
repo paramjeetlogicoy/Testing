@@ -1,4 +1,4 @@
-/*2017-12-19 9:47 PM*/
+/*2018-01-07 6:21 PM*/
 /***** Luvbrite Admin - Type setting *****/
 /*Base size for desktop*/
 /* @basesizeD / 10. Division by 10 because 10px would come as 1, and 15px as 1.5*/
@@ -725,9 +725,16 @@ label.fa-label > input {
   display: none;
   outline: none;
 }
-label.fa-label > input:checked + .fa:before {
+label.fa-label > input:checked + .fa-circle-o:before {
   content: "\f192";
   color: #008c77 !important;
+}
+label.fa-label > input:checked + .fa-square-o:before {
+  content: "\f046";
+  color: #008c77 !important;
+}
+label.fa-label .fa-square-o {
+  width: 17px;
 }
 .btn-lb {
   color: white;

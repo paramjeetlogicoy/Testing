@@ -220,9 +220,16 @@
 												</tr>
 												<tr>
 													<td class="text-right">Discount</td>
-													<td class="text-right" colspan="3">{{(o.total - o.tax - o.subTotal)
+													<td class="text-right" colspan="3">{{(o.total - o.tax - o.subTotal - (o.shipping ? o.shipping.rushFee : 0))
 														| currency}}</td>
 
+												</tr>
+												
+												<tr ng-if="o.shipping &amp;&amp; o.shipping.rushFee">
+													<td class="text-right">Rush Fee</td>
+													<td class="text-right" colspan="3">{{o.shipping.rushFee
+														| currency}}</td>
+	
 												</tr>
 
 												<tr>
@@ -264,7 +271,7 @@
 		<div th:include="fragments/admin/layout::fragment-foot(angular=true)"></div>
 	</div>
 
-	<script src="/resources/js/admin/angular-orderdetails-service.js"></script>
+	<script src="/resources/js/admin/angular-orderdetails-service.js?v001"></script>
 	<script src="/resources/js/admin/angular-order.js"></script>
 </body>
 </html>

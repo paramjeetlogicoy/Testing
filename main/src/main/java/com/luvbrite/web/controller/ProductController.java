@@ -146,8 +146,26 @@ public class ProductController {
 		Product p = prdDao.findOne("url", productUrl);
 		
 		if(p == null) return "404";
-
 		
+		/**
+		 * For discontinued products, redirect them to the first category they are under.
+		 * If no category found, send them to all products 
+		 **/
+		if(p.getStatus().equals("discontinued")){
+			List<String> categories = p.getCategories();
+			if(categories == null || 
+					categories.isEmpty()){
+				return "redirect:/products";	
+			}
+			
+			Category c = catDao.findOne("name", categories.get(0));
+			if(c!=null){
+				return "redirect:/category/" + c.getUrl();
+			}
+			
+			return "redirect:/products";	
+		}
+
 		model.addAttribute("url", productUrl);
 		model.addAttribute("product", p);
 		/* Find related products */

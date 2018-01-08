@@ -108,6 +108,13 @@ public class PostOrderMeta {
 				}
 			}
 			
+			if(order.getShipping() != null && order.getShipping().isRushDelivery()){
+				o.setRushFee(order.getShipping().getRushFee());
+			}
+			else{
+				o.setRushFee(0d);
+			}
+			
 			List<LineItem> line_items = new ArrayList<LineItem>();
 			List<OrderLineItem> olis = order.getLineItems();
 			if(olis != null){

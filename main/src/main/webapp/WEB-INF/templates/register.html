@@ -16,70 +16,13 @@
 		<div class="generic-container register-container ng-cloak">
 			<h3>Patient Registration</h3>
 
-			<div class="marg-b3" ng-hide="recreationalUser || medicalUser">
-				<h4 class="text-center">How would you like to register?</h4>
-				<div class="row">
-					<div class="col-sm-6 marg-b2">
-						<div class="pad2">
-							<h4>As a Recreational user</h4>
-							<div class="marg-b2">
-								To register as a recreational user, we would need your:
-								<ul class="styled text-left">
-									<li>Basic Info</li>
-									<li>US State-issued driver's license/ID card</li>
-								</ul>
-								<div>You would need to pay Cannabis excise tax and
-									applicable sales tax</div>
-							</div>
-							<div class="text-center">
-								<button type="button"
-									class="btn btn-warning btn-sm disabled">Coming
-									Soon</button>
-							</div>
-						</div>
-					</div>
-					<div class="col-sm-6 border-l">
-						<div class="pad2">
-							<h4>As a Medical user</h4>
-							<div class="marg-b2">
-								To register as a medical user, we would need your:
-								<ul class="styled text-left">
-									<li>Basic Info</li>
-									<li>US State-issued driver's license/ID card</li>
-									<li>Medical recommendation letter or Medical Cannabis card
-										issue by California Doctor</li>
-								</ul>
-								<div>
-									You would need to pay Cannabis excise tax, <span class="u">but
-										will be exempted</span> from sales tax.
-								</div>
-							</div>
-							<div class="text-center">
-								<button type="button" class="btn btn-primary btn-sm"
-									ng-click="medicalUser = true">Proceed as Medical User</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="row" ng-show="recreationalUser || medicalUser">
+			<div class="row">
 				<div class="col-lg-8 col-lg-offset-2 col-sm-10 col-sm-offset-1">
-
-					<div class="well">
-						<h5 class="marg-b0">
-							Registering as <span ng-if="medicalUser"
-								class="orange1">Medical</span><span ng-if="recreationalUser"
-								class="orange1">Recreational</span> user! <a href=""
-								class="marg-l2"
-								ng-click="recreationalUser = false; medicalUser = false">Change</a>
-						</h5>
-					</div>
 
 					<div class="marg-b5">
 						<ul class="styled">
 							<li class="marg-b1">Your identity card and recommendation
-								letter (for medical users) needs to be verified before
+								letter needs to be verified before
 								activating your account.</li>
 							<li class="marg-b1">Medical users, if you don't have a rec
 								letter yet, check out <a href="https://getnugg.com/md"
@@ -260,7 +203,7 @@
 							</div>
 
 
-							<div class="form-group recofile-group" ng-show="medicalUser">
+							<div class="form-group recofile-group">
 								<label class="control-label col-sm-4">Your Doctor's
 									Medical Recommendation Letter <sup>*</sup><br /> <small
 									class="em">(Images or PDF Only. 10MB Max)</small>
@@ -295,7 +238,7 @@
 							</div>
 
 
-							<div class="form-group recoWrapper" ng-show="medicalUser">
+							<div class="form-group recoWrapper">
 								<label class="control-label col-sm-4">Recommendation
 									Expiry <sup>*</sup><br /> <small class="em">(mm/dd/yyyy)</small>
 								</label>
@@ -303,16 +246,15 @@
 									<div class="date-inputs clearfix">
 										<input type="number" min="1" max="12" step="1"
 											ng-model="reco.month" class="form-control" name="recoMonth"
-											placeholder="MM" ng-required="medicalUser" /> <span>/</span> <input
+											placeholder="MM"  /> <span>/</span> <input
 											type="number" min="1" max="31" step="1" ng-model="reco.day"
 											name="recoDay" class="form-control" placeholder="DD"
-											ng-required="medicalUser" /> <span>/</span> <input type="number"
+											 /> <span>/</span> <input type="number"
 											name="recoYear" min="2016" step="1" ng-model="reco.year"
-											class="form-control" placeholder="YYYY" ng-required="medicalUser" />
+											class="form-control" placeholder="YYYY"  />
 									</div>
 
-									<p class="help-block help-error">Recommendation Expiry
-										should be a valid future date.</p>
+									<p class="help-block help-error">{{recoExpiryErrMsg}}</p>
 								</div>
 							</div>
 
@@ -379,10 +321,8 @@
 							<div class="pad-v1 text-center"
 								ng-if="registerForm.$invalid || !recoFile || !idFile">
 								<div class="alert alert-warning">
-									Please fill up all the mandatory fields. <span
-										ng-if="!recoFile &amp;&amp; medicalUser"><br />Recommendation letter is
-										required.</span> <span ng-if="!idFile"><br />Copy of your ID
-										card is required.</span><span
+									Please fill up all the mandatory fields. <span ng-if="!idFile"><br />Copy
+										of your ID card is required.</span><span
 										ng-show="!registerForm.recYear.$pristine &amp;&amp; medicalUser"
 										ng-if="registerForm.recoYear.$invalid"><br />Reco.
 										Expiry. year is invalid.</span>

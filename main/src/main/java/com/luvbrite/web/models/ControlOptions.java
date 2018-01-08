@@ -11,6 +11,7 @@ public class ControlOptions {
 	private List<Integer> doubleDownEligibleProducts;
 	private Map<String, SliderObject> sliderObjs;
 	private double caCannabisExciseTax = 0d;
+	private double rushDeliveryCharge = 0d;
 	
 	public double getDoubleDown() {
 		return doubleDown;
@@ -37,9 +38,9 @@ public class ControlOptions {
 			List<Integer> doubleDownEligibleProducts) {
 		this.doubleDownEligibleProducts = doubleDownEligibleProducts;
 	}
-	
-	
-	
+
+
+
 	private List<Integer> localZipcodes;
 	private List<Integer> shippingZipcodes;
 
@@ -75,5 +76,11 @@ public class ControlOptions {
 	}
 	public void setCaCannabisExciseTax(double caCannabisExciseTax) {
 		this.caCannabisExciseTax = caCannabisExciseTax;
+	}
+	public double getRushDeliveryCharge() {
+		return rushDeliveryCharge;
+	}
+	public void setRushDeliveryCharge(double rushDeliveryCharge) {
+		this.rushDeliveryCharge = rushDeliveryCharge;
 	}
 }

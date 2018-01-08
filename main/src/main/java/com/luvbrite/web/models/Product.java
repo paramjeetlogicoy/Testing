@@ -24,7 +24,7 @@ public class Product {
 	private String name;
 	private String description;
 	private String url;
-	private String status;
+	private String status;  //['draft','publish','private','discontinued'];
 	private String stockStat;
 	private String featuredImg;
 	private String editLock;

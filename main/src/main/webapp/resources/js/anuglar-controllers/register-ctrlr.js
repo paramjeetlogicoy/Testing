@@ -1,23 +1,25 @@
 var registerCtrlr = function($scope, $http, Upload){
 	
 	var today = new Date();
-	$scope.medicalUser = false;
+	$scope.medicalUser = true;
 	$scope.recreationalUser = false;
 	
 	$scope.user = {'identifications':{}, 'marketing':{ 'subscribe': true}};
 	$scope.reco = {year:new Date().getFullYear()};
 	$scope.dob = {};
 	$scope.today = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+	$scope.recoExpiryErrMsg = "Recommendation Expiry date should " +
+			"be a valid future date.";
 		
 	
 	$scope.hearAboutOptions = ['WeedMaps', 'Google', 'Instagram', 'Yelp', 'Facebook', 'Leafly', 'Friends & Family', 'La Weekly', 'Other'];
 	
 	$scope.register = function(){
 		
-		if(!$scope.medicalUser && !$scope.recreationalUser){
-			alert("Invalid user selection. Please refresh the page and try again");
-			return false;
-		}
+//		if(!$scope.medicalUser && !$scope.recreationalUser){
+//			alert("Invalid user selection. Please refresh the page and try again");
+//			return false;
+//		}
 		
 		var proceed = true;
 		$scope.pageLevelAlert = "";
@@ -29,13 +31,14 @@ var registerCtrlr = function($scope, $http, Upload){
 			$('.dobWrapper').addClass('has-error');
 		}
 		
-		if($scope.medicalUser && $scope.invalidReco()){
+		if($scope.recoFile && $scope.invalidReco()){
 			proceed = false;
+			
 			$('.recoWrapper').addClass('has-error');
 		}
 		
 		if($scope.registerForm.$valid && 
-				(($scope.medicalUser && $scope.recoFile) || $scope.recreationalUser) &&
+				//(($scope.medicalUser && $scope.recoFile) || $scope.recreationalUser) &&
 				$scope.idFile && 
 				proceed){
 			
@@ -66,9 +69,9 @@ var registerCtrlr = function($scope, $http, Upload){
 		
 		else{
 			
-			if($scope.medicalUser && !$scope.recoFile){
-				$('.recofile-group').addClass('has-error');
-			}
+//			if($scope.medicalUser && !$scope.recoFile){
+//				$('.recofile-group').addClass('has-error');
+//			}
 			
 			if(!$scope.idFile){
 				$('.idfile-group').addClass('has-error');
@@ -161,21 +164,23 @@ var registerCtrlr = function($scope, $http, Upload){
 	
 	$scope.invalidReco = function(){
 		
-		if($scope.registerForm.recoDay.$valid && 
-				$scope.registerForm.recoMonth.$valid &&  
-				$scope.registerForm.recoYear.$valid){
+		if($scope.reco.year && 
+				$scope.reco.month &&  
+				$scope.reco.day){
 		
 			var now = new Date();
 			$scope.user.identifications.recoExpiry = new Date($scope.reco.year, $scope.reco.month-1, $scope.reco.day);
 			
 			if($scope.user.identifications.recoExpiry.getTime() < now.getTime()){
+				$scope.recoExpiryErrMsg = "Recommendation Expiry date should be a valid future date.";
 				return true;
 			}
 		}
 		
-		return ($scope.registerForm.recoDay.$invalid && !$scope.registerForm.recoDay.$pristine) || 
-			($scope.registerForm.recoMonth.$invalid && !$scope.registerForm.recoMonth.$pristine) ||  
-			($scope.registerForm.recoYear.$invalid && !$scope.registerForm.recoYear.$pristine);
+		$scope.recoExpiryErrMsg = "Recommendation Expiry date is required if " +
+		"you have a recommendation letter";
+		
+		return (!$scope.reco.year || !$scope.reco.month || !$scope.reco.day);
 	};
 
 	

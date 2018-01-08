@@ -12,6 +12,11 @@
 					currency}}</td>
 			</tr>
 
+			<tr ng-if="m.order.shipping.rushFee">
+				<td>Rush Delivery</td>
+				<td class="text-right">{{m.order.shipping.rushFee | currency}}</td>
+			</tr>
+
 			<tr>
 				<td>Tax</td>
 				<td class="text-right">{{m.order.tax | currency}}</td>

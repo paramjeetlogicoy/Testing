@@ -162,11 +162,7 @@ public class LoginController {
 			
 			if(user.getIdentifications() == null){
 				proceed = false;
-				r.setMessage("Please provide your ID card and doctors recommendation letter.");
-				
-				if(user.getMemberType().equals("recreational")){
-					r.setMessage("Please provide your ID card.");
-				}
+				r.setMessage("Please provide a valid ID card");
 			}
 			
 			else if(user.getIdentifications().getIdCard() == null 
@@ -177,14 +173,14 @@ public class LoginController {
 				
 			}
 			
-			else if(user.getMemberType().equals("medical") && 
-					(user.getIdentifications().getRecomendation() == null 
-					|| user.getIdentifications().getRecomendation().equals(""))){
-				
-				proceed = false;
-				r.setMessage("Please provide doctors recommendation letter.");
-				
-			}
+//			else if(user.getMemberType().equals("medical") && 
+//					(user.getIdentifications().getRecomendation() == null 
+//					|| user.getIdentifications().getRecomendation().equals(""))){
+//				
+//				proceed = false;
+//				r.setMessage("Please provide doctors recommendation letter.");
+//				
+//			}
 			
 			
 			if(proceed && emailUnique && usernameUnique){

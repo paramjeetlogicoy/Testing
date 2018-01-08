@@ -18,6 +18,7 @@ public class Order {
 	private int order_number = 0;
 	private double tax = 0d;
 	private OrderTax orderTax;
+	private double rushFee = 0d;
 	
 	public BillingAddress getBilling_address() {
 		return billing_address;
@@ -90,5 +91,11 @@ public class Order {
 	}
 	public void setOrderTax(OrderTax orderTax) {
 		this.orderTax = orderTax;
+	}
+	public double getRushFee() {
+		return rushFee;
+	}
+	public void setRushFee(double rushFee) {
+		this.rushFee = rushFee;
 	}	
 }

@@ -1187,17 +1187,17 @@ public class CartController {
 						taxRate = taxes.get(0).getTaxRate();
 					}
 					
-					if(order.getCustomer() != null){
-						/** Check the user type to see if its medical or recreational. Medical users pay 0 sales tax **/
-						User userDb = userDao.createQuery()
-								.field("_id").equal(order.getCustomer().get_id())
-								.field("memberType").equal("medical")
-								.retrievedFields(true, "_id")
-								.get();
-						if(userDb != null){
-							taxRate = 0d;
-						}
-					}
+//					if(order.getCustomer() != null){
+//						/** Check the user type to see if its medical or recreational. Medical users pay 0 sales tax **/
+//						User userDb = userDao.createQuery()
+//								.field("_id").equal(order.getCustomer().get_id())
+//								.field("memberType").equal("medical")
+//								.retrievedFields(true, "_id")
+//								.get();
+//						if(userDb != null){
+//							taxRate = 0d;
+//						}
+//					}
 					
 					TaxComponent taxComponent = new TaxComponent();
 					taxComponent.setDescription("Excise Tax");
@@ -1215,6 +1215,18 @@ public class CartController {
 					orderTax.setTaxComponents(taxComponents);
 					
 					order.setOrderTax(orderTax);
+					
+					
+					/** 
+					 * Rush fee
+					 */
+					if(shipping.isRushDelivery()){
+						shipping.setRushFee(ccs.getcOps().getRushDeliveryCharge());
+					}
+					else{
+						shipping.setRushFee(0d);
+					}
+					
 					order.setShipping(shipping);
 					
 					//Update orderTotals

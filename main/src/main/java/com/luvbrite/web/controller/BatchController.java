@@ -53,6 +53,8 @@ public class BatchController {
 		List<User> users = userDao.createQuery()
 				.field("active").equal(true)
 				.field("role").equal("customer")
+				.field("identifications").exists()
+				.field("identifications").notEqual("")
 				.field("identifications.recoExpiry").greaterThan(now.getTime())
 				.field("identifications.recoExpiry").lessThan(day4.getTime())
 				.order("identifications.recoExpiry")
@@ -66,6 +68,8 @@ public class BatchController {
 		List<User> usersE = userDao.createQuery()
 				.field("active").equal(true)
 				.field("role").equal("customer")
+				.field("identifications").exists()
+				.field("identifications").notEqual("")
 				.field("identifications.recoExpiry").lessThan(now.getTime())
 				.order("identifications.recoExpiry")
 				.asList();
@@ -77,6 +81,8 @@ public class BatchController {
 		List<User> usersN = userDao.createQuery()
 				.field("active").equal(true)
 				.field("role").equal("customer")
+				.field("identifications").exists()
+				.field("identifications").notEqual("")
 				.field("identifications.recoExpiry").doesNotExist()
 				.asList();
 
