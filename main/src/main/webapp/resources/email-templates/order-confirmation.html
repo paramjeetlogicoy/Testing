@@ -119,6 +119,13 @@
 													th:text="${#numbers.formatDecimal(((ol.cost-ol.price)*ol.qty), 1, 'COMMA', 2, 'POINT')}"></span></td>
 											</tr>
 											
+											<tr th:if="*{shipping} and *{shipping.rushFee}">
+												<td colspan="2" style="text-align: right;"><strong>Rush Fee</strong></td>
+												<td style="text-align: right;"><strong>$<span
+														th:text="*{#numbers.formatDecimal(shipping.rushFee, 1, 'COMMA', 2, 'POINT')}"></span></strong></td>
+
+											</tr>
+											
 											<tr>
 												<td colspan="2" style="text-align: right;"><strong>Taxes</strong>
 													<div style="font-size:12px; color:#666666;"
