@@ -6,20 +6,23 @@
 				<td>Items</td>
 				<td class="text-right">{{m.order.subTotal | currency}}</td>
 			</tr>
-			<tr ng-if="m.order.subTotal > m.order.total">
+
+			<tr>
+				<td>Tax</td>
+				<td class="text-right">{{m.order.tax | currency}}</td>
+			</tr>
+
+			<tr
+				ng-if="(m.order.total - m.order.subTotal - m.order.tax - (m.order.shipping? m.order.shipping.rushFee : 0)) != 0">
 				<td>Discount</td>
-				<td class="text-right">{{(m.order.subTotal - m.order.total) |
-					currency}}</td>
+				<td class="text-right">{{(m.order.total -
+					m.order.subTotal - m.order.tax - (m.order.shipping?
+					m.order.shipping.rushFee : 0)) | currency}}</td>
 			</tr>
 
 			<tr ng-if="m.order.shipping.rushFee">
 				<td>Rush Delivery</td>
 				<td class="text-right">{{m.order.shipping.rushFee | currency}}</td>
-			</tr>
-
-			<tr>
-				<td>Tax</td>
-				<td class="text-right">{{m.order.tax | currency}}</td>
 			</tr>
 			<tr>
 				<td colspan="2"><hr /></td>
@@ -31,9 +34,11 @@
 				<th class="text-right">{{m.order.total | currency}}</th>
 			</tr>
 
-			<tr ng-if="m.order.subTotal > m.order.total">
-				<th colspan="2" class="text-right orange1 size16"><em>(You just
-						saved {{(m.order.subTotal - m.order.total) | currency}})</em></th>
+			<tr
+				ng-if="(m.order.total - m.order.subTotal - m.order.tax - (m.order.shipping? m.order.shipping.rushFee : 0)) != 0">
+				<th colspan="2" class="text-right orange1 size16"><em>(You
+						just saved {{(m.order.total - m.order.subTotal - m.order.tax -
+						(m.order.shipping? m.order.shipping.rushFee : 0))*-1 | currency}})</em></th>
 			</tr>
 		</tfoot>
 	</table>

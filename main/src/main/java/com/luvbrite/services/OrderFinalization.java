@@ -23,7 +23,7 @@ import com.luvbrite.web.models.User;
 public class OrderFinalization {
 	
 	private static Logger logger = Logger.getLogger(OrderFinalization.class);
-	private static boolean offhourPromoActive = true;
+	private static boolean offhourPromoActive = false; //Update 01/14/2018 - Offhour promo removed. 
 	private static boolean valentinesPromoActive = false;
 	private static boolean freeGramPromo = false;
 	private static double freeGramPromoMin = 150d;
@@ -145,6 +145,8 @@ public class OrderFinalization {
 	/**
 	 * If the order is placed during offhours, add the free item
 	 * to the order 
+	 * 
+	 * Update 01/14/2018 - Offhour promo removed. 
 	 * */
 	private void offHourPromo(CartOrder co, CartLogics cartLogics){
 		

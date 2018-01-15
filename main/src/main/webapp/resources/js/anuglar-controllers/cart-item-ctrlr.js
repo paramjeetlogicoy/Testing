@@ -1,30 +1,6 @@
 var cartItemCtrlr = function($scope, $http, $rootScope, $timeout){
 
-	$scope.itsOffHour = false;
-	
-	
-	var m = $scope.m,
-	
-	checkOffHours = function(){
-		
-		if(m.emptyCart){
-			console.log('checkoffhours cancelled');
-			return;
-		}
-		
-		var now = new Date();
-		var currHour = now.getHours();
-		var currMin = now.getMinutes();
-		if((currHour===22 && currMin >= 29) || currHour >= 23 || currHour < 11){ 
-			$scope.itsOffHour = true;
-		}  
-		else{
-			$scope.itsOffHour = false;
-		}
-		
-		$timeout(checkOffHours, 1000 * 60); //check everyminute
-	};	
-	checkOffHours(); //run for the first time;
+	var m = $scope.m;
 	
 	$scope.itemRemove = function(){
 		

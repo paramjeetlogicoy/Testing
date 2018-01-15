@@ -9,7 +9,7 @@ var ordDtlsServiceFn = function($templateRequest, $compile){
 	
 	service.showGallery = function(scope){
 		//Show popup		
-		$templateRequest("/resources/ng-templates/admin/ord-dtls-gallery.html?v005")
+		$templateRequest("/resources/ng-templates/admin/ord-dtls-gallery.html?v006")
 		.then(function(html){
 		      var template = angular.element(html);
 		      angular.element('body').addClass('noscroll').append(template);

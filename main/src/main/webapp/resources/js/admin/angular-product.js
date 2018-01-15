@@ -183,6 +183,7 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 			$scope.p = data;			
 			$('#product-editor').show(0, function(){
 				$('.admin-editor-container')[0].scrollIntoView();
+				$('[data-toggle="tooltip"]').tooltip();
 			});
 			
 			//Remove millisecond part
@@ -815,6 +816,7 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 		$scope.p = {"_id":0, "status":"private","stockStat":"instock","newBatchArrival":$scope.newBatchDate.getTime()};			
 		$('#product-editor').show(0, function(){
 			$('.admin-editor-container')[0].scrollIntoView();
+			$('[data-toggle="tooltip"]').tooltip();
 		});
 	}
 

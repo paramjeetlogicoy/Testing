@@ -156,8 +156,8 @@ public class CartLogics {
 				if(discount > subTotal)
 					discount = subTotal;
 				
-				
 				//tax
+				//Update 01/14/2018 - Tax calculated on subtotal. 
 				double taxCalculated = 0d;
 				OrderTax orderTax = order.getOrderTax();
 				if(orderTax == null) orderTax = new OrderTax();
@@ -167,7 +167,7 @@ public class CartLogics {
 					
 					for(TaxComponent tc: taxComponents){
 						double thisRate = tc.getRate();
-						double thisTax = Utility.Round(total * thisRate/100, 2);
+						double thisTax = Utility.Round(subTotal * thisRate/100, 2);
 						
 						tc.setValue(thisTax);
 						
@@ -176,18 +176,7 @@ public class CartLogics {
 				}
 
 				orderTax.setApplicableTax(taxCalculated);
-				
-				
 				taxApplied = taxCalculated;
-				
-				//Tax applied only after Jan 1st, 2018
-//				Calendar now = Calendar.getInstance();
-//				Calendar taxStartDate = Calendar.getInstance();
-//				taxStartDate.set(2018, 0, 1);
-//				if(now.getTimeInMillis() < taxStartDate.getTimeInMillis()){
-//					taxApplied = 0;
-//				}
-
 				total+= taxApplied;
 				
 				

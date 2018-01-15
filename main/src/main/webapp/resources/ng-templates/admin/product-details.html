@@ -183,11 +183,21 @@
 								Filters</h4>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-4 control-label">Price <br /> <span
-								class="grey7">Price range is {{p.priceRange}}</span></label>
+							<label class="col-sm-4 control-label">Price</label>
 							<div class="col-sm-7">
 								<input type="number" min="0" value=""
 									ng-model="p.productFilters.price" name="productFilters.price"
+									class="form-control" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-4 control-label">Price range <span
+								data-toggle="tooltip" data-placement="top"
+								title="Price that gets displayed in All Products page."><i
+									class="fa fa-info-circle" aria-hidden="true"></i></span></label>
+							<div class="col-sm-7">
+								<input type="text" value=""
+									ng-model="p.priceRange" name="priceRange"
 									class="form-control" />
 							</div>
 						</div>
