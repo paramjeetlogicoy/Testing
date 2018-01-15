@@ -1,4 +1,5 @@
 <div class="cart-totals" ng-controller="cartCouponCtrlr">
+	<div class="hidden">{{ cartDiscount = (m.order.total - m.order.subTotal - m.order.tax - (m.order.shipping? m.order.shipping.rushFee : 0)) }}</div>
 	<h4>Order Summary</h4>
 	<table class="table cart-summary size13">
 		<tbody>
@@ -13,11 +14,9 @@
 			</tr>
 
 			<tr
-				ng-if="(m.order.total - m.order.subTotal - m.order.tax - (m.order.shipping? m.order.shipping.rushFee : 0)) != 0">
+				ng-if="cartDiscount < -0.5">
 				<td>Discount</td>
-				<td class="text-right">{{(m.order.total -
-					m.order.subTotal - m.order.tax - (m.order.shipping?
-					m.order.shipping.rushFee : 0)) | currency}}</td>
+				<td class="text-right">{{cartDiscount | currency}}</td>
 			</tr>
 
 			<tr ng-if="m.order.shipping.rushFee">
@@ -35,10 +34,9 @@
 			</tr>
 
 			<tr
-				ng-if="(m.order.total - m.order.subTotal - m.order.tax - (m.order.shipping? m.order.shipping.rushFee : 0)) != 0">
+				ng-if="cartDiscount < -0.5">
 				<th colspan="2" class="text-right orange1 size16"><em>(You
-						just saved {{(m.order.total - m.order.subTotal - m.order.tax -
-						(m.order.shipping? m.order.shipping.rushFee : 0))*-1 | currency}})</em></th>
+						just saved {{cartDiscount | currency}})</em></th>
 			</tr>
 		</tfoot>
 	</table>
