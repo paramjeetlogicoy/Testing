@@ -25,6 +25,9 @@ h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
 <meta property="og:url" content="https://www.luvbrite.com" />
 <meta property="og:site_name" content="Luvbrite" />
 <meta th:include="fragments/layout::fragment-head" />
+<style type="text/css">
+a.fullon-a{cursor:pointer;}
+</style>
 <style type="text/css" 
 	th:if="${sliders} != null and ${sliders.styles} != ''" 
 	th:utext="${sliders.styles}">
@@ -38,17 +41,25 @@ h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
 
 			<div class="carousel-inner" role="listbox">
 
-				<div class="item active" data-toggle="modal" data-target="#newyear2018_offer">
-					<img
+				<div class="item active">
+					<a class="fullon-a" data-toggle="modal"
+						data-target="#newyear2018_offer"><img
 						src="//lbrit.co/static/imgs/sliders/newyear_offer_2018.jpg"
-						alt="A New Year Offer" />
+						alt="A New Year Offer" /></a>
 				</div>
 
+				<div class="item">
+					<a class="fullon-a" data-toggle="modal"
+						data-target="#doubleDownModal"><img
+						src="//lbrit.co/static/imgs//sliders/double-down-full.jpg"
+						alt="Double Down" /></a>
+				</div>
 				<div class="item">
 					<img
 						src="//lbrit.co/static/imgs/sliders/NewYear2018_A_315x1600-1.jpg"
 						alt="Happy New Year" />
 				</div>
+				
 
 				<div class="item">
 					<a class="fullon-a" data-toggle="modal" data-target="#vibebanner"><img
@@ -212,7 +223,8 @@ h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
 		});
 	</script>
 	
-	<div class="modalholder">		
+	<div class="modalholder">	
+		<div th:replace="fragments/layout::fragment-doubledownmodal"></div>	
 		
 		<div class="modal fade" id="briteboxuse" tabindex="-1"
 			role="dialog">
@@ -326,7 +338,6 @@ h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
 				</div>
 			</div>
 		</div>
-
 
 		<div 
 			th:if="${sliders} != null and ${sliders.modalHtml} != ''"
