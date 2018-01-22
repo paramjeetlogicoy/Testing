@@ -60,6 +60,12 @@ defaultCtrlr = function($scope, $http, $filter, $sanitize, $interval){
 		
 	};
 	
+	$scope.csvDownloads = function(){
+		window.location = '/admin/users/download/user-csv' 
+			+ '?q=' + $scope.userSearch
+			+ '&s=' + $scope.userStatus;
+	}
+	
 	/*Reload the users page every 5 minutes*/
 	$scope.reloadUsers = function(){
 		if($scope.pg.currentPage == 1) $scope.getUsers();

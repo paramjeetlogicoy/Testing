@@ -47,8 +47,8 @@ public class MainController {
 	@Autowired
 	private OrderDAO orderDao;
 	
-	//@Autowired
-	//private ControlConfigService ccs;
+	@Autowired
+	private ControlConfigService ccs;
 	
 	@Autowired
 	private SliderHelperFunctions shf;
@@ -62,13 +62,13 @@ public class MainController {
 			model.addAttribute("userId", user.getId());
 		
 
-//		Map<String, SliderObject> sliderObjs = ccs.getcOps().getSliderObjs();
-//		if(sliderObjs != null){
-//			SliderObject so = sliderObjs.get("homepage");
-//			if(so != null){
-//				model.addAttribute("sliders", so);
-//			}
-//		}
+		Map<String, SliderObject> sliderObjs = ccs.getcOps().getSliderObjs();
+		if(sliderObjs != null){
+			SliderObject so = sliderObjs.get("homepage");
+			if(so != null){
+				model.addAttribute("sliders", so);
+			}
+		}
 		
 		return "welcome";		
 	}	

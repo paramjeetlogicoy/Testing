@@ -19,7 +19,8 @@ public class PageSlider {
 	private String modalHtml; //The HTML content for the modal, if above field is true
 	private String linkUrl; //The URL to which the click should link, if it's not a modal.
 	private String sliderImg; //Image that goes as the background of the slider
-	private String sliderImgSM; //Image that will go as background for bigger view ports
+	private String sliderImgAlt; //Image that will go as background for bigger view ports
+	private String sliderImgSM; //Alt Tag for the image
 	private String backgroundColor; //bg color for the slider
 	
 	public ObjectId get_id() {
@@ -75,6 +76,12 @@ public class PageSlider {
 	}
 	public void setSliderImg(String sliderImg) {
 		this.sliderImg = sliderImg;
+	}
+	public String getSliderImgAlt() {
+		return sliderImgAlt;
+	}
+	public void setSliderImgAlt(String sliderImgAlt) {
+		this.sliderImgAlt = sliderImgAlt;
 	}
 	public String getSliderImgSM() {
 		return sliderImgSM;

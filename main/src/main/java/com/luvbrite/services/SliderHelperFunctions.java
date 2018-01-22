@@ -53,8 +53,6 @@ public class SliderHelperFunctions {
 			
 			if(!pageSliders.isEmpty()) {
 				
-				StringBuilder styles = new StringBuilder();
-				StringBuilder mediaStyles = new StringBuilder();
 				StringBuilder html = new StringBuilder();
 				StringBuilder modalHtml = new StringBuilder();
 				
@@ -63,43 +61,6 @@ public class SliderHelperFunctions {
 				for(PageSlider pg : pageSliders){
 
 					String sliderClassName = pg.getTitle().toLowerCase().replaceAll(" ", "-") + "-slider";
-					
-					
-					//Setup styles
-					styles.append(".")
-							.append(sliderClassName)
-							.append("{")
-								.append("background-image:url(")
-								.append(env.getProperty("cdnPath"))
-								.append(pg.getSliderImg())
-								.append(");");
-					
-					
-					if(pg.getBackgroundColor() != null 
-							&& !pg.getBackgroundColor().equals("")){
-						
-						styles.append("background-color:")
-						.append(pg.getBackgroundColor())
-						.append(" !important;");
-					}
-					
-
-					if(pg.getSliderImgSM() != null 
-							&& !pg.getSliderImgSM().equals("")){
-						
-						mediaStyles.append(".")
-							.append(sliderClassName)
-							.append("{")
-								.append("background-image:url(")
-								.append(env.getProperty("cdnPath"))
-								.append(pg.getSliderImgSM())
-								.append(");")
-							.append("}");
-					}
-					
-					
-					styles.append("}");
-					
 					
 					//setup html
 					String sliderClass = sliderClassName + " item";
@@ -115,7 +76,13 @@ public class SliderHelperFunctions {
 					if(pg.isModal()){
 						html.append("<a class=\"fullon-a\" data-toggle=\"modal\" data-target=\"#")
 						.append(sliderClassName)
-						.append("\"></a>");
+						.append("\">")
+						.append("<img src=\"")
+						.append(env.getProperty("cdnPath"))
+						.append(pg.getSliderImg())
+						.append("\" alt='")
+						.append(pg.getSliderImgAlt())
+						.append("' /></a>");
 						
 						
 						//setup modalHtml as well
@@ -145,17 +112,35 @@ public class SliderHelperFunctions {
 					}
 					
 					else{
-						html.append("<a class=\"fullon-a\" href=\"")
-						.append(pg.getLinkUrl())
-						.append("\"></a>");
+						
+						String linkUrl = pg.getLinkUrl();
+						if(linkUrl != null && !linkUrl.equals("")){
+
+							html.append("<a class=\"fullon-a\" href=\"")
+							.append(linkUrl)
+							.append("\">")
+							.append("<img src=\"")
+							.append(env.getProperty("cdnPath"))
+							.append(pg.getSliderImg())
+							.append("\" alt='")
+							.append(pg.getSliderImgAlt())
+							.append("' /></a>");
+						}
+						
+						else {
+							html.append("<img src=\"")
+							.append(env.getProperty("cdnPath"))
+							.append(pg.getSliderImg())
+							.append("\" alt='")
+							.append(pg.getSliderImgAlt())
+							.append("' />");
+						}
 					}
 					
 					html.append("</div>");
 					
 				}
 				
-				
-				so.setStyles(styles.toString() + "@media (min-width: 768px) { " + mediaStyles.toString() + "}");
 				so.setHtml(html.toString());
 				so.setModalHtml(modalHtml.toString());
 				so.setName(sliderName);

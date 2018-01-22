@@ -96,23 +96,16 @@
 
 									<div class="form-group" ng-show="!newSlider.modal"
 										ng-class="{ 'has-error' : newSlideForm.linkUrl.$invalid &amp;&amp; !newSlideForm.linkUrl.$pristine }">
-										<label class="col-sm-4 control-label">Link URL <sup>*</sup></label>
+										<label class="col-sm-4 control-label">Link URL</label>
 										<div class="col-sm-8">
 											<input type="text" class="form-control" name="linkUrl"
-												ng-required="!newSlider.modal"
 												ng-model="newSlider.linkUrl"
 												placeholder="URL Link" />
-
-											<p
-												ng-show="newSlideForm.linkUrl.$invalid &amp;&amp; !newSlideForm.linkUrl.$pristine"
-												class="help-block">Link URL is required</p>
 										</div>
 									</div>
 
 									<div class="form-group">
-										<label class="col-sm-4 control-label">Slider Image Main<br/>
-											(for smaller screens and/or large screen)
-											(780 x 170 or 1600 x 315)</label>
+										<label class="col-sm-4 control-label">Slider Main</label>
 										<div class="col-sm-8">
 											<button type="button"
 												ng-hide="newSlider.sliderImg"
@@ -132,33 +125,11 @@
 									</div>
 
 									<div class="form-group">
-										<label class="col-sm-4 control-label">Slider Image
-											Large (only if there is different images for small and large
-											screens 1600 x 315)</label>
+										<label class="col-sm-4 control-label">Image Alt Tag</label>
 										<div class="col-sm-8">
-											<button type="button"
-												ng-hide="newSlider.sliderImgSM"
-												class="btn btn-xs btn-info" ng-click="selectImageSM()">Set
-												Image</button>
-											<button type="button"
-												ng-show="newSlider.sliderImgSM"
-												class="btn btn-xs btn-info" ng-click="selectImageSM()">Change
-												Image</button>
-											<input type="hidden" name="sliderImgSM"
-												ng-model="newSlider.sliderImgSM" />
-											<div class="slide-holder"
-												ng-if="newSlider.sliderImgSM">
-												<img ng-src="{{cdnPath + newSlider.sliderImgSM}}" />
-											</div>
-										</div>
-									</div>
-
-									<div class="form-group">
-										<label class="col-sm-4 control-label">Background Color</label>
-										<div class="col-sm-8">
-											<input type="text" class="form-control"
-												ng-model="newSlider.backgroundColor"
-												placeholder="ex. #23FD33 or rgb(0,0,0) or rgba(0,0,0,.1)" />
+											<input type="text" class="form-control" name="sliderImgAlt"
+												ng-model="newSlider.sliderImgAlt"
+												placeholder="Slider Img Alt Tag" />
 										</div>
 									</div>
 
@@ -203,19 +174,12 @@
 												</div>
 											</div>
 											<div class="col-sm-4">
-												<div>
-													<em class="orange1">Slider Background color:</em>
-													{{slide.backgroundColor}}
-												</div>
 												<div class="marg-b1">
 													<em class="orange1">Slider Imgs:</em>
 												</div>
 												<div class="marg-l2 slider-info-img">
 													<img ng-if="slide.sliderImg"
 														ng-src="{{cdnPath + slide.sliderImg}}" src="" class="fit" />
-													<img ng-if="slide.sliderImgSM"
-														ng-src="{{cdnPath + slide.sliderImgSM}}" src=""
-														class="fit" />
 												</div>
 											</div>
 											<div class="col-sm-3" ng-if="slide.modal">
@@ -256,7 +220,7 @@
 	</div>
 
 	<script src="/resources/js/angular-upload-service.js?v002"></script>
-	<script src="/resources/js/admin/angular-content-management.js?v001"></script>
+	<script src="/resources/js/admin/angular-content-management.js?v002"></script>
 	<script src="//cdn.ckeditor.com/4.7.3/full/ckeditor.js"></script>
 	<script type="text/javascript">
 		$('.nav-cms').addClass('active');

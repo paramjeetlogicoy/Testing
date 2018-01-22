@@ -1,10 +1,18 @@
 package com.luvbrite.web.controller.admin;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +20,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
@@ -41,6 +50,7 @@ import com.luvbrite.web.models.OrderCustomer;
 import com.luvbrite.web.models.ResponseWithPg;
 import com.luvbrite.web.models.User;
 import com.luvbrite.web.models.UserDetailsExt;
+import com.luvbrite.web.models.UserMarketing;
 import com.luvbrite.web.validator.UserValidator;
 
 
@@ -668,4 +678,98 @@ public class UsersController {
 		
 		return gr;		
 	}
+
+	
+	@RequestMapping(value = "/download/user-csv")
+	public void downloadUserCSV(HttpServletResponse response,
+			@RequestParam(value="q", required=false) String query,
+			@RequestParam(value="s", required=false) String status){
+		
+		try {
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
+			
+			StringBuilder csvFileData = new StringBuilder()
+					.append("_id,active,username,email,fname,lname,role,phone,date_registered,")
+					.append("marketing.hearAboutUs,marketing.subscribe,dob,gender,status,memberType")
+					.append("\n");
+
+			List<User> users = dao.find("_id", 0, 0, query, status);
+			if(users != null){
+				for(User user: users){
+					
+					String registrationDate = "",
+							birthDate = "";
+					
+					Date dateRegistered = user.getDateRegistered();
+					if(dateRegistered != null) registrationDate = sdf.format(dateRegistered);
+					
+					Date dateOfBirth = user.getDob();
+					if(dateOfBirth != null) birthDate = sdf.format(dateOfBirth);
+					
+					String hearAbtUs = "";
+					String subscribe = "";
+					UserMarketing marketing = user.getMarketing();
+					if(marketing != null){
+						hearAbtUs = marketing.getHearAboutUs();
+						subscribe = marketing.isSubscribe() ? "Yes" : "No";
+					}
+					
+					
+					csvFileData
+					.append("\"").append(user.get_id()).append("\",")
+					.append("\"").append(user.isActive()).append("\",")
+					.append("\"").append(user.getUsername()).append("\",")
+					.append("\"").append(user.getEmail()).append("\",")
+					.append("\"").append(user.getFname()).append("\",")
+					.append("\"").append(user.getLname()).append("\",")
+					.append("\"").append(user.getRole()).append("\",")
+					.append("\"").append(user.getPhone()).append("\",")
+					.append("\"").append(registrationDate).append("\",")
+					.append("\"").append(hearAbtUs).append("\",")
+					.append("\"").append(subscribe).append("\",")
+					.append("\"").append(birthDate).append("\",")
+					.append("\"").append(user.getGender()).append("\",")
+					.append("\"").append(user.getStatus()).append("\",")
+					.append("\"").append(user.getMemberType()).append("\",")
+					.append("\n");
+				}
+			}
+			
+			csvFileData
+			.append("\n")
+			.append("\n")
+			.append("Filters Applied")
+			.append("\n")
+			.append("Search: " + query)
+			.append("; Status: " + status)
+			.append("\n");
+			
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();   
+			PrintStream printStream = new PrintStream(outputStream);
+			printStream.print(csvFileData.toString());
+			
+			response.setContentType("text/csv");
+			response.setHeader("Content-Disposition","attachment;filename=\"userlist-luvbrite.csv\"");
+			
+			try {
+				
+				FileCopyUtils.copy(new ByteArrayInputStream(outputStream.toByteArray()), response.getOutputStream());
+				
+			} catch (IOException e) {
+				logger.error(Exceptions.giveStackTrace(e));
+				
+				try {
+					response.getOutputStream().print("Error creating file");
+				} catch (IOException e1) {
+					logger.error(Exceptions.giveStackTrace(e1));
+				}
+			}
+			
+		} catch (Exception f){
+			logger.error(Exceptions.giveStackTrace(f));
+		}
+		
+	}
+	
 }

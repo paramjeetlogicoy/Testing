@@ -71,6 +71,8 @@ defaultCtrlr = function($scope, $http, $filter, uploadService, $rootScope){
 			}
 		}
 		
+		$scope.newSlider.title = $scope.newSlider.title.replace(/[^a-z0-9 _-]/gi,''); //remove invalid characters
+		
 		
 		$scope.saveSliderText = "Saving...";
 		
