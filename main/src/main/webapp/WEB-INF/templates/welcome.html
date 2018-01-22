@@ -177,7 +177,7 @@ a.fullon-a{cursor:pointer;}
 	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
 	<script type="text/javascript">
 		$(document).ready(function(){			
-			$('#home-sliders [data-toggle="modal"]')
+			$('.modalholder .modal')
 			.on('shown.bs.modal', function() {
 				$('#home-sliders').carousel('pause');
 			}).on('hide.bs.modal', function() {
