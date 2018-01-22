@@ -28,56 +28,19 @@ h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
 <style type="text/css">
 a.fullon-a{cursor:pointer;}
 </style>
-<style type="text/css" 
-	th:if="${sliders} != null and ${sliders.styles} != ''" 
-	th:utext="${sliders.styles}">
-</style>
 </head>
 <body ng-app="lbApp" ng-controller="homeCtrlr">
 	<div th:replace="fragments/layout::fragment-header"></div>
 	<div class="homepage-container">
 
-		<div id="home-sliders" class="home-carousel carousel slide" data-ride="carousel">
+		<div id="home-sliders" class="home-carousel carousel slide" data-ride="carousel" th:if="${sliders} != null">
 
-			<div class="carousel-inner" role="listbox">
-
-				<div class="item active">
-					<a class="fullon-a" data-toggle="modal"
-						data-target="#newyear2018_offer"><img
-						src="//lbrit.co/static/imgs/sliders/newyear_offer_2018.jpg"
-						alt="A New Year Offer" /></a>
-				</div>
-
-				<div class="item">
-					<a class="fullon-a" data-toggle="modal"
-						data-target="#doubleDownModal"><img
-						src="//lbrit.co/static/imgs//sliders/double-down-full.jpg"
-						alt="Double Down" /></a>
-				</div>
-				<div class="item">
-					<img
-						src="//lbrit.co/static/imgs/sliders/NewYear2018_A_315x1600-1.jpg"
-						alt="Happy New Year" />
-				</div>
-				
-
-				<div class="item">
-					<a class="fullon-a" data-toggle="modal" data-target="#vibebanner"><img
-						src="//lbrit.co/static/imgs/sliders/Mood_r3_315x1600.jpg"
-						alt="Catch your vibe. Sativa - Energize, Indica - Rejuvenate, Hybrid - Balance" /></a>
-				</div>
-
-				<div class="item">
-					<a class="fullon-a" href="/category/vapes"><img
-						src="//lbrit.co/static/imgs/sliders/got_vape_1.jpg"
-						alt="Vapes from industries leading brand" /></a>
-				</div>
-
-				<div class="item">
-					<a class="fullon-a" href="/category/flowers"><img
-						src="//lbrit.co/static/imgs/sliders/lowell_slider_lg.jpg"
-						alt="Innovative, Organic, High Quality Flowers" /></a>
-				</div>
+			<!-- Wrapper for slides -->
+			<div 
+				class="carousel-inner" 
+				role="listbox" 
+				th:if="${sliders.html} != ''"
+				th:utext="${sliders.html}">	
 			</div>
 
 			<!-- Controls -->
@@ -214,7 +177,7 @@ a.fullon-a{cursor:pointer;}
 	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
 	<script type="text/javascript">
 		$(document).ready(function(){			
-			$('#vibebanner, #newyear2018_offer')
+			$('#home-sliders [data-toggle="modal"]')
 			.on('shown.bs.modal', function() {
 				$('#home-sliders').carousel('pause');
 			}).on('hide.bs.modal', function() {
@@ -224,7 +187,6 @@ a.fullon-a{cursor:pointer;}
 	</script>
 	
 	<div class="modalholder">	
-		<div th:replace="fragments/layout::fragment-doubledownmodal"></div>	
 		
 		<div class="modal fade" id="briteboxuse" tabindex="-1"
 			role="dialog">
@@ -244,96 +206,6 @@ a.fullon-a{cursor:pointer;}
 							new online account as a $10 coupon which can be used for 10
 							future online orders.
 						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="modal fade" id="newyear2018_offer" tabindex="-1"
-			role="dialog">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-						<h3 class="modal-title">Offer Details</h3>
-					</div>
-					<div class="modal-body">
-						<div class="marg-b2">Upload a letter of recommendation or medical
-							cannabis id card that was issued in January 2018 and get $35 off
-							your first order of $100 or more in the month of January.</div>
-						<div class="marg-b2 muted small">*Offer ends January 31st 2018.
-							Discount applied only to the first order reaching a total of $100
-							or more before taxes. Luvbrite has the right to refuse or
-							terminate this offer at any time for any reason.</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		
-		<div class="modal fade" id="vibebanner" tabindex="-1" role="dialog">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-						<h3 class="modal-title">Catch Your Vibe</h3>
-					</div>
-					<div class="modal-body">
-						<div class="row">
-							<div class="col-sm-4 marg-b2">
-								<div class="subhdr-icons marg-b1">
-									<img src="https://lbrit.co/static/imgs/energize.jpg" alt=""
-										class="fit" />
-								</div>
-								<div class="text-center">
-									<h4 class="marg-b0">
-										<a href="/category/sativa" class="sativa-red">Energize</a>
-									</h4>
-									<div>
-										<em>(Sativa)</em>
-									</div>
-								</div>
-							</div>
-
-
-							<div class="col-sm-4 marg-b2">
-								<div class="subhdr-icons marg-b1">
-									<img src="https://lbrit.co/static/imgs/rejuvenate.jpg" alt=""
-										class="fit" />
-								</div>
-								<div class="text-center">
-									<h4 class="marg-b0">
-										<a href="/category/indica" class="indica-purple">Rejuvenate</a>
-									</h4>
-									<div>
-										<em>(Indica)</em>
-									</div>
-								</div>
-							</div>
-
-
-							<div class="col-sm-4 marg-b2">
-								<div class="subhdr-icons marg-b1">
-									<img src="https://lbrit.co/static/imgs/balance.jpg" alt=""
-										class="fit" />
-								</div>
-								<div class="text-center">
-									<h4 class="marg-b0">
-										<a href="/category/hybrid" class="hybrid-green">Balance</a>
-									</h4>
-									<div>
-										<em>(Hybrid)</em>
-									</div>
-								</div>
-							</div>
-						</div>
-
 					</div>
 				</div>
 			</div>
