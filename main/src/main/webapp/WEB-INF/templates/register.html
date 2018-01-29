@@ -270,6 +270,22 @@
 								</div>
 							</div>
 
+							<div class="form-group" ng-class="{ 'has-error' : referralUserValid==='N'}">
+								<label class="control-label col-sm-4">Referred by a friend?</label>
+								<div class="col-sm-8 errorOverInput">
+									<input type="text" ng-model="user.marketing.referrerUsernameEmail" class="form-control"
+										name="usernameEmail" placeholder="Friend's username or email"
+										 ng-model-options="{updateOn: 'blur'}" ng-change="validateUsername()"/>
+									<p class="help-block help-error">Not a registered username / email.</p>
+									<p class="help-block" ng-show="referralUserValid===''">Your
+										friend's registered username or email.</p>
+									<p class="help-block" ng-show="referralUserValid==='Y'">
+										<span class="green1">Valid user <i
+											class="fa fa-thumbs-o-up" aria-hidden="true"></i></span>
+									</p>
+								</div>
+							</div>
+
 
 							<div class="form-group marg-b5">
 								<label class="control-label col-sm-4">Additional Notes</label>

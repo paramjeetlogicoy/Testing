@@ -10,6 +10,8 @@ var registerCtrlr = function($scope, $http, Upload){
 	$scope.today = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
 	$scope.recoExpiryErrMsg = "Recommendation Expiry date should " +
 			"be a valid future date.";
+	
+	$scope.referralUserValid = "";
 		
 	
 	$scope.hearAboutOptions = ['WeedMaps', 'Google', 'Instagram', 'Yelp', 'Facebook', 'Leafly', 'Friends & Family', 'La Weekly', 'Other'];
@@ -35,6 +37,12 @@ var registerCtrlr = function($scope, $http, Upload){
 			proceed = false;
 			
 			$('.recoWrapper').addClass('has-error');
+		}
+		
+		if($scope.user.marketing && 
+				$scope.user.marketing.referrerUsernameEmail &&
+				$scope.referralUserValid === "N"){
+			proceed = false;
 		}
 		
 		if($scope.registerForm.$valid && 
@@ -82,6 +90,28 @@ var registerCtrlr = function($scope, $http, Upload){
 			}
 			
 			$('html,body').scrollTop($('.has-error').offset().top-120);
+		}
+	};
+	
+	
+	$scope.validateUsername = function(){
+		
+		$scope.referralUserValid = "";
+		
+		if($scope.user && 
+				$scope.user.marketing && 
+				$scope.user.marketing.referrerUsernameEmail){
+			
+			$http.post(_lbUrls.register + '/validateuser', $scope.user.marketing.referrerUsernameEmail)
+			.then(function(response){
+				var resp = response.data;	
+				if(resp && resp.success){
+					$scope.referralUserValid = "Y";
+				}
+				else{
+					$scope.referralUserValid = "N";
+				}
+			});
 		}
 	};
 	

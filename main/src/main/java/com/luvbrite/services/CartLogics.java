@@ -547,14 +547,28 @@ public class CartLogics {
 		
 	}
 	
-	
+	//Check if this is customer's first order, ignores any previous cancelled orders.
 	public String firstOrderCheck(long customerId){
+		return firstOrderCheckLogic(customerId, false);
+	}
+	
+
+	//Check if this is customer's first order including any previous cancelled orders.
+	public String theFirstOrder(long customerId){	
+		return firstOrderCheckLogic(customerId, true);
+	}
+	
+	
+	private String firstOrderCheckLogic(long customerId, boolean irrespectiveOfCancelledOrder){
 		
 		String response = "";
 		
 		Query<Order> q = completedOrderdao.createQuery()
-				.field("status").notEqual("cancelled")
 				.field("customer._id").equal(customerId);
+		
+		if(!irrespectiveOfCancelledOrder){
+			q.field("status").notEqual("cancelled");
+		}
 		
 		if(completedOrderdao.count(q) == 0){
 			response = "Y";

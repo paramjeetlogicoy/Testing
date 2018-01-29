@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.mongodb.morphia.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +47,9 @@ public class OrderFinalization {
 	
 	@Autowired
 	private UserDAO userDAO;
+	
+	@Autowired
+	private CouponManager couponManager;
 	
 	
 	public String finalizeOrder(CartOrder cartOrder, CartLogics cartLogics){
@@ -301,7 +305,8 @@ public class OrderFinalization {
 	
 	private void firstOrderCheck(CartOrder co, CartLogics cartLogics){
 			
-		String response = cartLogics.firstOrderCheck(co.getCustomer().get_id());
+		long customerId = co.getCustomer().get_id();
+		String response = cartLogics.firstOrderCheck(customerId);
 		if(response.equals("Y")){
 
 			OrderNotes notes = co.getNotes();
@@ -315,6 +320,34 @@ public class OrderFinalization {
 
 			co.setNotes(notes);
 		}	
+		
+		
+		response = cartLogics.theFirstOrder(customerId);
+		if(response.equals("Y")){
+			
+			User user = userDAO.get(customerId);
+			if(user.getMarketing() != null &&
+					user.getMarketing().getReferrerUsernameEmail() != null){
+				
+				String usernameEmail = user.getMarketing().getReferrerUsernameEmail();
+				
+				Query<User> query = userDAO.createQuery();
+				query.or(query.criteria("username").equal(usernameEmail),
+						query.criteria("email").equal(usernameEmail));
+				
+				User friendUser = query.get();
+				if(friendUser != null) {
+					String resp = couponManager.increaseCouponLimit(friendUser.getEmail(), 10, 10d);
+					if(resp.equals("")){
+						logger.error("Friend referral coupon created for user/friend " 
+								+ user.getUsername() + "/" + friendUser.getUsername());
+					}
+					else{
+						logger.error("Friend referral coupon failed. " + resp);
+					}
+				}
+			}
+		}
 	};
 	
 	/**

@@ -307,6 +307,26 @@ public class LoginController {
 		return r;		
 	}
 	
+	
+	@RequestMapping(value = "/register/validateuser", method = RequestMethod.POST)
+	public @ResponseBody GenericResponse validateUsernameEmail(@RequestBody String usernameEmail){
+		
+		GenericResponse r = new GenericResponse();		
+		r.setSuccess(false);
+		
+		Query<User> query = dao.createQuery();
+		query.or(query.criteria("username").equal(usernameEmail),
+				query.criteria("email").equal(usernameEmail));
+		
+		User user = query.get();
+		if(user != null) {
+			r.setSuccess(true);
+		}
+		
+		
+		return r;		
+	}
+	
 
 	@RequestMapping(value = "/resetrequest", method = RequestMethod.GET)
 	public String requestReset(ModelMap model){

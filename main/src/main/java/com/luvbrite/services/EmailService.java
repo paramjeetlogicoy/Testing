@@ -82,8 +82,11 @@ public class EmailService {
 
 			MailjetClient client = new MailjetClient(MAILJET_API_KEY, MAILJET_API_SECRET);
 
+			//System.out.println("mailjet - " + mailJet);
 			// trigger the API call
 			MailjetResponse response = client.post(mailJet);
+			//System.out.println("responseStatus - " + response.getStatus());
+			//System.out.println("responseData - " + response.getData());
 			if(response.getStatus() == 200){
 				System.out.println("EmailService - Email Sent to " + email.getRecipientEmail());
 			}

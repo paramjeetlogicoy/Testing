@@ -691,7 +691,7 @@ public class UsersController {
 			
 			StringBuilder csvFileData = new StringBuilder()
 					.append("_id,active,username,email,fname,lname,role,phone,date_registered,")
-					.append("marketing.hearAboutUs,marketing.subscribe,dob,gender,status,memberType")
+					.append("marketing.hearAboutUs,marketing.subscribe,marketing.referrerUsernameEmail,dob,gender,status,memberType")
 					.append("\n");
 
 			List<User> users = dao.find("_id", 0, 0, query, status);
@@ -707,12 +707,14 @@ public class UsersController {
 					Date dateOfBirth = user.getDob();
 					if(dateOfBirth != null) birthDate = sdf.format(dateOfBirth);
 					
-					String hearAbtUs = "";
-					String subscribe = "";
+					String hearAbtUs = "",
+							subscribe = "",
+							referrerUsernameEmail = "";
 					UserMarketing marketing = user.getMarketing();
 					if(marketing != null){
 						hearAbtUs = marketing.getHearAboutUs();
 						subscribe = marketing.isSubscribe() ? "Yes" : "No";
+						referrerUsernameEmail = marketing.getReferrerUsernameEmail() != null ? marketing.getReferrerUsernameEmail() : "";
 					}
 					
 					
@@ -728,6 +730,7 @@ public class UsersController {
 					.append("\"").append(registrationDate).append("\",")
 					.append("\"").append(hearAbtUs).append("\",")
 					.append("\"").append(subscribe).append("\",")
+					.append("\"").append(referrerUsernameEmail).append("\",")
 					.append("\"").append(birthDate).append("\",")
 					.append("\"").append(user.getGender()).append("\",")
 					.append("\"").append(user.getStatus()).append("\",")

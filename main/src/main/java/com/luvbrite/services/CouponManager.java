@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -244,7 +245,52 @@ public class CouponManager {
 		return cr;
 	}
 	
-	
+	public String increaseCouponLimit(String userEmail, int count, double value){
+		
+		String resp = "";
+		
+		Coupon coupon = dao.createQuery()
+				.field("emails").equalIgnoreCase(Pattern.quote(userEmail))
+				.field("type").equal("F")
+				.field("_id").contains("rewards10")
+				.get();
+		
+		if(coupon != null){
+			
+			Calendar now = Calendar.getInstance();
+			now.add(Calendar.MONTH, 6);
+			
+			coupon.setCouponValue(value);
+			coupon.setMaxUsageCount(coupon.getMaxUsageCount() + count);
+			coupon.setExpiry(now.getTime());
+			coupon.setActive(true);
+			
+			dao.save(coupon);
+
+			try {
+				
+				Log log = new Log();
+				log.setCollection("coupons");
+				log.setDetails("Coupon " + coupon.get_id() + 
+						". Coupon made active, expiration date set to +6 months, value set to 10. Increment count and value by " + 
+						coupon.getMaxUsageCount());
+				log.setDate(Calendar.getInstance().getTime());
+				log.setKey(0);
+				log.setUser("System");
+				
+				logDao.save(log);					
+			}
+			catch(Exception e){
+				logger.error(Exceptions.giveStackTrace(e));
+			}
+		}
+		else{
+			resp = "No coupon found for the user " + userEmail;
+		}
+		
+		
+		return resp;
+	}
 	
 	/**
 	 * Called when a coupon is applied during checkout process
@@ -907,7 +953,7 @@ public class CouponManager {
 	 * olic				- The OrderLineItemCart object that will be added to the order when offer is applied
 	 * 
 	 * 
-	 * Control flows to the below method when the coupon.type if PO
+	 * Control flows to the below method when the coupon.type is PO
 	 * First it checks if there is any qualifying products in the cart.
 	 * Then it checks to see if the offer product is already in the cart, 
 	 * 	if yes, we keep it as it is,
