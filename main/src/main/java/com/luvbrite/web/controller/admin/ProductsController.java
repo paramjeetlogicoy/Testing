@@ -250,6 +250,7 @@ public class ProductsController {
 						productDb.setPrice(product.getPrice());
 						productDb.setSalePrice(product.getSalePrice());
 						productDb.setStock(product.getStock());
+						productDb.setPriceRange(product.getPriceRange());
 					}
 					
 					
