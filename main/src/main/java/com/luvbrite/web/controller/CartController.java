@@ -1178,13 +1178,21 @@ public class CartController {
 					
 					/* Validate City and State for Tax rate*/
 					double taxRate = 9.5d;
-					List<Ziptax> taxes = taxDao.createQuery()
-						.field("zipcode").equal(zipCode)
-						.field("city").equal(shipping.getAddress().getCity().toLowerCase())
-						.asList();
-					if(taxes != null && !taxes.isEmpty()){
-						//System.out.println("Tax found " + taxes.get(0).getTaxRate());
-						taxRate = taxes.get(0).getTaxRate();
+					
+					//Zero sales for February
+					Calendar now = Calendar.getInstance();
+					if(now.get(Calendar.MONTH) == Calendar.FEBRUARY && now.get(Calendar.YEAR) == 2018){
+						taxRate = 0d;
+					}
+					else {
+						List<Ziptax> taxes = taxDao.createQuery()
+							.field("zipcode").equal(zipCode)
+							.field("city").equal(shipping.getAddress().getCity().toLowerCase())
+							.asList();
+						if(taxes != null && !taxes.isEmpty()){
+							//System.out.println("Tax found " + taxes.get(0).getTaxRate());
+							taxRate = taxes.get(0).getTaxRate();
+						}
 					}
 					
 //					if(order.getCustomer() != null){
