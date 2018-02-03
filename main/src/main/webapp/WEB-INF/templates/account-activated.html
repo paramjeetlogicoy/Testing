@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Account Activated | Luvbrite</title>
+<link href="https://www.luvbrite.com/user-activated" rel="canonical" />
+<meta th:include="fragments/layout::fragment-head" />
+</head>
+<body ng-app="lbApp" class="bg-greyF0">
+	<div th:replace="fragments/layout::fragment-google-analytics"></div>
+	<div th:replace="fragments/layout::fragment-header"></div>
+
+	<div class="container page-container">
+		<div class="generic-container pad2">
+			<h2>Account Activated</h2>
+
+			<div class="alert alert-success">
+				<h4>Thank you for registering with Luvbrite Collective.</h4>
+				<div class="marg-b2">
+					Your account has been activated! Please <a href="/login"
+						class="btn btn-info">login</a> with your username and password.
+				</div>
+			</div>
+			
+			<div>
+				<strong>Important:</strong> Please make sure that our emails are
+				coming to your inbox. In some scenarios, our emails to you might end
+				up in your email SPAM and get lost.
+			</div>
+
+		</div>
+	</div>
+
+
+	<div th:replace="fragments/layout::fragment-footer"></div>
+	<div th:include="fragments/layout::fragment-foot(angular=true)"></div>
+	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
+</body>
+</html>

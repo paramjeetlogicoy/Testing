@@ -1,5 +1,6 @@
 package com.luvbrite.web.controller;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -22,12 +23,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.luvbrite.dao.CouponDAO;
 import com.luvbrite.dao.LogDAO;
 import com.luvbrite.dao.PasswordResetDAO;
 import com.luvbrite.dao.UserDAO;
 import com.luvbrite.services.ControlConfigService;
 import com.luvbrite.services.EmailService;
 import com.luvbrite.utils.Exceptions;
+import com.luvbrite.web.models.Coupon;
 import com.luvbrite.web.models.Email;
 import com.luvbrite.web.models.GenericResponse;
 import com.luvbrite.web.models.Log;
@@ -59,6 +62,8 @@ public class LoginController {
 	@Autowired
 	private EmailService emailService;
 
+	@Autowired
+	private CouponDAO couponDao;
 
 	@RequestMapping(value = "/login")
 	public String login(
@@ -121,6 +126,8 @@ public class LoginController {
 	public @ResponseBody GenericResponse createUser(
 			@Validated @RequestBody User user, 
 			BindingResult result){
+		
+		boolean activeUserOnRegistrationFlag = true;
 		
 		GenericResponse r = new GenericResponse();		
 		r.setSuccess(false);
@@ -202,76 +209,93 @@ public class LoginController {
 					//Encode the password before saving it
 					String encodedPwd = encoder.encode(user.getPassword());
 					user.setPassword(encodedPwd);
+					
+					
+					if(activeUserOnRegistrationFlag){
+						
+						activeUserOnRegistration(user);
+						
+						
+						r.setSuccess(true);
+						r.setMessage("activated");
+						
+					}
+					
+					else{
+						
 
-					dao.save(user);
-					
-					
-					/* Update Log */
-					try {
-						
-						Log log = new Log();
-						log.setCollection("users");
-						log.setDetails("user created.");
-						log.setDate(Calendar.getInstance().getTime());
-						log.setKey(userId);
-						log.setUser("System");
-						
-						logDao.save(log);						
-					}
-					catch(Exception e){
-						logger.error(Exceptions.giveStackTrace(e));
-					}
-					
-					
-					
-					/* Email User */
-					try {
-						
-						Email email = new Email();
-						email.setEmailTemplate("registration");
-						email.setFromName("Luvbrite Security");
-						email.setFromEmail("no-reply@luvbrite.com");
-						email.setRecipientEmail(user.getEmail());
-						email.setRecipientName(user.getFname());
-						
-						email.setSubject("Luvbrite Registration Details");
-						email.setEmailTitle("Registration Email");
-						email.setEmailInfo("Info about your recent registration at www.luvbrite.com");	
-						
-						emailService.sendEmail(email);
-					}
-					catch(Exception e){
-						logger.error(Exceptions.giveStackTrace(e));
-					}
-					
-					
-					if(!ccs.getcOps().isDev()){
 
-						/* Email Admin */
+						dao.save(user);
+						
+						
+						/* Update Log */
 						try {
-
+							
+							Log log = new Log();
+							log.setCollection("users");
+							log.setDetails("user created.");
+							log.setDate(Calendar.getInstance().getTime());
+							log.setKey(userId);
+							log.setUser("System");
+							
+							logDao.save(log);						
+						}
+						catch(Exception e){
+							logger.error(Exceptions.giveStackTrace(e));
+						}
+						
+						
+						
+						/* Email User */
+						try {
+							
 							Email email = new Email();
-							email.setEmailTemplate("registration-admin");
+							email.setEmailTemplate("registration");
 							email.setFromName("Luvbrite Security");
 							email.setFromEmail("no-reply@luvbrite.com");
-							email.setRecipientEmail("new-users@luvbrite.com");
-
-							email.setSubject("Luvbrite New User Registration");
-							email.setEmailTitle("Registration Admin Email");
-							email.setEmailInfo("Info about new user registration at www.luvbrite.com");	
-
-							email.setEmail(user);
-
+							email.setRecipientEmail(user.getEmail());
+							email.setRecipientName(user.getFname());
+							
+							email.setSubject("Luvbrite Registration Details");
+							email.setEmailTitle("Registration Email");
+							email.setEmailInfo("Info about your recent registration at www.luvbrite.com");	
+							
 							emailService.sendEmail(email);
 						}
 						catch(Exception e){
 							logger.error(Exceptions.giveStackTrace(e));
 						}
+						
+						
+						if(!ccs.getcOps().isDev()){
+
+							/* Email Admin */
+							try {
+
+								Email email = new Email();
+								email.setEmailTemplate("registration-admin");
+								email.setFromName("Luvbrite Security");
+								email.setFromEmail("no-reply@luvbrite.com");
+								email.setRecipientEmail("new-users@luvbrite.com");
+
+								email.setSubject("Luvbrite New User Registration");
+								email.setEmailTitle("Registration Admin Email");
+								email.setEmailInfo("Info about new user registration at www.luvbrite.com");	
+
+								email.setEmail(user);
+
+								emailService.sendEmail(email);
+							}
+							catch(Exception e){
+								logger.error(Exceptions.giveStackTrace(e));
+							}
+						}
+						
+						
+						r.setSuccess(true);
+						r.setMessage(userId + "");
+						
 					}
-					
-					
-					r.setSuccess(true);
-					r.setMessage(userId + "");
 				}
 
 				else {
@@ -557,6 +581,11 @@ public class LoginController {
 		return "pending-registration";		
 	}
 	
+	@RequestMapping(value = "/account-activated")
+	public String accountActivated(ModelMap model){	
+		return "account-activated";		
+	}
+	
 	
 	@RequestMapping(value = "/pending-verification")
 	public String pendingVerification(ModelMap model){	
@@ -589,7 +618,114 @@ public class LoginController {
 		return "account-expired";		
 	}
 	
-	
+	private String activeUserOnRegistration(User user){
+		
+		String resp = "";
+		
+		user.setActive(true);
+		user.setStatus("active");
+		
+		//Save user
+		dao.save(user);
+		
+		
+		String newCouponCode = (user.getUsername() + "rewards10").toLowerCase();
+		Coupon cp = couponDao.get(newCouponCode);
+		if(cp==null){
+			cp = new Coupon();
+			
+			Calendar now = Calendar.getInstance();
+			now.add(Calendar.MONTH, 6);
+			
+			cp.set_id(newCouponCode);
+			cp.setActive(true);
+			cp.setCouponValue(10d);
+			cp.setDescription("First time patient gift.");
+			cp.setEmails(Arrays.asList(new String[] { user.getEmail()} ));
+			cp.setExpiry(now.getTime());
+			cp.setMaxDiscAmt(0);
+			cp.setMaxUsageCount(10);
+			cp.setMinAmt(0);
+			cp.setType("F");
+			cp.setUsageCount(0);
+			
+			couponDao.save(cp);
+			
+		}
+		else{
+			
+			logger.error("CP:Coupon " + newCouponCode + " already exists. So not created!");
+		}
+		
+		
+		/* Update Log */
+		try {
+			
+			Log log = new Log();
+			log.setCollection("users");
+			log.setDetails("user created, activated and emailed" + 
+					(cp!=null? " with coupon " + cp.get_id() + "." : "."));
+			log.setDate(Calendar.getInstance().getTime());
+			log.setKey(user.get_id());
+			log.setUser(user.getUsername());
+			
+			logDao.save(log);					
+		}
+		catch(Exception e){
+			logger.error(Exceptions.giveStackTrace(e));
+		}
+		
+		
+		
+		/* Email */
+		try {
+			
+			Email email = new Email();
+			email.setEmailTemplate("activation");
+			email.setFromName("Luvbrite Security");
+			email.setFromEmail("no-reply@luvbrite.com");
+			email.setRecipientEmail(user.getEmail());
+			email.setRecipientName(user.getFname());					
+			email.setSubject("Luvbrite Account Activation Details");
+			email.setEmailTitle("Acount Activation Email");
+			email.setEmailInfo("your www.luvbrite.com account activated");	
+			
+			email.setEmail(cp);
+			
+			emailService.sendEmail(email);
+		}
+		catch(Exception e){
+			logger.error(Exceptions.giveStackTrace(e));
+		}
+
+		
+		
+		if(!ccs.getcOps().isDev()){
+
+			/* Email Admin */
+			try {
+
+				Email email = new Email();
+				email.setEmailTemplate("registration-admin");
+				email.setFromName("Luvbrite Security");
+				email.setFromEmail("no-reply@luvbrite.com");
+				email.setRecipientEmail("new-users@luvbrite.com");
+
+				email.setSubject("Luvbrite New User Registration");
+				email.setEmailTitle("Registration Admin Email");
+				email.setEmailInfo("Info about new user registration at www.luvbrite.com");	
+
+				email.setEmail(user);
+
+				emailService.sendEmail(email);
+			}
+			catch(Exception e){
+				logger.error(Exceptions.giveStackTrace(e));
+			}
+		}
+		
+		return resp;
+	}
 	
 	
 	@RequestMapping(value = "/reco-reupload")

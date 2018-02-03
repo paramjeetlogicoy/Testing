@@ -62,7 +62,12 @@ var registerCtrlr = function($scope, $http, Upload){
 					localStorage.removeItem('recoFile');
 					localStorage.removeItem('idFile');
 					
-					location.href = "/pending-registration";
+					if(resp.message === 'activated'){
+						location.href = "/account-activated";
+					}
+					else{
+						location.href = "/pending-registration";
+					}
 				}
 				else{
 					$scope.pageLevelAlert = resp.message; 
