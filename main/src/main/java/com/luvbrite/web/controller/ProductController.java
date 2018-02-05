@@ -252,4 +252,15 @@ public class ProductController {
 				.filter("stockStat", "instock")
 				.asList();
 	}
+
+	@RequestMapping(value = "/json/get-popularthismonth")
+	public @ResponseBody List<Product> getPpopularProducts(){
+		
+		return prdDao.createQuery().retrievedFields(true, "name", "url", "priceRange", "featuredImg")
+			    .field("categories").equal("Popular This Month")
+				.filter("status", "publish")
+				.filter("stockStat", "instock")
+				.limit(3)
+				.asList();
+	}
 }

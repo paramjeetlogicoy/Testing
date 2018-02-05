@@ -60,104 +60,8 @@
 			<div class="pad-h2">
 				<h3 class="split-lines">Popular This Month</h3>
 			</div>
-			<div class="yml-container">
-				<ul class="row products-container">
-					<li>
-						<div class="product-item-container">
-							<div class="product-item-card">
-								<div class="cards product-item">
-									<div>
-										<a href="/product/chemdawg-diesel" class="pc-img-holder"><span>
-												<img class="featured-img"
-												th:src="${_lbGlobalCDNPath} + '/uploads/2016/06/chemdawg-diesel.jpg'" />
-										</span> </a>
-									</div>
-									<div class="pc-info">
-										<h3>
-											<a href="/product/chemdawg-diesel">Chemdawg Diesel 5g
-												Special</a>
-										</h3>
-										<hr />
-										<div class="clearfix">
-											<div class="pull-left pc-price-range">$45.00</div>
-											<div class="pull-right pc-action">
-												<a class="btn btn-lb btn-sm" href="/product/chemdawg-diesel">
-													<span class="white">Details</span>
-												</a>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</li>
-
-					<li>
-						<div class="product-item-container">
-							<div class="product-item-card">
-								<div class="cards product-item">
-									<div>
-										<a href="/product/highlighter-vape-cartridge"
-											class="pc-img-holder"><span> <img
-												class="featured-img"
-												th:src="${_lbGlobalCDNPath} + '/uploads/2016/01/highlighter-vape-cartridge.jpg'" />
-										</span> </a>
-									</div>
-									<div class="pc-info">
-										<h3>
-											<a href="/product/highlighter-vape-cartridge"
-												title="Highlighter Vape Cartridge">Highlighter Vape
-												Cartridge</a>
-										</h3>
-										<hr />
-										<div class="clearfix">
-											<div class="pull-left pc-price-range">$35.00</div>
-											<div class="pull-right pc-action">
-												<a class="btn btn-lb btn-sm"
-													href="/product/highlighter-vape-cartridge"> <span
-													class="white">Details</span>
-												</a>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</li>
-
-					<li>
-						<div class="product-item-container">
-							<div class="product-item-card">
-								<div class="cards product-item">
-									<div>
-										<a href="/product/2020-knockout-pre-roll"
-											class="pc-img-holder"><span> <img
-												class="featured-img"
-												th:src="${_lbGlobalCDNPath} + '/uploads/2016/02/2020-knockout-pre-roll.jpg'" />
-										</span> </a>
-									</div>
-									<div class="pc-info">
-										<h3>
-											<a href="/product/2020-knockout-pre-roll"
-												title="2020 Knockout Pre Roll">2020 Knockout Pre Roll</a>
-										</h3>
-										<hr />
-										<div class="clearfix">
-											<div class="pull-left pc-price-range">$15.00 - $25.00</div>
-											<div class="pull-right pc-action">
-												<a class="btn btn-lb btn-sm"
-													href="/product/2020-knockout-pre-roll"> <span
-													class="white">Details</span>
-												</a>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</li>
-				</ul>
-
+			
+			<div class="yml-container" popular-this-month="">
 			</div>
 			<!-- .yml-container ends -->
 
@@ -166,6 +70,8 @@
 	</div>
 
 	<div th:replace="fragments/layout::fragment-footer"></div>
+	<div th:include="fragments/layout::fragment-foot(angular=true)"></div>
+	<div th:replace="fragments/layout::fragment-scripts(angular=true)"></div>
 	<script type="text/javascript"></script>
 </body>
 </html>

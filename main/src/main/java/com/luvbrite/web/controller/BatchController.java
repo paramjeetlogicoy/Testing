@@ -43,75 +43,78 @@ public class BatchController {
 	@RequestMapping(value = "/reco-expiry")
 	public @ResponseBody String recommendationExpiryCheck(){
 		
-		RecoExpiry rc = new RecoExpiry();
-		
-		Calendar now = Calendar.getInstance();
-		Calendar day4 = Calendar.getInstance();
-		day4.add(Calendar.DAY_OF_MONTH, 4);
-		
-		//Expiring in next 3 days
-		List<User> users = userDao.createQuery()
-				.field("active").equal(true)
-				.field("role").equal("customer")
-				.field("identifications").exists()
-				.field("identifications").notEqual("")
-				.field("identifications.recoExpiry").greaterThan(now.getTime())
-				.field("identifications.recoExpiry").lessThan(day4.getTime())
-				.order("identifications.recoExpiry")
-				.asList();		
-		
-		//Expired
-		
-		/** IMPORTANT - We need the full User object here. 
-		 * The same object is passed to deactivateUser() method
-		 * Don't user projection or retrieveFields in the query. **/
-		List<User> usersE = userDao.createQuery()
-				.field("active").equal(true)
-				.field("role").equal("customer")
-				.field("identifications").exists()
-				.field("identifications").notEqual("")
-				.field("identifications.recoExpiry").lessThan(now.getTime())
-				.order("identifications.recoExpiry")
-				.asList();
 
-		//Deactivate these expired users
-		deactivateUser(usersE);
-		
-		//No expiry Date
-		List<User> usersN = userDao.createQuery()
-				.field("active").equal(true)
-				.field("role").equal("customer")
-				.field("identifications").exists()
-				.field("identifications").notEqual("")
-				.field("identifications.recoExpiry").doesNotExist()
-				.asList();
-
-		//Deactivate these no expiry users
-		deactivateUser(usersN);
-		
-
-		rc.setInvalid(usersN);
-		rc.setExpired(usersE);
-		rc.setExpiring(users);
-		
-		Email email = new Email();
-		email.setEmailTemplate("reco-expiry");
-		email.setFromEmail("no-reply@luvbrite.com");
-		email.setRecipientEmail("reco_expiry_notice@luvbrite.com");
-		email.setRecipientName("Reco Expiry");
-		email.setSubject("Recommendation Expiry");
-		email.setEmailInfo("recommendation expiry info");
-		email.setEmail(rc);
-		
-		try {
-			
-			emailService.sendEmail(email);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
 		return "layout";
+		
+//		RecoExpiry rc = new RecoExpiry();
+//		
+//		Calendar now = Calendar.getInstance();
+//		Calendar day4 = Calendar.getInstance();
+//		day4.add(Calendar.DAY_OF_MONTH, 4);
+//		
+//		//Expiring in next 3 days
+//		List<User> users = userDao.createQuery()
+//				.field("active").equal(true)
+//				.field("role").equal("customer")
+//				.field("identifications").exists()
+//				.field("identifications").notEqual("")
+//				.field("identifications.recoExpiry").greaterThan(now.getTime())
+//				.field("identifications.recoExpiry").lessThan(day4.getTime())
+//				.order("identifications.recoExpiry")
+//				.asList();		
+//		
+//		//Expired
+//		
+//		/** IMPORTANT - We need the full User object here. 
+//		 * The same object is passed to deactivateUser() method
+//		 * Don't user projection or retrieveFields in the query. **/
+//		List<User> usersE = userDao.createQuery()
+//				.field("active").equal(true)
+//				.field("role").equal("customer")
+//				.field("identifications").exists()
+//				.field("identifications").notEqual("")
+//				.field("identifications.recoExpiry").lessThan(now.getTime())
+//				.order("identifications.recoExpiry")
+//				.asList();
+//
+//		//Deactivate these expired users
+//		deactivateUser(usersE);
+//		
+//		//No expiry Date
+//		List<User> usersN = userDao.createQuery()
+//				.field("active").equal(true)
+//				.field("role").equal("customer")
+//				.field("identifications").exists()
+//				.field("identifications").notEqual("")
+//				.field("identifications.recoExpiry").doesNotExist()
+//				.asList();
+//
+//		//Deactivate these no expiry users
+//		deactivateUser(usersN);
+//		
+//
+//		rc.setInvalid(usersN);
+//		rc.setExpired(usersE);
+//		rc.setExpiring(users);
+//		
+//		Email email = new Email();
+//		email.setEmailTemplate("reco-expiry");
+//		email.setFromEmail("no-reply@luvbrite.com");
+//		email.setRecipientEmail("reco_expiry_notice@luvbrite.com");
+//		email.setRecipientName("Reco Expiry");
+//		email.setSubject("Recommendation Expiry");
+//		email.setEmailInfo("recommendation expiry info");
+//		email.setEmail(rc);
+//		
+//		try {
+//			
+//			emailService.sendEmail(email);
+//			
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		
+//		return "layout";
 	}	
 	
 	

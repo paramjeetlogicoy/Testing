@@ -37,6 +37,7 @@ var lbApp = angular.module(
 
 // This directive is implemented in angular-general-functions.js
 .directive('remainingTime', ['$interval', remainingTime])
+.directive('popularThisMonth', ['$http', popularThisMonth])
 
 .filter('categoryFltr', categoryFilter)
 
