@@ -142,6 +142,28 @@ defaultCtrlr = function($scope, $http, $filter, uploadService, $rootScope){
 		});
 	};
 	
+	
+	$scope.deleteSlide = function(){
+
+		if(this.slide){
+			$http.post('/admin/cms/slides/removeslide', this.slide)
+			.then(function(resp){
+				var data = resp.data;
+				if(data.success){
+					_lbFns.pSuccess('Slide removed');
+					
+					$scope.getSlides();
+				}
+				else if(data.message){
+					alert(data.message);
+				}
+				else{
+					alert('There was some error removing the slide.');
+				}
+			});
+		}
+	};
+	
 	$scope.publishSlide = function(){
 
 		var sliderName = this.slider.name,
