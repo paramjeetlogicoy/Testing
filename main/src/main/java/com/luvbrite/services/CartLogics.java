@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.mongodb.morphia.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,8 @@ public class CartLogics {
 		briteBoxIndex = -1,
 		fifthFlowerIndex = -1,
 		waxPromoIndex = -1,
-		fiveGPromoIndex = -1;
+		fiveGPromoIndex = -1,
+		freeGramIndex = -1;
 	
 	
 	private void updateIndexes(List<OrderLineItemCart> items){
@@ -56,6 +58,7 @@ public class CartLogics {
 		fifthFlowerIndex = -1;
 		waxPromoIndex = -1;
 		fiveGPromoIndex = -1;
+		freeGramIndex = -1;
 		
 		for(OrderLineItemCart item : items){
 			
@@ -77,6 +80,10 @@ public class CartLogics {
 				
 				else if(item.getProductId() == 11951){
 					fiveGPromoIndex = index;
+				}
+				
+				else if(item.getProductId() == 12276){
+					freeGramIndex = index;
 				}
 				
 				
@@ -257,8 +264,11 @@ public class CartLogics {
 					waxPromoActive = false,
 					waxPromoEligible = false,
 					fiveGPromoActive = false,
-					fiveGPromoEligible = false;
+					fiveGPromoEligible = false,
+					freeGramPromoActive = true;
 			
+			long[] premaFloraProds = {12174, 12173, 12172, 12243, 12241, 12229, 12228, 12227, 12226};
+			int freeGramEligibleProdCount = 0;
 			
 			List<Product> fivegProducts = new ArrayList<>();
 			if(fiveGPromoActive){
@@ -304,6 +314,11 @@ public class CartLogics {
 						if(item.getProductId() == 11889 || 
 								item.getProductId() == 11881){
 							waxPromoEligible = true;
+						}
+						
+						if(freeGramPromoActive && 
+								ArrayUtils.contains(premaFloraProds, item.getProductId())){
+							freeGramEligibleProdCount+= item.getQty();
 						}
 						
 						if( item.getPromo() != null 
@@ -357,6 +372,7 @@ public class CartLogics {
 				doubleDownThresholdAmt > 0d 			&&  
 				doubleDownOfferAmt > 0d  				&&
 				!couponPresent 							&&  
+				freeGramIndex == -1						&&
 				briteBoxIndex == -1						&& 
 				fifthFlowerIndex == -1					&&  
 				total >= doubleDownThresholdAmt) {				
@@ -509,6 +525,48 @@ public class CartLogics {
 			}
 			
 			
+			/**
+			 * 1g Free Promo 
+			 **/
+			//If 1g promo eligible and not applied, apply it.
+			if(freeGramPromoActive && 
+					freeGramEligibleProdCount >= 2 &&
+					freeGramIndex == -1){
+				
+				//Add new item
+				OrderLineItemCart newItem = new OrderLineItemCart();
+				newItem.setTaxable(false);
+				newItem.setInstock(true);
+				newItem.setType("item");
+				newItem.setName("1 Gram - Prema Flora (Promo)");
+				newItem.setPromo("freegrampromo");
+				newItem.setProductId(12276);
+				newItem.setVariationId(0);
+				newItem.setQty(1);
+				newItem.setCost(15d);
+				newItem.setPrice(0.01d);
+				newItem.setImg("/products/Prema-Flora-LEMON-DIESEL.jpg");
+
+				items.add(newItem);
+
+				orderChanged = true;
+			}
+
+			
+			//If promo is not active/eligible, but applied, remove it
+			if( freeGramIndex > -1 && 
+					(!freeGramPromoActive || freeGramEligibleProdCount < 2)){
+				
+				//Removed Item
+				List<OrderLineItemCart> olic = order.getLineItems();
+				olic.remove(freeGramIndex);
+				
+				orderChanged = true;	
+				
+				//Now since the item is remove all the indices need to be updated
+				updateIndexes(items);
+			}
+				
 			
 			
 			//If doubledown is currently present, but order doesn't qualify anymore, then remove doubledown.

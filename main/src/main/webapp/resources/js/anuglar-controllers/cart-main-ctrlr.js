@@ -52,10 +52,8 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 	m.valentinePromoActive = false;
 	m.valentinePromoApplied = false;
 	
-	m.freeGramPromo = false;
+	m.freeGramPromo = true;
 	m.freeGramPromoApplied = false;
-	m.freeGramPromoEligible = false;
-	m.freeGramPromoMin = 150;
 	
 	/* When ever there is a change in m.order, this function needs to be called 
 	 * most of the logic control flags are set here. */
@@ -71,6 +69,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 			fifthFlowerApplied = false,
 			offersOtherThanProductSaleApplied = false,
 			emptyCart = true,
+			freeGramPromoApplied = false,
 			flowerCount = 0;
 		
 		
@@ -97,10 +96,14 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 						if(item.productId == 11839 || 
 								item.productId == 11871 || 
 								item.productId == 11939 || 
-								item.productId == 11951 ){
+								item.productId == 11951 || 
+								item.productId == 12276 ){
 							
 							item.notEditable = true;
-							
+						}
+						
+						if(item.productId == 12276 ){
+							freeGramPromoApplied = true;
 						}
 					}
 					
@@ -161,6 +164,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 		m.emptyCart = emptyCart;
 		m.fifthFlowerApplied = fifthFlowerApplied;
 		m.flowerCount = flowerCount;
+		m.freeGramPromoApplied = freeGramPromoApplied;
 		
 		//OrderMin Check (it doesnt apply to orders placed by orders@luvbrite.com [_id = 29])
 		if(m.order.total && (m.order.total >= m.orderMin || 
@@ -184,19 +188,6 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 		else {
 			m.doubleDownEligible = false;
 		}	
-		
-		//FreeGramCheck
-		m.freeGramPromoApplied = false;
-		m.freeGramPromoEligible = false;
-		if(m.freeGramPromo && 
-				m.order.total && 
-				(m.order.total >= m.freeGramPromoMin)){
-
-			m.freeGramPromoEligible = true;
-			
-			if(!m.offersOtherThanProductSaleApplied)
-				m.freeGramPromoApplied = true;
-		}
 		
 		
 /*		console.log("2" + (m.doubleDownEligible && (m.order.total >= m.config.doubleDown)));

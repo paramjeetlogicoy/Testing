@@ -51,13 +51,10 @@
 						<strong>{{item.price*item.qty | currency}}</strong>
 					</div>
 					
-					<div class="item-remove" ng-hide="item.productId == '11939' || item.productId == '11951'">
+					<div class="item-remove" ng-hide="item.productId == '11939' || item.productId == '11951' || item.productId == '12276'">
 						<a href="" ng-click="itemRemove()">Delete Item</a>
 					</div>
 				</li>
-
-				<li class="item-li" ng-if="m.freeGramPromoApplied"
-					ng-include="'/resources/ng-templates/cart/free-gram.html'"></li>
 			</ul>
 		</div>
 		<!-- .cart-details-body ends -->
@@ -156,34 +153,21 @@
 					
 					
 					<div class="cart-promo-options"
-						ng-show="m.freeGramPromoEligible && !m.freeGramPromoApplied"
+						ng-show="m.freeGramPromo && !m.freeGramPromoApplied"
 						ng-class="{'promoSelected' : m.promoOptions == 'freeGramPromo'}">
 
 						<label class="fa-label"><input type="radio"
 							name="promoOptions" ng-model="m.promoOptions"
 							value="freeGramPromo" /><i class="fa fa-circle-o"
-							aria-hidden="true"></i> Black Jack Promo, 1 Gram - Slymer - Exclusive <span
-							class="orange1">$20 value.</span></label>
+							aria-hidden="true"></i> Prema Flora Promo, 1 Gram - Prema Flora <span
+							class="orange1">$15 value.</span></label>
 
 						<div class="cart-promo-details">
 							<div class="cart-offers-bb">
-								<h4 class="text-center">BLACK JACK OFFER!</h4>
+								<h4 class="text-center">PREMA FLORA OFFER!</h4>
 								<div class="size13">
-									When you hit black jack on an order--your order hits $150 or
-									more--you'll receive a
-									<strong class="orange1">FREE</strong> exclusive gram of
-									<a href="https://www.luvbrite.com/product/slymer-exclusive">Slymer</a>
-									with your order. Only once the order total in the cart reaches
-									$150 or greater, will the free gram be added to your order.
-
-									<div class="bold orange1 pad-t2" ng-if="m.doubleDownApplied">
-										Remove the double down item from cart to auto-apply this offer!
-									</div>
-
-									<div class="bold orange1 pad-t2" ng-if="m.couponApplied">
-										Delete the applied coupon <em>({{m.appliedCouponCode}})</em>
-										to auto-apply this offer!
-									</div>
+									When you select 2 or more of "Prema Flora" jars, you
+									receive a 1 gram jar for 1 cent. 
 								</div>
 							</div>
 
