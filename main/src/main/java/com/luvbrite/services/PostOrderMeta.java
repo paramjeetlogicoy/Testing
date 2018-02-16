@@ -74,9 +74,14 @@ public class PostOrderMeta {
 			Date completed = order.getDate();			
 			o.setCompleted_at(dt.format(completed));
 			
-			
+			double rushFee = 0d;
+			if(order.getShipping() != null && order.getShipping().isRushDelivery()){
+				rushFee = order.getShipping().getRushFee();
+			}
+
+			o.setRushFee(rushFee);
 			o.setTotal(order.getTotal()+"");
-			o.setTotal_discount((order.getSubTotal() + order.getTax() - order.getTotal()) + "");		
+			o.setTotal_discount((order.getSubTotal() + order.getTax() + rushFee - order.getTotal()) + "");		
 			o.setTax(order.getTax());
 			
 			o.setOrderTax(order.getOrderTax());
@@ -106,13 +111,6 @@ public class PostOrderMeta {
 				else {
 					o.setPaymentMethod(pmtMthd.getType());
 				}
-			}
-			
-			if(order.getShipping() != null && order.getShipping().isRushDelivery()){
-				o.setRushFee(order.getShipping().getRushFee());
-			}
-			else{
-				o.setRushFee(0d);
 			}
 			
 			List<LineItem> line_items = new ArrayList<LineItem>();
