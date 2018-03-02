@@ -1179,9 +1179,9 @@ public class CartController {
 					/* Validate City and State for Tax rate*/
 					double taxRate = 9.5d;
 					
-					//Zero sales for February
+					//Zero sales for February --now extended to Marah as well
 					Calendar now = Calendar.getInstance();
-					if(now.get(Calendar.MONTH) == Calendar.FEBRUARY && now.get(Calendar.YEAR) == 2018){
+					if(now.get(Calendar.MONTH) == Calendar.MARCH && now.get(Calendar.YEAR) == 2018){
 						taxRate = 0d;
 					}
 					else {
