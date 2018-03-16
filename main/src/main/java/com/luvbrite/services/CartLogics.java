@@ -265,7 +265,7 @@ public class CartLogics {
 					waxPromoEligible = false,
 					fiveGPromoActive = false,
 					fiveGPromoEligible = false,
-					freeGramPromoActive = true;
+					freeGramPromoActive = false;
 			
 			long[] premaFloraProds = {12174, 12173, 12172, 12243, 12241, 12229, 12228, 12227, 12226};
 			int freeGramEligibleProdCount = 0;
