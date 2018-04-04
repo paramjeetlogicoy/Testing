@@ -1181,7 +1181,7 @@ public class CartController {
 					
 					//Zero sales for February --now extended to Marah as well
 					Calendar now = Calendar.getInstance();
-					if(now.get(Calendar.MONTH) == Calendar.MARCH && now.get(Calendar.YEAR) == 2018){
+					if(now.get(Calendar.MONTH) == Calendar.APRIL && now.get(Calendar.YEAR) == 2018){
 						taxRate = 0d;
 					}
 					else {
