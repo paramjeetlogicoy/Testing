@@ -39,6 +39,10 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 	m.doubleDownApplied = false;
 	m.doubleDownEligible = false;
 	
+	m.promo420Active = true;
+	m.promo420Applied = false;
+	m.promo420Eligible = false;
+	
 	m.flowerCount = 0;
 	m.flowerIds = [];
 	m.fifthFlowerActive = false;
@@ -70,7 +74,8 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 			offersOtherThanProductSaleApplied = false,
 			emptyCart = true,
 			freeGramPromoApplied = false,
-			flowerCount = 0;
+			flowerCount = 0,
+			promo420Applied = false;
 		
 		
 		if(m.order.lineItems && m.order.lineItems.length>0){
@@ -102,6 +107,14 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 							item.notEditable = true;
 						}
 						
+						else if(item.productId == 12382 || 
+								item.productId == 12381 || 
+								item.productId == 12380 ){
+							
+							item.notEditable = true;
+							promo420Applied = true;
+						}
+						
 						if(item.productId == 12276 ){
 							freeGramPromoApplied = true;
 						}
@@ -126,7 +139,8 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 							(item.promo == 's' || 
 									item.promo == 'doubledownoffer'  || 
 									item.promo == 'firsttimepatient' || 
-									item.promo == 'freepowerpuff')){
+									item.promo == 'freepowerpuff' || 
+									item.promo == '420 Promo')){
 						
 						//var productName = item.name.length>15?item.name.substr(0,15)+'...':item.name,
 						var productName = item.name,
@@ -137,10 +151,11 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 							productName = 'Double Down Offer';
 							doubleDownApplied = true;
 						}
-						
-						
 						else if(item.promo == 'freepowerpuff'){
 							productName = 'Power Puff Roll Promo';
+						}
+						else if(item.promo == '420 Promo'){
+							productName = '420 Promo';
 						}
 						
 							
@@ -165,6 +180,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 		m.fifthFlowerApplied = fifthFlowerApplied;
 		m.flowerCount = flowerCount;
 		m.freeGramPromoApplied = freeGramPromoApplied;
+		m.promo420Applied = promo420Applied;
 		
 		//OrderMin Check (it doesnt apply to orders placed by orders@luvbrite.com [_id = 29])
 		if(m.order.total && (m.order.total >= m.orderMin || 
@@ -197,6 +213,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 		//Promotab
 		 if((m.doubleDownEligible && (m.order.total >= m.config.doubleDown)) || 
 				(m.fifthFlowerActive && !m.fifthFlowerApplied && (m.flowerCount >= 4)) || 
+				(m.promo420Active && !m.promo420Applied ) || 
 				(m.promosAvailable && !m.couponApplied) || 
 				!m.couponApplied){
 				
@@ -212,6 +229,9 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 		}
 		else if(m.doubleDownEligible && (m.order.total >= m.config.doubleDown)){
 			m.promoOptions = 'doubledown';
+		}
+		else if(m.promo420Active && !m.promo420Applied){
+			m.promoOptions = '420 Promo';
 		}
 		else if(m.promosAvailable){
 			m.promoOptions = 'loyalist';

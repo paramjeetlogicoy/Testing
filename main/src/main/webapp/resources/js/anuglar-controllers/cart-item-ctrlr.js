@@ -143,6 +143,18 @@ var cartItemCtrlr = function($scope, $http, $rootScope, $timeout){
 		}	
 	};
 	
+	$scope.addPromo420 = function(){
+		
+		if(m.appliedCouponCode){
+			removeCoupon(m.appliedCouponCode, function(){
+				applyPromo420();
+			});
+		}
+		else{
+			applyPromo420();
+		}	
+	};
+	
 	var applyDoubleDown = function(pid, vid){
 		
 		$http.post(_lbUrls.cart + '/adddoubledown/' + pid + '/' + vid)
@@ -228,6 +240,36 @@ var cartItemCtrlr = function($scope, $http, $rootScope, $timeout){
 					"Please try later. If problem persists, please call the customer care.";
 			}
 		});
+	},
+	
+	applyPromo420 = function(){
+		
+		$http.post(_lbUrls.cart + '/add-promo-420')
+		.then(function(resp){
+			if(resp.data && resp.data.success){
+				
+				$rootScope.rootCartCount = resp.data.cartCount;
+				
+				m.order = resp.data.order;
+				m.processOrder();
+				
+				_lbFns.pSuccess('420 Promo applied.');
+			}
+			else{
+				$scope.$parent.$parent.pageLevelAlert = $rootScope.errMsgPageRefresh;
+			}
+		},
+		function(resp){
+			if(resp.status == 403){
+				$scope.$parent.$parent.pageLevelAlert  = "Your browser was idle for long. " +
+					"Please refresh the page and add the item to cart again.";
+			}
+			else {
+				$scope.$parent.$parent.pageLevelAlert  = "There was some error adding the item. " +
+					"Please try later. If problem persists, please call the customer care.";
+			}
+		});
+		
 	},
 	
 	removeCoupon = function(couponCode, cb){

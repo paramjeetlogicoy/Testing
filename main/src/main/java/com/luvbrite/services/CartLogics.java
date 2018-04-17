@@ -46,7 +46,10 @@ public class CartLogics {
 		fifthFlowerIndex = -1,
 		waxPromoIndex = -1,
 		fiveGPromoIndex = -1,
-		freeGramIndex = -1;
+		freeGramIndex = -1,
+		promo420Index = -1,
+		promo420Index150 = -1,
+		promo420Index300 = -1;
 	
 	
 	private void updateIndexes(List<OrderLineItemCart> items){
@@ -59,6 +62,9 @@ public class CartLogics {
 		waxPromoIndex = -1;
 		fiveGPromoIndex = -1;
 		freeGramIndex = -1;
+		promo420Index = -1;
+		promo420Index150 = -1;
+		promo420Index300 = -1;
 		
 		for(OrderLineItemCart item : items){
 			
@@ -84,6 +90,18 @@ public class CartLogics {
 				
 				else if(item.getProductId() == 12276){
 					freeGramIndex = index;
+				}
+				
+				else if(item.getProductId() == 12380){
+					promo420Index = index;
+				}
+				
+				else if(item.getProductId() == 12381){
+					promo420Index150 = index;
+				}
+				
+				else if(item.getProductId() == 12382){
+					promo420Index300 = index;
 				}
 				
 				
@@ -210,8 +228,6 @@ public class CartLogics {
 		
 	}
 	
-	
-	
 	public Map<String, Boolean> availableDeals(CartOrder order){
 		
 		Map<String, Boolean> dealStat = new HashMap<>();
@@ -265,7 +281,11 @@ public class CartLogics {
 					waxPromoEligible = false,
 					fiveGPromoActive = false,
 					fiveGPromoEligible = false,
-					freeGramPromoActive = false;
+					freeGramPromoActive = false,
+					promo420Active = true,
+					promo420Eligible = false,
+					promo420Eligible150 = false,
+					promo420Eligible300 = false;
 			
 			long[] premaFloraProds = {12174, 12173, 12172, 12243, 12241, 12229, 12228, 12227, 12226};
 			int freeGramEligibleProdCount = 0;
@@ -347,11 +367,16 @@ public class CartLogics {
 				
 				updateIndexes(items);
 			}
-
+			
+			
+			if(promo420Active && !couponPresent){
+				if(total >=300) 		promo420Eligible300 = true;
+				else if(total >= 150)	promo420Eligible150 = true;
+				else 					promo420Eligible = true;
+			}
 			
 				
 			//First BriteBoxcheck	
-			
 			
 			//If briteBox is present remove it
 			if(briteBoxIndex != -1){
@@ -375,6 +400,9 @@ public class CartLogics {
 				freeGramIndex == -1						&&
 				briteBoxIndex == -1						&& 
 				fifthFlowerIndex == -1					&&  
+				promo420Index == -1						&&
+				promo420Index150 == -1					&&
+				promo420Index300 == -1					&&
 				total >= doubleDownThresholdAmt) {				
 
 				double itemCost = 0d;				
@@ -414,6 +442,102 @@ public class CartLogics {
 					}
 				}				
 			}
+			
+			
+			
+			/**
+			 * 420 Promo 
+			 **/
+			//Update promo if eligible for tier2, but only tier1 promo is applied
+			if(promo420Eligible150 && promo420Index > -1){
+				OrderLineItemCart item = items.get(promo420Index);
+				item.setName("Sampler Pack + 420 Bar");
+				item.setCost(55d);
+				item.setProductId(12381);
+				item.setImg("/products/sampler-plus-chocolate.jpg");	
+				
+				orderChanged = true;	
+				updateIndexes(items);
+			}
+			//Update promo if eligible for tier3, but only tier1 promo is applied
+			else if(promo420Eligible300 && promo420Index > -1 ){
+				OrderLineItemCart item = items.get(promo420Index);
+				item.setName("Sampler Pack + 420 Bar + 5g Jungle Mix");
+				item.setCost(100d);
+				item.setProductId(12382);
+				item.setImg("/products/sampler-plus-chocolate-plus-jungle.jpg");	
+				
+				orderChanged = true;	
+				updateIndexes(items);
+			}
+			//Update promo if eligible for tier3, but only tier2 promo is applied
+			else if(promo420Eligible300 && promo420Index150 > -1){
+				OrderLineItemCart item = items.get(promo420Index150);
+				item.setName("Sampler Pack + 420 Bar + 5g Jungle Mix");
+				item.setCost(100d);
+				item.setProductId(12382);
+				item.setImg("/products/sampler-plus-chocolate-plus-jungle.jpg");	
+				
+				orderChanged = true;	
+				updateIndexes(items);
+			}
+			
+			//downgrade promo if only eligible for tier1, but tier2 promo is applied
+			else if(promo420Eligible && promo420Index150 > -1){
+				OrderLineItemCart item = items.get(promo420Index150);
+				item.setName("Sampler Pack");
+				item.setCost(30d);
+				item.setProductId(12380);
+				item.setImg("/products/Purla-Sampler-preroll-1.jpg");	
+				
+				orderChanged = true;	
+				updateIndexes(items);
+			}
+			//downgrade promo if only eligible for tier1, but tier3 promo is applied
+			else if(promo420Eligible && promo420Index300 > -1){
+				OrderLineItemCart item = items.get(promo420Index300);
+				item.setName("Sampler Pack");
+				item.setCost(30d);
+				item.setProductId(12380);
+				item.setImg("/products/Purla-Sampler-preroll-1.jpg");	
+				
+				orderChanged = true;	
+				updateIndexes(items);
+			}
+			
+			//downgrade promo if only eligible for tier2, but tier3 promo is applied
+			else if(promo420Eligible150 && promo420Index300 > -1){
+				OrderLineItemCart item = items.get(promo420Index300);
+				item.setName("Sampler Pack + 420 Bar");
+				item.setCost(55d);
+				item.setProductId(12381);
+				item.setImg("/products/sampler-plus-chocolate.jpg");		
+				
+				orderChanged = true;	
+				updateIndexes(items);
+			}
+			
+			
+			//If promo is not active, but applied, remove it
+			if(!promo420Eligible && promo420Index > -1){
+				List<OrderLineItemCart> olic = order.getLineItems();
+				olic.remove(promo420Index);
+				orderChanged = true;	
+				updateIndexes(items);
+			}
+			else if(!promo420Eligible150 && promo420Index150 > -1){
+				List<OrderLineItemCart> olic = order.getLineItems();
+				olic.remove(promo420Index150);
+				orderChanged = true;
+				updateIndexes(items);
+			}
+			else if(!promo420Eligible300 && promo420Index300 > -1){
+				List<OrderLineItemCart> olic = order.getLineItems();
+				olic.remove(promo420Index300);
+				orderChanged = true;	
+				updateIndexes(items);
+			}
+			
 			
 			
 			/**
