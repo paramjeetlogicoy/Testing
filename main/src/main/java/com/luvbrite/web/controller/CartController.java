@@ -750,117 +750,7 @@ public class CartController {
 
 		CreateOrderResponse r = new CreateOrderResponse();
 		r.setSuccess(false);
-
-		
-		try {
-						
-			
-			long orderId = Utility.getLong(orderIdS);
-			CartOrder order = dao.get(orderId);
-			if(order == null || !order.getStatus().equals("incart")){
-				r.setMessage("No valid order found.");
-			}		
-			
-			else {
-				
-				int totalItems = 0;
-				double total = 0;
-
-				List<OrderLineItemCart> removeItems = new ArrayList<>();
-				
-				List<OrderLineItemCart> items = order.getLineItems();
-				if(items != null){
-					for(OrderLineItemCart item : items){
-						
-						//If there is BriteBox, remove it.
-						if( item.getPromo() != null 
-								&& "firsttimepatient".equals(item.getPromo()) ){
-							removeItems.add(item);
-						}
-						
-						//If there is doubledownoffer, remove the promo.
-						if( item.getPromo() != null 
-								&& "doubledownoffer".equals(item.getPromo()) ){							
-							item.setPrice(item.getCost());
-							item.setPromo("");
-						}
-						
-						if(item.getType().equals("item")
-								&& item.isInstock()){
-							
-							totalItems+= item.getQty();
-							double itemPrice = item.getPrice();
-							
-							if(itemPrice > 0d){
-								total += (itemPrice*item.getQty());								
-							}
-						}
-					}
-				}
-				
-				
-				if(removeItems.size() > 0){
-					items.removeAll(removeItems);
-					totalItems = totalItems - removeItems.size();
-				}
-				
-				
-				
-				//Add fresh new item
-				OrderLineItemCart newItem = new OrderLineItemCart();
-				newItem.setTaxable(false);
-				newItem.setInstock(true);
-				newItem.setType("item");
-				newItem.setPromo("420 Promo");
-				newItem.setVariationId(0);
-				newItem.setQty(1);
-				newItem.setPrice(0d);
-				
-				if(total >= 300){
-					newItem.setName("Sampler Pack + 420 Bar + 5g Jungle Mix");
-					newItem.setCost(100d);
-					newItem.setProductId(12382);
-					newItem.setImg("/products/sampler-plus-chocolate-plus-jungle.jpg");			
-				}
-				else if(total >= 150){
-					newItem.setName("Sampler Pack + 420 Bar");
-					newItem.setCost(55d);
-					newItem.setProductId(12381);
-					newItem.setImg("/products/sampler-plus-chocolate.jpg");					
-				}
-				else{
-					newItem.setName("Sampler Pack");
-					newItem.setCost(30d);
-					newItem.setProductId(12380);
-					newItem.setImg("/products/Purla-Sampler-preroll-1.jpg");					
-				}
-
-				items.add(newItem);
-				
-				
-				/*Update order with lineItems*/
-				order.setLineItems(items);
-				
-				
-				//Run through deal logic
-				cartLogics.applyDeals(order, ccs.getcOps(), false, sess);
-				
-				
-				/*Update orderTotals*/
-				cartLogics.calculateSummary(order);
-				
-				dao.save(order);
-				
-				r.setSuccess(true);
-				r.setCartCount(totalItems);				
-				r.setOrder(order);
-			}
-			
-		}catch(Exception e){
-			
-			r.setMessage("There was some error creating the order, please try later.");
-			logger.error(Exceptions.giveStackTrace(e));
-		}
+		r.setMessage("This promotion has expired.");
 		
 		return r;	
 	}
@@ -1302,9 +1192,9 @@ public class CartController {
 					/* Validate City and State for Tax rate*/
 					double taxRate = 9.5d;
 					
-					//Zero sales for February --now extended to Marah as well
+					//Zero sales for this year
 					Calendar now = Calendar.getInstance();
-					if(now.get(Calendar.MONTH) == Calendar.APRIL && now.get(Calendar.YEAR) == 2018){
+					if(now.get(Calendar.YEAR) == 2018){
 						taxRate = 0d;
 					}
 					else {

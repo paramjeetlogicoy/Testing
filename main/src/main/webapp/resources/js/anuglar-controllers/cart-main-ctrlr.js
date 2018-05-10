@@ -39,7 +39,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 	m.doubleDownApplied = false;
 	m.doubleDownEligible = false;
 	
-	m.promo420Active = true;
+	m.promo420Active = false;
 	m.promo420Applied = false;
 	m.promo420Eligible = false;
 	

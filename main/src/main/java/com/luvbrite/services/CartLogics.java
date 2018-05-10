@@ -282,7 +282,7 @@ public class CartLogics {
 					fiveGPromoActive = false,
 					fiveGPromoEligible = false,
 					freeGramPromoActive = false,
-					promo420Active = true,
+					promo420Active = false,
 					promo420Eligible = false,
 					promo420Eligible150 = false,
 					promo420Eligible300 = false;

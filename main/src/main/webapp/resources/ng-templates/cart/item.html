@@ -29,7 +29,6 @@
 						</div>
 						<div ng-if="item.promo == 'doubledownoffer'" class="orange1 size13">Double
 							down offer</div>
-						<div ng-if="item.promo == '420 Promo'" class="orange1 size13">420 Promo</div>
 					</div>
 					
 					<div class="item-qty item-qty-ctrls">
@@ -101,8 +100,6 @@
 								ng-if="m.couponApplied && m.appliedCouponCode">(Coupon
 								'{{m.appliedCouponCode}}' will be removed)</em> <em class="marg-r1 size13 u"
 								ng-if="m.doubleDownApplied">(Double down promotion will be
-								removed)</em> <em class="marg-r1 size13 u"
-								ng-if="m.promo420Applied">(420 promotion will be
 								removed)</em>
 						</div>
 					</div>
@@ -169,38 +166,6 @@
 						</div>
 					</div>
 					
-					
-					<div class="cart-promo-options"
-						ng-show="m.promo420Active && !m.promo420Applied"
-						ng-class="{'promoSelected' : m.promoOptions == '420 Promo'}">
-
-						<label class="fa-label"><input type="radio"
-							name="promoOptions" ng-model="m.promoOptions"
-							value="420 Promo" /><i class="fa fa-circle-o"
-							aria-hidden="true"></i> 420 Promotion <span
-							class="orange1">up to $100 value.</span></label>
-
-						<div class="cart-promo-details">
-							<div class="cart-offers-bb">
-								<h4 class="text-center">Happy 420 Everyone! Free gift with all orders!</h4>
-								<div class="size13">
-									<ul class="styled">
-										<li>Order totaling $50  or more receives Purla Sample Pack</li>
-										<li>Order totaling $150 or more receives Purla Sample Pack + 4.20 Chocolate Bar</li>
-										<li>Order totaling $300 or more receives Purla Sample Pack + 4.20 Chocolate Bar + 5g Jungle Mix</li>
-									</ul>
-
-									<div class="text-center pad-t2">
-										<button class="btn btn-lb btn-sm" ng-click="addPromo420()">Apply
-											Promotion</button>
-									</div>
-								</div>
-							</div>
-
-						</div>
-					</div>
-
-
 
 					<div class="cart-promo-options"
 						ng-show="m.doubleDownEligible && (m.order.total >= m.config.doubleDown)"
