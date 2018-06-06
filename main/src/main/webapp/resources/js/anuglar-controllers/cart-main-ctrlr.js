@@ -183,7 +183,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 		m.promo420Applied = promo420Applied;
 		
 		//OrderMin Check (it doesnt apply to orders placed by orders@luvbrite.com [_id = 29])
-		if(m.order.total && (m.order.total >= m.orderMin || 
+		if(m.order.total && ((m.order.total - m.order.tax) >= m.orderMin || 
 				(m.user && (m.user._id == 29 || m.user._id == 1)))){
 			
 			m.orderAboveOrderMin = true;
