@@ -120,6 +120,7 @@
 													<div th:if="${ol.promo=='offhourpromo'}">Off hour Promo</div>
 													<div th:if="${ol.promo=='firsttimepatient'}">First Time Patient Promo</div>
 													<div th:if="${ol.promo=='420 Promo'}">420 Promo</div>
+													<div th:if="${ol.promo=='freegrampromo'}">Free Gram Promo</div>
 												</td>
 												<td style="text-align: right;">-$<span
 													th:text="${#numbers.formatDecimal(((ol.cost-ol.price)*ol.qty), 1, 'COMMA', 2, 'POINT')}"></span></td>

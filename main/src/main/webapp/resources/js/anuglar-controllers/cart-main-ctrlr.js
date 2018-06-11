@@ -56,7 +56,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 	m.valentinePromoActive = false;
 	m.valentinePromoApplied = false;
 	
-	m.freeGramPromo = false;
+	m.freeGramPromo = true;
 	m.freeGramPromoApplied = false;
 	
 	/* When ever there is a change in m.order, this function needs to be called 
