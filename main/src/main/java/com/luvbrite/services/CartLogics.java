@@ -88,7 +88,7 @@ public class CartLogics {
 					fiveGPromoIndex = index;
 				}
 				
-				else if(item.getProductId() == 12276){
+				else if(item.getProductId() == 12173){
 					freeGramIndex = index;
 				}
 				
@@ -662,14 +662,14 @@ public class CartLogics {
 				newItem.setTaxable(false);
 				newItem.setInstock(true);
 				newItem.setType("item");
-				newItem.setName("1 Gram - Prema Flora (Promo)");
+				newItem.setName("Prema Flora | Mango Cheese | 3.5g");
 				newItem.setPromo("freegrampromo");
-				newItem.setProductId(12276);
+				newItem.setProductId(12173);
 				newItem.setVariationId(0);
 				newItem.setQty(1);
-				newItem.setCost(15d);
+				newItem.setCost(45d);
 				newItem.setPrice(0.01d);
-				newItem.setImg("/products/Prema-Flora-LEMON-DIESEL.jpg");
+				newItem.setImg("/products/1706004---Mango-Cheese-Kush---jar.jpg");
 
 				items.add(newItem);
 
