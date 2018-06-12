@@ -102,7 +102,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 								item.productId == 11871 || 
 								item.productId == 11939 || 
 								item.productId == 11951 || 
-								item.productId == 12276 ){
+								item.productId == 12173 ){
 							
 							item.notEditable = true;
 						}
@@ -115,7 +115,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 							promo420Applied = true;
 						}
 						
-						if(item.productId == 12276 ){
+						if(item.productId == 12173 ){
 							freeGramPromoApplied = true;
 						}
 					}
