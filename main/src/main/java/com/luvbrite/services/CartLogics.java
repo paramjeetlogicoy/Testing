@@ -287,7 +287,7 @@ public class CartLogics {
 					promo420Eligible150 = false,
 					promo420Eligible300 = false;
 			
-			long[] premaFloraProds = {12174, 12173, 12172, 12243, 12241, 12229, 12228, 12227, 12226};
+			long[] premaFloraProds = {12174, 12172, 12243, 12241, 12229, 12228, 12227, 12226};
 			int freeGramEligibleProdCount = 0;
 			
 			List<Product> fivegProducts = new ArrayList<>();
