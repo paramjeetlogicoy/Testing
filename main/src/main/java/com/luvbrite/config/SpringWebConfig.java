@@ -51,6 +51,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 		int cachePeriod = 60*60*24*10; //10 days
 		
 		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/").setCachePeriod(cachePeriod);
+		registry.addResourceHandler("/.well-known/pki-validation/A1153A35F494DAC02AA4E6735D31C7C3.txt").addResourceLocations("/").setCachePeriod(cachePeriod);
 		registry.addResourceHandler("*.txt").addResourceLocations("/").setCachePeriod(cachePeriod);
 		registry.addResourceHandler("*.ico").addResourceLocations("/").setCachePeriod(cachePeriod * 10);
 	}
