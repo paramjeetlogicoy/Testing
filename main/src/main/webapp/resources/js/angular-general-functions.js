@@ -287,4 +287,61 @@ popularThisMonth = function ($http) {
     		});		
         }
     };
+},
+
+categoryProducts = function ($http) {
+	
+    return {
+        restrict: 'EA', //E = element, A = attribute, C = class, M = comment
+        template: 
+            '<ul class="row products-container">' +
+				'<li ng-repeat="p in dirPl.products">' +
+					'<div class="product-item-container">' +
+						'<div class="product-item-card">' +
+							'<div class="cards product-item">' +
+								'<div>' +
+									'<a href="/product/{{p.url}}" class="pc-img-holder" ' +
+									    'title="{{p.name}}"><span>' +
+											'<img class="featured-img"' +
+											   'ng-src="{{p.thumb}}" />' +
+									'</span> </a>' +
+								'</div>' +
+								'<div class="pc-info">' +
+									'<h3>' +
+										'<a href="/product/{{p.url}}" title="{{p.name}}">{{p.name}}</a>' +
+									'</h3>' +
+									'<hr />' +
+									'<div class="clearfix">' +
+										'<div class="pull-left pc-price-range">{{p.priceRange}}</div>' +
+										'<div class="pull-right pc-action">' +
+											'<a class="btn btn-lb btn-xs" href="/product/{{p.url}}">' +
+												'<span class="white">Details</span>' +
+											'</a>' +
+										'</div>' +
+									'</div>' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+					'</div>' +
+				'</li>' +
+			'<ul>',
+			
+		scope:{},
+            
+        link: function ($scope, element, attrs) { 
+        	
+        	$scope.dirPl = {};
+        	var data = { attr: 'category', value : attrs.categoryProducts};
+        	
+    		$http.post('/products/json/getCategoryProducts?hidepop', data)
+    		.then(function(resp){
+    			$scope.dirPl.products = resp.data;	
+    			if($scope.dirPl.products !== null){
+    				$scope.dirPl.products.forEach(function(x){
+    					x.thumb = _lbGlobalCDNPath + x.featuredImg.replace('.jpg','-300x266.jpg');
+    				});
+    			}
+    		});		
+        }
+    };
 };

@@ -9,6 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +20,7 @@ import com.luvbrite.dao.PriceDAO;
 import com.luvbrite.dao.ProductDAO;
 import com.luvbrite.dao.ReviewDAO;
 import com.luvbrite.utils.Exceptions;
+import com.luvbrite.web.models.AttrValue;
 import com.luvbrite.web.models.Category;
 import com.luvbrite.web.models.Price;
 import com.luvbrite.web.models.ProdCatResponse;
@@ -254,12 +256,24 @@ public class ProductController {
 	}
 
 	@RequestMapping(value = "/json/get-popularthismonth")
-	public @ResponseBody List<Product> getPpopularProducts(){
+	public @ResponseBody List<Product> getPopularProducts(){
 		
 		return prdDao.createQuery().retrievedFields(true, "name", "url", "priceRange", "featuredImg")
 			    .field("categories").equal("Popular This Month")
 				.filter("status", "publish")
 				.filter("stockStat", "instock")
+				.limit(3)
+				.asList();
+	}
+
+	@RequestMapping(value = "/json/getCategoryProducts", method = RequestMethod.POST)
+	public @ResponseBody List<Product> getCategoryProducts(@RequestBody AttrValue Category){
+		
+		return prdDao.createQuery().retrievedFields(true, "name", "url", "priceRange", "featuredImg")
+			    .field("categories").equal(Category.getValue())
+				.filter("status", "publish")
+				.filter("stockStat", "instock")
+				.order("-newBatchArrival")
 				.limit(3)
 				.asList();
 	}
