@@ -399,6 +399,7 @@
 					</div>
 					<div class="col-xs-5 text-right">
 						Qty: <input type="number" class="form-control" step="1" min="0"
+							ng-focus="price.qty==0?price.qty='':price.qty"
 							max="20" ng-model="price.qty" ng-change="calculateItemTotal()" />
 					</div>
 					<div class="col-xs-3 text-right">
