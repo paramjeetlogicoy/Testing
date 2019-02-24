@@ -7,6 +7,7 @@ public class ControlOptions {
 
 	private double doubleDown = 0d;
 	private double doubleDownOfferValue = 0d;
+	private double doubleDownItemPrice = 0d;
 	private double orderMinimum = 0d;
 	private List<Integer> doubleDownEligibleProducts;
 	private Map<String, SliderObject> sliderObjs;
@@ -24,6 +25,12 @@ public class ControlOptions {
 	}
 	public void setDoubleDownOfferValue(double doubleDownOfferValue) {
 		this.doubleDownOfferValue = doubleDownOfferValue;
+	}
+	public double getDoubleDownItemPrice() {
+		return doubleDownItemPrice;
+	}
+	public void setDoubleDownItemPrice(double doubleDownItemPrice) {
+		this.doubleDownItemPrice = doubleDownItemPrice;
 	}
 	public double getOrderMinimum() {
 		return orderMinimum;

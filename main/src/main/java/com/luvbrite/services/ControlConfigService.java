@@ -113,6 +113,15 @@ public class ControlConfigService {
 									cOps.setDoubleDownOfferValue(
 											Utility.getDouble(ar.getValue()));
 								}
+								
+
+								else if(ar.getAttr().equals("item_price")
+										&& !ar.getValue().equals("")
+										&& !ar.getValue().equals("0")){
+
+									cOps.setDoubleDownItemPrice(
+											Utility.getDouble(ar.getValue()));
+								}
 							}							
 							
 							if(active && value >0d){
