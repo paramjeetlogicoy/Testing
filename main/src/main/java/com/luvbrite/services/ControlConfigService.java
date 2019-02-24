@@ -134,6 +134,120 @@ public class ControlConfigService {
 					
 					
 					
+					else if(cr.get_id().equals("buyItemA_getItemB")){
+						
+						List<AttrValue> params = cr.getParams();
+						boolean active = false;
+						
+						if(params !=null){
+							for(AttrValue ar : params){
+								
+								if(ar.getAttr().equals("active") 
+										&& ar.getValue().equals("1"))
+									active = true;
+								
+								
+								else if(ar.getAttr().equals("eligible_products")
+										&& !ar.getValue().equals("")){
+									
+									String[] products = ar.getValue().split(",");
+									List<Integer> list = new ArrayList<Integer>();
+									for(String s : products){
+										list.add(Utility.getInteger(s));
+									}
+									
+									cOps.setBuyItemAGetItemBEligProducts(list);
+								}
+								
+								
+								else if(ar.getAttr().equals("offered_products")
+										&& !ar.getValue().equals("")){
+									
+									String[] products = ar.getValue().split(",");
+									List<Integer> list = new ArrayList<Integer>();
+									for(String s : products){
+										list.add(Utility.getInteger(s));
+									}
+									
+									cOps.setBuyItemAGetItemBOffrProducts(list);
+								}
+								
+
+								else if(ar.getAttr().equals("item_price")
+										&& !ar.getValue().equals("")){
+
+									cOps.setBuyItemAGetItemBItemPrice(
+											Utility.getDouble(ar.getValue()));
+								}
+							}							
+							
+							if(active){
+								cOps.setBuyItemAGetItemB(1);
+							}
+						}
+						
+					}
+					
+					
+					
+					
+					else if(cr.get_id().equals("buy2Items_get1Item")){
+						
+						List<AttrValue> params = cr.getParams();
+						boolean active = false;
+						
+						if(params !=null){
+							for(AttrValue ar : params){
+								
+								if(ar.getAttr().equals("active") 
+										&& ar.getValue().equals("1"))
+									active = true;
+								
+								
+								else if(ar.getAttr().equals("eligible_products")
+										&& !ar.getValue().equals("")){
+									
+									String[] products = ar.getValue().split(",");
+									List<Integer> list = new ArrayList<Integer>();
+									for(String s : products){
+										list.add(Utility.getInteger(s));
+									}
+									
+									cOps.setBuy2ItemsGet1ItemEligProducts(list);
+								}
+								
+								
+								else if(ar.getAttr().equals("offered_products")
+										&& !ar.getValue().equals("")){
+									
+									String[] products = ar.getValue().split(",");
+									List<Integer> list = new ArrayList<Integer>();
+									for(String s : products){
+										list.add(Utility.getInteger(s));
+									}
+									
+									cOps.setBuy2ItemsGet1ItemBOffrProducts(list);
+								}
+								
+
+								else if(ar.getAttr().equals("item_price")
+										&& !ar.getValue().equals("")){
+
+									cOps.setBuy2ItemsGet1ItemItemPrice(
+											Utility.getDouble(ar.getValue()));
+								}
+							}							
+							
+							if(active){
+								cOps.setBuy2ItemsGet1Item(1);
+							}
+						}
+						
+					}
+					
+					
+					
+					
 					else if(cr.get_id().equals("local_delivery_zipcodes")){
 						
 						List<Integer> localZipcodes = new ArrayList<Integer>();
