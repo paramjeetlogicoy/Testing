@@ -272,7 +272,8 @@ public class CartLogics {
 			if(order == null) return;
 			
 			double doubleDownThresholdAmt = cOps.getDoubleDown(),
-					doubleDownOfferAmt = cOps.getDoubleDownOfferValue(),
+					//doubleDownOfferAmt = cOps.getDoubleDownOfferValue(),
+					doubleDownItemPrice = cOps.getDoubleDownItemPrice(),
 					total = 0d;
 			
 			boolean orderChanged = false,
@@ -395,7 +396,7 @@ public class CartLogics {
 			//Here we are checking if the double down promo present is still valid			
 			if( doubleDownItemIndex != -1 				&&
 				doubleDownThresholdAmt > 0d 			&&  
-				doubleDownOfferAmt > 0d  				&&
+				//doubleDownOfferAmt > 0d  				&&
 				!couponPresent 							&&  
 				freeGramIndex == -1						&&
 				briteBoxIndex == -1						&& 
@@ -417,10 +418,10 @@ public class CartLogics {
 					if((total - itemCost) >= doubleDownThresholdAmt){
 						/*It qualifies*/
 					
-						if(itemCost < doubleDownOfferAmt)
-							doubleDownOfferAmt = itemCost;
+//						if(itemCost < doubleDownOfferAmt)
+//							doubleDownOfferAmt = itemCost;
 						
-						double newPrice = itemCost - ( doubleDownOfferAmt/item.getQty() );
+						double newPrice = (itemCost * (item.getQty() - 1 ) + doubleDownItemPrice) / item.getQty();
 						
 						if(newPrice != item.getPrice()){
 							

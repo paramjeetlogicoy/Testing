@@ -198,7 +198,7 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 		
 		
 		//DoubleDown Check
-		if(m.doubleDownActive && !m.doubleDownApplied){
+		if(m.doubleDownActive && !m.doubleDownApplied && m.config.doubleDownItemPrice > 0){
 			m.doubleDownEligible = true;
 		}
 		else {
