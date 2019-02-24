@@ -4,7 +4,6 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 	cmcVersion = Math.random();//'v0006'; //Math.random();//
 	
 	m.order = {};	
-	m.ddprds = [];
 	m.user = {};
 	m.orderMin = 9999;
 	m.config = {};
@@ -35,9 +34,20 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 	m.codEnabled = true;
 	m.ccPmtEnabled = false;
 	
+	m.ddprds = [];
 	m.doubleDownActive = false;
 	m.doubleDownApplied = false;
 	m.doubleDownEligible = false;
+
+	m.b2IG1IPrds = [];
+	m.promoB2IG1IActive = false;
+	m.promoB2IG1IApplied = false;
+	m.promoB2IG1IEligible = false;
+
+	m.bIAGIBPrds = [];
+	m.promoBIAGIBActive = false;
+	m.promoBIAGIBApplied = false;
+	m.promoBIAGIBEligible = false;
 	
 	m.promo420Active = false;
 	m.promo420Applied = false;
@@ -75,7 +85,13 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 			emptyCart = true,
 			freeGramPromoApplied = false,
 			flowerCount = 0,
-			promo420Applied = false;
+			promo420Applied = false,
+			
+			promoBIAGIBApplied = false,
+			promoBIAGIBEligible = false,
+			
+			promoB2IG1IApplied = false,
+			promoB2IG1IEligiblePrdCount = 0;
 		
 		
 		if(m.order.lineItems && m.order.lineItems.length>0){
@@ -115,6 +131,14 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 							promo420Applied = true;
 						}
 						
+						else if (m.config.buyItemAGetItemBEligProducts.indexOf(item.productId) > -1){
+							promoBIAGIBEligible = true;
+						}
+						
+						else if (m.config.buy2ItemsGet1ItemEligProducts.indexOf(item.productId) > -1){
+							promoB2IG1IEligiblePrdCount += item.qty;
+						}
+						
 						if(item.productId == 12173 ){
 							freeGramPromoApplied = true;
 						}
@@ -139,6 +163,8 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 							(item.promo == 's' || 
 									item.promo == 'doubledownoffer'  || 
 									item.promo == 'firsttimepatient' || 
+									item.promo == 'Buy2ItemsGet1Item Offer' || 
+									item.promo == 'BuyItemAGetItemB Offer' || 
 									item.promo == 'freepowerpuff' || 
 									item.promo == '420 Promo')){
 						
@@ -150,6 +176,14 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 						if(item.promo == 'doubledownoffer'){
 							productName = 'Double Down Offer';
 							doubleDownApplied = true;
+						}
+						else if(item.promo == 'BuyItemAGetItemB Offer'){
+							productName = 'BuyItemAGetItemB';
+							promoBIAGIBApplied = true;
+						}
+						else if(item.promo == 'Buy2ItemsGet1Item Offer'){
+							productName = 'Buy2ItemsGet1Item';
+							promoB2IG1IApplied = true;
 						}
 						else if(item.promo == 'freepowerpuff'){
 							productName = 'Power Puff Roll Promo';
@@ -173,6 +207,13 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 		}	
 		
 		m.doubleDownApplied = doubleDownApplied;
+		
+		m.promoBIAGIBApplied = promoBIAGIBApplied;
+		m.promoBIAGIBEligible = promoBIAGIBEligible;
+		
+		m.promoB2IG1IApplied = promoB2IG1IApplied;
+		m.promoB2IG1IEligible = promoB2IG1IEligiblePrdCount > 1 ? true : false;
+		
 		m.couponApplied = couponApplied;
 		m.offersApplied = offersApplied;
 		m.offersOtherThanProductSaleApplied = offersOtherThanProductSaleApplied;
@@ -214,6 +255,8 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 		 if((m.doubleDownEligible && (m.order.total >= m.config.doubleDown)) || 
 				(m.fifthFlowerActive && !m.fifthFlowerApplied && (m.flowerCount >= 4)) || 
 				(m.promo420Active && !m.promo420Applied ) || 
+				(m.promoBIAGIBActive && m.promoBIAGIBEligible && !m.promoBIAGIBApplied) || 
+				(m.promoB2IG1IActive && m.promoB2IG1IEligible && !m.promoB2IG1IApplied) || 
 				(m.promosAvailable && !m.couponApplied) || 
 				!m.couponApplied){
 				
@@ -223,12 +266,19 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 			m.showPromoTab = false;
 		}
 		
-		
 		if(m.fifthFlowerActive && !m.fifthFlowerApplied && (m.flowerCount >= 4)){
 			m.promoOptions = 'fifthflower';
 		}
 		else if(m.doubleDownEligible && (m.order.total >= m.config.doubleDown)){
 			m.promoOptions = 'doubledown';
+		}
+		else if(m.promoBIAGIBActive && m.promoBIAGIBEligible && !m.promoBIAGIBApplied){
+			console.log("m.promoOptions", m.promoOptions);
+			m.promoOptions = 'BuyItemAGetItemB Offer';
+		}
+		else if(m.promoB2IG1IActive && m.promoB2IG1IEligible && !m.promoB2IG1IApplied){
+			console.log("m.promoOptions", m.promoOptions);
+			m.promoOptions = 'Buy2ItemsGet1Item Offer';
 		}
 		else if(m.promo420Active && !m.promo420Applied){
 			m.promoOptions = '420 Promo';
@@ -321,6 +371,28 @@ var cartMainCtrlr = function($scope, $http, $templateRequest, $compile, $rootSco
 							
 							m.doubleDownActive = true;
 							m.ddprds = resp.data.ddPrds;
+						}
+						
+						/* if we have a value > 0 its active	*/
+						if(m.config.buyItemAGetItemB && 
+								m.config.buyItemAGetItemBItemPrice && 
+								m.config.buyItemAGetItemBOffrProducts &&
+								resp.data.bIAGIBPrds && 
+								resp.data.bIAGIBPrds.length){
+							
+							m.promoBIAGIBActive = true;
+							m.bIAGIBPrds = resp.data.bIAGIBPrds;
+						}
+						
+						/* if we have a value > 0 its active	*/
+						if(m.config.buy2ItemsGet1Item && 
+								m.config.buy2ItemsGet1ItemItemPrice && 
+								m.config.buy2ItemsGet1ItemBOffrProducts &&
+								resp.data.b2IG1IPrds && 
+								resp.data.b2IG1IPrds.length){
+							
+							m.promoB2IG1IActive = true;
+							m.b2IG1IPrds = resp.data.b2IG1IPrds;
 						}
 					}	
 					

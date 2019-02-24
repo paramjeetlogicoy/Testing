@@ -119,6 +119,37 @@ var cartItemCtrlr = function($scope, $http, $rootScope, $timeout){
 	};
 	
 	
+	$scope.addBIAGIBPrds = function(){
+		
+		var pid = this.prd._id, 
+		vid = this.prd.vid;
+		
+		if(m.appliedCouponCode){
+			removeCoupon(m.appliedCouponCode, function(){
+				applyBIAGIBOffer(pid, vid);
+			});
+		}
+		else{
+			applyBIAGIBOffer(pid, vid);
+		}		
+	};
+	
+	
+	$scope.addB2IG1IPrds = function(){
+		
+		var pid = this.prd._id, 
+		vid = this.prd.vid;
+		
+		if(m.appliedCouponCode){
+			removeCoupon(m.appliedCouponCode, function(){
+				applyB2IG1IOffer(pid, vid);
+			});
+		}
+		else{
+			applyB2IG1IOffer(pid, vid);
+		}		
+	};
+	
 	$scope.addbriteBox = function(){
 		
 //		if(m.appliedCouponCode){
@@ -158,6 +189,64 @@ var cartItemCtrlr = function($scope, $http, $rootScope, $timeout){
 	var applyDoubleDown = function(pid, vid){
 		
 		$http.post(_lbUrls.cart + '/adddoubledown/' + pid + '/' + vid)
+		.then(function(resp){
+			if(resp.data && resp.data.success){
+				
+				$rootScope.rootCartCount = resp.data.cartCount;
+				
+				m.order = resp.data.order;
+				m.processOrder();
+				
+				_lbFns.pSuccess('Offer Item Added.');
+			}
+			else{
+				$scope.$parent.$parent.pageLevelAlert = $rootScope.errMsgPageRefresh;
+			}
+		},
+		function(resp){
+			if(resp.status == 403){
+				$scope.$parent.$parent.pageLevelAlert  = "Your browser was idle for long. " +
+					"Please refresh the page and add the item to cart again.";
+			}
+			else {
+				$scope.$parent.$parent.pageLevelAlert  = "There was some error adding the item. " +
+					"Please try later. If problem persists, please call the customer care.";
+			}
+		});
+	}, 
+	
+	applyBIAGIBOffer = function(pid, vid){
+		
+		$http.post(_lbUrls.cart + '/addbiagiboffer/' + pid + '/' + vid)
+		.then(function(resp){
+			if(resp.data && resp.data.success){
+				
+				$rootScope.rootCartCount = resp.data.cartCount;
+				
+				m.order = resp.data.order;
+				m.processOrder();
+				
+				_lbFns.pSuccess('Offer Item Added.');
+			}
+			else{
+				$scope.$parent.$parent.pageLevelAlert = $rootScope.errMsgPageRefresh;
+			}
+		},
+		function(resp){
+			if(resp.status == 403){
+				$scope.$parent.$parent.pageLevelAlert  = "Your browser was idle for long. " +
+					"Please refresh the page and add the item to cart again.";
+			}
+			else {
+				$scope.$parent.$parent.pageLevelAlert  = "There was some error adding the item. " +
+					"Please try later. If problem persists, please call the customer care.";
+			}
+		});
+	},
+	
+	applyB2IG1IOffer = function(pid, vid){
+		
+		$http.post(_lbUrls.cart + '/addb2Ig1Ioffer/' + pid + '/' + vid)
 		.then(function(resp){
 			if(resp.data && resp.data.success){
 				

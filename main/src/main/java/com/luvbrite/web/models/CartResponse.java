@@ -12,6 +12,9 @@ public class CartResponse {
 	private Address prevOrderAddress;
 	private Map<String, Boolean> availableDeals;
 	private List<?> commonList;
+
+	private List<DoubleDownProducts> bIAGIBPrds;
+	private List<DoubleDownProducts> b2IG1IPrds;
 	
 	public CartOrder getOrder() {
 		return order;
@@ -54,5 +57,17 @@ public class CartResponse {
 	}
 	public void setCommonList(List<?> commonList) {
 		this.commonList = commonList;
+	}
+	public List<DoubleDownProducts> getbIAGIBPrds() {
+		return bIAGIBPrds;
+	}
+	public void setbIAGIBPrds(List<DoubleDownProducts> bIAGIBPrds) {
+		this.bIAGIBPrds = bIAGIBPrds;
+	}
+	public List<DoubleDownProducts> getB2IG1IPrds() {
+		return b2IG1IPrds;
+	}
+	public void setB2IG1IPrds(List<DoubleDownProducts> b2ig1iPrds) {
+		b2IG1IPrds = b2ig1iPrds;
 	}
 }
