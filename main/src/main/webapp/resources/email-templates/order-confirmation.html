@@ -121,8 +121,8 @@
 													<div th:if="${ol.promo=='firsttimepatient'}">First Time Patient Promo</div>
 													<div th:if="${ol.promo=='420 Promo'}">420 Promo</div>
 													<div th:if="${ol.promo=='freegrampromo'}">Free Gram Promo</div>
-													<div th:if="${ol.promo=='Buy2ItemsGet1Item Offer'}">Buy2ItemsGet1Item Offer</div>
-													<div th:if="${ol.promo=='BuyItemAGetItemB Offer'}">BuyItemAGetItemB Offer</div>
+													<div th:if="${ol.promo=='Buy2ItemsGet1Item Offer'}">Buy 2 - Get 1 Deal</div>
+													<div th:if="${ol.promo=='BuyItemAGetItemB Offer'}">BOGO Deal</div>
 												</td>
 												<td style="text-align: right;">-$<span
 													th:text="${#numbers.formatDecimal(((ol.cost-ol.price)*ol.qty), 1, 'COMMA', 2, 'POINT')}"></span></td>
