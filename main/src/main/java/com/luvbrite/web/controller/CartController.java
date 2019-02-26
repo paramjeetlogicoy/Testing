@@ -713,9 +713,8 @@ public class CartController {
 								}
 								
 								//Reset prices for promos which manipulates the prices
-								else if(item.getPromo() != null 
-										&& ("doubledownoffer".equals(item.getPromo()) ||
-											"Buy2ItemsGet1Item Offer".equals(item.getPromo()))) {
+								else if( item.getPromo() != null 
+										 && ("doubledownoffer".equals(item.getPromo())) ) {
 									item.setPromo("");
 									item.setPrice(item.getCost());
 									
@@ -873,9 +872,8 @@ public class CartController {
 								}
 								
 								//Reset prices for promos which manipulates the prices
-								else if(item.getPromo() != null 
-										&& ("doubledownoffer".equals(item.getPromo()) ||
-											"BuyItemAGetItemB Offer".equals(item.getPromo()))) {
+								else if( item.getPromo() != null 
+										 && ("doubledownoffer".equals(item.getPromo()) )) {
 									item.setPromo("");
 									item.setPrice(item.getCost());
 									

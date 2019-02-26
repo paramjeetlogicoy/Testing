@@ -640,8 +640,8 @@ public class CartLogics {
 			 * $$   IMPORTANT   $$
 			 * Price is corrected here, NOT when product is added to the cart
 			 **/
-			if(promoBIAGIBIndex > -1 && 
-					!ifOtherPromoExists("promoBIAGIB")){			
+			if(promoBIAGIBIndex > -1 &&
+					promoBuyItemAGetItemBEligible){			
 
 				OrderLineItemCart item = items.get(promoBIAGIBIndex);
 				double itemCost = item.getCost();
@@ -658,9 +658,8 @@ public class CartLogics {
 			
 			//If promo is not active/eligible, but applied, remove it
 			if( promoBIAGIBIndex > -1 && 
-					( ifOtherPromoExists("promoBIAGIB") || 
-						!promoBuyItemAGetItemB  || 
-						!promoBuyItemAGetItemBEligible )
+					( !promoBuyItemAGetItemB  || 
+					  !promoBuyItemAGetItemBEligible )
 					){
 				
 				//Rest the price
@@ -682,8 +681,7 @@ public class CartLogics {
 			 * $$   IMPORTANT   $$
 			 * Price is corrected here, NOT when product is added to the cart
 			 **/
-			if(promoB2IG1IIndex > -1 && 
-					!ifOtherPromoExists("promoB2IG1I") &&
+			if(promoB2IG1IIndex > -1 &&
 					buy2ItemsGet1ItemEligibleProdCount > 1){			
 
 				OrderLineItemCart item = items.get(promoB2IG1IIndex);
@@ -701,8 +699,7 @@ public class CartLogics {
 			
 			//If promo is not active/eligible, but applied, remove it
 			if( promoB2IG1IIndex > -1 && 
-					( ifOtherPromoExists("promoB2IG1I") || 
-						!promoBuy2ItemsGet1Item  || 
+					(   !promoBuy2ItemsGet1Item  || 
 						buy2ItemsGet1ItemEligibleProdCount < 2)
 					){
 				

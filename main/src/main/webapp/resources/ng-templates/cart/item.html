@@ -29,8 +29,8 @@
 						</div>
 						<div ng-if="item.promo == 'doubledownoffer'" class="orange1 size13">Double
 							down offer</div>
-						<div ng-if="item.promo == 'BuyItemAGetItemB Offer'" class="orange1 size13">BuyItemA GetItemB Offer</div>
-						<div ng-if="item.promo == 'Buy2ItemsGet1Item Offer'" class="orange1 size13">Buy2Items Get1Item Offer</div>
+						<div ng-if="item.promo == 'BuyItemAGetItemB Offer'" class="orange1 size13">BOGO Deal</div>
+						<div ng-if="item.promo == 'Buy2ItemsGet1Item Offer'" class="orange1 size13">Buy 2 - Get 1 Deal</div>
 					</div>
 					
 					<div class="item-qty item-qty-ctrls">
@@ -221,7 +221,7 @@
 
 						<label class="fa-label"><input type="radio"
 							name="promoOptions" ng-model="m.promoOptions" value="BuyItemAGetItemB Offer" /><i
-							class="fa fa-circle-o" aria-hidden="true"></i> Buy Item A Get Item B - Offer</label>
+							class="fa fa-circle-o" aria-hidden="true"></i> BOGO Deal</label>
 
 						<div class="cart-promo-details"
 							ng-if="m.promoBIAGIBActive && m.promoBIAGIBEligible && !m.promoBIAGIBApplied"
@@ -265,7 +265,7 @@
 
 						<label class="fa-label"><input type="radio"
 							name="promoOptions" ng-model="m.promoOptions" value="Buy2ItemsGet1Item Offer" /><i
-							class="fa fa-circle-o" aria-hidden="true"></i> Buy 2 Items and Get 1 Item - Offer</label>
+							class="fa fa-circle-o" aria-hidden="true"></i> Buy 2 - Get 1 Deal</label>
 
 						<div class="cart-promo-details"
 							ng-if="m.promoB2IG1IActive && m.promoB2IG1IEligible && !m.promoB2IG1IApplied"
