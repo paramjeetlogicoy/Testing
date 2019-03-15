@@ -49,33 +49,8 @@ public class CartLogics {
 		freeGramIndex = -1,
 		promo420Index = -1,
 		promo420Index150 = -1,
-		promo420Index300 = -1,
-		promoBIAGIBIndex = -1,
-		promoB2IG1IIndex = -1;
+		promo420Index300 = -1;
 	
-	private boolean ifOtherPromoExists(String thisPromo) {
-		
-		boolean exists = false;
-		
-		if( 
-				(!thisPromo.equals("doubleDown") && doubleDownItemIndex > -1) ||
-				(!thisPromo.equals("briteBox") && briteBoxIndex > -1) ||
-				(!thisPromo.equals("fifthFlower") && fifthFlowerIndex > -1) ||
-				(!thisPromo.equals("waxPromo") && waxPromoIndex > -1) ||
-				(!thisPromo.equals("fiveGPromo") && fiveGPromoIndex > -1) ||
-				(!thisPromo.equals("freeGram") && freeGramIndex > -1) ||
-				(!thisPromo.equals("promo420") && promo420Index > -1) ||
-				(!thisPromo.equals("promo420150") && promo420Index150 > -1) ||
-				(!thisPromo.equals("promo420300") && promo420Index300 > -1) ||
-				(!thisPromo.equals("promoBIAGIB") && promoBIAGIBIndex > -1)||
-				(!thisPromo.equals("promoB2IG1I") && promoB2IG1IIndex > -1)
-			){
-			exists = true;
-		}
-		
-		
-		return exists;
-	}
 	
 	private void updateIndexes(List<OrderLineItemCart> items){
 		
@@ -90,8 +65,6 @@ public class CartLogics {
 		promo420Index = -1;
 		promo420Index150 = -1;
 		promo420Index300 = -1;
-		promoBIAGIBIndex = -1;
-		promoB2IG1IIndex = -1;
 		
 		for(OrderLineItemCart item : items){
 			
@@ -132,15 +105,10 @@ public class CartLogics {
 				}
 				
 				
-				if( item.getPromo() != null){
-					if( "doubledownoffer".equals(item.getPromo()) )
-						doubleDownItemIndex = index;
+				if( item.getPromo() != null 
+						&& "doubledownoffer".equals(item.getPromo()) ){
 					
-					else if( "BuyItemAGetItemB Offer".equals(item.getPromo()) )
-						promoBIAGIBIndex = index;
-					
-					else if( "Buy2ItemsGet1Item Offer".equals(item.getPromo()) )
-						promoB2IG1IIndex = index;
+					doubleDownItemIndex = index;
 				}
 				
 			}
@@ -304,8 +272,7 @@ public class CartLogics {
 			if(order == null) return;
 			
 			double doubleDownThresholdAmt = cOps.getDoubleDown(),
-					//doubleDownOfferAmt = cOps.getDoubleDownOfferValue(),
-					doubleDownItemPrice = cOps.getDoubleDownItemPrice(),
+					doubleDownOfferAmt = cOps.getDoubleDownOfferValue(),
 					total = 0d;
 			
 			boolean orderChanged = false,
@@ -318,15 +285,7 @@ public class CartLogics {
 					promo420Active = false,
 					promo420Eligible = false,
 					promo420Eligible150 = false,
-					promo420Eligible300 = false,
-					promoBuyItemAGetItemB = cOps.getBuyItemAGetItemB() == 1 ? true : false,
-					promoBuyItemAGetItemBEligible = false,
-					promoBuy2ItemsGet1Item = cOps.getBuy2ItemsGet1Item() == 1 ? true : false;
-			
-			
-			List<Integer> buyItemAGetItemBEligProducts = cOps.getBuyItemAGetItemBEligProducts();
-			List<Integer> buy2ItemsGet1ItemEligProducts = cOps.getBuy2ItemsGet1ItemEligProducts();
-			int buy2ItemsGet1ItemEligibleProdCount = 0;
+					promo420Eligible300 = false;
 			
 			long[] premaFloraProds = {12174, 12172, 12227, 12228, 12241, 12344};
 			int freeGramEligibleProdCount = 0;
@@ -399,20 +358,6 @@ public class CartLogics {
 								}
 							}
 						}
-
-						if(!buyItemAGetItemBEligProducts.isEmpty()){
-							int pid = (int) item.getProductId();
-							if(buyItemAGetItemBEligProducts.indexOf(pid) > -1){
-								promoBuyItemAGetItemBEligible = true;
-							}
-						}
-
-						if(!buy2ItemsGet1ItemEligProducts.isEmpty()){
-							int pid = (int) item.getProductId();
-							if(buy2ItemsGet1ItemEligProducts.indexOf(pid) > -1){
-								buy2ItemsGet1ItemEligibleProdCount += item.getQty();
-							}
-						}
 					}
 //					
 //					else if(item.getType().equals("coupon")){
@@ -450,9 +395,14 @@ public class CartLogics {
 			//Here we are checking if the double down promo present is still valid			
 			if( doubleDownItemIndex != -1 				&&
 				doubleDownThresholdAmt > 0d 			&&  
-				//doubleDownOfferAmt > 0d  				&&
+				doubleDownOfferAmt > 0d  				&&
 				!couponPresent 							&&  
-				!ifOtherPromoExists("doubleDown")	&&	
+				freeGramIndex == -1						&&
+				briteBoxIndex == -1						&& 
+				fifthFlowerIndex == -1					&&  
+				promo420Index == -1						&&
+				promo420Index150 == -1					&&
+				promo420Index300 == -1					&&
 				total >= doubleDownThresholdAmt) {				
 
 				double itemCost = 0d;				
@@ -467,10 +417,10 @@ public class CartLogics {
 					if((total - itemCost) >= doubleDownThresholdAmt){
 						/*It qualifies*/
 					
-//						if(itemCost < doubleDownOfferAmt)
-//							doubleDownOfferAmt = itemCost;
+						if(itemCost < doubleDownOfferAmt)
+							doubleDownOfferAmt = itemCost;
 						
-						double newPrice = (itemCost * (item.getQty() - 1 ) + doubleDownItemPrice) / item.getQty();
+						double newPrice = itemCost - ( doubleDownOfferAmt/item.getQty() );
 						
 						if(newPrice != item.getPrice()){
 							
@@ -634,88 +584,6 @@ public class CartLogics {
 			
 			
 			
-			/**
-			 * Buy Item A, Get Item B Promo 
-			 * 
-			 * $$   IMPORTANT   $$
-			 * Price is corrected here, NOT when product is added to the cart
-			 **/
-			if(promoBIAGIBIndex > -1 &&
-					promoBuyItemAGetItemBEligible){			
-
-				OrderLineItemCart item = items.get(promoBIAGIBIndex);
-				double itemCost = item.getCost();
-				double newPrice = ( itemCost * (item.getQty() - 1 ) + cOps.getBuyItemAGetItemBItemPrice() ) 
-												/ item.getQty();
-				
-				if(newPrice != item.getPrice()){
-					item.setPrice(newPrice);
-					
-					orderChanged = true;
-				}
-			}
-			
-			
-			//If promo is not active/eligible, but applied, remove it
-			if( promoBIAGIBIndex > -1 && 
-					( !promoBuyItemAGetItemB  || 
-					  !promoBuyItemAGetItemBEligible )
-					){
-				
-				//Rest the price
-				OrderLineItemCart item = items.get(promoBIAGIBIndex);
-				item.setPromo("");
-				item.setPrice(item.getCost());
-				
-				orderChanged = true;	
-				
-				//Now since the item is remove all the indices need to be updated
-				updateIndexes(items);
-			}
-			
-			
-			
-			/**
-			 * Buy 2 Items, Get 1 Item Promo 
-			 * 
-			 * $$   IMPORTANT   $$
-			 * Price is corrected here, NOT when product is added to the cart
-			 **/
-			if(promoB2IG1IIndex > -1 &&
-					buy2ItemsGet1ItemEligibleProdCount > 1){			
-
-				OrderLineItemCart item = items.get(promoB2IG1IIndex);
-				double itemCost = item.getCost();
-				double newPrice = ( itemCost * (item.getQty() - 1 ) + cOps.getBuy2ItemsGet1ItemItemPrice() ) 
-												/ item.getQty();
-				
-				if(newPrice != item.getPrice()){
-					item.setPrice(newPrice);
-					
-					orderChanged = true;
-				}
-			}
-			
-			
-			//If promo is not active/eligible, but applied, remove it
-			if( promoB2IG1IIndex > -1 && 
-					(   !promoBuy2ItemsGet1Item  || 
-						buy2ItemsGet1ItemEligibleProdCount < 2)
-					){
-				
-				//Rest the price
-				OrderLineItemCart item = items.get(promoB2IG1IIndex);
-				item.setPromo("");
-				item.setPrice(item.getCost());
-				
-				orderChanged = true;	
-				
-				//Now since the item is remove all the indices need to be updated
-				updateIndexes(items);
-			}
-			
-			
-			
 			
 			/**
 			 * 5g Promo 
@@ -827,12 +695,12 @@ public class CartLogics {
 			
 			//If doubledown is currently present, but order doesn't qualify anymore, then remove doubledown.
 			// OR
-			//Rare case where doubledown and britebox (or any other promos are present, remove doubledown.
+			//Rare case where doubledown and britebox are present, remove doubledown.
 			// OR
 			//Case where doubledown and coupon are present, remove doubledown.
 			if(doubleDownItemIndex != -1 && 
 					(total < doubleDownThresholdAmt || doubleDownThresholdAmt == 0 
-					|| ifOtherPromoExists("doubleDown")
+					|| briteBoxIndex != -1
 					|| couponPresent)){
 				
 				OrderLineItemCart item = items.get(doubleDownItemIndex);
