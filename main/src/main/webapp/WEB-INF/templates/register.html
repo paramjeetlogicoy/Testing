@@ -13,7 +13,23 @@
 	<div th:replace="fragments/layout::fragment-header"></div>
 
 	<div class="container page-container">
-		<div class="generic-container register-container ng-cloak">
+            
+            <div class="generic-container register-container ng-cloak" ng-show="!selectedMemberType">
+                <div class="row center-div">
+                    <div class="col-sm-12 col-lg-4">
+                        <!--<div class="card">-->
+                             <button class="btn-membertype"  ng-click="chooseMemberType('recreational')">Recreational</button>
+                        <!--</div>--> 
+                    </div>
+                    <div class="col-sm-12 col-lg-4" >
+                        <!--<div class="card">-->
+                            <button class="btn-membertype" ng-click="chooseMemberType('medical')">Medical</button>
+                        <!--</div>-->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="generic-container register-container ng-cloak" ng-show="selectedMemberType">
 			<h3>Patient Registration</h3>
 
 			<div class="row">
@@ -167,8 +183,7 @@
 										valid and patient should be 21 years or older.</p>
 								</div>
 							</div>
-
-
+                                                    
 							<div class="form-group idfile-group">
 								<label class="control-label col-sm-4">Your
 									Identification Card /<br /> Drivers License <sup>*</sup> <br />
@@ -204,7 +219,7 @@
 							</div>
 
 
-							<div class="form-group recofile-group">
+                                                    <div class="form-group recofile-group" ng-if="user.memberType === 'medical'" >
 								<label class="control-label col-sm-4">Your Doctor's
 									Medical Recommendation Letter<br /> <small
 									class="em">(Images or PDF Only. 10MB Max)</small>
@@ -238,8 +253,7 @@
 								</div>
 							</div>
 
-
-							<div class="form-group recoWrapper">
+                                                    <div class="form-group recoWrapper" ng-if="user.memberType === 'medical'">
 								<label class="control-label col-sm-4">Recommendation
 									Expiry<br /> <small class="em">(mm/dd/yyyy)</small>
 								</label>
@@ -259,7 +273,39 @@
 								</div>
 							</div>
 
+                                                    <div class="form-group recofile-group" ng-show="user.memberType === 'medical'">
+								<label class="control-label col-sm-4">State Marijuana Card<br /> <small
+									class="em">(Images or PDF Only. 10MB Max)</small>
+								</label>
+								<div class="col-sm-8">
+									<div class="fgw-file-selector" ng-hide="stateMariCardFileRef">
+   
+										<div ngf-drop="ngf-drop" ngf-select="ngf-select"
+											ng-model="stateMariCardFile" class="fgw-drop-box pad1 marg-b3"
+											ngf-max-size="'10MB'" ngf-drag-over-class="'dragover'"
+											ngf-multiple="false" ngf-allow-dir="true"
+											accept="image/*,application/pdf"
+											ngf-pattern="'image/*,application/pdf'">
+											<h6>Select Or Drop files here</h6> 
+											<div class="max-size-error">Max size for upload is 10MB</div>
+											<div class="invalid-pattern-error">Only images and PDFs
+												are accepted </div>
 
+
+											<div class="progress-wrapper reco-progress-wrapper"></div>
+										</div>
+										<div ngf-no-file-drop="ngf-no-file-drop">File Drag/Drop
+											is not supported for this browser</div>
+									</div>
+									<div ng-if="stateMariCardFileRef" class="form-control-static">
+										<a href="/files/view{{stateMariCardFileRef.location}}" target="_blank"
+											class="small">{{stateMariCardFileRef.filename}}</a> <a href="#"
+											ng-click="removeFile('stateMariCardFile')"><i class="fa fa-trash"
+											aria-hidden="true"></i></a>
+									</div>
+								</div>
+							</div>
+                                                    
 							<div class="form-group">
 								<label class="control-label col-sm-4">How did you hear
 									about us?</label>

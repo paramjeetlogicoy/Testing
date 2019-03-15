@@ -1,10 +1,12 @@
 var registerCtrlr = function($scope, $http, Upload){
 	
 	var today = new Date();
-	$scope.medicalUser = true;
-	$scope.recreationalUser = false;
+        
+        $scope.selectedMemberType = false;
+	$scope.medicalUser        = false;
+	$scope.recreationalUser   = false;
 	
-	$scope.user = {'identifications':{}, 'marketing':{ 'subscribe': true}};
+	$scope.user = {'identifications':{}, 'marketing':{ 'subscribe': true}, memberType:'', approveStatus:'0'};
 	$scope.reco = {year:new Date().getFullYear()};
 	$scope.dob = {};
 	$scope.today = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
@@ -12,7 +14,6 @@ var registerCtrlr = function($scope, $http, Upload){
 			"be a valid future date.";
 	
 	$scope.referralUserValid = "";
-		
 	
 	$scope.hearAboutOptions = ['WeedMaps', 'Google', 'Instagram', 'Yelp', 'Facebook', 'Leafly', 'Friends & Family', 'La Weekly', 'Other'];
 	
@@ -50,8 +51,8 @@ var registerCtrlr = function($scope, $http, Upload){
 				$scope.idFile && 
 				proceed){
 			
-			$scope.user.memberType = "medical";
-			if($scope.recreationalUser) $scope.user.memberType = "recreational";
+//			$scope.user.memberType = "medical";
+//			if($scope.recreationalUser) $scope.user.memberType = "recreational";
 			
 			$http.post(_lbUrls.register, $scope.user)
 			.then(function(response){
@@ -61,6 +62,7 @@ var registerCtrlr = function($scope, $http, Upload){
 					//Remove files from localStorage
 					localStorage.removeItem('recoFile');
 					localStorage.removeItem('idFile');
+					localStorage.removeItem('stateMariCardFile');
 					
 					if(resp.message === 'activated'){
 						location.href = "/account-activated";
@@ -127,12 +129,14 @@ var registerCtrlr = function($scope, $http, Upload){
 			$http.post('/files/delete/id/' + $scope.idFile._id);
 			$scope.idFile = null;
 			localStorage.removeItem('idFile');
-		}
-		
-		else if(type == 'reco' && $scope.recoFile){
+		} else if(type == 'reco' && $scope.recoFile){
 			$http.post('/files/delete/id/' + $scope.recoFile._id);
 			$scope.recoFile = null;
 			localStorage.removeItem('recoFile');
+		} else if(type == 'stateMariCardFile' && $scope.stateMariCardFileRef){
+			$http.post('/files/delete/id/' + $scope.stateMariCardFileRef._id);
+			$scope.stateMariCardFileRef = null;
+			localStorage.removeItem('stateMariCardFile');
 		}
 	};
 	
@@ -217,8 +221,18 @@ var registerCtrlr = function($scope, $http, Upload){
 		
 		return (!$scope.reco.year || !$scope.reco.month || !$scope.reco.day);
 	};
-
-	
+       
+       
+    $scope.chooseMemberType = function (option) {      
+        if (option === 'recreational') {
+            $scope.user.memberType      = 'recreational';
+            $scope.selectedMemberType   = true;
+        } else if (option === 'medical') {
+            $scope.user.memberType      = 'medical';
+            $scope.selectedMemberType   = true;
+        }
+    };
+        
     $scope.$watch('idfileobj', function () {
         new $scope.upload($scope.idfileobj, 'id');
     });
@@ -228,9 +242,14 @@ var registerCtrlr = function($scope, $http, Upload){
         new $scope.upload($scope.recofileobj,'reco');
     });
     
+    $scope.$watch('stateMariCardFile', function () {
+        new $scope.upload($scope.stateMariCardFile,'stateMariCard');
+    });
+    
     
     $scope.upload = function (file, type) {
-      if (file) {
+      
+        if (file) {
 	        var fileInfo = {progress : false, element : null};
 	        
 	        Upload.upload({
@@ -241,10 +260,12 @@ var registerCtrlr = function($scope, $http, Upload){
 	            
 	        }).then(
 	
-	    	        function (resp) { //Success
-		    	        
-			            if(resp.config.fileInfo)
-			            	resp.config.fileInfo.element.closest('.row').remove();
+	    	        function (resp) {
+                            
+                                // Success
+		    	                                     
+			           if(resp.config.fileInfo)
+			           resp.config.fileInfo.element.closest('.row').remove();
 			
 			           if(resp.data.results){
 			        	   var img = resp.data.results[0];
@@ -254,11 +275,15 @@ var registerCtrlr = function($scope, $http, Upload){
 				        		   $scope.user.identifications.idCard = img.location;
 				        		   $scope.idFile = img;
 				        		   localStorage.setItem('idFile', JSON.stringify(img));
-				        	   }
-				        	   else if(type && type=='reco'){
+				        	   } else if(type && type=='reco'){
 				        		   $scope.user.identifications.recomendation = img.location;
 				        		   $scope.recoFile = img;
 				        		   localStorage.setItem('recoFile', JSON.stringify(img));
+				        	   } else if(type && type=='stateMariCard'){
+				        		   $scope.user.identifications.stateMarijuanaCard = img.location;
+				        		   $scope.stateMariCardFileRef = img;
+                                                                                                                      
+				        		   localStorage.setItem('stateMariCardFile', JSON.stringify(img));
 				        	   }
 			        	   }
 			           }
@@ -315,6 +340,16 @@ var registerCtrlr = function($scope, $http, Upload){
         		$scope.idFile = JSON.parse(localStorage.getItem('idFile'));
         		$scope.user.identifications.idCard = $scope.idFile.location;
         	}
+                
+                if(localStorage.getItem('stateMariCardFile')){
+                        if($scope.user.memberType === 'medical'){
+                            $scope.stateMariCardFileRef = JSON.parse(localStorage.getItem('stateMariCardFile'));
+                            $scope.user.identifications.stateMarijuanaCard = $scope.stateMariCardFileRef.location;
+                	}else{
+                            localStorage.removeItem('stateMariCardFile');
+                        }
+                }
+                
     	}catch(e){}
     };
     

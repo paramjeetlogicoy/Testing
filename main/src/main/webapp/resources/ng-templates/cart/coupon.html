@@ -40,4 +40,28 @@
 			</tr>
 		</tfoot>
 	</table>
+
+	<div class="cart-tax-info size12"
+		ng-if="m.order.orderTax && m.order.orderTax.taxComponents">
+		<h5 class="marg-b0">Tax Breakdown</h5>
+		<div class="marg-b05">
+			<em>Taxes will be applicable from Jan 1st, 2018.</em>
+		</div>
+		<table class="table table-condensed">
+			<tbody>
+				<tr class="cart-taxcomponents"
+					ng-repeat="comp in m.order.orderTax.taxComponents">
+					<td>{{comp.description}} ({{comp.rate}}%)</td>
+					<td class="text-right">{{comp.value | currency}}</td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr ng-if="m.order.orderTax.applicableTax">
+					<td>Total Tax</td>
+					<td class="text-right">{{m.order.orderTax.applicableTax |
+						currency}}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
 </div>

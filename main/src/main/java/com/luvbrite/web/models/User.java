@@ -41,7 +41,16 @@ public class User {
 	private String status; //pending, active, reco-expired, closed, declined, etc
 	private String level; //bronze, silver, bronze,	etc
 	private String memberType; //recreational or medical
-	
+	private String approveStatus;
+
+        public String getApproveStatus() {
+            return approveStatus;
+        }
+
+        public void setApproveStatus(String approveStatus) {
+            this.approveStatus = approveStatus;
+        }
+        
 	public long get_id() {
 		return _id;
 	}

@@ -1,4 +1,4 @@
-/*2018-01-07 6:21 PM*/
+/*2019-03-14 5:29 PM*/
 /***** Luvbrite Admin - Type setting *****/
 /*Base size for desktop*/
 /* @basesizeD / 10. Division by 10 because 10px would come as 1, and 15px as 1.5*/
@@ -31,10 +31,10 @@
   color: #16a765 !important;
 }
 .red1 {
-  color: #E00!important;
+  color: #E00 !important;
 }
 .red2 {
-  color: #dd4b39!important;
+  color: #dd4b39 !important;
 }
 .bg-white,
 .lb_busy_pop,
@@ -841,9 +841,9 @@ label.fa-label .fa-square-o {
 .animate.ng-enter,
 .animate.ng-leave,
 .animate.ng-hide {
-  -webkit-transition: .5s linear all;
+  -webkit-transition: 0.5s linear all;
   /* Chrome */
-  transition: .5s linear all;
+  transition: 0.5s linear all;
 }
 .animate.ng-leave.ng-leave-active,
 .animate.ng-move,
@@ -879,7 +879,7 @@ label.fa-label .fa-square-o {
 .rate label:before {
   display: inline-block;
   font-size: inherit;
-  padding: .3rem .2rem 0;
+  padding: 0.3rem 0.2rem 0;
   margin: 0;
   cursor: pointer;
   font-family: FontAwesome;
