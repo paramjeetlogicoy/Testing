@@ -47,7 +47,8 @@ public class PostOrderMeta {
         //this Url for Google Cloud Test Development
         private final String newOrderURL = "http://104.154.176.18:8080/inventory/apps/a-ordermeta?json";
 	private final String updateOrderURL = "http://104.154.176.18:8080/inventory/apps/a-c-ordermeta?json";
-        
+
+      
 	private NumberFormat nf = NumberFormat.getCurrencyInstance();
 	
 	public String postOrder(Order order){
