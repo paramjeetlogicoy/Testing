@@ -6,6 +6,10 @@
 @mainheader_height: 67px; // + 23;
 @subheader_height:	34px;
 
+@desktop:   ~"only screen and (min-width: 960px) and (max-width: 1199px)";
+@tablet:    ~"only screen and (min-width: 720px) and (max-width: 959px)";
+@mobile:    ~"only screen and (min-width: 320px) and (max-width: 719px)";
+
 /* header */
 header{
 	padding-right: inherit;
@@ -2078,28 +2082,83 @@ ul.img-thumbnails {
 //Note added by Hemraj 
 
 .btn-membertype {
-	border: 2px dashed #ffe066;
-	background: #fffcef;
+	border: 2px solid #3FA6AB;
+	background: #ffffff;
 	width: 100%;
-	min-height: 100px;
+	min-height: 250px;
 	box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
 	transition: all 0.3s ease 0s;
-	cursor: pointer;
-	font-size: 25px;
-	font-weight: 600;
+	cursor: pointer;	
 	outline: none;
+        border-radius: 15px;
 }
-
 .btn-membertype:hover {
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+}
+.btn-inner {
+    width: 100%;
+    height: 100%;
 }
 .center-div{
     align-items: center;
     display: flex;
     justify-content: center;
 }
-
 .newUsertxt{
     font-size: 15px;
     font-weight: 600;
+}
+.newUserHead {
+    font-size: 21px;
+    font-weight: 700;
+    padding-bottom: 20px;
+}
+.img-register{
+    max-width:90px;
+    heigth:auto !important;
+    padding-top: 10px;
+}
+.img-register-txt {
+    font-size: 25px;
+    font-weight: 600;
+}
+.center {
+  margin: auto;   
+  padding: 10px;
+  text-align: center;
+}
+.bullets {
+   list-style: initial !important;  
+   line-height:50%
+}
+.bullets li {
+   font-size: 13px;
+   font-weight: 600;
+   padding-bottom: 10px;
+}
+.pad-bullets{
+    padding: 0px 0px 0px 75px;
+}
+
+//media query for responsive design
+@media @desktop {
+ 
+}
+
+@media @tablet {
+    .center-div{ 
+        display: inline;    
+    }
+    .pad-bullets {
+        padding: 0px 0 0 65px;
+    }
+}
+
+@media @mobile {
+    .center-div{ 
+        display: inline;    
+    }
+    .pad-bullets {
+        padding: 0px 0 0 65px;
+    }
 }
