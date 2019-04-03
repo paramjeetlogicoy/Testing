@@ -1397,8 +1397,7 @@ public class CartController {
 							email.setRecipientName(newOrder.getCustomer().getName());
 							
 							if(ccs.getcOps().isDev()){
-								//email.setRecipientEmail("admin@day2dayprinting.com");
-								email.setRecipientEmail("sumiit.prashant.june@gmail.com");
+								email.setRecipientEmail("admin@day2dayprinting.com");								
 							}
 							else{
 								email.setRecipientEmail(newOrder.getCustomer().getEmail());								
@@ -1421,10 +1420,10 @@ public class CartController {
 						//Sent Order Meta to Inventory
 						try {							
 							// uncomment this for prod enviroment
-//							if(!ccs.getcOps().isDev()) postOrderMeta.postOrder(newOrder);
+							if(!ccs.getcOps().isDev()) postOrderMeta.postOrder(newOrder);
                                                         
                                                         // this for dev enviroment
-							if(ccs.getcOps().isDev()) postOrderMeta.postOrder(newOrder);
+							//if(ccs.getcOps().isDev()) postOrderMeta.postOrder(newOrder);
 						
                                                 }catch(Exception e){
 							logger.error(Exceptions.giveStackTrace(e));
