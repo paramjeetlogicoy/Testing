@@ -1211,13 +1211,15 @@ public class CartController {
                                         
                                         OrderCustomer orderCustomer = order.getCustomer();
 					User usr = null;                                       
-                                        
-					if (orderCustomer != null) {                                       
-						usr = userDao.findOne("_id", (long) orderCustomer.get_id());
-						if (usr!=null&&usr.getApproveStatus().equals("1")) {
-                                                    taxRate = 0d;
+                                 
+					if (orderCustomer != null) {                                      
+						usr = userDao.findOne("_id", (long) orderCustomer.get_id());                                               
+						if (usr!=null&&usr.getApproveStatus() != null) {
+                                                    if(usr.getApproveStatus().equals("1")){
+                                                        taxRate = 0d;
+                                                    }
 						}
-					}
+					}                                        
                                         
                                         
 //					if(order.getCustomer() != null){
@@ -1295,7 +1297,7 @@ public class CartController {
 		gr.setMessage("");
 		gr.setPaymentProcessed(false);
 		gr.setOrderFinalizationError(false);
-
+                                              
 		try {
 
 			if(order == null 
@@ -1303,13 +1305,11 @@ public class CartController {
 					|| order.get_id() == 0  
 					|| orderId != order.get_id() 
 					|| order.getLineItems() == null 
-					|| order.getLineItems().size() == 0){
-
+					|| order.getLineItems().size() == 0){                               
+                            
 				gr.setMessage("Unable to find any valid order. Please contact the customer care.");				
 			}
 			else{
-				
-
 				
 				CartOrder currOrder = dao.findCartOrder(orderId);
 				if(currOrder == null){
@@ -1395,8 +1395,7 @@ public class CartController {
 							email.setRecipientName(newOrder.getCustomer().getName());
 							
 							if(ccs.getcOps().isDev()){
-								//email.setRecipientEmail("admin@day2dayprinting.com");
-								email.setRecipientEmail("sumiit.prashant.june@gmail.com");
+                                                            email.setRecipientEmail("admin@day2dayprinting.com");								
 							}
 							else{
 								email.setRecipientEmail(newOrder.getCustomer().getEmail());								
@@ -1419,10 +1418,10 @@ public class CartController {
 						//Sent Order Meta to Inventory
 						try {							
 							// uncomment this for prod enviroment
-//							if(!ccs.getcOps().isDev()) postOrderMeta.postOrder(newOrder);
+							if(!ccs.getcOps().isDev()) postOrderMeta.postOrder(newOrder);
                                                         
                                                         // this for dev enviroment
-							if(ccs.getcOps().isDev()) postOrderMeta.postOrder(newOrder);
+							//if(ccs.getcOps().isDev()) postOrderMeta.postOrder(newOrder);
 						
                                                 }catch(Exception e){
 							logger.error(Exceptions.giveStackTrace(e));
