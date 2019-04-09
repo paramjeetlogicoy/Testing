@@ -39,7 +39,7 @@ defaultCtrlr = function($scope, $http, $filter, $sanitize){
                 }
             };
             
-            var url = '/inventory/apps/lisallproducts';
+            var url = '/inventory/apps/listallproducts';
             $http.post(url, data, config)
             .success(function (data, status, headers, config) {               
                 if(data.success === true){
