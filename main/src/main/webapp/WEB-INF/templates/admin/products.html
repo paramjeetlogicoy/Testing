@@ -127,8 +127,14 @@
                                     </div>
                                     <div class="modal-body">
                                          <div class="form-group">
+                                             <div class="row">
+                                                 <div class="col-lg-4"><strong>Product Name </strong></div>
+                                                 <div class="col-lg-8"><strong>{{mappingProduct.name}}</strong></div>
+                                             </div>
+                                        </div>
+                                        <div class="form-group">
                                         <select class="form-control" ng-options="item.id as item.productName for item in items" ng-model="pDetail" ng-change="selectedProduct()" >
-                                            <option value="">Choose Product</option>
+                                            <option value="">Choose Product From Inventory</option>
                                         </select>
                                         </div>
                                         <div class="form-group" ng-if="selectProduct">

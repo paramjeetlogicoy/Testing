@@ -63,6 +63,7 @@ defaultCtrlr = function($scope, $http, $filter, $sanitize){
         
         $scope.mappingProduct;
         $scope.showModel = function (mappingProduct){
+           $scope.pDetail = '';
           $scope.mappingProduct = mappingProduct;          
           $('#myModal').modal('show');
         };
