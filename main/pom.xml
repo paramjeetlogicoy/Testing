@@ -31,7 +31,9 @@
                         <server>TomcatServer</server>
                         <path>/</path>                        
                         <warName>ROOT</warName>
-                        <update>true</update>                        
+                        <update>true</update>
+                        <username>tomcat</username>
+                        <password>tomcat</password>
                     </configuration>
                 </plugin>
             </plugins>
@@ -308,12 +310,14 @@
 						<artifactId>tomcat7-maven-plugin</artifactId>
 						<version>2.2</version>
 						<configuration>
-							<url>http://localhost/manager/text</url>							
+							<url>http://localhost/manager/text</url>
 							<server>TomcatServer</server>
 							<path>/</path>
 							<warName>ROOT</warName>
 							<update>true</update>
-						</configuration>
+                                                        <username>tomcat</username>
+                                                        <password>tomcat</password>
+						</configuration>                                                
 					</plugin>
 				</plugins>
 			</build>
