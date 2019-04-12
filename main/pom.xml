@@ -20,7 +20,7 @@
 	 <maven.compiler.source>1.8</maven.compiler.source>
 	 <maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
-<!--        <build>
+        <build>
             <plugins>           
                 <plugin>
                     <groupId>org.apache.tomcat.maven</groupId>
@@ -32,12 +32,12 @@
                         <path>/</path>                        
                         <warName>ROOT</warName>
                         <update>true</update>
-                        <username>tomcat</username>
-                        <password>tomcat</password>
+                        <username>admin</username>
+                        <password>admin</password>
                     </configuration>
                 </plugin>
             </plugins>
-        </build>-->
+        </build>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -311,13 +311,11 @@
 						<version>2.2</version>
 						<configuration>
 							<url>http://localhost/manager/text</url>
-							<server>TomcatServer</server>
+							<server>ProductionServer</server>
 							<path>/</path>
 							<warName>ROOT</warName>
 							<update>true</update>
-                                                        <username>tomcat</username>
-                                                        <password>tomcat</password>
-						</configuration>                                                
+						</configuration>
 					</plugin>
 				</plugins>
 			</build>
