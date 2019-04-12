@@ -32,8 +32,8 @@
                         <path>/</path>                        
                         <warName>ROOT</warName>
                         <update>true</update>
-                        <username>admin</username>
-                        <password>admin</password>
+                        <username>tomcat</username>
+                        <password>tomcat</password>
                     </configuration>
                 </plugin>
             </plugins>
