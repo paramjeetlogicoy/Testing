@@ -32,7 +32,7 @@ public class MongoConfig {
 
         String server1 = env.getProperty("server1");
         int port1 = Utility.getInteger(env.getProperty("port1"));
-//		
+	
 //		String server2 = env.getProperty("server2");
 //		int port2 = Utility.getInteger(env.getProperty("port2"));
 //		
@@ -56,7 +56,7 @@ public class MongoConfig {
 
         final Datastore datastore = morphia.createDatastore(client, dbname);
 
-        return datastore;
+        return datastore;        
     }
 
 }
