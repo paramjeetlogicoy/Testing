@@ -3055,6 +3055,11 @@ ul.img-thumbnails img {
 .pad-bullets {
   padding: 0px 0px 0px 75px;
 }
+.txt_stock {
+  font-size: 12px;
+  font-weight: 700;
+  color: #f9471c;
+}
 @media only screen and (min-width: 720px) and (max-width: 959px) {
   .center-div {
     display: inline;

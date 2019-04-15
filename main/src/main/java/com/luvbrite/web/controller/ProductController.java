@@ -76,6 +76,11 @@ public class ProductController {
 		model.addAttribute("page", "product");
 		model.addAttribute("sortOrder", sortOrder);
 		
+//               System.out.print("==============================");
+//                       for(int i =0 ;i<products.size();i++){
+//                        System.out.println("In Product Controller product Detail==============="+products.get(i));
+//                       } 
+                
 		return "products";	
 	}
 	
