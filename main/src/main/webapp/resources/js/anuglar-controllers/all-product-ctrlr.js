@@ -145,10 +145,12 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 		$scope.buildList.role = document.getElementById('lb_role_admin') ? 'admin' : '';
 			
 		$('#thymeleaf-productlist>li').each(function(index){
-			var p = {},
-			$e = $(this);
-			
-			p.name = $e.data("pname");
+			var p = {};
+			$e = $(this);		
+
+                        console.log('=====================');
+                        console.log($e);
+                        p.name = $e.data("pname");
 			p.stockStat = $e.data("stockstat");
 			p._id = parseInt($e.data("pid"));
 			p.featuredImg = $e.data("img");
@@ -163,14 +165,14 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 			p.priceRange = $e.data("price-range");
 			p.description = $e.data("desc");
 			
-			p.newBatchArrival= $e.data("newest");
-			
+			p.newBatchArrival   = $e.data("newest");
+			p.minStockLimit =  $e.data("minstocklimit");
+                        
 			p.productFilters = {
-					price : parseFloat($e.data("filter-price")),
-					cbd : parseFloat($e.data("filter-cbd")), 
-					thc : parseFloat($e.data("filter-thc"))
+                            price : parseFloat($e.data("filter-price")),
+                            cbd : parseFloat($e.data("filter-cbd")), 
+                            thc : parseFloat($e.data("filter-thc"))
 			};
-			
 			
 			//push product object to the list we made.
 			$scope.buildList.products.push(p);

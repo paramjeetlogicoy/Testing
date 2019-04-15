@@ -1191,7 +1191,7 @@ public class CartController {
 					                                       
 					/* Validate City and State for Tax rate*/
 					double taxRate = 9.5d;
-					                                       
+
 					//Zero sales for this year
 					Calendar now = Calendar.getInstance();
 					if(now.get(Calendar.YEAR) == 2018){
@@ -1211,16 +1211,14 @@ public class CartController {
                                         
                                         OrderCustomer orderCustomer = order.getCustomer();
 					User usr = null;                                       
-                                        
 					if (orderCustomer != null) {                                      
-						usr = userDao.findOne("_id", (long) orderCustomer.get_id());                                               
-						if (usr!=null&&usr.getApproveStatus() != null) {
+  						usr = userDao.findOne("_id", (long) orderCustomer.get_id());  
+                                                if (usr!=null&&usr.getApproveStatus() != null) {
                                                     if(usr.getApproveStatus().equals("1")){
                                                         taxRate = 0d;
                                                     }
 						}
-					}                                        
-                                        
+					}                                       
 //					if(order.getCustomer() != null){
 //						/** Check the user type to see if its medical or recreational. Medical users pay 0 sales tax **/
 //						User userDb = userDao.createQuery()
@@ -1394,7 +1392,12 @@ public class CartController {
 							email.setRecipientName(newOrder.getCustomer().getName());
 							
 							if(ccs.getcOps().isDev()){
-                                                            email.setRecipientEmail("admin@day2dayprinting.com");								
+
+                                                            								
+
+								//email.setRecipientEmail("admin@day2dayprinting.com");
+								email.setRecipientEmail("sumiit.prashant.june@gmail.com");
+
 							}
 							else{
 								email.setRecipientEmail(newOrder.getCustomer().getEmail());								
@@ -1417,12 +1420,14 @@ public class CartController {
 						//Sent Order Meta to Inventory
 						try {							
 							// uncomment this for prod enviroment
+
 							if(!ccs.getcOps().isDev()) postOrderMeta.postOrder(newOrder);
                                                         
                                                         // this for dev enviroment
 							//if(ccs.getcOps().isDev()) postOrderMeta.postOrder(newOrder);
+
 						
-                                                }catch(Exception e){
+                         }catch(Exception e){
 							logger.error(Exceptions.giveStackTrace(e));
 						}
 						

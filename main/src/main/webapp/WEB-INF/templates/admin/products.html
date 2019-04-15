@@ -76,6 +76,8 @@
 							<th class="hidden-xs">Stock</th>
 							<th class="hidden-xs">Price</th>
 							<th class="hidden-xs">Categories</th>
+							<th class="hidden-xs">Inventory Product Name</th>
+							<th class="hidden-xs">Map Product</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -102,6 +104,10 @@
 							<td class="hidden-xs"><span ng-show="p.variation">{{p.priceRange}}</span><span
 								ng-show="!p.variation">{{p.price | currency}}</span></td>
 							<td class="hidden-xs">{{p.categories.join(" , ")}}</td>
+							<td class="hidden-xs">{{p.inventoryProductName}}</td>
+                                                        <td class="hidden-xs"> 
+                                                            <button type="button" class="btn btn-primary btn-sm" ng-click="showModel(p)"><i class="fa fa-refresh" aria-hidden="true"></i></button>
+                                                        </td>
 						</tr>
 					</tbody>
 				</table>
@@ -111,6 +117,41 @@
 			</div>
 
 			<div ng-view=""></div>
+                        
+                        <div class="modal fade" id="myModal" role="dialog">
+                            <div class="modal-dialog modal-md">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Product Mapping For Inventory Application</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                         <div class="form-group">
+                                             <div class="row">
+                                                 <div class="col-lg-4"><strong>Product Name </strong></div>
+                                                 <div class="col-lg-8"><strong>{{mappingProduct.name}}</strong></div>
+                                             </div>
+                                        </div>
+                                        <div class="form-group">
+                                        <select class="form-control" ng-options="item.id as item.productName for item in items" ng-model="pDetail" ng-change="selectedProduct()" >
+                                            <option value="">Choose Product From Inventory</option>
+                                        </select>
+                                        </div>
+                                        <div class="form-group" ng-if="selectProduct">
+                                        <div class="row" >
+                                            <div class="col-lg-3">Category Name</div>
+                                            <div class="col-lg-3"><strong>{{selectProduct.categoryName}}</strong></div>
+                                            <div class="col-lg-3">Strain Name</div>
+                                            <div class="col-lg-3"><strong>{{selectProduct.strainName}}</strong></div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-info" ng-click="submitProduct()" >Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 		</div>
 
 		<div th:replace="fragments/admin/layout::fragment-footer"></div>

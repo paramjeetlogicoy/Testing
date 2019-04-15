@@ -324,6 +324,7 @@
 					data-review-count=${product.reviewCount},
 					data-price-range=${product.priceRange},
 					data-desc=${product.description},
+                                        data-minStockLimit=${product.minStockLimit},
 					data-newest=${product.newBatchArrival != null ? product.newBatchArrival.getTime() : '0'},
 					data-filter-price=${product.productFilters != null ? product.productFilters.price : ''},
 					data-filter-cbd=${product.productFilters != null ? product.productFilters.cbd : ''},
@@ -382,7 +383,13 @@
 												<strong th:unless="*{salePrice} != 0"
 												th:text="${'$' + #numbers.formatDecimal(product.price,0,2)}"></strong></span>
 										</div>
-
+                                                                                    
+                                                                                <div class="row">
+                                                                                    <div class="form-group txt_stock" >
+                                                                                        Only <span th:text="*{minStockLimit}"></span> Left in Stock
+                                                                                    </div>
+                                                                                </div>
+                                                                            
 										<div class="row">
 											<div class="col-xs-6">
 												<button type="button" class="btn btn-lb btn-sm btn-block"

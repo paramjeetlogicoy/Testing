@@ -27,7 +27,76 @@ defaultCtrlr = function($scope, $http, $filter, $sanitize){
 	$scope.sortReverse = true;
 	$scope.productSearch = '';
 	
-	
+        $scope.items = [];         
+       
+        $scope.getAllInventoryProduct = function () {
+            //var data = $.param();
+            var data;
+        
+            var config = {
+                headers : {
+                    'Authorization': 'Basic eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiTWFpbiBBZG1pbiIsImlzcyI6ImF1dGgwIiwidXNlcnR5cGUiOiJvcGVyYXRvciIsInVzZXJuYW1lIjoiY2hhbXAifQ.muZ0ZV2SFNFnjgXhHhuk0iCM7klZ5PJIJq5U07QM8LQ'
+                }
+            };
+            
+            var url = '/inventory/apps/listallproducts';
+            $http.post(url, data, config)
+            .success(function (data, status, headers, config) {               
+                if(data.success === true){
+                   $scope.items = data.result;
+                   $scope.getProducts();
+                }                              
+            });            
+        };
+        
+        $scope.getAllInventoryProduct();
+        $scope.selectProduct;
+        $scope.selectedProduct = function (){
+                $scope.ProductData = $scope.items.filter(function (detail) {                  
+                    return (detail.id === $scope.pDetail);                    
+                });
+                
+                if( $scope.ProductData.length > 0){                    
+                    $scope.selectProduct = $scope.ProductData[0];                   
+                }               
+        };
+        
+        $scope.mappingProduct;
+        $scope.showModel = function (mappingProduct){
+           $scope.pDetail = '';
+          $scope.mappingProduct = mappingProduct;          
+          $('#myModal').modal('show');
+        };
+        
+        $scope.submitProduct = function (){            
+            if($scope.pDetail !== undefined && $scope.pDetail !== null){
+                
+            var mongo_productid = $scope.mappingProduct._id;
+            var data = new FormData();
+            data.append("id", parseInt($scope.pDetail));
+            data.append('mongo_productid', parseInt(mongo_productid));
+            
+            var config = {
+                headers : {
+                    'Authorization': 'Basic eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiTWFpbiBBZG1pbiIsImlzcyI6ImF1dGgwIiwidXNlcnR5cGUiOiJvcGVyYXRvciIsInVzZXJuYW1lIjoiY2hhbXAifQ.muZ0ZV2SFNFnjgXhHhuk0iCM7klZ5PJIJq5U07QM8LQ',
+                    'Content-Type' : undefined
+                }
+            };
+            
+            var url = '/inventory/apps/updateproductsmongoid';
+            $http.post(url, data, config)
+            .success(function (data, status, headers, config) {                  
+                if(data.success === true){                      
+                    $scope.getAllInventoryProduct();                   
+                }  
+                $("#myModal").modal("hide");
+            });   
+                
+            }else{
+                alert("Please choose product first.");
+            }          
+        };
+        
 	$scope.getProducts = function(){
 		
 		$http.get('/admin/products/json/', {
@@ -38,8 +107,26 @@ defaultCtrlr = function($scope, $http, $filter, $sanitize){
 			}
 
 		}).success(function(data){
-			if(data.success){
-				$scope.products = data.respData;
+			if(data.success){				
+                                var productList = [];                                                                
+                                for(var i = 0; i < data.respData.length; i++){
+                                  
+                                    var mainproductRes = data.respData[i];
+                                    mainproductRes['inventoryProductName'] = '';
+                                    
+                                     for(var j = 0; j < $scope.items.length; j++){
+                                         var value_inv = $scope.items[j];
+                                        // console.log(value_inv);
+                                         if(value_inv.mongo_productid > 0){
+                                            if (value_inv.mongo_productid === mainproductRes._id) {
+                                                 mainproductRes['inventoryProductName'] = value_inv.productName;
+                                            }
+                                        }
+                                     }                                   
+                                    productList.push(mainproductRes);
+                                }
+                                           
+                                $scope.products = productList;
 				$scope.pg = data.pg
 			}
 			else if(data.message && data.message!=''){
@@ -62,27 +149,31 @@ defaultCtrlr = function($scope, $http, $filter, $sanitize){
 		$scope.getProducts();
 	};
 	
-	$scope.getProducts();
+	// $scope.getProducts(); // uncomment it after mapping of products.
 },
 
 prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $sanitize, uploadService, $rootScope){
 	
 	$scope.params = $routeParams;
 	$scope.errorMsg = '';
-	$scope.p = {};
-	$scope.prices = [];
-	$scope.stockStats = ['instock','outofstock'];
-	$scope.statuses = ['draft','publish','private','discontinued'];
-	$scope.varValues = [];
-	$scope.mode = mode; //Mode will be 'new' while adding a product, and 'edit', if editing a product.
-	$scope.productId = $scope.params.productId;
+	$scope.p        = {};
+	$scope.prices       = [];
+	$scope.stockStats   = ['instock','outofstock'];
+	$scope.statuses     = ['draft','publish','private','discontinued'];
+	$scope.varValues    = [];
+	$scope.mode         = mode; //Mode will be 'new' while adding a product, and 'edit', if editing a product.
+	$scope.productId    = $scope.params.productId;
 	$scope.defaultAttr = -1;
 	$scope.newBatchDate;
 	
 	/**UPLOAD SPECIFIC FUNCTIONS*/
 	$scope.cdnPath = uploadService.cdnPath;
 	uploadService.config.productUploader = true;
-	
+	$scope.invProductDetail;
+        // Add product in inventory app        
+        $scope.p = {"inventory":{'nickName':'','strain_id':'','category_id':''}};
+        $scope.p.inventory = {'isPurchaseFlag':false};
+        
 	$scope.afterSelect = function(){
 		if(uploadService.selectedFiles){
 			$scope.p.featuredImg = uploadService.selectedFiles[0].location;
@@ -191,14 +282,17 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 			
 			$scope.correctVarValues();
 			
+                        $scope.getInventoryProduct();
+                        
 			if($scope.p.attrs){
 				//Sort ascending on position
 				$scope.p.attrs.sort(function(a,b){
 					return (a.position-b.position);
-				});
-				
+				});				
 				$scope.getPrices();
 			}
+                        
+                        
 			
 		}).error(function(){
 			$scope.errorMsg = 'There was some error getting the product info. Please try later';
@@ -278,26 +372,34 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 		$('.product-details-holder').slideDown();
 	};
 	
-	$scope.saveProductGeneric = function(cb){	
+	$scope.saveProductGeneric = function(cb) {		
 		
-		/**
+                /**
 		 * When mode is new, we need to generate productId in the first call to
 		 * the server. Once Id is generated, we switch back to edit mode by
 		 * calling the edit URL 
 		 **/
+                
 		if($scope.mode == 'new'){
 			
 			$http.post('/admin/products/json/createproduct', $scope.p)
-			.success(function(product){
-				if(product._id && product._id != 0){
-					$location.path('/details/' + product._id);
-				}
-				
-				else if(product.description && product.description.length > 0){
+			.success(function(product) {
+				if(product._id && product._id !== 0) {                                        
+                                    $scope.invProductDetail = {
+                                        'product_name': $scope.p.name,
+                                        'nick_name': $scope.p.inventory.nickName,
+                                        'category_id': $scope.p.inventory.category_id,
+                                        'strain_id': $scope.p.inventory.strain_id,
+                                        'mongo_productid': product._id,
+                                        'opsid': '1',
+                                        'flag': ''
+                                    };
+                                    $scope.saveProductInInventory($scope.invProductDetail);
+                                    
+				}				
+				else if(product.description && product.description.length > 0) {
 					$scope.errorMsg = product.description;	
-				}
-				
-				else{
+				} else{
 					$scope.errorMsg  = "Error creating the product. "
 						+"No valid productId returned. Please contact G";
 				}
@@ -305,13 +407,22 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 			.error(function(){
 				$scope.errorMsg  = "There was some error creating the product. "
 						+"Please contact G";
-			});
-			
-		}
-		else{
-			
+			});			
+		} else {			
 			$http.post('/admin/products/json/savepdtls', $scope.p)
 			.success(function(resp){
+                            
+                                 $scope.invProductDetail = {
+                                        'product_name': $scope.p.name,
+                                        'nick_name': $scope.p.inventory.nickName,
+                                        'category_id': $scope.p.inventory.category_id,
+                                        'strain_id': $scope.p.inventory.strain_id,
+                                        'mongo_productid':$scope.p._id,
+                                        'opsid': '1',
+                                        'flag': ''
+                                    };
+                                $scope.saveProductInInventory($scope.invProductDetail);
+                                    
 				$scope.reloadMemos();
 				if(cb)
 					cb(resp);
@@ -323,9 +434,70 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 		}
 	};
 	
+        $scope.saveProductInInventory = function (invProductDetail){
+          
+            // after product insertion in main app then same product will insert in invenntory app
+            // to make product insertion consistent.
+                         
+            var data = new FormData();
+            data.append("product_name", invProductDetail.product_name);
+            data.append('nick_name', invProductDetail.nick_name);
+            data.append('category_id', parseInt(invProductDetail.category_id));
+            data.append('strain_id', parseInt(invProductDetail.strain_id));
+            data.append('mongo_productid', parseInt(invProductDetail.mongo_productid));    
+                
+            //$.param({});
+            var config = {
+                headers : {               
+                    'Authorization': 'Basic eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiTWFpbiBBZG1pbiIsImlzcyI6ImF1dGgwIiwidXNlcnR5cGUiOiJvcGVyYXRvciIsInVzZXJuYW1lIjoiY2hhbXAifQ.muZ0ZV2SFNFnjgXhHhuk0iCM7klZ5PJIJq5U07QM8LQ',
+                    'Content-Type' : undefined
+                }
+            };
+            
+            $http.post('/inventory/apps/addproducts', data, config)
+            .success(function (data, status, headers, config) {
+               
+                var result = data.result;              
+                $location.path('/details/' + invProductDetail.mongo_productid)
+                if(result.success  === true){
+                    console.log(result);                  
+                }                
+            }).error(function (data, status, header, config) {                      
+            });                            
+        };
+        
+        $scope.getInventoryProduct = function (){
+          
+            // after product insertion in main app then same product will insert in invenntory app
+            // to make product insertion consistent.
+                         
+            var data = new FormData();            
+            data.append('mongo_productid',$scope.productId );    
+                
+            //$.param({});
+            var config = {
+                headers : {               
+                    'Authorization': 'Basic eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiTWFpbiBBZG1pbiIsImlzcyI6ImF1dGgwIiwidXNlcnR5cGUiOiJvcGVyYXRvciIsInVzZXJuYW1lIjoiY2hhbXAifQ.muZ0ZV2SFNFnjgXhHhuk0iCM7klZ5PJIJq5U07QM8LQ',
+                    'Content-Type' : undefined
+                }
+            };
+            
+            $http.post('/inventory/apps/getProductDetails', data, config)
+            .success(function (data, status, headers, config) {               
+                var result = data.success;        
+                            if (data.success === true) {
+                                var result = data.prod;                              
+                                $scope.p.inventory = {'nickName':result.nickName,'strain_id':result.strainId,'category_id':result.categoryId};
+                             
+                            }
+                }).error(function (data, status, header, config) {                      
+            });                            
+        };        
+        
+        
 	$scope.saveThenProceedToPricing = function(){
 		$scope.saveDetails(true);
-	}
+	};
 	
 	$scope.saveDetails = function(proceedToPricing){
 		
@@ -819,7 +991,77 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 			$('[data-toggle="tooltip"]').tooltip();
 		});
 	}
-
+        
+        
+        $scope.btnPurchase = 'Add Purchase';
+        
+        $scope.addPurchase = function () {          
+            if($scope.p.inventory.isPurchaseFlag === true){
+                $scope.p.inventory.isPurchaseFlag = false; 
+                $scope.btnPurchase = 'Add Purchase';
+            }else{
+                $scope.p.inventory.isPurchaseFlag = true; 
+                $scope.btnPurchase = 'Remove Purchase';
+            }            
+        };        
+        
+        $scope.getInventoryVendor = function (){
+            var data = $.param({});
+            var config = {
+                headers : {                   
+                    'Authorization': 'Basic eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiTWFpbiBBZG1pbiIsImlzcyI6ImF1dGgwIiwidXNlcnR5cGUiOiJvcGVyYXRvciIsInVzZXJuYW1lIjoiY2hhbXAifQ.muZ0ZV2SFNFnjgXhHhuk0iCM7klZ5PJIJq5U07QM8LQ'
+                }
+            };
+            
+            $http.post('/inventory/apps/listvendors', data, config)
+            .success(function (data, status, headers, config) {
+                var result = data.result;
+                if(result.length > 0){
+                    $scope.vendorData = result;                     
+                }                
+            }).error(function (data, status, header, config) {               
+            });            
+        };
+        
+        $scope.getInventoryCategory = function (){
+            var data = $.param({});
+            var config = {
+                headers : {                   
+                    'Authorization': 'Basic eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiTWFpbiBBZG1pbiIsImlzcyI6ImF1dGgwIiwidXNlcnR5cGUiOiJvcGVyYXRvciIsInVzZXJuYW1lIjoiY2hhbXAifQ.muZ0ZV2SFNFnjgXhHhuk0iCM7klZ5PJIJq5U07QM8LQ'
+                }
+            };
+            
+            $http.post('/inventory/apps/listcats', data, config)
+            .success(function (data, status, headers, config) {
+                var result = data.result;
+                if(result.length > 0){
+                    $scope.categoryData = result;                     
+                }                
+            }).error(function (data, status, header, config) {               
+            });            
+        };
+        
+        $scope.getInventoryStrain = function (){
+            var data = $.param({});
+            var config = {
+                headers : {                   
+                    'Authorization': 'Basic eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiTWFpbiBBZG1pbiIsImlzcyI6ImF1dGgwIiwidXNlcnR5cGUiOiJvcGVyYXRvciIsInVzZXJuYW1lIjoiY2hhbXAifQ.muZ0ZV2SFNFnjgXhHhuk0iCM7klZ5PJIJq5U07QM8LQ'
+                }
+            };
+            
+            $http.post('/inventory/apps/liststrains', data, config)
+            .success(function (data, status, headers, config) {
+                var result = data.result;
+                if(result.length > 0){
+                    $scope.strainData = result;                     
+                }                
+            }).error(function (data, status, header, config) {               
+            });            
+        };
+        
+        $scope.getInventoryVendor();
+        $scope.getInventoryCategory();
+        $scope.getInventoryStrain();
 },
 
 catCtrlrs = function($scope, $http, $filter){

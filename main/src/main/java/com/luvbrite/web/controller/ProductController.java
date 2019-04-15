@@ -3,6 +3,7 @@ package com.luvbrite.web.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,7 +20,9 @@ import com.luvbrite.dao.CategoryDAO;
 import com.luvbrite.dao.PriceDAO;
 import com.luvbrite.dao.ProductDAO;
 import com.luvbrite.dao.ReviewDAO;
+import com.luvbrite.services.AvailableProducts;
 import com.luvbrite.utils.Exceptions;
+import com.luvbrite.utils.ListOfProdIds;
 import com.luvbrite.web.models.AttrValue;
 import com.luvbrite.web.models.Category;
 import com.luvbrite.web.models.Price;
@@ -52,11 +55,20 @@ public class ProductController {
 	
 	private List<Product> returnActiveProducts(String sortOrder){
 		
-		return prdDao.createQuery()
+    List<Product> activeProdList = prdDao.createQuery()
+			.filter("status", "publish")
+			.filter("stockStat", "instock")
+			.order(sortOrder)
+			.asList();
+		
+		 List<Product> prodFromInv 	=	new AvailableProducts().getAvailProdsFromInv(activeProdList);
+		/*return prdDao.createQuery()
 				.filter("status", "publish")
 				.filter("stockStat", "instock")
 				.order(sortOrder)
-				.asList();
+				.asList();*/
+		//return activeProdList;
+		return prodFromInv;
 	}
 	
 
@@ -76,6 +88,11 @@ public class ProductController {
 		model.addAttribute("page", "product");
 		model.addAttribute("sortOrder", sortOrder);
 		
+//               System.out.print("==============================");
+//                       for(int i =0 ;i<products.size();i++){
+//                        System.out.println("In Product Controller product Detail==============="+products.get(i));
+//                       } 
+                
 		return "products";	
 	}
 	

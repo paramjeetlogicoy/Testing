@@ -492,8 +492,14 @@
 											currency}}</strong><strong ng-if="!p.salePrice">{{p.price |
 											currency}}</strong></span>
 								</div>
-
-								<div class="row">
+                                                                 
+                                                            <div class="row">
+                                                                <div class="form-group txt_stock" >
+                                                                    Only {{p.minStockLimit}} Left in Stock
+                                                                </div>
+                                                            </div>
+                                                            
+                                                                <div class="row">
 									<div class="col-xs-6">
 										<button type="button" class="btn btn-lb btn-sm btn-block"
 											ng-click="showInfo($event)">INFO</button>
