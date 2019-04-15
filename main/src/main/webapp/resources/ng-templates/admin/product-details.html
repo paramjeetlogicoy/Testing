@@ -1,607 +1,709 @@
 <div id="product-editor" class="admin-editor abs">
-	<div class="row marg-b2">
-		<div class="col-md-8 col-sm-10 col-sm-offset-1">
-			<div class="admin-editor-container">
-				<button type="button" class="close" aria-label="Close"
-					ng-click="closeProductDetails()">
-					<i class="fa fa-times size24"></i>
-				</button>
-
-				<h3>
-					<span class="text-success">{{p.name}}</span> <span
-						class="pull-right"><button class="btn btn-xs btn-warning"
-							ng-click="duplicateProduct()">duplicate</button></span>
-				</h3>
-
-				<div class="alert alert-danger alert-dismissible" role="alert"
-					ng-show="errorMsg">
-					<button type="button" class="close" data-dismiss="alert"
-						aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-					<span ng-bind-html="errorMsg"></span>
-				</div>
-
-
-				<div class="product-details-holder">
-					<h5 class="text-primary">Step 1 - Product Details</h5>
-
-					<form name="productDetailsForm" class="form-horizontal"
-						ng-submit="saveDetails(false)">
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Product ID</label>
-							<div class="col-sm-7">
-								<p ng-show="mode=='edit'" class="form-control-static">{{p._id}}</p>
-								<p ng-show="mode=='new'" class="form-control-static">
-									<em class="text-muted">Auto generated</em>
-								</p>
-								<input type="hidden" ng-model="p._id" name="_id" />
-							</div>
-						</div>
-
-						<div class="form-group"
-							ng-class="{ 'has-error' : productDetailsForm.name.$invalid && !productDetailsForm.name.$pristine }">
-							<label class="col-sm-4 control-label">Product Name</label>
-							<div class="col-sm-7">
-								<input type="text" class="form-control" ng-model="p.name"
-									name="name" required ng-blur="createProductUrl()" />
-								<p
-									ng-show="productDetailsForm.name.$invalid && !productDetailsForm.name.$pristine"
-									class="help-block">Product name is required.</p>
-							</div>
-						</div>
-
-						<div class="form-group"
-							ng-class="{ 'has-error' : productDetailsForm.url.$invalid && !productDetailsForm.url.$pristine }">
-							<label class="col-sm-4 control-label">Product URL</label>
-							<div class="col-sm-7">
-								<input type="text" class="form-control" ng-model="p.url"
-									name="url" required ng-blur="createProductUrl()" /> <a
-									target="_blank" ng-href="/product/{{p.url}}" class="small"
-									ng-show="mode=='edit'">View Product</a>
-								<p
-									ng-show="productDetailsForm.url.$invalid && !productDetailsForm.url.$pristine"
-									class="help-block">URL is required.</p>
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Featured Image</label>
-							<div class="col-sm-7">
-								<button type="button" ng-show="!p.featuredImg"
-									class="btn btn-xs btn-info" ng-click="selectImage()">Set
-									Image</button>
-								<button type="button" ng-show="p.featuredImg"
-									class="btn btn-xs btn-info" ng-click="selectImage()">Change
-									Image</button>
-								<input type="hidden" name="featuredImg" ng-model="p.featuredImg" />
-								<div class="thumbnail-holder" ng-if="p.featuredImg">
-									<img
-										ng-src="{{cdnPath + p.featuredImg.replace('.jpg','-150x150.jpg')}}" />
-								</div>
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Additional Images / Videos</label>
-							<div class="col-sm-7">
-								<button type="button" 
-									class="btn btn-xs btn-info" ng-click="selectVisualImg()">Add
-									Images</button> 
-								<button type="button" 
-									class="btn btn-xs btn-primary" ng-click="selectVideoThumb()">Add
-									Videos</button>
-								<ul class="imgalt-holder">
-								 	<li ng-repeat="pVisual in p.prdVisuals" ng-if="pVisual.type=='image'">
-								 		<span><img ng-src="{{cdnPath + pVisual.url.replace('.jpg','-150x150.jpg')}}" /><a
-											href="" ng-click="removePrdVisual()"><i class="fa fa-trash"></i></a></span>
-								 		<span ng-if="pVisual.alt">({{pVisual.alt}})</span>
-								 	</li>
-								 	<li ng-repeat="pVisual in p.prdVisuals" ng-if="pVisual.type=='video'" class="video-li">
-								 		<span><img ng-src="{{cdnPath + pVisual.thumbnail.replace('.jpg','-150x150.jpg')}}" /><a
-											href="" ng-click="removePrdVisual()"><i class="fa fa-trash"></i></a></span>
-								 		<textarea ng-model="pVisual.videoEmbed" class="form-control" required>
-								 		</textarea>
-								 	</li>
-								</ul>
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Status</label>
-							<div class="col-sm-7">
-								<select class="form-control"
-									ng-options="status for status in statuses" ng-model="p.status"
-									name="status" required></select>
-							</div>
-						</div>
-
-						<div class="form-group"
-							ng-class="{ 'has-error' : productDetailsForm.description.$invalid && !productDetailsForm.description.$pristine }">
-							<label class="col-sm-4 control-label">Product Description</label>
-							<div class="col-sm-7">
-								<textarea class="form-control" ng-model="p.description"
-									name="description" required></textarea>
-								<p
-									ng-show="productDetailsForm.description.$invalid && !productDetailsForm.description.$pristine"
-									class="help-block">Description is required.</p>
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Stock Status</label>
-							<div class="col-sm-3">
-								<select class="form-control"
-									ng-options="stockStat for stockStat in stockStats"
-									ng-model="p.stockStat" name="stockStat" required></select>
-							</div>
-						</div>
-
-						<div class="form-group"
-							ng-class="{ 'has-error' : productDetailsForm.newBatchDate.$invalid && !productDetailsForm.newBatchDate.$pristine }">
-							<label class="col-sm-4 control-label">Product arrival
-								date (used for 'Newest Arrival' sorting!)</label>
-							<div class="col-sm-7">
-								<input type="datetime-local" class="form-control"
-									name="newBatchDate" ng-model="newBatchDate"
-									ng-change="updateScopeDate()" />
-								<p
-									ng-show="productDetailsForm.newBatchDate.$invalid && !productDetailsForm.newBatchDate.$pristine"
-									class="help-block">New batch arrival date is required (If
-									unsure, use current date).</p>
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Related Products</label>
-							<div class="col-sm-4">
-								<textarea class="form-control" name="rps" ng-model="p.rps"
-									ng-list=" | "></textarea>
-								<p class="help-block small">Provide the Product IDs
-									separated by | Maximum 4</p>
-							</div>
-						</div>
-
-
-
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Categories</label>
-							<div class="col-sm-8 label-container">
-								<span class="label label-default"
-									ng-repeat="cat in p.categories">{{cat}}</span>
-								<p class="form-control-static pull-left"
-									ng-hide="p.categories && p.categories.length">No Categories</p>
-
-								<a href="" ng-click="loadCat()" ng-hide="showAddCat"
-									class="marg-l1"><small>Add/Edit Categories</small></a>
-							</div>
-						</div>
-
-
-						<div class="form-group pad-t2">
-							<h4 class="col-sm-4 col-sm-offset-2 pad-t2 u">Product
-								Filters</h4>
-						</div>
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Price</label>
-							<div class="col-sm-7">
-								<input type="number" min="0" value=""
-									ng-model="p.productFilters.price" name="productFilters.price"
-									class="form-control" />
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Price range <span
-								data-toggle="tooltip" data-placement="top"
-								title="Price that gets displayed in All Products page."><i
-									class="fa fa-info-circle" aria-hidden="true"></i></span></label>
-							<div class="col-sm-7">
-								<input type="text" value=""
-									ng-model="p.priceRange" name="priceRange"
-									class="form-control" />
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-sm-4 control-label">THC (in mg)</label>
-							<div class="col-sm-7">
-								<input type="number" min="0" value=""
-									ng-model="p.productFilters.thc" name="productFilters.thc"
-									class="form-control" />
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-sm-4 control-label">CBD (in mg)</label>
-							<div class="col-sm-7">
-								<input type="number" min="0" value=""
-									ng-model="p.productFilters.cbd" name="productFilters.cbd"
-									class="form-control" />
-							</div>
-						</div>
-
-						<div class="form-group">
-							<div class="col-sm-7 col-sm-offset-4">
-								<button type="submit" class="btn btn-success"
-									ng-if="productDetailsForm.$dirty && !productDetailsForm.$invalid">
-									SAVE</button>
-
-								<button type="button" class="btn" ng-click="saveDetails(true)"
-									ng-disabled="productDetailsForm.$invalid"
-									ng-class="productDetailsForm.$dirty ? 'btn-success' : 'btn-info'">
-									<span ng-show="productDetailsForm.$dirty">SAVE &amp;
-										PROCEED TO </span> PRICING <i class="fa fa-chevron-right"></i>
-								</button>
-							</div>
-						</div>
-					</form>
-
-
-
-
-					<div class="add-category-popup abs overlay pad3"
-						ng-show="showAddCat">
-						<div class="center-block">
-							<div class="panel panel-primary">
-								<div class="panel-heading">
-									<h5>Manage Categories</h5>
-								</div>
-
-								<div class="panel-body">
-									<h6>Selected Categories</h6>
-									<div class="cat-selected label-container marg-b3">
-										<span ng-repeat="cat in cats | orderBy:cat.name"
-											ng-show="cat.selected"><span
-											class="label label-default">{{cat.name}} <a
-												class="fa fa-times" ng-click="this.cat.selected = false"
-												title="remove" href=""></a>
-										</span></span>
-									</div>
-
-									<h6>Remaining Categories</h6>
-									<div class="cat-selected label-container">
-										<span ng-repeat="cat in cats | orderBy:cat.name"
-											ng-hide="cat.selected"><span
-											class="label label-default">{{cat.name}} <a
-												class="fa fa-plus" ng-click="this.cat.selected = true"
-												title="Add" href=""></a>
-										</span></span>
-									</div>
-
-
-								</div>
-
-								<div class="panel-footer">
-									<div class="text-center">
-										<button class="btn btn-default btn-sm"
-											ng-click="showAddCat=false">CANCEL</button>
-										<button class="btn btn-success btn-sm marg-l2"
-											ng-click="saveCategories()">SAVE</button>
-									</div>
-								</div>
-							</div>
-
-						</div>
-					</div>
-				</div>
-
-
-
-
-
-				<div class="product-pricing-holder hideme">
-
-					<h5 class="text-primary">Step 2 - Pricing Details</h5>
-
-					<form class="form-horizontal" ng-submit="noop()">
-
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Product Type</label>
-							<div class="col-sm-8">
-								<div class="radio">
-									<label> <input type="radio" ng-value="false"
-										ng-model="p.variation" /> Simple Product
-									</label><label class="marg-l1"> <input type="radio"
-										ng-value="true" ng-model="p.variation" /> Product with
-										Variation
-									</label>
-								</div>
-							</div>
-						</div>
-					</form>
-
-
-					<div ng-hide="p.variation">
-
-						<form class="form-horizontal" name="productSimpleForm">
-
-							<div class="form-group">
-								<label class="col-sm-4 control-label">Price</label>
-								<div class="col-sm-3">
-									<div class="input-group">
-										<span class="input-group-addon">$</span> <input type="number"
-											name="price" step="any" class="form-control"
-											ng-model="p.price" required />
-									</div>
-									<p
-										ng-show="productSimpleForm.price.$invalid && !productSimpleForm.price.$pristine"
-										class="help-block">Price is required and should be a +ve
-										value.</p>
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label class="col-sm-4 control-label">Sale Price</label>
-								<div class="col-sm-3">
-									<div class="input-group">
-										<span class="input-group-addon">$</span> <input type="number"
-											name="salePrice" step="any" class="form-control"
-											ng-model="p.salePrice" min="0" />
-									</div>
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label class="col-sm-4 control-label">Stock</label>
-								<div class="col-sm-3">
-									<input type="number" step="1" class="form-control" name="stock"
-										ng-model="p.stock" />
-								</div>
-							</div>
-
-
-							<div class="form-group">
-								<div class="col-sm-4">
-									<button type="button" class="btn btn-info"
-										ng-click="toDetails()">
-										<i class="fa fa-chevron-left"></i> DETAILS
-									</button>
-								</div>
-								<div class="col-sm-7">
-									<button type="submit"
-										ng-disabled="productSimpleForm.$invalid || productSimpleForm.$pristine"
-										class="btn btn-success" ng-click="saveSimpleProduct()">
-										SAVE</button>
-								</div>
-							</div>
-						</form>
-
-					</div>
-
-
-
-
-					<!-- ATTRIBUTES SECTION -->
-
-					<div ng-show="p.variation">
-
-						<div class="product-attr-holder">
-							<h6>
-								Arrtibutes
-								<button class="btn btn-primary btn-sm" ng-click="addAttr()">ADD</button>
-							</h6>
-
-							<form name="productAttrForm" class="form-horizontal">
-								<div class="panel-group" role="tablist"
-									aria-multiselectable="true">
-
-									<div ng-repeat="attr in p.attrs | orderBy : 'position'"
-										class="panel panel-default">
-
-										<div class="panel-heading" role="tab">
-											<a class="pull-right" href="" role="button"
-												ng-click="removeAttr()"><small class="red1">Delete
-													Attr</small></a><a role="button" data-toggle="collapse" class="show"
-												data-parent="#accordion" ng-click="attrCollapse()"><i
-												class="fa fa-caret-right"></i> {{attr.attr}} </a>
-										</div>
-
-										<div class="panel-collapse collapse" role="tabpanel">
-											<div class="panel-body">
-												<div class="form-group form-group-sm marg-b0">
-													<div class="col-sm-3 marg-b2"
-														ng-class="{ 'has-error' : productAttrForm.name{{$index}}.$invalid && !productAttrForm.name{{$index}}.$pristine }">
-														<label class="control-label">Attibute Name</label> <input
-															type="text" class="form-control" name="name{{$index}}"
-															required ng-model="attr.attr" />
-														<p
-															ng-show="productAttrForm.name{{$index}}.$invalid && !productAttrForm.name{{$index}}.$pristine"
-															class="help-block">Attribute Name is required.</p>
-													</div>
-													<div class="col-sm-3 marg-b2"
-														ng-class="{ 'has-error' : productAttrForm.position{{$index}}.$invalid && !productAttrForm.position{{$index}}.$pristine }">
-														<label class="control-label">Position</label> <input
-															type="number" class="form-control"
-															ng-model="attr.position" required
-															name="position{{$index}}" min="0" />
-														<p
-															ng-show="productAttrForm.position{{$index}}.$invalid && !productAttrForm.position{{$index}}.$pristine"
-															class="help-block">Position is required and should be
-															a +ve value.</p>
-													</div>
-													<div class="col-sm-6"
-														ng-class="{ 'has-error' : productAttrForm.values{{$index}}.$invalid && !productAttrForm.values{{$index}}.$pristine }">
-														<label class="control-label">Value</label>
-														<textarea class="form-control" required
-															name="values{{$index}}" ng-model="attr.values"
-															ng-list=" | "></textarea>
-														<p
-															ng-show="productAttrForm.values{{$index}}.$invalid && !productAttrForm.values{{$index}}.$pristine"
-															class="help-block">Attribute values should be given
-															separated by '|'.</p>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div ng-show="p.attrs.length==0">
-										<div class="alert alert-danger" role="alert">You need
-											atleast one attribute is Product Type is 'Product with
-											Variation'</div>
-									</div>
-								</div>
-
-
-								<div class="clearfix">
-									<button type="button" class="btn btn-info pull-left"
-										ng-click="toDetails()">
-										<i class="fa fa-chevron-left"></i> DETAILS
-									</button>
-									<button type="submit" class="btn btn-info pull-right"
-										ng-disabled="productAttrForm.$invalid || p.attrs.length==0"
-										ng-click="saveAttrs()">
-										<span ng-show="productAttrForm.$dirty">SAVE &amp;
-											PROCEED TO </span> PRICES <i class="fa fa-chevron-right"></i>
-									</button>
-								</div>
-							</form>
-
-						</div>
-
-
-
-
-
-						<!-- PRICING SECTION -->
-
-						<div class="product-price-holder hideme">
-							<h6>
-								Prices
-								<button class="btn btn-warning btn-xs marg-l1"
-									ng-click="getNewVarCombinations()">Create All
-									Combinations</button>
-								<button class="btn btn-primary btn-xs marg-l1"
-									ng-show="prices.length" ng-click="addPriceLine()">Add
-									Price Line</button>
-							</h6>
-
-							<form name="productPriceForm" class="form-horizontal">
-								<div class="panel-group" role="tablist"
-									aria-multiselectable="true">
-									<div ng-repeat="price in prices" class="panel panel-default">
-
-										<div class="panel-heading" role="tab">
-											<div class="row">
-												<a href="" role="button" data-toggle="collapse"
-													class="pull-left marg-t2 marg-l2 m-nofloat"
-													data-parent="#accordion" ng-click="attrCollapse()"><i
-													class="fa fa-caret-right"></i> <span
-													class="visible-xs-inline">Show/Hide</span> </a>
-												<div class="price-listing col-sm-4 col-md-3"
-													ng-repeat="vars in price.variation">
-													<div class="form-group-sm">
-														<label class="control-label capitalize">{{vars.attr}}</label>
-														<select ng-model="vars.value" class="form-control"
-															name="attr{{$parent.$index}}{{$index}}"
-															ng-options="varValue for varValue in getCurrentVarValues(vars.attr)"></select>
-													</div>
-												</div>
-												<div class="col-sm-3 col-md-2">
-													<div class="form-group-sm"
-														ng-class="{ 'has-error' : productPriceForm.regPrice{{$index}}.$invalid && !productPriceForm.regPrice{{$index}}.$pristine }">
-														<label class="control-label">Price</label> <input
-															type="number" step="any" ng-model="price.regPrice"
-															min="0" required name="regPrice{{$index}}"
-															class="form-control" />
-
-														<p
-															ng-show="productPriceForm.regPrice{{$index}}.$invalid && !productPriceForm.regPrice{{$index}}.$pristine"
-															class="help-block">Price is required.</p>
-													</div>
-												</div>
-												<div class="pull-right text-right pad-h1">
-													<div ng-if="price.stockStat=='outofstock'">
-														<span class="label label-danger">Out of Stock</span>
-													</div>
-													<div class="product-default-attr" data-index="{{$index}}">
-														<a href="" ng-click="setDefautAttr()"><span
-															class="glyphicon glyphicon-ok"></span></a>
-													</div>
-													<a href="" role="button" ng-click="removePriceLine()"><small
-														class="red1">Delete</small></a>
-												</div>
-											</div>
-										</div>
-
-
-										<div class="panel-collapse collapse" role="tabpanel">
-											<div class="panel-body">
-												<div class="form-group" data-vid="{{price.variationId}}"
-													data-_id="{{price._id}}">
-													<div class="col-sm-3 marg-b2">
-														<div class="form-group-sm">
-															<label class="control-label">Sales Price</label> <input
-																type="number" class="form-control" step="any"
-																name="salePrice{{$index}}" ng-model="price.salePrice" />
-														</div>
-													</div>
-													<div class="col-sm-3 marg-b2">
-														<div class="form-group-sm">
-															<label class="control-label">Stock</label> <input
-																type="number" class="form-control"
-																name="stockCount{{$index}}" ng-model="price.stockCount" />
-														</div>
-													</div>
-													<div class="col-sm-3 marg-b2">
-														<div class="form-group-sm">
-															<label class="control-label">Stock Status</label> <select
-																class="form-control" name="stockStat{{$index}}"
-																ng-options="stockStat for stockStat in stockStats"
-																ng-model="price.stockStat"></select>
-														</div>
-													</div>
-													<div class="col-sm-3 marg-b2">
-														<div class="form-group-sm">
-															<label class="control-label">Image</label> <a
-																ng-click="setPriceImg()" class="btn btn-xs btn-info"
-																ng-show="!price.img">Set Image</a> <a
-																ng-click="changePriceImg()" class="btn btn-xs btn-info"
-																ng-show="price.img">Change Image</a> <a
-																ng-click="price.img=null;productPriceForm.$setDirty();"
-																class="btn btn-xs btn-danger" ng-show="price.img">Remove
-																Image</a>
-
-															<div class="thumbnail-holder" ng-if="price.img">
-																<img ng-src="{{cdnPath + price.img}}" />
-															</div>
-														</div>
-
-													</div>
-												</div>
-											</div>
-										</div>
-
-									</div>
-								</div>
-
-								<div class="clearfix">
-									<button type="button" class="btn btn-info pull-left"
-										ng-click="toPricing()">
-										<i class="fa fa-chevron-left"></i> ATTRIBUTES
-									</button>
-
-									<button type="submit" class="btn btn-success pull-right"
-										ng-disabled="productPriceForm.$invalid || productPriceForm.$pristine"
-										ng-click="savePrices()">SAVE</button>
-
-									<div class='pull-right size12 pad-h2'>
-										<p class="bg-warning" ng-show="productPriceForm.$pristine">No
-											changes to save</p>
-										<p class="bg-danger" ng-show="productPriceForm.$invalid">Please
-											correct the fields.</p>
-									</div>
-
-								</div>
-							</form>
-						</div>
-
-
-
-					</div>
-				</div>
-
-				<div
-					ng-include="'/resources/ng-templates/admin/admin-memo.html' + '?' + Math.random()"></div>
-
-			</div>
-		</div>
-	</div>
+    <div class="row marg-b2">
+        <div class="col-md-8 col-sm-10 col-sm-offset-1">
+            <div class="admin-editor-container">
+                <button type="button" class="close" aria-label="Close"
+                        ng-click="closeProductDetails()">
+                    <i class="fa fa-times size24"></i>
+                </button>
+
+                <h3>
+                    <span class="text-success">{{p.name}}</span> <span
+                        class="pull-right"><button class="btn btn-xs btn-warning"
+                                               ng-click="duplicateProduct()">duplicate</button></span>
+                </h3>
+
+                <div class="alert alert-danger alert-dismissible" role="alert"
+                     ng-show="errorMsg">
+                    <button type="button" class="close" data-dismiss="alert"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <span ng-bind-html="errorMsg"></span>
+                </div>
+
+
+                <div class="product-details-holder">
+                    <h5 class="text-primary">Step 1 - Product Details</h5>
+
+                    <form name="productDetailsForm" class="form-horizontal"
+                          ng-submit="saveDetails(false)">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Product ID</label>
+                            <div class="col-sm-7">
+                                <p ng-show="mode == 'edit'" class="form-control-static">{{p._id}}</p>
+                                <p ng-show="mode == 'new'" class="form-control-static">
+                                    <em class="text-muted">Auto generated</em>
+                                </p>
+                                <input type="hidden" ng-model="p._id" name="_id" />
+                            </div>
+                        </div>
+
+                        <div class="form-group"
+                             ng-class="{ 'has-error' : productDetailsForm.name.$invalid && !productDetailsForm.name.$pristine }">
+                            <label class="col-sm-4 control-label">Product Name</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" ng-model="p.name"
+                                       name="name" required ng-blur="createProductUrl()" />
+                                <p
+                                    ng-show="productDetailsForm.name.$invalid && !productDetailsForm.name.$pristine"
+                                    class="help-block">Product name is required.</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group"
+                             ng-class="{ 'has-error' : productDetailsForm.url.$invalid && !productDetailsForm.url.$pristine }">
+                            <label class="col-sm-4 control-label">Product URL</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" ng-model="p.url"
+                                       name="url" required ng-blur="createProductUrl()" /> <a
+                                       target="_blank" ng-href="/product/{{p.url}}" class="small"
+                                       ng-show="mode == 'edit'">View Product</a>
+                                <p
+                                    ng-show="productDetailsForm.url.$invalid && !productDetailsForm.url.$pristine"
+                                    class="help-block">URL is required.</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Featured Image</label>
+                            <div class="col-sm-7">
+                                <button type="button" ng-show="!p.featuredImg"
+                                        class="btn btn-xs btn-info" ng-click="selectImage()">Set
+                                    Image</button>
+                                <button type="button" ng-show="p.featuredImg"
+                                        class="btn btn-xs btn-info" ng-click="selectImage()">Change
+                                    Image</button>
+                                <input type="hidden" name="featuredImg" ng-model="p.featuredImg" />
+                                <div class="thumbnail-holder" ng-if="p.featuredImg">
+                                    <img
+                                        ng-src="{{cdnPath + p.featuredImg.replace('.jpg', '-150x150.jpg')}}" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Additional Images / Videos</label>
+                            <div class="col-sm-7">
+                                <button type="button" 
+                                        class="btn btn-xs btn-info" ng-click="selectVisualImg()">Add
+                                    Images</button> 
+                                <button type="button" 
+                                        class="btn btn-xs btn-primary" ng-click="selectVideoThumb()">Add
+                                    Videos</button>
+                                <ul class="imgalt-holder">
+                                    <li ng-repeat="pVisual in p.prdVisuals" ng-if="pVisual.type == 'image'">
+                                        <span><img ng-src="{{cdnPath + pVisual.url.replace('.jpg', '-150x150.jpg')}}" /><a
+                                                href="" ng-click="removePrdVisual()"><i class="fa fa-trash"></i></a></span>
+                                        <span ng-if="pVisual.alt">({{pVisual.alt}})</span>
+                                    </li>
+                                    <li ng-repeat="pVisual in p.prdVisuals" ng-if="pVisual.type == 'video'" class="video-li">
+                                        <span><img ng-src="{{cdnPath + pVisual.thumbnail.replace('.jpg', '-150x150.jpg')}}" /><a
+                                                href="" ng-click="removePrdVisual()"><i class="fa fa-trash"></i></a></span>
+                                        <textarea ng-model="pVisual.videoEmbed" class="form-control" required>
+                                        </textarea>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Status</label>
+                            <div class="col-sm-7">
+                                <select class="form-control"
+                                        ng-options="status for status in statuses" ng-model="p.status"
+                                        name="status" required></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group"
+                             ng-class="{ 'has-error' : productDetailsForm.description.$invalid && !productDetailsForm.description.$pristine }">
+                            <label class="col-sm-4 control-label">Product Description</label>
+                            <div class="col-sm-7">
+                                <textarea class="form-control" ng-model="p.description"
+                                          name="description" required></textarea>
+                                <p
+                                    ng-show="productDetailsForm.description.$invalid && !productDetailsForm.description.$pristine"
+                                    class="help-block">Description is required.</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Stock Status</label>
+                            <div class="col-sm-3">
+                                <select class="form-control"
+                                        ng-options="stockStat for stockStat in stockStats"
+                                        ng-model="p.stockStat" name="stockStat" required></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group"
+                             ng-class="{ 'has-error' : productDetailsForm.newBatchDate.$invalid && !productDetailsForm.newBatchDate.$pristine }">
+                            <label class="col-sm-4 control-label">Product arrival
+                                date (used for 'Newest Arrival' sorting!)</label>
+                            <div class="col-sm-7">
+                                <input type="datetime-local" class="form-control"
+                                       name="newBatchDate" ng-model="newBatchDate"
+                                       ng-change="updateScopeDate()" />
+                                <p
+                                    ng-show="productDetailsForm.newBatchDate.$invalid && !productDetailsForm.newBatchDate.$pristine"
+                                    class="help-block">New batch arrival date is required (If
+                                    unsure, use current date).</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Related Products</label>
+                            <div class="col-sm-4">
+                                <textarea class="form-control" name="rps" ng-model="p.rps"
+                                          ng-list=" | "></textarea>
+                                <p class="help-block small">Provide the Product IDs
+                                    separated by | Maximum 4</p>
+                            </div>
+                        </div>
+
+                         <div class="form-group pad-t2">
+                            <h4 class="col-sm-4 col-sm-offset-2 pad-t2 u">Inventory Product Detail</h4>
+<!--                            <div class="col-sm-2 col-sm-offset-3 pad-t2">
+                                <a href="javascript:void(0)" class="btn btn-primary" ng-click="addPurchase()" id="addPurchase" >{{btnPurchase}}</a>                                
+                            </div>-->
+                        </div>
+                                                
+                        <div class="form-group" ng-class="{ 'has-error' : productDetailsForm.nickName.$invalid && !productDetailsForm.nickName.$pristine }" >
+                            <label class="col-sm-4 control-label">Nick Name</label>
+                            <div class="col-sm-7">
+                                <input type="text" value=""
+                                       ng-model="p.inventory.nickName" name="nickName"
+                                       class="form-control" required=""/>
+                                <p ng-show="productDetailsForm.nickName.$invalid && !productDetailsForm.nickName.$pristine"
+                                    class="help-block">Product nick name is required.</p>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error' : productDetailsForm.category_id.$invalid && !productDetailsForm.category_id.$pristine }">
+                            <label class="col-sm-4 control-label">Category </label>
+                            <div class="col-sm-7">
+                                <select class="form-control" name="category_id" ng-options="categoryData.id as categoryData.categoryName for categoryData in categoryData"
+                                    ng-model="p.inventory.category_id" required=""></select>
+                                
+                                <p ng-show="productDetailsForm.category_id.$invalid && !productDetailsForm.category_id.$pristine"
+                                    class="help-block">Product category is required.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" ng-class="{ 'has-error' : productDetailsForm.strain_id.$invalid && !productDetailsForm.strain_id.$pristine }">
+                            <label class="col-sm-4 control-label">Strain </label>
+                            <div class="col-sm-7">
+                                <select class="form-control" name="strain_id" ng-options="strainData.id as strainData.strainName for strainData in strainData"
+                                    ng-model="p.inventory.strain_id" required=""></select>
+                                
+                                <p ng-show="productDetailsForm.strain_id.$invalid && !productDetailsForm.strain_id.$pristine"
+                                    class="help-block">Product strain is required.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" ng-class="{ 'has-error' : productDetailsForm.minStockLimit.$invalid && !productDetailsForm.minStockLimit.$pristine }" >
+                            <label class="col-sm-4 control-label">Products Minimum Stock Limit</label>
+                            <div class="col-sm-7">
+                                <input type="number" class="form-control" ng-model="p.minStockLimit"
+                                       name="minStockLimit" required  />                                
+                                  <p ng-show="productDetailsForm.minStockLimit.$invalid && !productDetailsForm.minStockLimit.$pristine"
+                                    class="help-block">Product minimum stock limit is required.</p>
+                            </div>
+                        </div>
+                        
+<!--                        <div class="form-group" ng-show="p.inventory.isPurchaseFlag">
+                            
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Quantity </label>
+                            <div class="col-sm-7">
+                                <input type="number" value=""
+                                       ng-model="p.inventory.quantity" name="inventory.quantity"
+                                       class="form-control" />                                  
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Weight in grams per unit </label>
+                            <div class="col-sm-7">
+                                 <input type="number" value=""
+                                       ng-model="p.inventory.weight" name="inventory.weight"
+                                       class="form-control" />                                  
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Whole sale price per unit </label>
+                            <div class="col-sm-7">
+                                 <input type="number" value="" ng-model="p.inventory.whPrice" name="inventory.whPrice"
+                                       class="form-control" />                                  
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Vender Name </label>
+                            <div class="col-sm-7">
+                                 <select class="form-control"  ng-options="vendorData.id as vendorData.vendorName for vendorData in vendorData"
+                                    ng-model="p.inventory.vendor_id"></select>                                  
+                            </div>                            
+                        </div>
+                                                
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Purchase Date </label>
+                            <div class="col-sm-7">
+                                <input type="date" class="form-control" name="purchaseDate" tooltip="Purchase date"
+				placeholder="Purchase Date" ng-model="p.inventory.purchaseDate" required>
+                            </div>
+                        </div>
+                       
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Comments </label>
+                            <div class="col-sm-7">
+                                <textarea class="form-control" name="comments" ng-model="p.inventory.comments"
+                                          ng-list=" | "></textarea>                                                                
+                            </div>
+                        </div>    
+                            
+                        </div> -->
+
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Categories</label>
+                            <div class="col-sm-8 label-container">
+                                <span class="label label-default"
+                                      ng-repeat="cat in p.categories">{{cat}}</span>
+                                <p class="form-control-static pull-left"
+                                   ng-hide="p.categories && p.categories.length">No Categories</p>
+
+                                <a href="" ng-click="loadCat()" ng-hide="showAddCat"
+                                   class="marg-l1"><small>Add/Edit Categories</small></a>
+                            </div>
+                        </div>
+
+                                                
+                        <div class="form-group pad-t2">
+                            <h4 class="col-sm-4 col-sm-offset-2 pad-t2 u">Product
+                                Filters</h4>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Price</label>
+                            <div class="col-sm-7">
+                                <input type="number" min="0" value=""
+                                       ng-model="p.productFilters.price" name="productFilters.price"
+                                       class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Price range <span
+                                    data-toggle="tooltip" data-placement="top"
+                                    title="Price that gets displayed in All Products page."><i
+                                        class="fa fa-info-circle" aria-hidden="true"></i></span></label>
+                            <div class="col-sm-7">
+                                <input type="text" value=""
+                                       ng-model="p.priceRange" name="priceRange"
+                                       class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">THC (in mg)</label>
+                            <div class="col-sm-7">
+                                <input type="number" min="0" value=""
+                                       ng-model="p.productFilters.thc" name="productFilters.thc"
+                                       class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">CBD (in mg)</label>
+                            <div class="col-sm-7">
+                                <input type="number" min="0" value=""
+                                       ng-model="p.productFilters.cbd" name="productFilters.cbd"
+                                       class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-7 col-sm-offset-4">
+                                <button type="submit" class="btn btn-success"
+                                        ng-if="productDetailsForm.$dirty && !productDetailsForm.$invalid">
+                                    SAVE</button>
+
+                                <button type="button" class="btn" ng-click="saveDetails(true)"
+                                        ng-disabled="productDetailsForm.$invalid"
+                                        ng-class="productDetailsForm.$dirty ? 'btn-success' : 'btn - info'">
+                                    <span ng-show="productDetailsForm.$dirty">SAVE &amp;
+                                        PROCEED TO </span> PRICING <i class="fa fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>                        
+                    </form>
+
+
+
+
+                    <div class="add-category-popup abs overlay pad3"
+                         ng-show="showAddCat">
+                        <div class="center-block">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h5>Manage Categories</h5>
+                                </div>
+
+                                <div class="panel-body">
+                                    <h6>Selected Categories</h6>
+                                    <div class="cat-selected label-container marg-b3">
+                                        <span ng-repeat="cat in cats| orderBy:cat.name"
+                                              ng-show="cat.selected"><span
+                                                class="label label-default">{{cat.name}} <a
+                                                    class="fa fa-times" ng-click="this.cat.selected = false"
+                                                    title="remove" href=""></a>
+                                            </span></span>
+                                    </div>
+
+                                    <h6>Remaining Categories</h6>
+                                    <div class="cat-selected label-container">
+                                        <span ng-repeat="cat in cats| orderBy:cat.name"
+                                              ng-hide="cat.selected"><span
+                                                class="label label-default">{{cat.name}} <a
+                                                    class="fa fa-plus" ng-click="this.cat.selected = true"
+                                                    title="Add" href=""></a>
+                                            </span></span>
+                                    </div>
+
+
+                                </div>
+
+                                <div class="panel-footer">
+                                    <div class="text-center">
+                                        <button class="btn btn-default btn-sm"
+                                                ng-click="showAddCat = false">CANCEL</button>
+                                        <button class="btn btn-success btn-sm marg-l2"
+                                                ng-click="saveCategories()">SAVE</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+                <div class="product-pricing-holder hideme">
+
+                    <h5 class="text-primary">Step 2 - Pricing Details</h5>
+
+                    <form class="form-horizontal" ng-submit="noop()">
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Product Type</label>
+                            <div class="col-sm-8">
+                                <div class="radio">
+                                    <label> <input type="radio" ng-value="false"
+                                                   ng-model="p.variation" /> Simple Product
+                                    </label><label class="marg-l1"> <input type="radio"
+                                                                           ng-value="true" ng-model="p.variation" /> Product with
+                                        Variation
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+
+                    <div ng-hide="p.variation">
+
+                        <form class="form-horizontal" name="productSimpleForm">
+
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">Price</label>
+                                <div class="col-sm-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">$</span> <input type="number"
+                                                                                        name="price" step="any" class="form-control"
+                                                                                        ng-model="p.price" required />
+                                    </div>
+                                    <p
+                                        ng-show="productSimpleForm.price.$invalid && !productSimpleForm.price.$pristine"
+                                        class="help-block">Price is required and should be a +ve
+                                        value.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">Sale Price</label>
+                                <div class="col-sm-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">$</span> <input type="number"
+                                                                                        name="salePrice" step="any" class="form-control"
+                                                                                        ng-model="p.salePrice" min="0" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">Stock</label>
+                                <div class="col-sm-3">
+                                    <input type="number" step="1" class="form-control" name="stock"
+                                           ng-model="p.stock" />
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <div class="col-sm-4">
+                                    <button type="button" class="btn btn-info"
+                                            ng-click="toDetails()">
+                                        <i class="fa fa-chevron-left"></i> DETAILS
+                                    </button>
+                                </div>
+                                <div class="col-sm-7">
+                                    <button type="submit"
+                                            ng-disabled="productSimpleForm.$invalid || productSimpleForm.$pristine"
+                                            class="btn btn-success" ng-click="saveSimpleProduct()">
+                                        SAVE</button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+
+
+
+
+                    <!-- ATTRIBUTES SECTION -->
+
+                    <div ng-show="p.variation">
+
+                        <div class="product-attr-holder">
+                            <h6>
+                                Arrtibutes
+                                <button class="btn btn-primary btn-sm" ng-click="addAttr()">ADD</button>
+                            </h6>
+
+                            <form name="productAttrForm" class="form-horizontal">
+                                <div class="panel-group" role="tablist"
+                                     aria-multiselectable="true">
+
+                                    <div ng-repeat="attr in p.attrs| orderBy : 'position'"
+                                         class="panel panel-default">
+
+                                        <div class="panel-heading" role="tab">
+                                            <a class="pull-right" href="" role="button"
+                                               ng-click="removeAttr()"><small class="red1">Delete
+                                                    Attr</small></a><a role="button" data-toggle="collapse" class="show"
+                                                               data-parent="#accordion" ng-click="attrCollapse()"><i
+                                                    class="fa fa-caret-right"></i> {{attr.attr}} </a>
+                                        </div>
+
+                                        <div class="panel-collapse collapse" role="tabpanel">
+                                            <div class="panel-body">
+                                                <div class="form-group form-group-sm marg-b0">
+                                                    <div class="col-sm-3 marg-b2"
+                                                         ng-class="{ 'has-error' : productAttrForm.name{{$index}}.$invalid && !productAttrForm.name{{$index}}.$pristine }">
+                                                        <label class="control-label">Attibute Name</label> <input
+                                                            type="text" class="form-control" name="name{{$index}}"
+                                                            required ng-model="attr.attr" />
+                                                        <p
+                                                            ng-show="productAttrForm.name{{$index}}.$invalid && !productAttrForm.name{{$index}}.$pristine"
+                                                            class="help-block">Attribute Name is required.</p>
+                                                    </div>
+                                                    <div class="col-sm-3 marg-b2"
+                                                         ng-class="{ 'has-error' : productAttrForm.position{{$index}}.$invalid && !productAttrForm.position{{$index}}.$pristine }">
+                                                        <label class="control-label">Position</label> <input
+                                                            type="number" class="form-control"
+                                                            ng-model="attr.position" required
+                                                            name="position{{$index}}" min="0" />
+                                                        <p
+                                                            ng-show="productAttrForm.position{{$index}}.$invalid && !productAttrForm.position{{$index}}.$pristine"
+                                                            class="help-block">Position is required and should be
+                                                            a +ve value.</p>
+                                                    </div>
+                                                    <div class="col-sm-6"
+                                                         ng-class="{ 'has-error' : productAttrForm.values{{$index}}.$invalid && !productAttrForm.values{{$index}}.$pristine }">
+                                                        <label class="control-label">Value</label>
+                                                        <textarea class="form-control" required
+                                                                  name="values{{$index}}" ng-model="attr.values"
+                                                                  ng-list=" | "></textarea>
+                                                        <p
+                                                            ng-show="productAttrForm.values{{$index}}.$invalid && !productAttrForm.values{{$index}}.$pristine"
+                                                            class="help-block">Attribute values should be given
+                                                            separated by '|'.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div ng-show="p.attrs.length == 0">
+                                        <div class="alert alert-danger" role="alert">You need
+                                            atleast one attribute is Product Type is 'Product with
+                                            Variation'</div>
+                                    </div>
+                                </div>
+
+
+                                <div class="clearfix">
+                                    <button type="button" class="btn btn-info pull-left"
+                                            ng-click="toDetails()">
+                                        <i class="fa fa-chevron-left"></i> DETAILS
+                                    </button>
+                                    <button type="submit" class="btn btn-info pull-right"
+                                            ng-disabled="productAttrForm.$invalid || p.attrs.length == 0"
+                                            ng-click="saveAttrs()">
+                                        <span ng-show="productAttrForm.$dirty">SAVE &amp;
+                                            PROCEED TO </span> PRICES <i class="fa fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </form>
+
+                        </div>
+
+
+
+
+
+                        <!-- PRICING SECTION -->
+
+                        <div class="product-price-holder hideme">
+                            <h6>
+                                Prices
+                                <button class="btn btn-warning btn-xs marg-l1"
+                                        ng-click="getNewVarCombinations()">Create All
+                                    Combinations</button>
+                                <button class="btn btn-primary btn-xs marg-l1"
+                                        ng-show="prices.length" ng-click="addPriceLine()">Add
+                                    Price Line</button>
+                            </h6>
+
+                            <form name="productPriceForm" class="form-horizontal">
+                                <div class="panel-group" role="tablist"
+                                     aria-multiselectable="true">
+                                    <div ng-repeat="price in prices" class="panel panel-default">
+
+                                        <div class="panel-heading" role="tab">
+                                            <div class="row">
+                                                <a href="" role="button" data-toggle="collapse"
+                                                   class="pull-left marg-t2 marg-l2 m-nofloat"
+                                                   data-parent="#accordion" ng-click="attrCollapse()"><i
+                                                        class="fa fa-caret-right"></i> <span
+                                                        class="visible-xs-inline">Show/Hide</span> </a>
+                                                <div class="price-listing col-sm-4 col-md-3"
+                                                     ng-repeat="vars in price.variation">
+                                                    <div class="form-group-sm">
+                                                        <label class="control-label capitalize">{{vars.attr}}</label>
+                                                        <select ng-model="vars.value" class="form-control"
+                                                                name="attr{{$parent.$index}}{{$index}}"
+                                                                ng-options="varValue for varValue in getCurrentVarValues(vars.attr)"></select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-3 col-md-2">
+                                                    <div class="form-group-sm"
+                                                         ng-class="{ 'has-error' : productPriceForm.regPrice{{$index}}.$invalid && !productPriceForm.regPrice{{$index}}.$pristine }">
+                                                        <label class="control-label">Price</label> <input
+                                                            type="number" step="any" ng-model="price.regPrice"
+                                                            min="0" required name="regPrice{{$index}}"
+                                                            class="form-control" />
+
+                                                        <p
+                                                            ng-show="productPriceForm.regPrice{{$index}}.$invalid && !productPriceForm.regPrice{{$index}}.$pristine"
+                                                            class="help-block">Price is required.</p>
+                                                    </div>
+                                                </div>
+                                                <div class="pull-right text-right pad-h1">
+                                                    <div ng-if="price.stockStat == 'outofstock'">
+                                                        <span class="label label-danger">Out of Stock</span>
+                                                    </div>
+                                                    <div class="product-default-attr" data-index="{{$index}}">
+                                                        <a href="" ng-click="setDefautAttr()"><span
+                                                                class="glyphicon glyphicon-ok"></span></a>
+                                                    </div>
+                                                    <a href="" role="button" ng-click="removePriceLine()"><small
+                                                            class="red1">Delete</small></a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="panel-collapse collapse" role="tabpanel">
+                                            <div class="panel-body">
+                                                <div class="form-group" data-vid="{{price.variationId}}"
+                                                     data-_id="{{price._id}}">
+                                                    <div class="col-sm-3 marg-b2">
+                                                        <div class="form-group-sm">
+                                                            <label class="control-label">Sales Price</label> <input
+                                                                type="number" class="form-control" step="any"
+                                                                name="salePrice{{$index}}" ng-model="price.salePrice" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3 marg-b2">
+                                                        <div class="form-group-sm">
+                                                            <label class="control-label">Stock</label> <input
+                                                                type="number" class="form-control"
+                                                                name="stockCount{{$index}}" ng-model="price.stockCount" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3 marg-b2">
+                                                        <div class="form-group-sm">
+                                                            <label class="control-label">Stock Status</label> <select
+                                                                class="form-control" name="stockStat{{$index}}"
+                                                                ng-options="stockStat for stockStat in stockStats"
+                                                                ng-model="price.stockStat"></select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3 marg-b2">
+                                                        <div class="form-group-sm">
+                                                            <label class="control-label">Image</label> <a
+                                                                ng-click="setPriceImg()" class="btn btn-xs btn-info"
+                                                                ng-show="!price.img">Set Image</a> <a
+                                                                ng-click="changePriceImg()" class="btn btn-xs btn-info"
+                                                                ng-show="price.img">Change Image</a> <a
+                                                                ng-click="price.img = null; productPriceForm.$setDirty();"
+                                                                class="btn btn-xs btn-danger" ng-show="price.img">Remove
+                                                                Image</a>
+
+                                                            <div class="thumbnail-holder" ng-if="price.img">
+                                                                <img ng-src="{{cdnPath + price.img}}" />
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="clearfix">
+                                    <button type="button" class="btn btn-info pull-left"
+                                            ng-click="toPricing()">
+                                        <i class="fa fa-chevron-left"></i> ATTRIBUTES
+                                    </button>
+
+                                    <button type="submit" class="btn btn-success pull-right"
+                                            ng-disabled="productPriceForm.$invalid || productPriceForm.$pristine"
+                                            ng-click="savePrices()">SAVE</button>
+
+                                    <div class='pull-right size12 pad-h2'>
+                                        <p class="bg-warning" ng-show="productPriceForm.$pristine">No
+                                            changes to save</p>
+                                        <p class="bg-danger" ng-show="productPriceForm.$invalid">Please
+                                            correct the fields.</p>
+                                    </div>
+
+                                </div>
+                            </form>
+                        </div>
+
+
+
+                    </div>
+                </div>
+
+                <div
+                    ng-include="'/resources/ng-templates/admin/admin-memo.html' + '?' + Math.random()"></div>
+
+            </div>
+        </div>
+    </div>
 </div>

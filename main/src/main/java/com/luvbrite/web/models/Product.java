@@ -29,7 +29,8 @@ public class Product {
 	private String featuredImg;
 	private String editLock;
 	private String priceRange;
-	
+	private int minStockLimit;
+        
 	private boolean variation;
 	
 	private Date dateCreated;
@@ -195,4 +196,20 @@ public class Product {
 	public void setNewBatchArrival(Date newBatchArrival) {
 		this.newBatchArrival = newBatchArrival;
 	}
+        
+        public int getMinStockLimit() {
+            return minStockLimit;
+        }
+        public void setMinStockLimit(int minStockLimit) {
+           this.minStockLimit = minStockLimit;
+        }
+
+    @Override
+    public String toString() {
+        return "Product{" + "\n_id=" + _id + ",\n stock=" + stock + ", \nreviewCount=" + reviewCount + ",\n status=" + status + ", \nstockStat=" + stockStat + ", \nminStockLimit=" + minStockLimit + ", \ndateCreated=" + dateCreated + ", \nproductFilters=" + productFilters + ", \nseoElem=" + seoElem + ", \nprdVisuals=" + prdVisuals + ", \nnewBatchArrival=" + newBatchArrival + '}';
+    }
+
+
+
+
 }

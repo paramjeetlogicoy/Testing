@@ -79,6 +79,12 @@ public class CategoryController {
 			model.addAttribute("page", "category");
 			model.addAttribute("sortOrder", sortOrder);
 			
+                       /* System.out.print("==============================");
+                       for(int i =0 ;i<products.size();i++){
+                        System.out.println("product Detail==============="+products.get(i));
+                       } */
+                       
+                       
 			return "products";
 		}		
 		else{

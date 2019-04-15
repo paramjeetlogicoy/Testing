@@ -253,6 +253,7 @@ public class ProductsController {
 						productDb.setPriceRange(product.getPriceRange());
 					}
 					
+                                        productDb.setMinStockLimit(product.getMinStockLimit());
 					
 					prdDao.save(productDb);
 					
