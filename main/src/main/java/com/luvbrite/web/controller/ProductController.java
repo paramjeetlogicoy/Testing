@@ -69,10 +69,14 @@ public class ProductController {
 			model.addAttribute("userId", user.getId());
 		
 		String sortOrder = "-newBatchArrival";
-
+		long startTime = System.nanoTime();
+		
 		List<Product> products = returnActiveProducts(sortOrder);
 		
-		model.addAttribute("products", products);
+		long endTime = System.nanoTime(); long timeElapsed = endTime - startTime;
+        System.out.println("Execution time in nanoseconds  : " + timeElapsed);
+		
+        model.addAttribute("products", products);
 		model.addAttribute("page", "product");
 		model.addAttribute("sortOrder", sortOrder);
 		
@@ -114,8 +118,8 @@ public class ProductController {
 					.field("name").equal(regExp)
 					.order(sortOrder)
 					.asList();
-			
-			model.addAttribute("products", products);
+			List<Product> prodFromInv=new AvailableProducts().getAvailProdsFromInv(products);
+			model.addAttribute("products", prodFromInv);
 			model.addAttribute("page", "search");
 			model.addAttribute("query", query);
 			model.addAttribute("sortOrder", sortOrder);

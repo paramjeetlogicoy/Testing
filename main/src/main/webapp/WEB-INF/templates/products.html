@@ -325,6 +325,7 @@
 					data-price-range=${product.priceRange},
 					data-desc=${product.description},
                                         data-minStockLimit=${product.minStockLimit},
+                                        data-total_remain_qty=${product.total_remain_qty},
 					data-newest=${product.newBatchArrival != null ? product.newBatchArrival.getTime() : '0'},
 					data-filter-price=${product.productFilters != null ? product.productFilters.price : ''},
 					data-filter-cbd=${product.productFilters != null ? product.productFilters.cbd : ''},
@@ -387,6 +388,11 @@
                                                                                 <div class="row">
                                                                                     <div class="form-group txt_stock" >
                                                                                         Only <span th:text="*{minStockLimit}"></span> Left in Stock
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="form-group txt_stock" >
+                                                                                        total_remain_qty ===> <span th:text="*{total_remain_qty}"></span> 
                                                                                     </div>
                                                                                 </div>
                                                                             

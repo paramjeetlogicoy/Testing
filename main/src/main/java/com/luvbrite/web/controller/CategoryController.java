@@ -73,8 +73,9 @@ public class CategoryController {
 					.filter("stockStat", "instock")
 					.order(sortOrder)
 					.asList();
-			
-			model.addAttribute("products", products);
+			List<Product> prodFromInv 	=	new AvailableProducts().getAvailProdsFromInv(products);
+			model.addAttribute("products", prodFromInv);
+			//model.addAttribute("products", products);
 			model.addAttribute("category", categoryName);
 			model.addAttribute("page", "category");
 			model.addAttribute("sortOrder", sortOrder);
