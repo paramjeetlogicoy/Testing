@@ -35,105 +35,82 @@ public class AvailableProducts {
 			GenericConnection conn = new GenericConnection();
 
 			resp = conn.contactService(commaSeparatedIds, new URL(postProdListURL), false);
-            //logger.info("Resp-> "+resp+"CommaSepareatedIds-->"+commaSeparatedIds);
-			if (resp != null) {
+           
+			if (resp == null) {logger.debug("Recieved NULL after trying to hit Inventory Appln"); return activeProdList;}
+               
+			    Gson g = new Gson();
+		 		ProductsInfoJSON prodInfo = g.fromJson(resp, ProductsInfoJSON.class);
 
-				Gson g = new Gson();
-				ProductsInfoJSON prodInfo = g.fromJson(resp, ProductsInfoJSON.class);
-
-				if (prodInfo.isSuccess()) {
+				if (!prodInfo.isSuccess()) {logger.debug("Successfully recieved response from Inv Application "); return activeProdList;}
 
 					List<ProductAvailable> prodAvailableList = prodInfo.getResult();
+                       if (prodAvailableList.size() == 0) {logger.debug("Size of Product List recieved from Inventory is 0"); return activeProdList;}
+                        prodAvailInInventory = new ArrayList();
+                        Collections.sort(activeProdList);
+                           if (activeProdList.size() == prodAvailableList.size()) {
+                        	   logger.debug("List of products recieved from Inventory is EQUAL to List of products from Main(Luvbrite)");
+                               for (int i = 0; i < activeProdList.size(); i++) {
+                                    ProductAvailable prodAvailable = prodAvailableList.get(i);
+								    Product prod = activeProdList.get(i);
+                                        if (prodAvailable.getTotal_remain_qty() > 0) {
+                                            
+                                        	prod.setProduct_id(prodAvailable.getProduct_id());
+									        prod.setCategory_id(prodAvailable.getCategory_id());
+									        prod.setStrainid(prodAvailable.getStrainid());
+									        prod.setStrain_name(prodAvailable.getStrain_name());
+									        prod.setTotal_purchase_qty(prodAvailable.getTotal_purchase_qty());
+									        prod.setTotal_packet_qty(prodAvailable.getTotal_purchase_qty());
+									        prod.setTotal_sold_qty(prodAvailable.getTotal_sold_qty());
+									        prod.setTotal_remain_qty();
+									        prod.setInv_productname(prodAvailable.getInv_productname());
+									        prod.setMongo_productid(prodAvailable.getMongo_productid());
 
-					if (prodAvailableList.size() > 0) {
-
-						prodAvailInInventory = new ArrayList();
-
-						Collections.sort(activeProdList);
-
-						if (activeProdList.size() == prodAvailableList.size()) {
-
-							for (int i = 0; i < activeProdList.size(); i++) {
-
-								ProductAvailable prodAvailable = prodAvailableList.get(i);
-								Product prod = activeProdList.get(i);
-
-								if (prodAvailable.getTotal_remain_qty() > 0) {
-
-									prod.setProduct_id(prodAvailable.getProduct_id());
-									prod.setCategory_id(prodAvailable.getCategory_id());
-									prod.setStrainid(prodAvailable.getStrainid());
-									prod.setStrain_name(prodAvailable.getStrain_name());
-									prod.setTotal_purchase_qty(prodAvailable.getTotal_purchase_qty());
-									prod.setTotal_packet_qty(prodAvailable.getTotal_purchase_qty());
-									prod.setTotal_sold_qty(prodAvailable.getTotal_sold_qty());
-									prod.setTotal_remain_qty();
-									prod.setTotal_purchase_weight(prodAvailable.getTotal_purchase_weight());
-									prod.setTotal_packed_weight(prodAvailable.getTotal_packed_weight());
-									prod.setTotal_sold_weight(prodAvailable.getTotal_sold_weight());
-									prod.setTotal_remain_weight();
-									prod.setMongo_productid(prodAvailable.getMongo_productid());
-
-									prodAvailInInventory.add(prod);
+									        prodAvailInInventory.add(prod);
 								}
 
 							}
 						} else {
-
+							logger.debug("List of products recieved from Inventory is !!NOT!! EQUAL to List of products from Main(Luvbrite)");
 							for (int i = 0; i < activeProdList.size(); i++) {
-
-								Product prod = activeProdList.get(i);
-
-								for (int j = 0; j < prodAvailableList.size(); j++) {
-
-									ProductAvailable prodAvailable = prodAvailableList.get(j);
-
-									if (prod.get_id() == prodAvailable.getMongo_productid()
+                                Product prod = activeProdList.get(i);
+                                    for (int j = 0; j < prodAvailableList.size(); j++) {
+                                         ProductAvailable prodAvailable = prodAvailableList.get(j);
+                                         if (prod.get_id() == prodAvailable.getMongo_productid()
 											&& prodAvailable.getTotal_remain_qty() > 0) {
 
-										prod.setProduct_id(prodAvailable.getProduct_id());
-										prod.setCategory_id(prodAvailable.getCategory_id());
-										prod.setStrainid(prodAvailable.getStrainid());
-										prod.setStrain_name(prodAvailable.getStrain_name());
-										prod.setTotal_purchase_qty(prodAvailable.getTotal_purchase_qty());
-										prod.setTotal_packet_qty(prodAvailable.getTotal_purchase_qty());
-										prod.setTotal_sold_qty(prodAvailable.getTotal_sold_qty());
-										prod.setTotal_remain_qty();
-										prod.setTotal_purchase_weight(prodAvailable.getTotal_purchase_weight());
-										prod.setTotal_packed_weight(prodAvailable.getTotal_packed_weight());
-										prod.setTotal_sold_weight(prodAvailable.getTotal_sold_weight());
-										prod.setTotal_remain_weight();
-										prod.setMongo_productid(prodAvailable.getMongo_productid());
-
-										prodAvailInInventory.add(prod);
-										prodAvailableList.remove(j);
-										break;
-
-									}else {
-										prodAvailInInventory.add(prod);
-									}
-
-								}
+									            prod.setProduct_id(prodAvailable.getProduct_id());
+									         	prod.setCategory_id(prodAvailable.getCategory_id());
+									         	prod.setStrainid(prodAvailable.getStrainid());
+									         	prod.setStrain_name(prodAvailable.getStrain_name());
+									         	prod.setTotal_purchase_qty(prodAvailable.getTotal_purchase_qty());
+									         	prod.setTotal_packet_qty(prodAvailable.getTotal_purchase_qty());
+									         	prod.setTotal_sold_qty(prodAvailable.getTotal_sold_qty());
+									         	prod.setTotal_remain_qty();
+									         	
+									            prod.setMongo_productid(prodAvailable.getMongo_productid());
+									            prod.setInv_productname(prodAvailable.getInv_productname());
+									           
+									         	prodAvailInInventory.add(prod);
+									         	prodAvailableList.remove(j);
+									         	break;
+                                         }else {
+										        prodAvailInInventory.add(prod);
+										      }
+                                      }
 
 							}
-
+                        
+							
 						}
 
-					} else {
-						return activeProdList;
-					}
-				} else {
-					return activeProdList;
-				}
-
-			}
-
 		} catch (Exception e) {
-			logger.error(Exceptions.giveStackTrace(e));
-			return activeProdList;
+			
+			 logger.error("Error retrieving products from inventory");
+		     logger.error(Exceptions.giveStackTrace(e));
+		     return activeProdList;
 		}
-
 		return prodAvailInInventory;
+		
 	}
 
 }

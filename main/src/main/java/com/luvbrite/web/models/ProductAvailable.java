@@ -5,7 +5,7 @@ public class ProductAvailable {
 private int product_id;
 private int category_id;
 private int strainid;
-
+private String inv_productname;
 private String strain_name;
 private double total_purchase_qty;
 private double total_packet_qty;
@@ -18,7 +18,12 @@ private double total_remain_weight;
 private Long mongo_productid;
 
 
-
+public String getInv_productname() {
+	return inv_productname;
+}
+public void setInv_productname(String inv_productname) {
+	this.inv_productname = inv_productname;
+}
 
 
 public Long getMongo_productid() {

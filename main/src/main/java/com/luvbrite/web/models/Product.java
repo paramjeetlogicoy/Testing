@@ -223,12 +223,19 @@ public class Product implements Comparable<Product> {
 	private double total_packed_weight;
 	private double total_sold_weight;
 	private double total_remain_weight;
+	private String inv_productname;
 	private Long mongo_productid;
+   
 
 
 
 
-
+	public String getInv_productname() {
+		return inv_productname;
+	}
+	public void setInv_productname(String inv_productname) {
+		this.inv_productname = inv_productname;
+	}
 	public Long getMongo_productid() {
 		return mongo_productid;
 	}
