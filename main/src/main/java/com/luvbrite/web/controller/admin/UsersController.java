@@ -52,6 +52,7 @@ import com.luvbrite.web.models.User;
 import com.luvbrite.web.models.UserDetailsExt;
 import com.luvbrite.web.models.UserMarketing;
 import com.luvbrite.web.validator.UserValidator;
+import org.springframework.http.MediaType;
 
 
 @Controller
@@ -773,6 +774,59 @@ public class UsersController {
 			logger.error(Exceptions.giveStackTrace(f));
 		}
 		
+	}
+        
+        
+        // approve user if user have marijuana card.
+        
+        @RequestMapping(value = "/approveStatus", method = RequestMethod.POST)
+	public @ResponseBody GenericResponse approveStatus(
+			@Validated @RequestBody User user, 
+			BindingResult result, @AuthenticationPrincipal 
+			UserDetailsExt userExt){
+        
+                GenericResponse r = new GenericResponse();
+		r.setSuccess(false);
+	
+                if(result.hasErrors()){
+			
+			StringBuilder errMsg = new StringBuilder();
+			
+			List<FieldError> errors = result.getFieldErrors();
+			for (FieldError error : errors ) {
+				 errMsg
+				 .append(" - ")
+				 .append(error.getDefaultMessage())
+				 .append("<br />");
+			}
+			
+			r.setMessage(errMsg.toString());
+		
+		}else{
+                     User u1 =  dao.findOne("username", user.getUsername());
+                        if(u1!=null)
+                        {
+                            if(u1.getApproveStatus()==null)
+                            {
+                                u1.setApproveStatus("1");
+                            } else if(u1.getApproveStatus().equals("1")) {
+                                u1.setApproveStatus("0");
+                                r.setMessage("User has been disapprove sucessfuly");
+                            } else {
+                                u1.setApproveStatus("1");
+                                r.setMessage("User has been approved sucessfuly");
+                            }	
+                            
+                            dao.save(u1);                            
+                            r.setSuccess(true);
+
+                            return  r;
+                        } else {
+                            r.setMessage("User Not Found!");
+                        }
+                }
+                
+            return r;		
 	}
 	
 }

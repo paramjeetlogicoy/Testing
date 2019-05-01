@@ -27,7 +27,76 @@ defaultCtrlr = function($scope, $http, $filter, $sanitize){
 	$scope.sortReverse = true;
 	$scope.productSearch = '';
 	
-	
+        $scope.items = [];         
+       
+        $scope.getAllInventoryProduct = function () {
+            //var data = $.param();
+            var data;
+        
+            var config = {
+                headers : {
+                    'Authorization': 'Basic eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiTWFpbiBBZG1pbiIsImlzcyI6ImF1dGgwIiwidXNlcnR5cGUiOiJvcGVyYXRvciIsInVzZXJuYW1lIjoiY2hhbXAifQ.muZ0ZV2SFNFnjgXhHhuk0iCM7klZ5PJIJq5U07QM8LQ'
+                }
+            };
+            
+            var url = '/inventory/apps/listallproducts';
+            $http.post(url, data, config)
+            .success(function (data, status, headers, config) {               
+                if(data.success === true){
+                   $scope.items = data.result;
+                   $scope.getProducts();
+                }                              
+            });            
+        };
+        
+       // $scope.getAllInventoryProduct();
+        $scope.selectProduct;
+        $scope.selectedProduct = function (){
+                $scope.ProductData = $scope.items.filter(function (detail) {                  
+                    return (detail.id === $scope.pDetail);                    
+                });
+                
+                if( $scope.ProductData.length > 0){                    
+                    $scope.selectProduct = $scope.ProductData[0];                   
+                }               
+        };
+        
+        $scope.mappingProduct;
+        $scope.showModel = function (mappingProduct){
+          $scope.pDetail = '';
+          $scope.mappingProduct = mappingProduct;          
+          $('#myModal').modal('show');
+        };
+        
+        $scope.submitProduct = function (){            
+            if($scope.pDetail !== undefined && $scope.pDetail !== null){
+                
+            var mongo_productid = $scope.mappingProduct._id;
+            var data = new FormData();
+            data.append("id", parseInt($scope.pDetail));
+            data.append('mongo_productid', parseInt(mongo_productid));
+            
+            var config = {
+                headers : {
+                    'Authorization': 'Basic eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiTWFpbiBBZG1pbiIsImlzcyI6ImF1dGgwIiwidXNlcnR5cGUiOiJvcGVyYXRvciIsInVzZXJuYW1lIjoiY2hhbXAifQ.muZ0ZV2SFNFnjgXhHhuk0iCM7klZ5PJIJq5U07QM8LQ',
+                    'Content-Type' : undefined
+                }
+            };
+            
+            var url = '/inventory/apps/updateproductsmongoid';
+            $http.post(url, data, config)
+            .success(function (data, status, headers, config) {                  
+                if(data.success === true){                      
+                    $scope.getAllInventoryProduct();                   
+                }  
+                $("#myModal").modal("hide");
+            });   
+                
+            }else{
+                alert("Please choose product first.");
+            }          
+        };
+        
 	$scope.getProducts = function(){
 		
 		$http.get('/admin/products/json/', {
@@ -38,8 +107,26 @@ defaultCtrlr = function($scope, $http, $filter, $sanitize){
 			}
 
 		}).success(function(data){
-			if(data.success){
-				$scope.products = data.respData;
+			if(data.success){				
+                                var productList = [];                                                                
+                                for(var i = 0; i < data.respData.length; i++){
+                                  
+                                    var mainproductRes = data.respData[i];
+                                    mainproductRes['inventoryProductName'] = '';
+                                    
+                                     for(var j = 0; j < $scope.items.length; j++){
+                                         var value_inv = $scope.items[j];
+                                        // console.log(value_inv);
+                                         if(value_inv.mongo_productid > 0){
+                                            if (value_inv.mongo_productid === mainproductRes._id) {
+                                                 mainproductRes['inventoryProductName'] = value_inv.productName;
+                                            }
+                                        }
+                                     }                                   
+                                    productList.push(mainproductRes);
+                                }
+                                           
+                                $scope.products = productList;
 				$scope.pg = data.pg
 			}
 			else if(data.message && data.message!=''){
@@ -62,7 +149,7 @@ defaultCtrlr = function($scope, $http, $filter, $sanitize){
 		$scope.getProducts();
 	};
 	
-	$scope.getProducts();
+        $scope.getProducts(); // uncomment it after mapping of products.
 },
 
 prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $sanitize, uploadService, $rootScope){

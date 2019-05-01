@@ -178,6 +178,30 @@
 								</div>
 							</div>
 
+							<div class="form-group form-group-sm" ng-if="u.memberType === 'medical'">
+								<label class="col-sm-4 control-label">State Marijuana Card</label>
+								<div class="col-sm-4">
+									<button type="button"
+										ng-show="!u.identifications.stateMarijuanaCard"
+										class="btn btn-xs btn-info" ng-click="selectStateMarijuanaCardFile()">Set
+										File</button>
+									<button type="button" ng-show="u.identifications.stateMarijuanaCard"
+										class="btn btn-xs btn-info" ng-click="selectStateMarijuanaCardFile()">Change
+										File</button>
+									<input type="hidden" name="recomendation"
+										ng-model="u.identifications.stateMarijuanaCard" />
+									<div class="thumbnail-holder"
+										ng-if="u.identifications.stateMarijuanaCard">
+										<a target="_blank"
+											href="{{'/files/view/' + u.identifications.stateMarijuanaCard}}"><img
+											ng-src="{{'/files/view/' + u.identifications.stateMarijuanaCard}}" /></a>
+									</div>
+								</div>
+                                                                <div class="col-sm-4">                                                                    
+                                                                    <input type="checkbox" ng-model="u.approveStatus" ng-true-value="'1'" ng-false-value="'0'" ng-change="updateApproveStatus()">  Approve user                                                                     
+                                                                </div>
+							</div>
+
 							<div class="form-group form-group-sm">
 								<label class="col-sm-4 control-label">Recommendation
 									Expiry</label>

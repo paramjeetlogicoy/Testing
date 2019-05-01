@@ -120,6 +120,40 @@ usrCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 		uploadService.config.fields = {path : '/user/', ctrl : 'controlled'};			
 		uploadService.showGallery($rootScope);
 	};
+	
+        
+        $scope.afterStateMarijuanaCardFileSelect = function(){
+		if(uploadService.selectedFiles){
+			if(!$scope.u.identifications) $scope.u.identifications = {};
+			$scope.u.identifications.stateMarijuanaCard = uploadService.selectedFiles[0].location;
+			$scope.user.$setDirty();
+		}
+	};
+        
+        $scope.selectStateMarijuanaCardFile = function(){
+		uploadService.config.cb = $scope.afterStateMarijuanaCardFileSelect;
+		uploadService.config.fields = {path : '/user/', ctrl : 'controlled'};			
+		uploadService.showGallery($rootScope);
+	};
+        
+//        Used to update user approve status.
+        $scope.updateApproveStatus = function (){
+            
+             $http.post('/admin/users/approveStatus', $scope.u)
+			.success(function(resp){                                 
+				if(resp.success){
+                                    $scope.successMsg = resp.message;					
+				} else {
+                                    $scope.errorMsg  = resp.message;
+				}
+			}).error(function(){
+				$scope.errorMsg  = "There was some error update user approve status. "
+						+"Please contact G";
+			});
+        };
+        
+       
+        
 	/**UPLOAD SPECIFIC FN ENDS*/
 
 	
