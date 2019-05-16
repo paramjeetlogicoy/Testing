@@ -49,7 +49,7 @@ defaultCtrlr = function($scope, $http, $filter, $sanitize){
             });            
         };
         
-       // $scope.getAllInventoryProduct();
+        $scope.getAllInventoryProduct();
         $scope.selectProduct;
         $scope.selectedProduct = function (){
                 $scope.ProductData = $scope.items.filter(function (detail) {                  
@@ -149,7 +149,7 @@ defaultCtrlr = function($scope, $http, $filter, $sanitize){
 		$scope.getProducts();
 	};
 	
-        $scope.getProducts(); // uncomment it after mapping of products.
+        // $scope.getProducts(); // uncomment it after mapping of products.
 },
 
 prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $sanitize, uploadService, $rootScope){
