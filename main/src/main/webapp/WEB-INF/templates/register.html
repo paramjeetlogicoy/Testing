@@ -12,32 +12,91 @@
 	<div th:replace="fragments/layout::fragment-google-analytics"></div>
 	<div th:replace="fragments/layout::fragment-header"></div>
 
-	<div class="container page-container">
-		<div class="generic-container register-container ng-cloak">
-			<h3>Patient Registration</h3>
+        <div class="container page-container">
 
-			<div class="row">
-				<div class="col-lg-8 col-lg-offset-2 col-sm-10 col-sm-offset-1">
+            <div class="generic-container register-container ng-cloak" ng-show="!selectedMemberType">
 
-					<div class="marg-b5">
-						<ul class="styled">
-							<li class="marg-b1">Your identity card and recommendation
-								letter needs to be verified before
-								activating your account.</li>
-							<li class="marg-b1">Medical users, if you don't have a rec
-								letter yet, check out <a
-								href="https://getnugg.com/new/doctor-request?utm_campaign=luvbrite"
-								target="_blank">https://getnugg.com/md</a> and get one in
-								minutes!
-							</li>
-							<li class="marg-b1">By registering with us using below form, you
-								agree to allow a LuvBrite Collective representative to verify
-								your medical recommendation with your licensed California
-								physician.</li>
-							<li>Please complete the form below and click the REGISTER
-								button at the bottom. We'll reply as soon as possible.</li>
-						</ul>
-					</div>
+                <div class="row">
+                    <div class="col-sm-12 col-lg-12 center-div newUserHead">  
+                        NEW USER REGISTRATION:
+                    </div>
+                </div>
+                <div class="row center-div">
+                    <div class="col-sm-12 col-lg-4">  
+                        <div class="form-group">
+                            <div class="btn-membertype" ng-click="chooseMemberType('recreational')">
+                                <div class="row center">
+                                    <img src="../resources/imgs/user.png" class="img-register" />
+                                    <p class="img-register-txt">Recreational</p>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 col-lg-12 pad-bullets">                                    
+                                        <ul class="bullets">
+                                            <li>Must be 21+</li>
+                                            <li>Valid from of identification required</li>                                
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-lg-4" > 
+                        <div class="form-group">
+                            <div class="btn-membertype" ng-click="chooseMemberType('medical')">
+                                <div class="row center">
+                                    <img src="../resources/imgs/plus.png" class="img-register" />
+                                    <p class="img-register-txt">Medical</p>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 col-lg-12 pad-bullets">                                    
+                                        <ul class="bullets">
+                                            <li>Must be 18+</li>
+                                            <li>Valid from of identification required</li>                                
+                                            <li>Valid from of recommendation letter or state MMIC is required</li>                                    
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>                      
+                    </div>
+                </div>
+            </div>
+
+            <div class="generic-container register-container ng-cloak" ng-show="selectedMemberType">
+                <h3 ng-if="user.memberType === 'recreational'">Recreational Registration</h3>
+                <h3 ng-if="user.memberType === 'medical'">Medical Registration</h3>
+
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2 col-sm-10 col-sm-offset-1">
+
+                        <div class="marg-b5" ng-if="user.memberType === 'recreational'">
+                            <ul class="styled">
+                                <li class="marg-b1">Your identity card needs to be verified before
+                                    activating your account.</li>                                
+                                <li>Please complete the form below and click the REGISTER
+                                    button at the bottom. We'll reply as soon as possible.</li>
+                            </ul>
+                        </div>
+
+                        <div class="marg-b5" ng-if="user.memberType === 'medical'">
+                            <ul class="styled">
+                                <li class="marg-b1">Your identity card and recommendation
+                                    letter needs to be verified before
+                                    activating your account.</li>
+<!--                                <li class="marg-b1">Medical users, if you don't have a rec
+                                    letter yet, check out <a
+                                        href="https://getnugg.com/new/doctor-request?utm_campaign=luvbrite"
+                                        target="_blank">https://getnugg.com/md</a> and get one in
+                                    minutes!
+                                </li>-->
+                                <li class="marg-b1">By registering with us using below form, you
+                                    agree to allow a LuvBrite representative to verify
+                                    your medical recommendation with your licensed California
+                                    physician.</li>
+                                <li>Please complete the form below and click the REGISTER
+                                    button at the bottom. We'll reply as soon as possible.</li>
+                            </ul>
+                        </div>
 
 
 					<div class="ng-cloak">
@@ -204,13 +263,14 @@
 							</div>
 
 
-							<div class="form-group recofile-group">
-								<label class="control-label col-sm-4">Your Doctor's
-									Medical Recommendation Letter<br /> <small
-									class="em">(Images or PDF Only. 10MB Max)</small>
-								</label>
-								<div class="col-sm-8">
-									<div class="fgw-file-selector" ng-hide="recoFile">
+                                <div class="form-group recofile-group" ng-show="user.memberType === 'medical'" >
+
+                                    <label class="control-label col-sm-4">Your Doctor's
+                                        Medical Recommendation Letter<br /> <small
+                                            class="em">(Images or PDF Only. 10MB Max)</small>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <div class="fgw-file-selector" ng-hide="recoFile">
 
 										<div ngf-drop="ngf-drop" ngf-select="ngf-select"
 											ng-model="recofileobj" class="fgw-drop-box pad1 marg-b3"
@@ -239,26 +299,58 @@
 							</div>
 
 
-							<div class="form-group recoWrapper">
-								<label class="control-label col-sm-4">Recommendation
-									Expiry<br /> <small class="em">(mm/dd/yyyy)</small>
-								</label>
-								<div class="col-sm-8">
-									<div class="date-inputs clearfix">
-										<input type="number" min="1" max="12" step="1"
-											ng-model="reco.month" class="form-control" name="recoMonth"
-											placeholder="MM"  /> <span>/</span> <input
-											type="number" min="1" max="31" step="1" ng-model="reco.day"
-											name="recoDay" class="form-control" placeholder="DD"
-											 /> <span>/</span> <input type="number"
-											name="recoYear" min="2016" step="1" ng-model="reco.year"
-											class="form-control" placeholder="YYYY"  />
-									</div>
+                                <div class="form-group recoWrapper" ng-show="user.memberType === 'medical'">
+                                    <label class="control-label col-sm-4">Recommendation
+                                        Expiry<br /> <small class="em">(mm/dd/yyyy)</small>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <div class="date-inputs clearfix">
+                                            <input type="number" min="1" max="12" step="1"
+                                                   ng-model="reco.month" class="form-control" name="recoMonth"
+                                                   placeholder="MM"  /> <span>/</span> <input
+                                                   type="number" min="1" max="31" step="1" ng-model="reco.day"
+                                                   name="recoDay" class="form-control" placeholder="DD"
+                                                   /> <span>/</span> <input type="number"
+                                                   name="recoYear" min="2016" step="1" ng-model="reco.year"
+                                                   class="form-control" placeholder="YYYY"  />
+                                        </div>
 
 									<p class="help-block help-error">{{recoExpiryErrMsg}}</p>
 								</div>
 							</div>
 
+                                <div class="form-group recofile-group" ng-show="user.memberType === 'medical'">
+                                    <label class="control-label col-sm-4">State Medical Marijuana Identification Card (MMIC)<br /> <small
+                                            class="em">(Images or PDF Only. 10MB Max)</small>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <div class="fgw-file-selector" ng-hide="stateMariCardFileRef">
+
+                                            <div ngf-drop="ngf-drop" ngf-select="ngf-select"
+                                                 ng-model="stateMariCardFile" class="fgw-drop-box pad1 marg-b3"
+                                                 ngf-max-size="'10MB'" ngf-drag-over-class="'dragover'"
+                                                 ngf-multiple="false" ngf-allow-dir="true"
+                                                 accept="image/*,application/pdf"
+                                                 ngf-pattern="'image/*,application/pdf'">
+                                                <h6>Select Or Drop files here</h6> 
+                                                <div class="max-size-error">Max size for upload is 10MB</div>
+                                                <div class="invalid-pattern-error">Only images and PDFs
+                                                    are accepted </div>
+
+
+                                                <div class="progress-wrapper reco-progress-wrapper"></div>
+                                            </div>
+                                            <div ngf-no-file-drop="ngf-no-file-drop">File Drag/Drop
+                                                is not supported for this browser</div>
+                                        </div>
+                                        <div ng-if="stateMariCardFileRef" class="form-control-static">
+                                            <a href="/files/view{{stateMariCardFileRef.location}}" target="_blank"
+                                               class="small">{{stateMariCardFileRef.filename}}</a> <a href="#"
+                                               ng-click="removeFile('stateMariCardFile')"><i class="fa fa-trash"
+                                                                                          aria-hidden="true"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
 
 							<div class="form-group">
 								<label class="control-label col-sm-4">How did you hear
@@ -270,21 +362,21 @@
 								</div>
 							</div>
 
-							<div class="form-group" ng-class="{ 'has-error' : referralUserValid==='N'}">
-								<label class="control-label col-sm-4">Referred by a friend?</label>
-								<div class="col-sm-8 errorOverInput">
-									<input type="text" ng-model="user.marketing.referrerUsernameEmail" class="form-control"
-										name="usernameEmail" placeholder="Friend's username or email"
-										 ng-model-options="{updateOn: 'blur'}" ng-change="validateUsername()"/>
-									<p class="help-block help-error">Not a registered username / email.</p>
-									<p class="help-block" ng-show="referralUserValid===''">Your
-										friend's registered username or email.</p>
-									<p class="help-block" ng-show="referralUserValid==='Y'">
-										<span class="green1">Valid user <i
-											class="fa fa-thumbs-o-up" aria-hidden="true"></i></span>
-									</p>
-								</div>
-							</div>
+                                <div class="form-group" ng-class="{ 'has-error' : referralUserValid === 'N'}">
+                                    <label class="control-label col-sm-4">Referred by a friend?</label>
+                                    <div class="col-sm-8 errorOverInput">
+                                        <input type="text" ng-model="user.marketing.referrerUsernameEmail" class="form-control"
+                                               name="usernameEmail" placeholder="Friend's username or email"
+                                               ng-model-options="{updateOn: 'blur'}" ng-change="validateUsername()"/>
+                                        <p class="help-block help-error">Not a registered username / email.</p>
+                                        <p class="help-block" ng-show="referralUserValid === ''">Your
+                                            friend's registered username or email.</p>
+                                        <p class="help-block" ng-show="referralUserValid === 'Y'">
+                                            <span class="green1">Valid user <i
+                                                    class="fa fa-thumbs-o-up" aria-hidden="true"></i></span>
+                                        </p>
+                                    </div>
+                                </div>
 
 
 							<div class="form-group marg-b5">
@@ -335,18 +427,18 @@
 							</div>
 
 
-							<div class="pad-v1 text-center"
-								ng-if="registerForm.$invalid || !recoFile || !idFile">
-								<div class="alert alert-warning">
-									Please fill up all the mandatory fields. <span ng-if="!idFile"><br />Copy
-										of your ID card is required.</span><span
-										ng-show="!registerForm.recYear.$pristine &amp;&amp; medicalUser"
-										ng-if="registerForm.recoYear.$invalid"><br />Reco.
-										Expiry. year is invalid.</span>
-								</div>
-							</div>
-						</form>
-					</div>
+                                <div class="pad-v1 text-center"
+                                     ng-if="registerForm.$invalid || !recoFile || !idFile">
+                                    <div class="alert alert-warning">
+                                        Please fill up all the mandatory fields. <span ng-if="!idFile"><br />Copy
+                                            of your ID card is required.</span><span
+                                            ng-show="!registerForm.recYear.$pristine &amp; &amp; medicalUser"
+                                            ng-if="registerForm.recoYear.$invalid"><br />Reco.
+                                            Expiry. year is invalid.</span>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
 
 				</div>
 			</div>

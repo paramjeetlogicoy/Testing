@@ -10,7 +10,16 @@ public class UserIdentity {
 	private String idCard;
 	private String recomendation;
 	private Date recoExpiry;
-	
+	private String stateMarijuanaCard;
+
+        public String getStateMarijuanaCard() {
+            return stateMarijuanaCard;
+        }
+
+        public void setStateMarijuanaCard(String stateMarijuanaCard) {
+            this.stateMarijuanaCard = stateMarijuanaCard;
+        }
+        
 	public String getIdCard() {
 		return idCard;
 	}

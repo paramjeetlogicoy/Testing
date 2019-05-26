@@ -1472,6 +1472,20 @@ public class CartController {
 						}
 					}
 					
+                                        
+                                        OrderCustomer orderCustomer = order.getCustomer();
+					User usr = null;                                       
+                                 
+					if (orderCustomer != null) {                                      
+						usr = userDao.findOne("_id", (long) orderCustomer.get_id());                                               
+						if (usr!=null&&usr.getApproveStatus() != null) {
+                                                    if(usr.getApproveStatus().equals("1")){
+                                                        taxRate = 0d;
+                                                    }
+						}
+					}                                        
+                                        
+                                        
 //					if(order.getCustomer() != null){
 //						/** Check the user type to see if its medical or recreational. Medical users pay 0 sales tax **/
 //						User userDb = userDao.createQuery()

@@ -36,8 +36,15 @@ public class PostOrderMeta {
 	@Autowired
 	private LogDAO logDao;
 	
-	private final String newOrderURL = "https://www.luvbrite.com/inventory/apps/a-ordermeta?json";
-	private final String updateOrderURL = "https://www.luvbrite.com/inventory/apps/a-c-ordermeta?json";
+        //this Url for prod
+	//	private final String newOrderURL = "https://www.luvbrite.com/inventory/apps/a-ordermeta?json";
+	//	private final String updateOrderURL = "https://www.luvbrite.com/inventory/apps/a-c-ordermeta?json";
+        
+        //this Url for Google Cloud Test Development
+		private final String newOrderURL    = "http://localhost:8080/inventory/apps/a-ordermeta?json";
+		private final String updateOrderURL = "http://localhost:8080/inventory/apps/a-c-ordermeta?json";
+
+      
 	private NumberFormat nf = NumberFormat.getCurrencyInstance();
 	
 	public String postOrder(Order order){
