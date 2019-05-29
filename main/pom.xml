@@ -65,7 +65,7 @@
 			<version>3.0.7.RELEASE</version>
 		</dependency>
 
-
+    
 		<!-- Spring Context Support for Email -->
 		<!-- http://mvnrepository.com/artifact/org.springframework/spring-context-support -->
 		<dependency>

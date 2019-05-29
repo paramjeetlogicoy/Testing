@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.luvbrite.dao.CategoryDAO;
 import com.luvbrite.dao.ProductDAO;
+import com.luvbrite.services.AvailableProducts;
 import com.luvbrite.web.models.Category;
 import com.luvbrite.web.models.Product;
 import com.luvbrite.web.models.UserDetailsExt;
