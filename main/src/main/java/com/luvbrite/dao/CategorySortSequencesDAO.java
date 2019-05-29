@@ -16,7 +16,7 @@ public class CategorySortSequencesDAO extends BasicDAO<CategorySortOptionSeq,Int
 	 super(ds);	
 	}
 
-  public  Long persistCategorySortSeq(CategorySortOptionSeq catSortOptionDoc) {
+  public  Long persistCategorySortSeq(CategorySortOptionSeq catSortOptionDoc) {  /*Save CategorySortOption to category_sortsequence collection */
               
 	     getDs().save(catSortOptionDoc);
   
@@ -26,12 +26,13 @@ public class CategorySortSequencesDAO extends BasicDAO<CategorySortOptionSeq,Int
   
   
   
-  public CategorySortOptionSeq findCategorySortOptionSeqDoc(final Long _id){
+  public CategorySortOptionSeq findCategorySortOptionSeqDoc(final Long _id){  /**Find CategorySortOption doc of provided _id from category_sortsequence collection**/
 	    return getDs().find(CategorySortOptionSeq.class).field("_id").equal(_id).get();
 	   }
 
   
-  public CategorySortOptionSeq findCategorySortOptionSeqByCatId(final int cat_id) {
+  public CategorySortOptionSeq findCategorySortOptionSeqByCatId(final int cat_id) { /**Find CategorySortOption doc of provided 
+                                                                                     cat_id from category_sortsequence collection**/
 	
 	  return  getDs().find(CategorySortOptionSeq.class).field("cat_id").equal(cat_id).get();
 	  

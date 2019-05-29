@@ -25,11 +25,11 @@ public class SortController {
 	@Autowired
 	CategorySortSequencesDAO categorySortSeqdao;
 	
-	/*@RequestMapping(value = "/Test")
-	public @ResponseBody String Test() {	
-           System.out.println("Hi");
-		   return "Hi";
-	}*/
+	/****
+	*This service finds categorysortoption doc from collection category_sortsequence on the basis of category id 
+	*and update existing doc with categorysortoption doc from front  end if  categorysortoption doc does not exist already 
+	*insert a new one
+	****/
 	
 	
 	@RequestMapping(value = "/CategorySortSeq" ,  method = RequestMethod.GET)
@@ -60,6 +60,11 @@ public class SortController {
 	     return "Ouput After saving==>"+i;
      }
 
+/**
+ * Find categorysort option doc from category_sortsequence on the category id 
+ * 
+ * 
+ * **/
 
 	@RequestMapping(value="/getcategorysortoptseq", method= RequestMethod.GET)
 	public @ResponseBody CategorySortOptionSeq getCategorySortSeq(@RequestBody CategorySortOptionSeq categorySortOption ) {
