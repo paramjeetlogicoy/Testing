@@ -205,84 +205,8 @@ public class Product implements Comparable<Product> {
 
     @Override
     public String toString() {
-        return "Product{" + "\n_id=" + _id + ", \n newBatchArrival=" + newBatchArrival + ", \nproduct_id=" + product_id + ", \ncategory_id=" + category_id + ", \nstrainid=" + strainid + ", \nstrain_name=" + strain_name + ", \ntotal_purchase_qty=" + total_purchase_qty + ", \ntotal_packet_qty=" + total_packet_qty + ", \ntotal_sold_qty=" + total_sold_qty + ", \ntotal_remain_qty=" + total_remain_qty + ", \ntotal_sold_weight=" + total_sold_weight + ", \ntotal_remain_weight=" + total_remain_weight + ", \nmongo_productid=" + mongo_productid + '}';
+        return "Product{" + "\n_id=" + _id + ",\n stock=" + stock + ", \nreviewCount=" + reviewCount + ",\n status=" + status + ", \nstockStat=" + stockStat + ", \nminStockLimit=" + minStockLimit + ", \ndateCreated=" + dateCreated + ", \nproductFilters=" + productFilters + ", \nseoElem=" + seoElem + ", \nprdVisuals=" + prdVisuals + ", \nnewBatchArrival=" + newBatchArrival + '}';
     }
-
-   
-
-
-/**************************************************************************************************************/
-	private int product_id;
-	private int category_id;
-	private int strainid;
-
-	private String strain_name;
-	private double total_purchase_qty;
-	private double total_packet_qty;
-	private double total_sold_qty;
-	private double total_remain_qty;
-	private double total_purchase_weight;
-	private double total_packed_weight;
-	private double total_sold_weight;
-	private double total_remain_weight;
-	private String inv_productname;
-	private Long mongo_productid;
-   
-
-
-
-
-	public String getInv_productname() {
-		return inv_productname;
-	}
-	public void setInv_productname(String inv_productname) {
-		this.inv_productname = inv_productname;
-	}
-	public Long getMongo_productid() {
-		return mongo_productid;
-	}
-	public void setMongo_productid(Long mongo_productid) {
-		this.mongo_productid = mongo_productid;
-	}
-	public void setTotal_remain_qty(double total_remain_qty) {
-		this.total_remain_qty = total_remain_qty;
-	}
-	public void setTotal_remain_weight(double total_remain_weight) {
-		this.total_remain_weight = total_remain_weight;
-	}
-	public int getProduct_id() {
-		return product_id;
-	}
-	public void setProduct_id(int product_id) {
-		this.product_id = product_id;
-	}
-	public int getCategory_id() {
-		return category_id;
-	}
-	public void setCategory_id(int category_id) {
-		this.category_id = category_id;
-	}
-
-	public String getStrain_name() {
-		return strain_name;
-	}
-	public void setStrain_name(String strain_name) {
-		this.strain_name = strain_name;
-	}
-        
-        public int getMinStockLimit() {
-            return minStockLimit;
-        }
-        public void setMinStockLimit(int minStockLimit) {
-           this.minStockLimit = minStockLimit;
-        }
-
-    @Override
-    public String toString() {
-        return "Product{" + "\n_id=" + _id + ", \n newBatchArrival=" + newBatchArrival + ", \nproduct_id=" + product_id + ", \ncategory_id=" + category_id + ", \nstrainid=" + strainid + ", \nstrain_name=" + strain_name + ", \ntotal_purchase_qty=" + total_purchase_qty + ", \ntotal_packet_qty=" + total_packet_qty + ", \ntotal_sold_qty=" + total_sold_qty + ", \ntotal_remain_qty=" + total_remain_qty + ", \ntotal_sold_weight=" + total_sold_weight + ", \ntotal_remain_weight=" + total_remain_weight + ", \nmongo_productid=" + mongo_productid + '}';
-    }
-
-   
 
 
 /**************************************************************************************************************/
