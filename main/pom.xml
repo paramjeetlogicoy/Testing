@@ -229,6 +229,20 @@
                 </dependency>
 
 
+<!-- http://mvnrepository.com/artifact/com.itextpdf/itextpdf -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itextpdf</artifactId>
+			<version>5.5.9</version>
+		</dependency>
+
+	<dependency>
+	<groupId>com.itextpdf</groupId>
+	<artifactId>itext-xtra</artifactId>
+	<version>5.5.9</version>
+	</dependency>
+
+
 	</dependencies>
 
 	<profiles>
