@@ -52,9 +52,11 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 						}
 					})
 					.then(function(resp){
-						$scope.prices = resp.data;	
+                                                var pID = resp.data[0].productId;                                               
+                                                $scope.prices = resp.data;	
+						$scope.getProDetailFromInvByID(pID);
 						
-						if($scope.prices){							
+                                                if($scope.prices){							
 							$scope.loadTemplate($angularElement);
 						}
 					});	
@@ -87,6 +89,27 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 		}
 	};
 	
+        
+        $scope.getProDetailFromInvByID = function (productId){
+          
+            var data = ''+productId;
+           
+            var config = {
+                headers : {                   
+                    'Authorization': 'Basic eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiTWFpbiBBZG1pbiIsImlzcyI6ImF1dGgwIiwidXNlcnR5cGUiOiJvcGVyYXRvciIsInVzZXJuYW1lIjoiY2hhbXAifQ.muZ0ZV2SFNFnjgXhHhuk0iCM7klZ5PJIJq5U07QM8LQ'
+                }
+            };
+            
+            $http.post('/inventory/apps/acceptproductlist', productId, config)
+            .success(function (data, status, headers, config) {
+                $scope.prices.productDetail = {};
+                if(data.success === true){
+                    $scope.prices.productDetail= data.result[0];
+                }
+                console.log($scope.prices);
+            }).error(function (data, status, header, config) {               
+            });            
+        };
 	
 	$scope.loadTemplate = function($angularElement){
 
@@ -146,12 +169,12 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 			
 		$('#thymeleaf-productlist>li').each(function(index){
 			var p = {},
-			$e = $(this);
-			
-//                        console.log('=====================');
-//                        console.log($e);
+			$e = $(this);		
 
-			p.name = $e.data("pname");
+                        //console.log('=====================');
+                        console.log($e);
+                        
+                        p.name = $e.data("pname");
 			p.stockStat = $e.data("stockstat");
 			p._id = parseInt($e.data("pid"));
 			p.featuredImg = $e.data("img");
@@ -166,14 +189,22 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 			p.priceRange = $e.data("price-range");
 			p.description = $e.data("desc");
 			
-			p.newBatchArrival= $e.data("newest");
-			
+			p.newBatchArrival   = $e.data("newest");
+			p.minStockLimit     =  $e.data("minstocklimit");
+			p.total_remain_qty  =  parseInt($e.data("total_remain_qty"));
+                        
+                        if(parseInt(p.total_remain_qty) < parseInt(p.minStockLimit)){ 
+                           p.showProductLimitOption = true;
+                        }else{
+                           p.showProductLimitOption = null; 
+                        }
+                        
+                        
 			p.productFilters = {
-					price : parseFloat($e.data("filter-price")),
-					cbd : parseFloat($e.data("filter-cbd")), 
-					thc : parseFloat($e.data("filter-thc"))
+                            price : parseFloat($e.data("filter-price")),
+                            cbd : parseFloat($e.data("filter-cbd")), 
+                            thc : parseFloat($e.data("filter-thc"))
 			};
-			
 			
 			//push product object to the list we made.
 			$scope.buildList.products.push(p);

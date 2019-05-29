@@ -41,6 +41,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 				.antMatchers("/admin/**").hasRole("ADMIN")
+				.antMatchers("**/Test/**", "/Test").hasRole("ADMIN")
 				.antMatchers("/customer/**", "/checkout")
 				.authenticated()
 			.and()
@@ -63,8 +64,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 				.tokenValiditySeconds(30 * 24 * 3600)  //30 days
 			.and()
 				
-			.csrf()
-				.csrfTokenRepository(csrfTokenRepository())
+			
+			
+			.csrf().disable()
+				.csrf().csrfTokenRepository(csrfTokenRepository())
 			.and()
 			.addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class)
 			

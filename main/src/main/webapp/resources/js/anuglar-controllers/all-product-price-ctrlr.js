@@ -1,7 +1,27 @@
 var allProductPriceCtrlr = function($scope, $http, $rootScope, $timeout){
 
 	$scope.itemTotal = 0;
+        $scope.productDetail = [];
+        
 	$scope.calculateItemTotal = function(){
+               
+               for(var j=0; j<$scope.prices.length; j++){
+                    var currHold = $scope.prices[j];
+                    if($scope.productDetail.length > 0){
+                        var productDetail = $scope.productDetail[j];
+                         
+                        if(productDetail.total_remain_qty){
+                              var qty =  parseInt(currHold.qty);
+                              var total_remain_qty =  parseInt(productDetail.total_remain_qty);
+                              if(qty > total_remain_qty){
+                                  $scope.prices[j].qty = $scope.prices[j].qty-1;
+                                  return;
+                              }                           
+                        }
+                    }                   
+		}          
+               
+                if($scope.prices.length)
 		$scope.itemTotal = 0;
 		//Set the quantity as zero;
 		for(var i=0; i<$scope.prices.length; i++){
@@ -17,6 +37,33 @@ var allProductPriceCtrlr = function($scope, $http, $rootScope, $timeout){
 		}
 	};
 	
+         $scope.getProDetailFromInvByID = function (index,productId){
+          
+            var data = ''+productId;
+           
+            var config = {
+                headers : {                   
+                    'Authorization': 'Basic eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiTWFpbiBBZG1pbiIsImlzcyI6ImF1dGgwIiwidXNlcnR5cGUiOiJvcGVyYXRvciIsInVzZXJuYW1lIjoiY2hhbXAifQ.muZ0ZV2SFNFnjgXhHhuk0iCM7klZ5PJIJq5U07QM8LQ'
+                }
+            };
+            
+            $http.post('/inventory/apps/acceptproductlist', productId, config)
+            .success(function (data, status, headers, config) {
+                $scope.prices.productDetail = {};
+                if(data.success === true){
+                   // $scope.prices.productDetail= data.result[0];
+                   if(data.result.length > 0){
+                        $scope.productDetail[index] = data.result[0];
+                        console.log('===============');
+                        console.log($scope.productDetail);
+                   }                   
+                }
+                console.log($scope.prices);
+            }).error(function (data, status, header, config) {               
+            });            
+        };
+        
+        
 	$scope.itemError = '';
 	$scope.itemSuccess = '';
 	$scope.quickAddToCart = function(event){
@@ -105,10 +152,10 @@ var allProductPriceCtrlr = function($scope, $http, $rootScope, $timeout){
 		
 	};
 	
-	var scopeInit = function(){
-		
+	var scopeInit = function(){		
+               
 		$scope.prices = $scope.$parent.prices;
-		
+		               
 		//Sort the data
 		$scope.prices.sort(function(a,b){return a.regPrice - b.regPrice;});
 		
@@ -128,6 +175,11 @@ var allProductPriceCtrlr = function($scope, $http, $rootScope, $timeout){
 		
 		//calculate new total
 		$scope.calculateItemTotal();
+                
+                for(var j=0; j<$scope.prices.length; j++) {
+                    var currHold = $scope.prices[j];                    
+                    $scope.getProDetailFromInvByID(j,currHold.productId);
+		}
 	};
 	
 	scopeInit();
