@@ -205,8 +205,10 @@ public class Product implements Comparable<Product> {
 
     @Override
     public String toString() {
-        return "Product{" + "\n_id=" + _id + ",\n stock=" + stock + ", \nreviewCount=" + reviewCount + ",\n status=" + status + ", \nstockStat=" + stockStat + ", \nminStockLimit=" + minStockLimit + ", \ndateCreated=" + dateCreated + ", \nproductFilters=" + productFilters + ", \nseoElem=" + seoElem + ", \nprdVisuals=" + prdVisuals + ", \nnewBatchArrival=" + newBatchArrival + '}';
+        return "Product{" + "\n_id=" + _id + ", \n newBatchArrival=" + newBatchArrival + ", \nproduct_id=" + product_id + ", \ncategory_id=" + category_id + ", \nstrainid=" + strainid + ", \nstrain_name=" + strain_name + ", \ntotal_purchase_qty=" + total_purchase_qty + ", \ntotal_packet_qty=" + total_packet_qty + ", \ntotal_sold_qty=" + total_sold_qty + ", \ntotal_remain_qty=" + total_remain_qty + ", \ntotal_sold_weight=" + total_sold_weight + ", \ntotal_remain_weight=" + total_remain_weight + ", \nmongo_productid=" + mongo_productid + '}';
     }
+
+   
 
 
 /**************************************************************************************************************/
