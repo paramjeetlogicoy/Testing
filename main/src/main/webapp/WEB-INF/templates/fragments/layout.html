@@ -397,7 +397,7 @@
 					<div class="col-xs-5 text-right">
 						Qty: <input type="number" class="form-control" step="1" min="0"
 							ng-focus="price.qty==0?price.qty='':price.qty"
-							max="20" ng-model="price.qty" ng-change="calculateItemTotal()" />
+							max="20" ng-model="price.qty" ng-change="calculateItemTotal()"  />
 					</div>
 					<div class="col-xs-3 text-right">
 						<strong ng-if="price.salePrice">{{price.salePrice |
@@ -493,16 +493,11 @@
 											currency}}</strong></span>
 								</div>
                                                                  
-                                                            <div class="row">
+                                                            <div class="row" ng-show="p.showProductLimitOption" >
                                                                 <div class="form-group txt_stock" >
-                                                                    Only {{p.minStockLimit}} Left in Stock
+                                                                    Only {{p.total_remain_qty}} Left in Stock
                                                                 </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="form-group txt_stock" >
-                                                                    total_remain_qty ===> {{p.total_remain_qty}}
-                                                                </div>
-                                                            </div>
+                                                            </div>                                                            
                                                             
                                                                 <div class="row">
 									<div class="col-xs-6">

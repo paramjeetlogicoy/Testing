@@ -21,7 +21,7 @@ public class AvailableProducts {
 
 	private Logger logger = Logger.getLogger(AvailableProducts.class);
 
-	private final String postProdListURL = "http://localhost:8989/inventory/apps/acceptproductlist?json";
+	private final String postProdListURL = "http://localhost:8080/inventory/apps/acceptproductlist?json";
 
 	public List<Product> getAvailProdsFromInv(List<Product> activeProdList) {
 
@@ -35,82 +35,144 @@ public class AvailableProducts {
 			GenericConnection conn = new GenericConnection();
 
 			resp = conn.contactService(commaSeparatedIds, new URL(postProdListURL), false);
-           
-			if (resp == null) {logger.debug("Recieved NULL after trying to hit Inventory Appln"); return activeProdList;}
-               
-			    Gson g = new Gson();
-		 		ProductsInfoJSON prodInfo = g.fromJson(resp, ProductsInfoJSON.class);
+			
+			if (resp == null) {
+				logger.debug("Recieved NULL after trying to hit Inventory Appln");
+				return activeProdList;
+			}
 
-				if (!prodInfo.isSuccess()) {logger.debug("Successfully recieved response from Inv Application "); return activeProdList;}
+			Gson g = new Gson();
+			ProductsInfoJSON prodInfo = g.fromJson(resp, ProductsInfoJSON.class);
 
-					List<ProductAvailable> prodAvailableList = prodInfo.getResult();
-                       if (prodAvailableList.size() == 0) {logger.debug("Size of Product List recieved from Inventory is 0"); return activeProdList;}
-                        prodAvailInInventory = new ArrayList();
-                        Collections.sort(activeProdList);
-                           if (activeProdList.size() == prodAvailableList.size()) {
-                        	   logger.debug("List of products recieved from Inventory is EQUAL to List of products from Main(Luvbrite)");
-                               for (int i = 0; i < activeProdList.size(); i++) {
-                                    ProductAvailable prodAvailable = prodAvailableList.get(i);
-								    Product prod = activeProdList.get(i);
-                                        if (prodAvailable.getTotal_remain_qty() > 0) {
-                                            
-                                        	prod.setProduct_id(prodAvailable.getProduct_id());
-									        prod.setCategory_id(prodAvailable.getCategory_id());
-									        prod.setStrainid(prodAvailable.getStrainid());
-									        prod.setStrain_name(prodAvailable.getStrain_name());
-									        prod.setTotal_purchase_qty(prodAvailable.getTotal_purchase_qty());
-									        prod.setTotal_packet_qty(prodAvailable.getTotal_purchase_qty());
-									        prod.setTotal_sold_qty(prodAvailable.getTotal_sold_qty());
-									        prod.setTotal_remain_qty();
-									        prod.setInv_productname(prodAvailable.getInv_productname());
-									        prod.setMongo_productid(prodAvailable.getMongo_productid());
+			if (!prodInfo.isSuccess()) {
+				logger.debug("Successfully recieved response from Inv Application but success = False ");
+				return activeProdList;
+			}
 
-									        prodAvailInInventory.add(prod);
-								}
+			List<ProductAvailable> prodAvailableList = prodInfo.getResult();
+			logger.info("Size Of available from inventory product->" + prodAvailableList.size());
+			if (prodAvailableList.size() == 0) {
+				logger.debug("Size of Product List recieved from Inventory is 0");
+				return activeProdList;
+			}
+			prodAvailInInventory = new ArrayList();
+			Collections.sort(activeProdList);
+			if (activeProdList.size() == prodAvailableList.size()) {
+				logger.debug(
+						"List of products recieved from Inventory is EQUAL to List of products from Main(Luvbrite)");
+				for (int i = 0; i < activeProdList.size(); i++) {
+					ProductAvailable prodAvailable = prodAvailableList.get(i);
+					Product prod = activeProdList.get(i);
+					if (prodAvailable.getTotal_remain_qty() > 0) {
 
+						prod.setProduct_id(prodAvailable.getProduct_id());
+						prod.setCategory_id(prodAvailable.getCategory_id());
+						prod.setStrainid(prodAvailable.getStrainid());
+						prod.setStrain_name(prodAvailable.getStrain_name());
+						prod.setTotal_purchase_qty(prodAvailable.getTotal_purchase_qty());
+						prod.setTotal_packet_qty(prodAvailable.getTotal_purchase_qty());
+						prod.setTotal_sold_qty(prodAvailable.getTotal_sold_qty());
+						prod.setTotal_remain_qty();
+						prod.setInv_productname(prodAvailable.getInv_productname());
+						prod.setMongo_productid(prodAvailable.getMongo_productid());
+
+						prodAvailInInventory.add(prod);
+					}
+
+				}
+			} else {
+				logger.debug(
+						"List of products recieved from Inventory IS NOT EQUAL to List of products from Main(Luvbrite)");
+
+				int activeProdsSize = activeProdList.size();
+				int invAvailProdsSize = prodAvailableList.size();
+
+				int activeProd_pointr = 0;
+				int invProd_pointr = 0;
+            
+				
+				
+				while (activeProd_pointr < activeProdsSize && invProd_pointr < invAvailProdsSize) {
+                    
+					Product activeProd = activeProdList.get(activeProd_pointr);
+					ProductAvailable prodAvailable = prodAvailableList.get(invProd_pointr);
+                          
+					if (activeProd.get_id() < prodAvailable.getMongo_productid()) {
+						prodAvailInInventory.add(activeProdList.get(activeProd_pointr));
+						activeProd_pointr++;
+					} 
+					else if (activeProd.get_id() > prodAvailable.getMongo_productid()) {
+						prodAvailInInventory.add(activeProdList.get(activeProd_pointr));
+						invProd_pointr++;
+					} 
+					else {
+
+                         if (prodAvailable.getTotal_remain_qty() > 0) {
+						
+							activeProd.setProduct_id(prodAvailable.getProduct_id());
+							activeProd.setCategory_id(prodAvailable.getCategory_id());
+							activeProd.setStrainid(prodAvailable.getStrainid());
+							activeProd.setStrain_name(prodAvailable.getStrain_name());
+							activeProd.setTotal_purchase_qty(prodAvailable.getTotal_purchase_qty());
+							activeProd.setTotal_packet_qty(prodAvailable.getTotal_purchase_qty());
+							activeProd.setTotal_sold_qty(prodAvailable.getTotal_sold_qty());
+							activeProd.setTotal_remain_qty();
+							activeProd.setMongo_productid(prodAvailable.getMongo_productid());
+							activeProd.setInv_productname(prodAvailable.getInv_productname());
+
+							prodAvailInInventory.add(activeProd);
 							}
-						} else {
-							logger.debug("List of products recieved from Inventory is !!NOT!! EQUAL to List of products from Main(Luvbrite)");
-							for (int i = 0; i < activeProdList.size(); i++) {
-                                Product prod = activeProdList.get(i);
-                                    for (int j = 0; j < prodAvailableList.size(); j++) {
-                                         ProductAvailable prodAvailable = prodAvailableList.get(j);
-                                         if (prod.get_id() == prodAvailable.getMongo_productid()
-											&& prodAvailable.getTotal_remain_qty() > 0) {
+                         
+                         activeProd_pointr++;
+						 invProd_pointr++;
+					}
+				}
 
-									            prod.setProduct_id(prodAvailable.getProduct_id());
-									         	prod.setCategory_id(prodAvailable.getCategory_id());
-									         	prod.setStrainid(prodAvailable.getStrainid());
-									         	prod.setStrain_name(prodAvailable.getStrain_name());
-									         	prod.setTotal_purchase_qty(prodAvailable.getTotal_purchase_qty());
-									         	prod.setTotal_packet_qty(prodAvailable.getTotal_purchase_qty());
-									         	prod.setTotal_sold_qty(prodAvailable.getTotal_sold_qty());
-									         	prod.setTotal_remain_qty();
-									         	
-									            prod.setMongo_productid(prodAvailable.getMongo_productid());
-									            prod.setInv_productname(prodAvailable.getInv_productname());
-									           
-									         	prodAvailInInventory.add(prod);
-									         	prodAvailableList.remove(j);
-									         	break;
-                                         }else {
-										        prodAvailInInventory.add(prod);
-										      }
-                                      }
+				/*
+				 * for (int i = 0; i < activeProdList.size(); i++) { Product prod =
+				 * activeProdList.get(i);
+				 * logger.info("***********************************************"); for (int j =
+				 * 0; j < prodAvailableList.size(); j++) { ProductAvailable prodAvailable =
+				 * prodAvailableList.get(j);
+				 * logger.info(" mongo prod id----> "+prodAvailable.getMongo_productid()); if
+				 * (prod.get_id() == prodAvailable.getMongo_productid() &&
+				 * prodAvailable.getTotal_remain_qty() > 0) {
+				 * 
+				 * prod.setProduct_id(prodAvailable.getProduct_id());
+				 * prod.setCategory_id(prodAvailable.getCategory_id());
+				 * prod.setStrainid(prodAvailable.getStrainid());
+				 * prod.setStrain_name(prodAvailable.getStrain_name());
+				 * prod.setTotal_purchase_qty(prodAvailable.getTotal_purchase_qty());
+				 * prod.setTotal_packet_qty(prodAvailable.getTotal_purchase_qty());
+				 * prod.setTotal_sold_qty(prodAvailable.getTotal_sold_qty());
+				 * prod.setTotal_remain_qty();
+				 * 
+				 * prod.setMongo_productid(prodAvailable.getMongo_productid());
+				 * prod.setInv_productname(prodAvailable.getInv_productname());
+				 * 
+				 * prodAvailInInventory.add(prod); prodAvailableList.remove(j);
+				 * logger.info("size of prodavailable list "+prodAvailableList.size()); break;
+				 * }else { prodAvailInInventory.add(prod);
+				 * 
+				 * } }
+				 * 
+				 * }
+				 */
 
-							}
-                        
-							
-						}
+			}
 
 		} catch (Exception e) {
-			
-			 logger.error("Error retrieving products from inventory");
-		     logger.error(Exceptions.giveStackTrace(e));
-		     return activeProdList;
+
+			logger.error("Error retrieving products from inventory");
+			logger.error(Exceptions.giveStackTrace(e));
+			return activeProdList;
 		}
+		/*
+		 * for(int k=0;k<prodAvailInInventory.size();k++) {
+		 * logger.info("Prdouctid="+prodAvailInInventory.get(k).getMongo_productid()); }
+		 */
+		logger.info("size of product available list before returning ==" + prodAvailInInventory.size());
 		return prodAvailInInventory;
-		
 	}
 
 }
