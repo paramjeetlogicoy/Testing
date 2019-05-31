@@ -457,11 +457,11 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
             $http.post('/inventory/apps/addproducts', data, config)
             .success(function (data, status, headers, config) {
                
-                var result = data.result;              
+                //var result = data.result;              
                 $location.path('/details/' + invProductDetail.mongo_productid)
-                if(result.success  === true){
-                    console.log(result);                  
-                }                
+//                if(data.success  === true){
+//                 console.log(data);                  
+//                }                
             }).error(function (data, status, header, config) {                      
             });                            
         };
@@ -488,7 +488,6 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
                             if (data.success === true) {
                                 var result = data.prod;                              
                                 $scope.p.inventory = {'nickName':result.nickName,'strain_id':result.strainId,'category_id':result.categoryId};
-                             
                             }
                 }).error(function (data, status, header, config) {                      
             });                            
