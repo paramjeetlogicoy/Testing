@@ -21,7 +21,7 @@ public class AvailableProducts {
 
 	private Logger logger = Logger.getLogger(AvailableProducts.class);
 
-	private final String postProdListURL = "http://localhost:8080/inventory/apps/acceptproductlist?json";
+	private final String postProdListURL = "http://localhost:8989/inventory/apps/acceptproductlist?json";
 
 	public List<Product> getAvailProdsFromInv(List<Product> activeProdList) {
 
@@ -167,10 +167,7 @@ public class AvailableProducts {
 			logger.error(Exceptions.giveStackTrace(e));
 			return activeProdList;
 		}
-		/*
-		 * for(int k=0;k<prodAvailInInventory.size();k++) {
-		 * logger.info("Prdouctid="+prodAvailInInventory.get(k).getMongo_productid()); }
-		 */
+		
 		logger.info("size of product available list before returning ==" + prodAvailInInventory.size());
 		return prodAvailInInventory;
 	}
