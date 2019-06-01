@@ -288,9 +288,10 @@ public class Product implements Comparable<Product> {
 	public double getTotal_remain_qty() {
 		return total_remain_qty;
 	}
-	public void setTotal_remain_qty() {
-		this.total_remain_qty = this.total_packet_qty-this.total_sold_qty;
-	}
+//	public void setTotal_remain_qty(double total_remain_qty) {
+//		// this.total_remain_qty = this.total_packet_qty-this.total_sold_qty;
+//                this.total_remain_qty = total_remain_qty;
+//	}
 	public double getTotal_purchase_weight() {
 		return total_purchase_weight;
 	}
