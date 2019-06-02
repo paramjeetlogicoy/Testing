@@ -78,9 +78,7 @@ public void setTotal_sold_qty(double total_sold_qty) {
 public double getTotal_remain_qty() {
 	return total_remain_qty;
 }
-public void setTotal_remain_qty() {
-	this.total_remain_qty = this.total_packet_qty-this.total_sold_qty;
-}
+
 public double getTotal_purchase_weight() {
 	return total_purchase_weight;
 }

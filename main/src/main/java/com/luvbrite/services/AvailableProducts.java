@@ -72,7 +72,7 @@ public class AvailableProducts {
 						prod.setTotal_purchase_qty(prodAvailable.getTotal_purchase_qty());
 						prod.setTotal_packet_qty(prodAvailable.getTotal_purchase_qty());
 						prod.setTotal_sold_qty(prodAvailable.getTotal_sold_qty());
-						prod.setTotal_remain_qty();
+						prod.setTotal_remain_qty(prodAvailable.getTotal_remain_qty());
 						prod.setInv_productname(prodAvailable.getInv_productname());
 						prod.setMongo_productid(prodAvailable.getMongo_productid());
 
@@ -116,7 +116,7 @@ public class AvailableProducts {
 							activeProd.setTotal_purchase_qty(prodAvailable.getTotal_purchase_qty());
 							activeProd.setTotal_packet_qty(prodAvailable.getTotal_purchase_qty());
 							activeProd.setTotal_sold_qty(prodAvailable.getTotal_sold_qty());
-							activeProd.setTotal_remain_qty();
+							activeProd.setTotal_remain_qty(prodAvailable.getTotal_remain_qty());
 							activeProd.setMongo_productid(prodAvailable.getMongo_productid());
 							activeProd.setInv_productname(prodAvailable.getInv_productname());
 
