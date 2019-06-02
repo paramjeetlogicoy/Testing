@@ -21,7 +21,7 @@ public class AvailableProducts {
 
 	private Logger logger = Logger.getLogger(AvailableProducts.class);
 
-	private final String postProdListURL = "http://localhost:8989/inventory/apps/acceptproductlist?json";
+	private final String postProdListURL = "http://localhost:8080/inventory/apps/acceptproductlist?json";
 
 	public List<Product> getAvailProdsFromInv(List<Product> activeProdList) {
 

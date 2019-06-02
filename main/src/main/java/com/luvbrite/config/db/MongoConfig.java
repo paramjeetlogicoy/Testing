@@ -44,9 +44,9 @@ public class MongoConfig {
 
         MongoClient client = new MongoClient(
                 Arrays.asList(
-                        new ServerAddress(server1, port1)
-                      /*  new ServerAddress(server2, port2),
-                        new ServerAddress(server3, port3)*/
+                        new ServerAddress(server1, port1)                        
+//                       ,new ServerAddress(server2, port2),
+//                        new ServerAddress(server3, port3)
                 ),
                 Arrays.asList(credential)
         );

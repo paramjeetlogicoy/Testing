@@ -1659,12 +1659,11 @@ public class CartController {
 							email.setRecipientName(newOrder.getCustomer().getName());
 							
 							if(ccs.getcOps().isDev()){
-                                                          email.setRecipientEmail("admin@day2dayprinting.com");	
-                                                          // email.setRecipientEmail("sumiit.prashant.june@gmail.com");
-							}
-							else{
-								email.setRecipientEmail(newOrder.getCustomer().getEmail());								
-								email.setBccs(Arrays.asList(new String[]{"orders-notify@luvbrite.com"}));
+                                                         // email.setRecipientEmail("admin@day2dayprinting.com");
+                                                            email.setRecipientEmail("hemrajshaqawal@gmail.com");
+                                                        } else {
+                                                            email.setRecipientEmail(newOrder.getCustomer().getEmail());								
+                                                            email.setBccs(Arrays.asList(new String[]{"orders-notify@luvbrite.com"}));
 							}
 							
 							email.setEmailTitle("Order Confirmation Email");
