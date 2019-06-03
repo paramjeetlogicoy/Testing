@@ -169,34 +169,34 @@
                             </div>-->
                         </div>
                                                 
-                        <div class="form-group" ng-class="{ 'has-error' : productDetailsForm.nickName.$invalid && !productDetailsForm.nickName.$pristine }" >
+                        <div class="form-group" ng-class="{ 'has-error' : productDetailsForm.inventory.nickName.$invalid && !productDetailsForm.inventory.nickName.$pristine }" >
                             <label class="col-sm-4 control-label">Nick Name</label>
                             <div class="col-sm-7">
                                 <input type="text" value=""
                                        ng-model="p.inventory.nickName" name="nickName"
                                        class="form-control" required=""/>
-                                <p ng-show="productDetailsForm.nickName.$invalid && !productDetailsForm.nickName.$pristine"
+                                <p ng-show="productDetailsForm.inventory.nickName.$invalid && !productDetailsForm.inventory.nickName.$pristine"
                                     class="help-block">Product nick name is required.</p>
                             </div>
                         </div>
-                        <div class="form-group" ng-class="{ 'has-error' : productDetailsForm.category_id.$invalid && !productDetailsForm.category_id.$pristine }">
+                        <div class="form-group" ng-class="{ 'has-error' : productDetailsForm.inventory.category_id.$invalid && !productDetailsForm.inventory.category_id.$pristine }">
                             <label class="col-sm-4 control-label">Category </label>
                             <div class="col-sm-7">
                                 <select class="form-control" name="category_id" ng-options="categoryData.id as categoryData.categoryName for categoryData in categoryData"
                                     ng-model="p.inventory.category_id" required=""></select>
                                 
-                                <p ng-show="productDetailsForm.category_id.$invalid && !productDetailsForm.category_id.$pristine"
+                                <p ng-show="productDetailsForm.inventory.category_id.$invalid && !productDetailsForm.inventory.category_id.$pristine"
                                     class="help-block">Product category is required.</p>
                             </div>
                         </div>
                         
-                        <div class="form-group" ng-class="{ 'has-error' : productDetailsForm.strain_id.$invalid && !productDetailsForm.strain_id.$pristine }">
+                        <div class="form-group" ng-class="{ 'has-error' : productDetailsForm.inventory.strain_id.$invalid && !productDetailsForm.inventory.strain_id.$pristine }">
                             <label class="col-sm-4 control-label">Strain </label>
                             <div class="col-sm-7">
                                 <select class="form-control" name="strain_id" ng-options="strainData.id as strainData.strainName for strainData in strainData"
                                     ng-model="p.inventory.strain_id" required=""></select>
                                 
-                                <p ng-show="productDetailsForm.strain_id.$invalid && !productDetailsForm.strain_id.$pristine"
+                                <p ng-show="productDetailsForm.inventory.strain_id.$invalid && !productDetailsForm.inventory.strain_id.$pristine"
                                     class="help-block">Product strain is required.</p>
                             </div>
                         </div>
