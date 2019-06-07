@@ -112,7 +112,7 @@ public class ProductsController {
 		for(int i = 0 ; i <prodFromInv.size();i++) {
 			Product prod=prodFromInv.get(i);
 			if(prod.isFromInv() && prod.getTotal_remain_qty()==0) {
-				prod.setStockStat("OUT_OF_STOCK");
+				prod.setStockStat("outofstock");
 			}
 		}
 		
