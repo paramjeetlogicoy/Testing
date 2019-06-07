@@ -30,7 +30,16 @@ public class Product implements Comparable<Product> {
 	private String editLock;
 	private String priceRange;
 	private int minStockLimit;
-        
+	private boolean fromInv;   
+	
+    public boolean isFromInv() {
+		return fromInv;
+	}
+	public void setFromInv(boolean fromInv) {
+		this.fromInv = fromInv;
+	}
+
+
 	private boolean variation;
 	
 	private Date dateCreated;

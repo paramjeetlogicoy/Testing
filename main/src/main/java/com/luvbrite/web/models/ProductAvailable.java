@@ -16,8 +16,15 @@ private double total_packed_weight;
 private double total_sold_weight;
 private double total_remain_weight;
 private Long mongo_productid;
+private boolean fromInv;
 
 
+public boolean isFromInv() {
+	return fromInv;
+}
+public void setFromInv(boolean fromInv) {
+	this.fromInv = fromInv;
+}
 public String getInv_productname() {
 	return inv_productname;
 }

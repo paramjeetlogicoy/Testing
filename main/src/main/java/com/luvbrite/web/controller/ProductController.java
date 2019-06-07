@@ -54,7 +54,7 @@ public class ProductController {
 	
 	
 	private List<Product> returnActiveProducts(String sortOrder){
-		
+	
     List<Product> activeProdList = prdDao.createQuery()
 			.filter("status", "publish")
 			.filter("stockStat", "instock")
@@ -77,6 +77,7 @@ public class ProductController {
 			UserDetailsExt user, 
 			ModelMap model){
 		
+
 		if(user!=null && user.isEnabled())
 			model.addAttribute("userId", user.getId());
 		
@@ -85,8 +86,7 @@ public class ProductController {
 		
 		List<Product> products = returnActiveProducts(sortOrder);
 		
-		long endTime = System.nanoTime(); long timeElapsed = endTime - startTime;
-        System.out.println("Execution time in nanoseconds  : " + timeElapsed);
+		
 		
         model.addAttribute("products", products);
 		model.addAttribute("page", "product");
@@ -104,7 +104,8 @@ public class ProductController {
 	@RequestMapping(value = "/")
 	public String homePage(@AuthenticationPrincipal 
 			UserDetailsExt user, 
-			ModelMap model) {		
+			ModelMap model) {
+		
 		return home(user, model);		
 	}
 	
@@ -113,7 +114,7 @@ public class ProductController {
 	public String productSearch(@AuthenticationPrincipal 
 			UserDetailsExt user, 
 			ModelMap model, @RequestParam(value="s", required=false) String query) {	
-
+		
 		List<Product> products = new ArrayList<Product>();
 		String sortOrder = "productFilters.price";
 		
@@ -145,7 +146,8 @@ public class ProductController {
 	
 	
 	@RequestMapping(value = "/json/prod-cat/published")
-	public @ResponseBody ProdCatResponse ListPublishedProductsCategories() {		
+	public @ResponseBody ProdCatResponse ListPublishedProductsCategories() {
+		
 		ProdCatResponse pcr = new ProdCatResponse();
 		
 		List<Product> products = returnActiveProducts("-newBatchArrival");
@@ -162,12 +164,12 @@ public class ProductController {
 	@RequestMapping(value = "/{productUrl}")
 	public String product(@AuthenticationPrincipal 
 			UserDetailsExt user,ModelMap model, @PathVariable String productUrl) {		
-
+		
 		if(user!=null && user.isEnabled())
 			model.addAttribute("userId", user.getId());
 		
 		Product p = prdDao.findOne("url", productUrl);
-		
+
 		if(p == null) return "404";
 		
 		/**
@@ -209,13 +211,24 @@ public class ProductController {
 			model.addAttribute("avgRating", avgRating);
 		}
 		
+		/**Get total remaining product quantity from Inventory**/
+		List<Product> mainProductList =  new ArrayList();
+		mainProductList.add(p);
+		List<Product> prodFromInv = new AvailableProducts().getAllAvailProdsFromInv(mainProductList);
+		Product productFromInv= prodFromInv.get(0);
+		//p.setTotal_remain_qty(productFromInv.getTotal_remain_qty());
+		model.addAttribute("total_remain_qty", productFromInv.getTotal_remain_qty());
+		/*************************************************/
+		
+		
 		return "product-page";	
 			
 	}	
 	
 
 	@RequestMapping(value = "/json/{productId}/price")
-	public @ResponseBody List<Price> price(@PathVariable long productId){			
+	public @ResponseBody List<Price> price(@PathVariable long productId){	
+		
 		return priceDao.findPriceByProduct(productId);		
 	}
 	
@@ -269,6 +282,7 @@ public class ProductController {
 
 	@RequestMapping(value = "/json/get5gspecials")
 	public @ResponseBody List<Product> fiveGramSpecials(){
+		
 		return prdDao.createQuery().retrievedFields(true, "name", "url", "priceRange")
 				.field("categories").equal("5g Specials")
 				.filter("status", "publish")
@@ -289,7 +303,7 @@ public class ProductController {
 
 	@RequestMapping(value = "/json/getCategoryProducts", method = RequestMethod.POST)
 	public @ResponseBody List<Product> getCategoryProducts(@RequestBody AttrValue Category){
-		
+	
 		return prdDao.createQuery().retrievedFields(true, "name", "url", "priceRange", "featuredImg")
 			    .field("categories").equal(Category.getValue())
 				.filter("status", "publish")
