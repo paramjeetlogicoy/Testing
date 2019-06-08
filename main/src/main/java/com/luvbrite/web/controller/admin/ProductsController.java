@@ -108,11 +108,13 @@ public class ProductsController {
 		
 		List<Product> prodFromInv 	=	new AvailableProducts().getAllAvailProdsFromInv(products);
 		
-		/**Set Stock Status to 'outOfStock' For the products whose remaining quantity =0**/
+		/**Set Stock Status to 'outOfStock' or Instock For the products whose remaining quantity=0**/
 		for(int i = 0 ; i <prodFromInv.size();i++) {
 			Product prod=prodFromInv.get(i);
 			if(prod.isFromInv() && prod.getTotal_remain_qty()==0) {
 				prod.setStockStat("outofstock");
+	        }else if(prod.isFromInv() && prod.getTotal_remain_qty()>0) {
+				prod.setStockStat("instock");
 			}
 		}
 		
@@ -183,7 +185,7 @@ public class ProductsController {
 			@Validated @RequestBody Product product, 
 			BindingResult result, @AuthenticationPrincipal 
 			UserDetailsExt user){
-		
+		logger.info("INside save product details");
 		GenericResponse r = new GenericResponse();
 		
 		try {
@@ -309,7 +311,7 @@ public class ProductsController {
 				else {
 					r.setMessage("Invalid Product ID");
 				}
-			}
+			}//
 			
 		}catch(Exception e){
 			logger.error(Exceptions.giveStackTrace(e));

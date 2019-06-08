@@ -21,7 +21,7 @@ public class AvailableProducts {
 
 	private Logger logger = Logger.getLogger(AvailableProducts.class);
 
-	private final String postProdListURL = "http://localhost:8989/inventory/apps/acceptproductlist?json";
+	private final String postProdListURL = "http://localhost:8080/inventory/apps/acceptproductlist?json";
 
 	public List<Product> getAvailProdsFromInv(List<Product> activeProdList) {
 
@@ -129,36 +129,7 @@ public class AvailableProducts {
 					}
 				}
 
-				/*
-				 * for (int i = 0; i < activeProdList.size(); i++) { Product prod =
-				 * activeProdList.get(i);
-				 * logger.info("***********************************************"); for (int j =
-				 * 0; j < prodAvailableList.size(); j++) { ProductAvailable prodAvailable =
-				 * prodAvailableList.get(j);
-				 * logger.info(" mongo prod id----> "+prodAvailable.getMongo_productid()); if
-				 * (prod.get_id() == prodAvailable.getMongo_productid() &&
-				 * prodAvailable.getTotal_remain_qty() > 0) {
-				 * 
-				 * prod.setProduct_id(prodAvailable.getProduct_id());
-				 * prod.setCategory_id(prodAvailable.getCategory_id());
-				 * prod.setStrainid(prodAvailable.getStrainid());
-				 * prod.setStrain_name(prodAvailable.getStrain_name());
-				 * prod.setTotal_purchase_qty(prodAvailable.getTotal_purchase_qty());
-				 * prod.setTotal_packet_qty(prodAvailable.getTotal_purchase_qty());
-				 * prod.setTotal_sold_qty(prodAvailable.getTotal_sold_qty());
-				 * prod.setTotal_remain_qty();
-				 * 
-				 * prod.setMongo_productid(prodAvailable.getMongo_productid());
-				 * prod.setInv_productname(prodAvailable.getInv_productname());
-				 * 
-				 * prodAvailInInventory.add(prod); prodAvailableList.remove(j);
-				 * logger.info("size of prodavailable list "+prodAvailableList.size()); break;
-				 * }else { prodAvailInInventory.add(prod);
-				 * 
-				 * } }
-				 * 
-				 * }
-				 */
+
 
 			}
 

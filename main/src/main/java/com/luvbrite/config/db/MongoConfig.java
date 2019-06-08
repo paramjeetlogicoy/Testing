@@ -33,12 +33,12 @@ public class MongoConfig {
         String server1 = env.getProperty("server1");
         int port1 = Utility.getInteger(env.getProperty("port1"));
 
-      /*  String server2 = env.getProperty("server2");
+       String server2 = env.getProperty("server2");
         int port2 = Utility.getInteger(env.getProperty("port2"));
 
         String server3 = env.getProperty("server3");
         int port3 = Utility.getInteger(env.getProperty("port3"));
-*/
+
         MongoCredential credential = MongoCredential
                 .createCredential(dbuser, dbname, password.toCharArray());
 
