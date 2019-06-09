@@ -171,8 +171,8 @@ var allProductCtrlr = function($scope, $http, $rootScope, $templateRequest, $com
 			var p = {},
 			$e = $(this);		
 
-                        //console.log('=====================');
-                        console.log($e);
+//                        console.log('=====================');
+//                        console.log($e);
                         
                         p.name = $e.data("pname");
 			p.stockStat = $e.data("stockstat");

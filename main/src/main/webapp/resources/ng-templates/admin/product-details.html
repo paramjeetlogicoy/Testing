@@ -131,9 +131,10 @@
                         <div class="form-group">
                             <label class="col-sm-4 control-label">Stock Status</label>
                             <div class="col-sm-3">
-                                <select class="form-control"
+                                <input type="text" ng-model="p.stockStat" ng-disabled="true"/>
+<!--                                <select class="form-control"
                                         ng-options="stockStat for stockStat in stockStats"
-                                        ng-model="p.stockStat" name="stockStat" required></select>
+                                        ng-model="p.stockStat" name="stockStat" required></select>-->
                             </div>
                         </div>
 
