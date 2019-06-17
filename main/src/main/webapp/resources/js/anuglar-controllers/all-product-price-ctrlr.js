@@ -5,8 +5,6 @@ var allProductPriceCtrlr = function($scope, $http, $rootScope, $timeout){
         
 	$scope.calculateItemTotal = function(){
                
-               console.log("=====================");
-               
                for(var j=0; j<$scope.prices.length; j++){
                     var currHold = $scope.prices[j];
                     if($scope.productDetail.length > 0){
