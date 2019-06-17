@@ -5,18 +5,21 @@ var allProductPriceCtrlr = function($scope, $http, $rootScope, $timeout){
         
 	$scope.calculateItemTotal = function(){
                
+               console.log("=====================");
+               
                for(var j=0; j<$scope.prices.length; j++){
                     var currHold = $scope.prices[j];
                     if($scope.productDetail.length > 0){
                         var productDetail = $scope.productDetail[j];
-                         
+                        
                         if(productDetail.total_remain_qty){
                               var qty =  parseInt(currHold.qty);
                               var total_remain_qty =  parseInt(productDetail.total_remain_qty);
-                              if(qty > total_remain_qty){
-                                  $scope.prices[j].qty = $scope.prices[j].qty-1;
-                                  return;
-                              }                           
+                              if((qty > total_remain_qty)){
+                                  $scope.prices[j].qty = total_remain_qty;                                  
+                              }else if(qty === undefined || isNaN(qty)) {
+                                  $scope.prices[j].qty = 0;                                
+                              }
                         }
                     }                   
 		}          

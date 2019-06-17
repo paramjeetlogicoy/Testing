@@ -395,6 +395,7 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
                                         'flag': ''
                                     };
                                     $scope.saveProductInInventory($scope.invProductDetail);
+                                    $scope.getAllInventoryProduct();
                                     
 				}				
 				else if(product.description && product.description.length > 0) {
@@ -422,7 +423,7 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
                                         'flag': ''
                                     };
                                 $scope.saveProductInInventory($scope.invProductDetail);
-                                    
+                                $scope.getAllInventoryProduct();
 				$scope.reloadMemos();
 				if(cb)
 					cb(resp);
