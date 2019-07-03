@@ -21,8 +21,10 @@ public class AvailableProducts {
 
 	private Logger logger = Logger.getLogger(AvailableProducts.class);
 
-	private final String postProdListURL = "http://localhost:8080/inventory/apps/acceptproductlist?json";
-
+	//private final String postProdListURL = "http://localhost:8080/inventory/apps/acceptproductlist?json";
+        
+        private final String postProdListURL = "https://www.luvbrite.com/inventory/apps/acceptproductlist?json";
+        
 	public List<Product> getAvailProdsFromInv(List<Product> activeProdList) {
 
 		String commaSeparatedIds = ListOfProdIds.getCommaSeparatedIds(ListOfProdIds.retrieveIds(activeProdList));
@@ -75,7 +77,7 @@ public class AvailableProducts {
 						prod.setTotal_remain_qty(prodAvailable.getTotal_remain_qty());
 						prod.setInv_productname(prodAvailable.getInv_productname());
 						prod.setMongo_productid(prodAvailable.getMongo_productid());
-                        prod.setFromInv(prodAvailable.isFromInv());
+                                                prod.setFromInv(prodAvailable.isFromInv());
 						prodAvailInInventory.add(prod);
 					}
 
