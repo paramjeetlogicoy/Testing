@@ -985,7 +985,7 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
 		$scope.newBatchDate = new Date(Math.floor( new Date().getTime() / (1000*60) )*1000*60);
 		
 		//initialize product obj
-		$scope.p = {"_id":0, "status":"private","stockStat":"instock","newBatchArrival":$scope.newBatchDate.getTime()};			
+		$scope.p = {"_id":0, "status":"private","stockStat":"outofstock","newBatchArrival":$scope.newBatchDate.getTime(),"minStockLimit":5};			
 		$('#product-editor').show(0, function(){
 			$('.admin-editor-container')[0].scrollIntoView();
 			$('[data-toggle="tooltip"]').tooltip();
