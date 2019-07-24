@@ -487,7 +487,10 @@ prdCtrlrs = function($scope, $http, $filter, $routeParams, $location, mode, $san
             .success(function (data, status, headers, config) {               
                 var result = data.success;        
                             if (data.success === true) {
-                                var result = data.prod;                              
+                                var result = data.prod;   
+                                if(result.nickName === '' || result.nickName === null || result.nickName === undefined){
+                                    result.nickName = result.productName;
+                                } 
                                 $scope.p.inventory = {'nickName':result.nickName,'strain_id':result.strainId,'category_id':result.categoryId};
                             }
                 }).error(function (data, status, header, config) {                      
