@@ -21,14 +21,18 @@ public class AvailableProducts {
 
 	private Logger logger = Logger.getLogger(AvailableProducts.class);
 
-	//private final String postProdListURL = "http://localhost:8080/inventory/apps/acceptproductlist?json";
+	private final String postProdListURL = "http://localhost:8080/inventory/apps/acceptproductlist?json";
         
-        private final String postProdListURL = "https://www.luvbrite.com/inventory/apps/acceptproductlist?json";
+       // private final String postProdListURL = "https://www.luvbrite.com/inventory/apps/acceptproductlist?json";
         
 	public List<Product> getAvailProdsFromInv(List<Product> activeProdList) {
-
+                    
+                if(activeProdList == null || activeProdList.size() == 0){
+                 return activeProdList; 
+                }
+                
 		String commaSeparatedIds = ListOfProdIds.getCommaSeparatedIds(ListOfProdIds.retrieveIds(activeProdList));
-
+                
 		List<Product> prodAvailInInventory = null;
 		String resp = null;
 		try {
