@@ -104,20 +104,22 @@ public class ProductsController {
 			
 		List<Product> products = prdDao.find(order, limit, offset, query);
 		
-//		List<Product> prodFromInv 	=	new AvailableProducts().getAllAvailProdsFromInv(products);
-//		
-//		/**Set Stock Status to 'outOfStock' For the products whose remaining quantity =0**/
-//		for(int i = 0 ; i <prodFromInv.size();i++) {
-//			Product prod=prodFromInv.get(i);
-//			if(prod.isFromInv() && prod.getTotal_remain_qty()==0) {
-//				prod.setStockStat("outofstock");
-//			}
-//		}
+		List<Product> prodFromInv 	=	new AvailableProducts().getAllAvailProdsFromInv(products);
+		
+		/**Set Stock Status to 'outOfStock' For the products whose remaining quantity =0**/
+		for(int i = 0 ; i <prodFromInv.size();i++) {
+			Product prod=prodFromInv.get(i);
+			if(prod.isFromInv() && prod.getTotal_remain_qty()==0) {
+				prod.setStockStat("outofstock");
+			} else if(prod.isFromInv() && prod.getTotal_remain_qty() > 0){
+                            prod.setStockStat("instock");
+                        }
+		}
 		
 		rpg.setSuccess(true);
 		rpg .setPg(pgl.getPg());
-		rpg.setRespData(products);
-		//rpg.setRespData(prodFromInv);
+		//rpg.setRespData(products);
+		rpg.setRespData(prodFromInv);
 		
 		return rpg;		
 	}
