@@ -1452,10 +1452,10 @@ public class CartController {
 						shipping.setDeliveryMethod("Overnight Shipping");					
 					}
 					
-					
+					                                       
 					/* Validate City and State for Tax rate*/
 					double taxRate = 9.5d;
-					
+					                                       
 					//Zero sales for this year
 					Calendar now = Calendar.getInstance();
 					if(now.get(Calendar.YEAR) == 2018){
@@ -1561,7 +1561,7 @@ public class CartController {
 		gr.setMessage("");
 		gr.setPaymentProcessed(false);
 		gr.setOrderFinalizationError(false);
-
+                                              
 		try {
 
 			if(order == null 
@@ -1569,13 +1569,11 @@ public class CartController {
 					|| order.get_id() == 0  
 					|| orderId != order.get_id() 
 					|| order.getLineItems() == null 
-					|| order.getLineItems().size() == 0){
-
+					|| order.getLineItems().size() == 0){                               
+                            
 				gr.setMessage("Unable to find any valid order. Please contact the customer care.");				
 			}
 			else{
-				
-
 				
 				CartOrder currOrder = dao.findCartOrder(orderId);
 				if(currOrder == null){
@@ -1661,11 +1659,10 @@ public class CartController {
 							email.setRecipientName(newOrder.getCustomer().getName());
 							
 							if(ccs.getcOps().isDev()){
-								email.setRecipientEmail("admin@day2dayprinting.com");
-							}
-							else{
-								email.setRecipientEmail(newOrder.getCustomer().getEmail());								
-								email.setBccs(Arrays.asList(new String[]{"orders-notify@luvbrite.com"}));
+                                                            email.setRecipientEmail("admin@day2dayprinting.com");
+                                                        } else {
+                                                            email.setRecipientEmail(newOrder.getCustomer().getEmail());								
+                                                            email.setBccs(Arrays.asList(new String[]{"orders-notify@luvbrite.com"}));
 							}
 							
 							email.setEmailTitle("Order Confirmation Email");
@@ -1683,10 +1680,13 @@ public class CartController {
 						
 						//Sent Order Meta to Inventory
 						try {							
-							
+							// uncomment this for prod enviroment
 							if(!ccs.getcOps().isDev()) postOrderMeta.postOrder(newOrder);
-							
-						}catch(Exception e){
+                                                        
+                                                        // this for dev enviroment
+							//if(ccs.getcOps().isDev()) postOrderMeta.postOrder(newOrder);
+						
+                                                }catch(Exception e){
 							logger.error(Exceptions.giveStackTrace(e));
 						}
 						

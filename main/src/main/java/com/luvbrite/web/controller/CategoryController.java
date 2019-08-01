@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.luvbrite.dao.CategoryDAO;
 import com.luvbrite.dao.ProductDAO;
+import com.luvbrite.services.AvailableProducts;
 import com.luvbrite.web.models.Category;
 import com.luvbrite.web.models.Product;
 import com.luvbrite.web.models.UserDetailsExt;
@@ -73,12 +74,19 @@ public class CategoryController {
 					.filter("stockStat", "instock")
 					.order(sortOrder)
 					.asList();
-			
-			model.addAttribute("products", products);
+			List<Product> prodFromInv 	=	new AvailableProducts().getAvailProdsFromInv(products);
+			model.addAttribute("products", prodFromInv);
+			//model.addAttribute("products", products);
 			model.addAttribute("category", categoryName);
 			model.addAttribute("page", "category");
 			model.addAttribute("sortOrder", sortOrder);
 			
+                       /* System.out.print("==============================");
+                       for(int i =0 ;i<products.size();i++){
+                        System.out.println("product Detail==============="+products.get(i));
+                       } */
+                       
+                       
 			return "products";
 		}		
 		else{

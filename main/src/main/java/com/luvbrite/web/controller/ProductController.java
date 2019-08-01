@@ -3,6 +3,7 @@ package com.luvbrite.web.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,7 +20,9 @@ import com.luvbrite.dao.CategoryDAO;
 import com.luvbrite.dao.PriceDAO;
 import com.luvbrite.dao.ProductDAO;
 import com.luvbrite.dao.ReviewDAO;
+import com.luvbrite.services.AvailableProducts;
 import com.luvbrite.utils.Exceptions;
+import com.luvbrite.utils.ListOfProdIds;
 import com.luvbrite.web.models.AttrValue;
 import com.luvbrite.web.models.Category;
 import com.luvbrite.web.models.Price;
@@ -51,12 +54,21 @@ public class ProductController {
 	
 	
 	private List<Product> returnActiveProducts(String sortOrder){
+	
+    List<Product> activeProdList = prdDao.createQuery()
+			.filter("status", "publish")
+			.filter("stockStat", "instock")
+			.order(sortOrder)
+			.asList();
 		
-		return prdDao.createQuery()
+		 List<Product> prodFromInv 	=	new AvailableProducts().getAvailProdsFromInv(activeProdList);
+		/*return prdDao.createQuery()
 				.filter("status", "publish")
 				.filter("stockStat", "instock")
 				.order(sortOrder)
-				.asList();
+				.asList();*/
+		//return activeProdList;
+		return prodFromInv;
 	}
 	
 
@@ -65,17 +77,26 @@ public class ProductController {
 			UserDetailsExt user, 
 			ModelMap model){
 		
+
 		if(user!=null && user.isEnabled())
 			model.addAttribute("userId", user.getId());
 		
 		String sortOrder = "-newBatchArrival";
-
+		long startTime = System.nanoTime();
+		
 		List<Product> products = returnActiveProducts(sortOrder);
 		
-		model.addAttribute("products", products);
+		
+		
+        model.addAttribute("products", products);
 		model.addAttribute("page", "product");
 		model.addAttribute("sortOrder", sortOrder);
 		
+//               System.out.print("==============================");
+//                       for(int i =0 ;i<products.size();i++){
+//                        System.out.println("In Product Controller product Detail==============="+products.get(i));
+//                       } 
+                
 		return "products";	
 	}
 	
@@ -83,7 +104,8 @@ public class ProductController {
 	@RequestMapping(value = "/")
 	public String homePage(@AuthenticationPrincipal 
 			UserDetailsExt user, 
-			ModelMap model) {		
+			ModelMap model) {
+		
 		return home(user, model);		
 	}
 	
@@ -92,7 +114,7 @@ public class ProductController {
 	public String productSearch(@AuthenticationPrincipal 
 			UserDetailsExt user, 
 			ModelMap model, @RequestParam(value="s", required=false) String query) {	
-
+		
 		List<Product> products = new ArrayList<Product>();
 		String sortOrder = "productFilters.price";
 		
@@ -109,8 +131,8 @@ public class ProductController {
 					.field("name").equal(regExp)
 					.order(sortOrder)
 					.asList();
-			
-			model.addAttribute("products", products);
+			List<Product> prodFromInv=new AvailableProducts().getAvailProdsFromInv(products);
+			model.addAttribute("products", prodFromInv);
 			model.addAttribute("page", "search");
 			model.addAttribute("query", query);
 			model.addAttribute("sortOrder", sortOrder);
@@ -124,7 +146,8 @@ public class ProductController {
 	
 	
 	@RequestMapping(value = "/json/prod-cat/published")
-	public @ResponseBody ProdCatResponse ListPublishedProductsCategories() {		
+	public @ResponseBody ProdCatResponse ListPublishedProductsCategories() {
+		
 		ProdCatResponse pcr = new ProdCatResponse();
 		
 		List<Product> products = returnActiveProducts("-newBatchArrival");
@@ -141,12 +164,12 @@ public class ProductController {
 	@RequestMapping(value = "/{productUrl}")
 	public String product(@AuthenticationPrincipal 
 			UserDetailsExt user,ModelMap model, @PathVariable String productUrl) {		
-
+		
 		if(user!=null && user.isEnabled())
 			model.addAttribute("userId", user.getId());
 		
 		Product p = prdDao.findOne("url", productUrl);
-		
+
 		if(p == null) return "404";
 		
 		/**
@@ -188,13 +211,24 @@ public class ProductController {
 			model.addAttribute("avgRating", avgRating);
 		}
 		
+		/**Get total remaining product quantity from Inventory**/
+		List<Product> mainProductList =  new ArrayList();
+		mainProductList.add(p);
+		List<Product> prodFromInv = new AvailableProducts().getAllAvailProdsFromInv(mainProductList);
+		Product productFromInv= prodFromInv.get(0);
+		//p.setTotal_remain_qty(productFromInv.getTotal_remain_qty());
+		model.addAttribute("total_remain_qty", productFromInv.getTotal_remain_qty());
+		/*************************************************/
+		
+		
 		return "product-page";	
 			
 	}	
 	
 
 	@RequestMapping(value = "/json/{productId}/price")
-	public @ResponseBody List<Price> price(@PathVariable long productId){			
+	public @ResponseBody List<Price> price(@PathVariable long productId){	
+		
 		return priceDao.findPriceByProduct(productId);		
 	}
 	
@@ -248,6 +282,7 @@ public class ProductController {
 
 	@RequestMapping(value = "/json/get5gspecials")
 	public @ResponseBody List<Product> fiveGramSpecials(){
+		
 		return prdDao.createQuery().retrievedFields(true, "name", "url", "priceRange")
 				.field("categories").equal("5g Specials")
 				.filter("status", "publish")
@@ -268,7 +303,7 @@ public class ProductController {
 
 	@RequestMapping(value = "/json/getCategoryProducts", method = RequestMethod.POST)
 	public @ResponseBody List<Product> getCategoryProducts(@RequestBody AttrValue Category){
-		
+	
 		return prdDao.createQuery().retrievedFields(true, "name", "url", "priceRange", "featuredImg")
 			    .field("categories").equal(Category.getValue())
 				.filter("status", "publish")

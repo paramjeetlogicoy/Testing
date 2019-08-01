@@ -228,6 +228,12 @@
 								<span class="grey7">Out of Stock</span>
 							</h4>
 						</div>
+                                                
+                                                <div class="row detail-qty-left" ng-show="showProductLimitOption" >
+                                                                <div class="form-group txt_stock" >
+                                                                    Only {{total_remain_qty}} Left in Stock
+                                                                </div>
+                                                </div>
 					</div>
 
 					<div class="marg-b3 pad-t1" th:if="*{status}!='publish'">
@@ -266,6 +272,8 @@
 						type="hidden" id="featuredImg" th:value="*{featuredImg}" /><input
 						type="hidden" id="variableProduct"
 						th:if="*{variation}" value="true" />
+                                        <input type="hidden" id="minStockLimit" th:value="*{minStockLimit}" />
+                                        <input type="hidden" id="total_remain_qty" th:value="*{total_remain_qty}" />
 				</div>
 			</div>
 

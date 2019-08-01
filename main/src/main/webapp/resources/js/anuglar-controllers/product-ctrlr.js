@@ -11,7 +11,14 @@ var productCtrlr = function($scope, $http, $rootScope){
 	$scope.quantity = 1;
 	$scope.successMsg = '';
 	$scope.productInCart = 0;
-	
+	$scope.showProductLimitOption = false;
+        $scope.minStockLimit = parseInt($('#minStockLimit').val());
+        $scope.total_remain_qty = parseInt($('#total_remain_qty').val());
+        
+        if($scope.total_remain_qty <= $scope.minStockLimit){
+            $scope.showProductLimitOption = true;
+        }
+        
 	$scope.lineItem = {};
 	
 	$scope.getProductPrice = function(){

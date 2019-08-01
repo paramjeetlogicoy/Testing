@@ -27,6 +27,7 @@ import com.luvbrite.dao.LogDAO;
 import com.luvbrite.dao.PriceDAO;
 import com.luvbrite.dao.ProductDAO;
 import com.luvbrite.dao.ReviewDAO;
+import com.luvbrite.services.AvailableProducts;
 import com.luvbrite.services.SynchronizeCartItems;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.PaginationLogic;
@@ -78,7 +79,7 @@ public class ProductsController {
 	
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public String mainPage(ModelMap model){		
+	public String mainPage(ModelMap model){	
 		return "admin/products";		
 	}
 	
@@ -103,9 +104,22 @@ public class ProductsController {
 			
 		List<Product> products = prdDao.find(order, limit, offset, query);
 		
+		List<Product> prodFromInv 	=	new AvailableProducts().getAllAvailProdsFromInv(products);
+		
+		/**Set Stock Status to 'outOfStock' For the products whose remaining quantity =0**/
+		for(int i = 0 ; i <prodFromInv.size();i++) {
+			Product prod=prodFromInv.get(i);
+			if(prod.isFromInv() && prod.getTotal_remain_qty()==0) {
+				prod.setStockStat("outofstock");
+			} else if(prod.isFromInv() && prod.getTotal_remain_qty() > 0){
+                            prod.setStockStat("instock");
+                        }
+		}
+		
 		rpg.setSuccess(true);
 		rpg .setPg(pgl.getPg());
-		rpg.setRespData(products);
+		//rpg.setRespData(products);
+		rpg.setRespData(prodFromInv);
 		
 		return rpg;		
 	}
@@ -113,7 +127,7 @@ public class ProductsController {
 
 	@RequestMapping(value = "/json/all")
 	public @ResponseBody List<Product> allProducts(@RequestParam(value="q", required=false) String query){	
-
+	
 		if(query==null) query = "";
 		return prdDao.findAll(query);
 	}
@@ -121,8 +135,7 @@ public class ProductsController {
 
 	@RequestMapping(value = "/json/{productId}")
 	public @ResponseBody Product productDetails(@PathVariable long productId){	
-		
-		return prdDao.get(productId);
+			return prdDao.get(productId);
 	}
 
 	
@@ -130,7 +143,7 @@ public class ProductsController {
 	public @ResponseBody ResponseWithPg listReviews(
 			@RequestParam(value="p", required=false) Integer page,
 			@RequestParam(value="s", required=false) String reviewStatus){
-		
+	
 		ResponseWithPg rpg = new ResponseWithPg();
 		rpg.setSuccess(false);
 		
@@ -253,6 +266,7 @@ public class ProductsController {
 						productDb.setPriceRange(product.getPriceRange());
 					}
 					
+                                        productDb.setMinStockLimit(product.getMinStockLimit());
 					
 					prdDao.save(productDb);
 					
@@ -312,7 +326,7 @@ public class ProductsController {
 			@RequestBody Product product, 
 			BindingResult result, @AuthenticationPrincipal 
 			UserDetailsExt user){
-			
+		
 		//Generate productId
 		long productId = prdDao.getNextSeq();
 		if(productId != 0l){
@@ -414,7 +428,8 @@ public class ProductsController {
 	}
 
 	@RequestMapping(value = "/json/{productId}/price")
-	public @ResponseBody List<Price> price(@PathVariable long productId){			
+	public @ResponseBody List<Price> price(@PathVariable long productId){	
+			
 		return priceDao.findPriceByProduct(productId);		
 	}
 
