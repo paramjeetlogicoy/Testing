@@ -253,18 +253,21 @@ public class ProductsController {
 					productDb.setProductFilters(product.getProductFilters());
 					productDb.setPrdVisuals(product.getPrdVisuals());
 					productDb.setNewBatchArrival(product.getNewBatchArrival());
+                                        productDb.setWeight(product.getWeight());
 					
 					if(product.isVariation()){
 						productDb.setAttrs(product.getAttrs());
 						productDb.setDefaultAttr(product.getDefaultAttr());
 						productDb.setPriceRange(product.getPriceRange());
-					}
+					       
+                                        }
 					else{
 						productDb.setPrice(product.getPrice());
 						productDb.setSalePrice(product.getSalePrice());
 						productDb.setStock(product.getStock());
 						productDb.setPriceRange(product.getPriceRange());
-					}
+					       
+                                        }
 					
                                         productDb.setMinStockLimit(product.getMinStockLimit());
 					
@@ -326,7 +329,7 @@ public class ProductsController {
 			@RequestBody Product product, 
 			BindingResult result, @AuthenticationPrincipal 
 			UserDetailsExt user){
-		
+		//System.out.println("Products-->"+product.toString());
 		//Generate productId
 		long productId = prdDao.getNextSeq();
 		if(productId != 0l){

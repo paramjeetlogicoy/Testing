@@ -27,10 +27,19 @@ public class Product implements Comparable<Product> {
 	private String status;  //['draft','publish','private','discontinued'];
 	private String stockStat;
 	private String featuredImg;
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
 	private String editLock;
 	private String priceRange;
 	private int minStockLimit;
-	private boolean fromInv;   
+	private double weight; 
+        private boolean fromInv;   
 	
     public boolean isFromInv() {
 		return fromInv;
@@ -214,9 +223,10 @@ public class Product implements Comparable<Product> {
 
     @Override
     public String toString() {
-        return "Product{" + "\n_id=" + _id + ",\n stock=" + stock + ", \nreviewCount=" + reviewCount + ",\n status=" + status + ", \nstockStat=" + stockStat + ", \nminStockLimit=" + minStockLimit + ", \ndateCreated=" + dateCreated + ", \nproductFilters=" + productFilters + ", \nseoElem=" + seoElem + ", \nprdVisuals=" + prdVisuals + ", \nnewBatchArrival=" + newBatchArrival + '}';
+        return "Product{" + "_id=" + _id + ", \neditedLast=" + editedLast + ", \nstock=" + stock + ", \nreviewCount=" + reviewCount + ", \nprice=" + price + ", \nsalePrice=" + salePrice + ", \nrating=" + rating + ", \nname=" + name + ", \ndescription=" + description + ", \nurl=" + url + ", \nstatus=" + status + ", \nstockStat=" + stockStat + ", \nfeaturedImg=" + featuredImg + ", \neditLock=" + editLock + ", \npriceRange=" + priceRange + ", \nminStockLimit=" + minStockLimit + ", \nweight=" + weight + ", \nfromInv=" + fromInv + ", \nvariation=" + variation + ", \ndateCreated=" + dateCreated + ", \nattrs=" + attrs + ", \ndefaultAttr=" + defaultAttr + ", \ncategories=" + categories + ", rps=" + rps + ", productFilters=" + productFilters + ", seoElem=" + seoElem + ", prdVisuals=" + prdVisuals + ", newBatchArrival=" + newBatchArrival + ", product_id=" + product_id + ", category_id=" + category_id + ", strainid=" + strainid + ", strain_name=" + strain_name + ", total_purchase_qty=" + total_purchase_qty + ", total_packet_qty=" + total_packet_qty + ", total_sold_qty=" + total_sold_qty + ", total_remain_qty=" + total_remain_qty + ", total_purchase_weight=" + total_purchase_weight + ", total_packed_weight=" + total_packed_weight + ", total_sold_weight=" + total_sold_weight + ", total_remain_weight=" + total_remain_weight + ", inv_productname=" + inv_productname + ", mongo_productid=" + mongo_productid + '}';
     }
 
+    
 
 /**************************************************************************************************************/
 	private int product_id;
