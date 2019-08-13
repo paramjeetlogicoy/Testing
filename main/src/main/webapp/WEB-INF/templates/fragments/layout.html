@@ -89,6 +89,13 @@
 }
 </script>
 <script src="//lbrit.co/static/js/modernizr-custom.js"></script>
+<style type='text/css'>
+        ul.nav li.dropdown:hover ul.dropdown-menu {
+            display: block;
+        }
+    </style>
+
+
 </head>
 <body>	
 	<header th:fragment="fragment-header" th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
@@ -197,11 +204,11 @@
 				</div>
 			</div>
 		</nav>
-			
+			<!--class="dropdown-toggle" data-toggle="dropdown"-->
 		<nav class="header-sub">
 			<div class="container">
 				<ul class="nav hidden-xs nav-justified">
-					<li class="nav-dropdowns"><a href="/products" class="dropdown-toggle" data-toggle="dropdown"
+					<li class="has-dropdowns"><a href="/products" 
 						role="button" aria-haspopup="true" aria-expanded="false">ALL PRODUCTS<span class="caret"></span></a>
                                             <ul class="dropdown-menu">
 							<li><a href="/category/sativa">Sativa - Energize</a></li>
@@ -212,7 +219,7 @@
                                         </li>
 					<!--<li class="has-dropdowns"><a href="">VIBES</a></li>-->
 					<li class="nav-flowers"><a href="/category/flowers">FLOWERS</a></li>
-					<li class="has-dropdowns"><a href="" class="dropdown-toggle" data-toggle="dropdown"
+					<li class="has-dropdowns"><a href="/category/vapes" 
 						role="button" aria-haspopup="true" aria-expanded="false" >VAPES<span class="caret"></span>
                                             </a>
 					<ul class="dropdown-menu">
@@ -223,7 +230,7 @@
                                                         <li><a href="/category/live-resin-carts">Live Resin</a></li>
 						</ul>
                                             </li>
-                                            <li class="has-dropdowns"><a href="" class="dropdown-toggle" data-toggle="dropdown"
+                                            <li class="has-dropdowns"><a href="/category/pre-rolls" 
 						role="button" aria-haspopup="true" aria-expanded="false" >PRE-ROLLS<span class="caret"></span>
                                             </a>
 					<ul class="dropdown-menu">
@@ -233,7 +240,7 @@
 							
 						</ul>
                                             </li>
-                                             <li class="has-dropdowns"><a href="" class="dropdown-toggle" data-toggle="dropdown"
+                                             <li class="has-dropdowns"><a href="/category/edibles" 
 						role="button" aria-haspopup="true" aria-expanded="false" >EDIBLES<span class="caret"></span>
                                             </a>
 					<ul class="dropdown-menu">
@@ -247,7 +254,7 @@
 							
 						</ul>
                                             </li>
-                                                   <li class="has-dropdowns"><a href="" class="dropdown-toggle" data-toggle="dropdown"
+                                                   <li class="has-dropdowns"><a href="/category/concentrates" 
 						role="button" aria-haspopup="true" aria-expanded="false" >CONCENTRATES<span class="caret"></span>
                                             </a>
 					<ul class="dropdown-menu">
@@ -261,7 +268,7 @@
 							
 						</ul>
                                             </li>
-                                                                           <li class="has-dropdowns"><a href="" class="dropdown-toggle" data-toggle="dropdown"
+                                                                           <li class="has-dropdowns"><a href="/category/gear" 
 						role="button" aria-haspopup="true" aria-expanded="false" >ACCESSORIES<span class="caret"></span>
                                             </a>
 					<ul class="dropdown-menu">
