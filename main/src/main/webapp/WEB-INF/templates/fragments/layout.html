@@ -611,11 +611,13 @@
 							<h3>
 								<a href="/product/{{p.url}}" title="{{p.name}}">{{p.name}}</a>
 							</h3>
-
-							<div class="card-center">
+                                                    <!--href="{{_lbGlobalCDNPath + p.featuredImg}}"  replace below href with this--> 
+						   <!--ng-click="showBiggerImg($event)" add this is anchor tag below to show bigger images-->	
+                                                    
+                                                    <div class="card-center">
 								<a ng-if="p.featuredImg != null"
-									href="{{_lbGlobalCDNPath + p.featuredImg}}"
-									class="pc-img-holder" ng-click="showBiggerImg($event)"> <img
+									href="/product/{{p.url}}"
+									class="pc-img-holder" > <img
 									ng-src="{{_lbGlobalCDNPath + p.featuredImg.replace('.jpg','-300x266.jpg')}}"
 									class="featured-img" /><span
 									ng-if="p.categories &amp;&amp; p.categories.indexOf('Specials') > -1"
