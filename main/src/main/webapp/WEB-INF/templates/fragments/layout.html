@@ -89,6 +89,13 @@
 }
 </script>
 <script src="//lbrit.co/static/js/modernizr-custom.js"></script>
+<!--<style type='text/css'>
+        ul.nav li.dropdown:hover ul.dropdown-menu {
+            display: block;
+        }
+    </style>-->
+
+
 </head>
 <body>	
 	<header th:fragment="fragment-header" th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
@@ -172,7 +179,97 @@
 								<input type="submit"
 									class="btn btn-link navbar-nav-logout orange1" value="LOGOUT" />
 							</form></li>
-						<li><a href="/products">ALL PRODUCTS</a></li>
+                                                        
+                                                <li class="has-dropdowns"><a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"
+						role="button" aria-haspopup="true" aria-expanded="false">ALL PRODUCTS<span class="caret"></span></a>
+                                            <ul class="dropdown-menu">
+                                                        <li><a href="/products"> All Products</a></li>
+							<li><a href="/category/sativa">Sativa - Energize</a></li>
+							<li><a href="/category/indica">Indica - Rejuvenate</a></li>
+							<li><a href="/category/hybrid">Hybrid - Balance</a></li>
+						        <li><a href="/category/cbd">CBD - Health</a></li>
+                                                        
+						</ul>
+                                        </li>
+					<!--<li class="has-dropdowns"><a href="">VIBES</a></li>-->
+					<li class="nav-flowers"><a href="/category/flowers">FLOWERS</a></li>
+                                        <li class="has-dropdowns"><a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"
+						role="button" aria-haspopup="true" aria-expanded="false" >VAPES<span class="caret"></span>
+                                            </a>
+					<ul class="dropdown-menu">
+                                                        <li><a href="/category/vapes"> All Products</a></li>
+							<li><a href="/category/dose-pen">Dose Pen</a></li>
+							<li><a href="/category/pods">Pods</a></li>
+							<li><a href="/category/cartridges">Cartridges</a></li>
+							<li><a href="/category/disposables">Disposables</a></li>
+                                                        <li><a href="/category/live-resin-cart">Live Resin</a></li>
+                                                        
+						</ul>
+                                            </li>
+                                            <li class="has-dropdowns"><a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"
+						role="button" aria-haspopup="true" aria-expanded="false" >PRE-ROLLS<span class="caret"></span>
+                                            </a>
+					<ul class="dropdown-menu">
+                                                        <li><a href="/category/pre-rolls">All Products</a></li>
+							<li><a href="/category/single-preroll">Singles</a></li>
+							<li><a href="/category/preroll-packs">Packs</a></li>
+							<li><a href="/category/infused-prerolls">Infused</a></li>
+                                                        
+							
+						</ul>
+                                            </li>
+                                             <li class="has-dropdowns"><a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"
+						role="button" aria-haspopup="true" aria-expanded="false" >EDIBLES<span class="caret"></span>
+                                            </a>
+					<ul class="dropdown-menu">
+                                                        <li><a href="/category/edibles">All Products</a></li>
+							<li><a href="/category/gummies">Gummies</a></li>
+							<li><a href="/category/cookies">Cookies</a></li>
+							<li><a href="/category/chocolates">Chocolate</a></li>
+                                                        <li><a href="/category/chews">Chews</a></li>
+							<li><a href="/category/mints">Mints</a></li>
+                                                        <li><a href="/category/drinks">Drinks</a></li>
+                                                        <li><a href="/category/capsules">Capsules</a></li>
+                                                        
+							
+						</ul>
+                                            </li>
+                                                   <li class="has-dropdowns"><a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"
+						role="button" aria-haspopup="true" aria-expanded="false" >CONCENTRATES<span class="caret"></span>
+                                            </a>
+					<ul class="dropdown-menu">
+                                                         <li><a href="/category/concentrates">All Products</a></li>
+							<li><a href="/category/live-resin">Live Resin</a></li>
+							<li><a href="/category/sauce">Sauce</a></li>
+							<li><a href="/category/shatter">Shatter</a></li>
+                                                        <li><a href="/category/tinctures">Tincture</a></li>
+							<li><a href="/category/topicals">Topical</a></li>
+                                                        <li><a href="/category/bath">Bath</a></li>
+                                                        <li><a href="/category/pets">Pets</a></li>
+                                                          
+							
+						</ul>
+                                            </li>
+                                                                           <li class="has-dropdowns"><a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"
+						role="button" aria-haspopup="true" aria-expanded="false" >ACCESSORIES<span class="caret"></span>
+                                            </a>
+					<ul class="dropdown-menu">
+                                                        <li><a href="/category/gear">All Products</a></li>
+							<li><a href="/category/batteries">Batteries</a></li>
+							<li><a href="/category/smoking-tools">Smoking Tools</a></li>
+							<li><a href="/category/dabbing">Dabbing Tools</a></li>
+                                                        <li><a href="/category/devices">Devices</a></li>
+                                                         
+							
+							
+						</ul>
+                                            </li>
+					
+					
+					
+					<li class="nav-specials"><a href="/category/specials">SPECIALS</a></li>
+					<li class="nav-boxed-deals"><a href="/category/boxes">BOXED DEALS</a></li>
+<!--						<li><a href="/products">ALL PRODUCTS</a></li>
 						<li><a href="" class="dropdown-toggle" data-toggle="dropdown"
 						role="button" aria-haspopup="true" aria-expanded="false">VIBES
 							<span class="caret"></span>
@@ -191,34 +288,91 @@
 						<li><a href="/category/concentrates">CONCENTRATES</a></li>
 						<li><a href="/category/gear">ACCESSORIES</a></li>
 						<li><a href="/category/specials">SPECIALS</a></li>
-						<li><a href="/category/boxes">BOXED DEALS</a></li>
+						<li><a href="/category/boxes">BOXED DEALS</a></li>-->
 					</ul>
 
 				</div>
 			</div>
 		</nav>
-			
+			<!--class="dropdown-toggle" data-toggle="dropdown"-->
 		<nav class="header-sub">
-			<div class="container">
+			<div class="container clickableHeader">
 				<ul class="nav hidden-xs nav-justified">
-					<li class="nav-products"><a href="/products">ALL PRODUCTS</a></li>
-					<li class="has-dropdowns"><a href="" class="dropdown-toggle" data-toggle="dropdown"
-						role="button" aria-haspopup="true" aria-expanded="false">VIBES
-							<span class="caret"></span>
-						</a>
-						<ul class="dropdown-menu">
-							<li><a href="/category/sativa">Energize - Sativa</a></li>
-							<li><a href="/category/indica">Rejuvenate - Indica</a></li>
-							<li><a href="/category/hybrid">Balance - Hybrid</a></li>
-								<li><a href="/category/cbd">Health - CBD</a></li>
+					<li class="has-dropdowns"><a href="/products" 
+						role="button" aria-haspopup="true" aria-expanded="false">ALL PRODUCTS<span class="caret"></span></a>
+                                            <ul class="dropdown-menu">
+							<li><a href="/category/sativa">Sativa - Energize</a></li>
+							<li><a href="/category/indica">Indica - Rejuvenate</a></li>
+							<li><a href="/category/hybrid">Hybrid - Balance</a></li>
+								<li><a href="/category/cbd">CBD - Health</a></li>
 						</ul>
-					</li>
+                                        </li>
+					<!--<li class="has-dropdowns"><a href="">VIBES</a></li>-->
 					<li class="nav-flowers"><a href="/category/flowers">FLOWERS</a></li>
-					<li class="nav-vapes"><a href="/category/vapes">VAPES</a></li>
-					<li class="nav-pre-rolls"><a href="/category/pre-rolls">PRE-ROLLS</a></li>
-					<li class="nav-edibles"><a href="/category/edibles">EDIBLES</a></li>
-					<li class="nav-concentrates"><a href="/category/concentrates">CONCENTRATES</a></li>
-					<li class="nav-gear"><a href="/category/gear">ACCESSORIES</a></li>
+					<li class="has-dropdowns"><a href="/category/vapes" 
+						role="button" aria-haspopup="true" aria-expanded="false" >VAPES<span class="caret"></span>
+                                            </a>
+					<ul class="dropdown-menu">
+							<li><a href="/category/dose-pen">Dose Pen</a></li>
+							<li><a href="/category/pods">Pods</a></li>
+							<li><a href="/category/cartridges">Cartridges</a></li>
+							<li><a href="/category/disposables">Disposables</a></li>
+                                                        <li><a href="/category/live-resin-cart">Live Resin</a></li>
+						</ul>
+                                            </li>
+                                            <li class="has-dropdowns"><a href="/category/pre-rolls" 
+						role="button" aria-haspopup="true" aria-expanded="false" >PRE-ROLLS<span class="caret"></span>
+                                            </a>
+					<ul class="dropdown-menu">
+							<li><a href="/category/single-preroll">Singles</a></li>
+							<li><a href="/category/preroll-packs">Packs</a></li>
+							<li><a href="/category/infused-prerolls">Infused</a></li>
+							
+						</ul>
+                                            </li>
+                                             <li class="has-dropdowns"><a href="/category/edibles" 
+						role="button" aria-haspopup="true" aria-expanded="false" >EDIBLES<span class="caret"></span>
+                                            </a>
+					<ul class="dropdown-menu">
+							<li><a href="/category/gummies">Gummies</a></li>
+							<li><a href="/category/cookies">Cookies</a></li>
+							<li><a href="/category/chocolates">Chocolate</a></li>
+                                                        <li><a href="/category/chews">Chews</a></li>
+							<li><a href="/category/mints">Mints</a></li>
+                                                        <li><a href="/category/drinks">Drinks</a></li>
+                                                        <li><a href="/category/capsules">Capsules</a></li>
+							
+						</ul>
+                                            </li>
+                                                   <li class="has-dropdowns"><a href="/category/concentrates" 
+						role="button" aria-haspopup="true" aria-expanded="false" >CONCENTRATES<span class="caret"></span>
+                                            </a>
+					<ul class="dropdown-menu">
+							<li><a href="/category/live-resin">Live Resin</a></li>
+							<li><a href="/category/sauce">Sauce</a></li>
+							<li><a href="/category/shatter">Shatter</a></li>
+                                                        <li><a href="/category/tinctures">Tincture</a></li>
+							<li><a href="/category/topicals">Topical</a></li>
+                                                        <li><a href="/category/bath">Bath</a></li>
+                                                        <li><a href="/category/pets">Pets</a></li>
+							
+						</ul>
+                                            </li>
+                                                                           <li class="has-dropdowns"><a href="/category/gear" 
+						role="button" aria-haspopup="true" aria-expanded="false" >ACCESSORIES<span class="caret"></span>
+                                            </a>
+					<ul class="dropdown-menu">
+							<li><a href="/category/batteries">Batteries</a></li>
+							<li><a href="/category/smoking-tools">Smoking Tools</a></li>
+							<li><a href="/category/dabbing">Dabbing Tools</a></li>
+                                                        <li><a href="/category/devices">Devices</a></li>
+							
+							
+						</ul>
+                                            </li>
+					
+					
+					
 					<li class="nav-specials"><a href="/category/specials">SPECIALS</a></li>
 					<li class="nav-boxed-deals"><a href="/category/boxes">BOXED DEALS</a></li>
 				</ul>
@@ -457,11 +611,13 @@
 							<h3>
 								<a href="/product/{{p.url}}" title="{{p.name}}">{{p.name}}</a>
 							</h3>
-
-							<div class="card-center">
+                                                    <!--href="{{_lbGlobalCDNPath + p.featuredImg}}"  replace below href with this--> 
+						   <!--ng-click="showBiggerImg($event)" add this is anchor tag below to show bigger images-->	
+                                                    
+                                                    <div class="card-center">
 								<a ng-if="p.featuredImg != null"
-									href="{{_lbGlobalCDNPath + p.featuredImg}}"
-									class="pc-img-holder" ng-click="showBiggerImg($event)"> <img
+									href="/product/{{p.url}}"
+									class="pc-img-holder" > <img
 									ng-src="{{_lbGlobalCDNPath + p.featuredImg.replace('.jpg','-300x266.jpg')}}"
 									class="featured-img" /><span
 									ng-if="p.categories &amp;&amp; p.categories.indexOf('Specials') > -1"
