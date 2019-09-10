@@ -452,5 +452,15 @@ public class MainController {
 		
 		return gr;
 	}
+                
+        @RequestMapping(value = "/terms-and-conditions")
+	public String termsAndConditions(@AuthenticationPrincipal 
+			UserDetailsExt user, ModelMap model){	
+		
+		if(user!=null && user.isEnabled())
+			model.addAttribute("userId", user.getId());
+		
+		return "terms-and-conditions";		
+	}
 	
 }

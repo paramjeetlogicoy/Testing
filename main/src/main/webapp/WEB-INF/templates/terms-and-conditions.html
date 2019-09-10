@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Terms &amp; Conditions &amp; Privacy Policy</title>
+<meta th:include="fragments/layout::fragment-head" />
+<meta name="robots" content="noindex" />
+</head>
+<body class="bg-greyF9">
+	<div th:replace="fragments/layout::fragment-header"></div>
+	<div class="container page-container">
+		<div class="generic-container display">
+			<h1 class="text-center">Terms and Conditions &amp; Privacy Policy</h1>
+			<div class="text-center">
+				Content for terms and conditions
+			</div>
+		</div>
+	</div>
+	<div th:replace="fragments/layout::fragment-footer"></div>
+	<div th:include="fragments/layout::fragment-foot(angular=false)"></div>
+</body>
+</html>
