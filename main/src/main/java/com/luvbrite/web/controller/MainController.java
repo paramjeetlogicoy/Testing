@@ -463,4 +463,20 @@ public class MainController {
 		return "terms-and-conditions";		
 	}
 	
+       @RequestMapping(value = "/privacy-policy")
+	public String privacyPolicy(@AuthenticationPrincipal 
+			UserDetailsExt user, ModelMap model){	
+		
+		if(user!=null && user.isEnabled())
+			model.addAttribute("userId", user.getId());
+		
+		return "privacy-policy";		
+	}
+
+
+
+
+
+
+
 }
