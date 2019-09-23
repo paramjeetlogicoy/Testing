@@ -21,7 +21,7 @@ public class AvailableProducts {
 
 	private Logger logger = Logger.getLogger(AvailableProducts.class);
 
-	// private final String postProdListURL = "http://localhost:8080/inventory/apps/acceptproductlist?json";
+	// private final String postProdListURL = "http://localhost:8086/inventory/apps/acceptproductlist?json";
         
         private final String postProdListURL = "https://www.luvbrite.com/inventory/apps/acceptproductlist?json";
         
@@ -104,11 +104,11 @@ public class AvailableProducts {
 					ProductAvailable prodAvailable = prodAvailableList.get(invProd_pointr);
                           
 					if (activeProd.get_id() < prodAvailable.getMongo_productid()) {
-						prodAvailInInventory.add(activeProdList.get(activeProd_pointr));
+						//prodAvailInInventory.add(activeProdList.get(activeProd_pointr));
 						activeProd_pointr++;
 					} 
 					else if (activeProd.get_id() > prodAvailable.getMongo_productid()) {
-						prodAvailInInventory.add(activeProdList.get(activeProd_pointr));
+						//prodAvailInInventory.add(activeProdList.get(activeProd_pointr));
 						invProd_pointr++;
 					} 
 					else {
@@ -227,11 +227,11 @@ public class AvailableProducts {
 					ProductAvailable prodAvailable = prodAvailableList.get(invProd_pointr);
                           
 					if (activeProd.get_id() < prodAvailable.getMongo_productid()) {
-						prodAvailInInventory.add(activeProdList.get(activeProd_pointr));
+						//prodAvailInInventory.add(activeProdList.get(activeProd_pointr));
 						activeProd_pointr++;
 					} 
 					else if (activeProd.get_id() > prodAvailable.getMongo_productid()) {
-						prodAvailInInventory.add(activeProdList.get(activeProd_pointr));
+						//prodAvailInInventory.add(activeProdList.get(activeProd_pointr));
 						invProd_pointr++;
 					} 
 					else {
