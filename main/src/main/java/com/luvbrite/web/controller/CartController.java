@@ -1569,9 +1569,8 @@ public class CartController {
                             email.setFromEmail("no-reply@luvbrite.com");
                             email.setRecipientName(newOrder.getCustomer().getName());
 
-                            if (!ccs.getcOps().isDev()) {
-                              //  email.setRecipientEmail("admin@day2dayprinting.com");
-                                 email.setRecipientEmail("sumiit.prashant.june@gmail.com");
+                            if (ccs.getcOps().isDev()) {
+                              email.setRecipientEmail("admin@day2dayprinting.com");
                             } else {
                                 // email.setRecipientEmail(newOrder.getCustomer().getEmail());	
                                 email.setRecipientEmail(newOrder.getCustomer().getEmail());
