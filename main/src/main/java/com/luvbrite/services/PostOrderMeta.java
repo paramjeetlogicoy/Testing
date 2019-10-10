@@ -37,12 +37,12 @@ public class PostOrderMeta {
 	private LogDAO logDao;
 	
         //this Url for prod
-		private final String newOrderURL = "https://www.luvbrite.com/inventory/apps/a-ordermeta?json";
-		private final String updateOrderURL = "https://www.luvbrite.com/inventory/apps/a-c-ordermeta?json";
-        
+//		private final String newOrderURL = "https://www.luvbrite.com/inventory/apps/a-ordermeta?json";
+//		private final String updateOrderURL = "https://www.luvbrite.com/inventory/apps/a-c-ordermeta?json";
+//        
         //this Url for Google Cloud Test Development
-	//	private final String newOrderURL    = "http://localhost:8080/inventory/apps/a-ordermeta?json";
-	//	private final String updateOrderURL = "http://localhost:8080/inventory/apps/a-c-ordermeta?json";
+		private final String newOrderURL    = "http://localhost:8084/inventory/apps/a-ordermeta?json";
+        	private final String updateOrderURL = "http://localhost:8084/inventory/apps/a-c-ordermeta?json";
 
       
 	private NumberFormat nf = NumberFormat.getCurrencyInstance();
@@ -63,7 +63,7 @@ public class PostOrderMeta {
 			com.luvbrite.web.models.ordermeta.Order o = new com.luvbrite.web.models.ordermeta.Order();
 			
 			o.setOrder_number(Long.valueOf(order.getOrderNumber()).intValue());
-			
+			o.setEmail(order.getCustomer().getEmail());
 			if(order.getNotes()!=null) {
 				o.setDelivery_notes(order.getNotes().getDeliveryNotes());
 				o.setNote(order.getNotes().getAdditonalNotes());
