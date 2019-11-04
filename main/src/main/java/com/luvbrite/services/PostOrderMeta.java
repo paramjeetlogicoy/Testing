@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.luvbrite.apis.APIs;
 import com.luvbrite.dao.LogDAO;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.GenericConnection;
@@ -41,9 +42,13 @@ public class PostOrderMeta {
 //		private final String updateOrderURL = "https://www.luvbrite.com/inventory/apps/a-c-ordermeta?json";
 //        
         //this Url for Google Cloud Test Development
-		private final String newOrderURL    = "http://localhost:8084/inventory/apps/a-ordermeta?json";
-        	private final String updateOrderURL = "http://localhost:8084/inventory/apps/a-c-ordermeta?json";
-
+//		private final String newOrderURL    = "http://localhost:8080/inventory/apps/a-ordermeta?json";
+//        	private final String updateOrderURL = "http://localhost:8080/inventory/apps/a-c-ordermeta?json";
+  
+		   APIs apisConstants =  new APIs();
+           private final String newOrderURL    = apisConstants.NEW_ORDER_URL;
+           private final String updateOrderURL = apisConstants.UPDATE_ORDER_URL;     
+                
       
 	private NumberFormat nf = NumberFormat.getCurrencyInstance();
 	
