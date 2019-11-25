@@ -71,7 +71,7 @@ public class CategoryController {
 			List<Product> products = prdDao.createQuery()
 					.field("categories").equal(categoryName)
 					.filter("status", "publish")
-					.filter("stockStat", "instock")
+					//.filter("stockStat", "instock")
 					.order(sortOrder)
 					.asList();
 			List<Product> prodFromInv 	=	new AvailableProducts().getAvailProdsFromInv(products);
