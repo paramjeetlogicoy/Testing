@@ -3,8 +3,6 @@ package com.luvbrite.web.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -22,7 +20,6 @@ import com.luvbrite.dao.ProductDAO;
 import com.luvbrite.dao.ReviewDAO;
 import com.luvbrite.services.AvailableProducts;
 import com.luvbrite.utils.Exceptions;
-import com.luvbrite.utils.ListOfProdIds;
 import com.luvbrite.web.models.AttrValue;
 import com.luvbrite.web.models.Category;
 import com.luvbrite.web.models.Price;
@@ -82,7 +79,7 @@ public class ProductController {
 			model.addAttribute("userId", user.getId());
 		
 		String sortOrder = "-newBatchArrival";
-		long startTime = System.nanoTime();
+		
 		
 		List<Product> products = returnActiveProducts(sortOrder);
 		
@@ -212,13 +209,12 @@ public class ProductController {
 		}
 		
 		/**Get total remaining product quantity from Inventory**/
-		List<Product> mainProductList =  new ArrayList();
+		List<Product> mainProductList =  new ArrayList<Product>();
 		mainProductList.add(p);
 		List<Product> prodFromInv = new AvailableProducts().getAllAvailProdsFromInv(mainProductList);
 		Product productFromInv= prodFromInv.get(0);
-		//p.setTotal_remain_qty(productFromInv.getTotal_remain_qty());
 		model.addAttribute("total_remain_qty", productFromInv.getTotal_remain_qty());
-		/*************************************************/
+	
 		
 		
 		return "product-page";	
