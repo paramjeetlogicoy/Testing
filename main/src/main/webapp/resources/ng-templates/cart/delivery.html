@@ -20,12 +20,12 @@
 				</div>
 			</div>
 
-			<!-- 			<div class="pad1 bg-orange2 marg-b2 white"
+			<div class="pad1 bg-orange2 marg-b2 white"
 				ng-show="shippingSelected">
 				<strong>Overnight Shipping</strong> <a href=""
 					ng-click="resetDeliveryOptions()" class="inlineb pad-h1 inherit"><i
 					class="fa fa-pencil" aria-hidden="true"></i> <em>change</em></a>
-			</div> -->
+			</div> 
 			
 			<form id="cartAddress" name="cartAddress" ng-submit="saveDeliveryAddress()">
 				<div class="row">
@@ -98,16 +98,15 @@
 					</div>
 				</div>
 
-				<div class="marg-b2" ng-show="m.config.rushDeliveryCharge">
+			<!-- 	<div class="marg-b2" ng-show="m.config.rushDeliveryCharge">
 					<label class="fa-label show"><input type="checkbox"
 						ng-model="m.order.shipping.rushDelivery" value="true" /><i
 						class="fa fa-square-o" aria-hidden="true"></i> Expedite your order
-						(Deliver within 60 minutes or less) <span class="pull-right">+{{m.config.rushDeliveryCharge
-							| currency}}</span> <br />
+						(Deliver within 60 minutes or less) <span class="pull-right">+{{m.config.rushDeliveryCharge | currency}}</span> <br />
 					<span style="margin-left: 26px;">Guaranteed or rush fee
 							waived!</span></label>
 				</div>
-
+ -->
 				<div class="text-center">
 					<button type="submit" class="btn btn-lb btn-lb-w"
 						ng-disabled="cartAddress.$invalid">

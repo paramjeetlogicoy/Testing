@@ -418,7 +418,8 @@
 									<div class="product-desc">
 										<div class="card-center">
 											<ul class="lb-scrollbar">
-												<li th:utext="*{description}"></li>
+												 <li ng-bind-html="description"></li>
+												<!-- <li th:utext="*{description}"></li> -->
 											</ul>
 										</div>
 
