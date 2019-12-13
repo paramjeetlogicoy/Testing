@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.luvbrite.apis.APIs;
 import com.luvbrite.utils.Exceptions;
 import com.luvbrite.utils.GenericConnection;
 import com.luvbrite.utils.ListOfProdIds;
@@ -23,8 +24,11 @@ public class AvailableProducts {
 
 	// private final String postProdListURL = "http://localhost:8086/inventory/apps/acceptproductlist?json";
         
-        private final String postProdListURL = "https://www.luvbrite.com/inventory/apps/acceptproductlist?json";
-        
+//        private final String postProdListURL = "https://www.luvbrite.com/inventory/apps/acceptproductlist?json";
+	APIs apis = new APIs();
+    private final String postProdListURL = apis.POST_PRODLIST_URL;
+    
+    
 	public List<Product> getAvailProdsFromInv(List<Product> activeProdList) {
                     
                 if(activeProdList == null || activeProdList.size() == 0){

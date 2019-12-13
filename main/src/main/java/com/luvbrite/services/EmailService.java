@@ -36,7 +36,7 @@ public class EmailService {
 
 		// Create the HTML body using Thymeleaf
 		final String emailContent = this.templateEngine.process("layout", ctx);
-
+       
 		String CCs = "";
 		String BCCs = "";
 		
