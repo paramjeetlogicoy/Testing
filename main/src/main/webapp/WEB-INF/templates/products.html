@@ -13,7 +13,8 @@
 	th:href="@{'https://www.luvbrite.com/category/' + ${cUrl}}"
 	rel="canonical" />
 <meta th:include="fragments/layout::fragment-head" />
-<script th:if="${category}!=null" th:inline="text" type="application/ld+json">
+<script th:if="${category}!=null" th:inline="text"
+	type="application/ld+json">
 {
   "@context": "http://schema.org",
   "@type": "BreadcrumbList",
@@ -59,7 +60,7 @@
 				<li th:if="${page}=='category'" class="active" th:text="${category}">Products</li>
 				<li th:if="${page}=='search'" class="active">Search Results</li>
 			</ol>
-			
+
 			<div class="row">
 				<div class="col-sm-5">
 					<h1 th:if="${page}=='product'">All Products</h1>
@@ -78,8 +79,7 @@
 
 							<button class="btn btn-sm btn-default dropdown-toggle"
 								type="button" id="productFilterMenu" data-toggle="dropdown"
-								aria-haspopup="true"
-								aria-expanded="true">
+								aria-haspopup="true" aria-expanded="true">
 								<i class="fa fa-sliders fa-rotate-90 marg-r1"
 									ng-class="{'orange1' : buildList.catFilter}" aria-hidden="true"></i>
 								Filter <em ng-if="buildList.catFilter">({{buildList.catFilter}})</em>
@@ -108,8 +108,7 @@
 									href="" ng-click="buildList.catFilter = 'Hybrid'"><span
 										class="marg-l1">- Hybrid</span></a></li>
 
-								<li  th:if="${page}=='product'" role="separator"
-									class="divider"></li>
+								<li th:if="${page}=='product'" role="separator" class="divider"></li>
 								<!--/* Subcategory for Flowers in All Products page - ENDS */-->
 
 
@@ -152,8 +151,7 @@
 									href="" ng-click="buildList.catFilter = 'Drinks'"><span
 										class="marg-l1">- Drinks</span></a></li>
 
-								<li  th:if="${page}=='product'" role="separator"
-									class="divider"></li>
+								<li th:if="${page}=='product'" role="separator" class="divider"></li>
 								<!--/* Subcategory for Edibles in All Products page - ENDS */-->
 
 
@@ -207,8 +205,7 @@
 									href="" ng-click="buildList.catFilter = 'Oil'"><span
 										class="marg-l1">- Oils</span></a></li>
 
-								<li  th:if="${page}=='product'" role="separator"
-									class="divider"></li>
+								<li th:if="${page}=='product'" role="separator" class="divider"></li>
 								<!--/* Subcategory for Concentrates in All Products page - ENDS */-->
 
 
@@ -250,54 +247,48 @@
 										class="fa fa-times" aria-hidden="true"></i> clear filter</a></li>
 							</ul>
 						</div>
-                                                     <!--or ${category} != 'Pre-Rollssss'-->
-						<div class="dropdown pull-right" th:if="${page} == 'product'or ${category}">
+						<!--or ${category} != 'Pre-Rolls'-->
+						<div class="dropdown pull-right"
+							th:if="${page} == 'product'or ${category}!= 'Pre-Rolls'">
 							<span>Sort by:</span>
-							<button class="btn btn-sm btn-default dropdown-toggle" type="button"
-								id="productSortMenu" data-toggle="dropdown" aria-haspopup="true" 
-								th:attr="data-order=${sortOrder}" 
+							<button class="btn btn-sm btn-default dropdown-toggle"
+								type="button" id="productSortMenu" data-toggle="dropdown"
+								aria-haspopup="true" th:attr="data-order=${sortOrder}"
 								aria-expanded="true">
 								{{buildList.orderTxt}} <span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu" aria-labelledby="productSortMenu">
-								<li ng-class="{'disabled' : buildList.order == '-newBatchArrival'}"><a
-									href=""
-									ng-click="sortOrderChange('-newBatchArrival')">Newest</a></li>
+								<li
+									ng-class="{'disabled' : buildList.order == '-newBatchArrival'}"><a
+									href="" ng-click="sortOrderChange('-newBatchArrival')">Newest</a></li>
 								<li
 									ng-class="{'disabled' : buildList.order == 'productFilters.price'}"><a
-									href=""
-									ng-click="sortOrderChange('productFilters.price')">Lowest
+									href="" ng-click="sortOrderChange('productFilters.price')">Lowest
 										Price</a></li>
 								<li
 									ng-class="{'disabled' : buildList.order == '-productFilters.price'}"><a
-									href=""
-									ng-click="sortOrderChange('-productFilters.price')">Highest
+									href="" ng-click="sortOrderChange('-productFilters.price')">Highest
 										Price</a></li>
 								<li ng-class="{'disabled' : buildList.order == '-rating'}"><a
-									href=""
-									ng-click="sortOrderChange('-rating')">Highly
-										rated</a></li>
+									href="" ng-click="sortOrderChange('-rating')">Highly rated</a></li>
 								<li ng-class="{'disabled' : buildList.order == '-reviewCount'}"><a
-									href=""
-									ng-click="sortOrderChange('-reviewCount')">Most
+									href="" ng-click="sortOrderChange('-reviewCount')">Most
 										reviews</a></li>
 								<li th:if="${page}=='product' or ${category}!='Gear'"
 									ng-class="{'disabled' : buildList.order == '-productFilters.thc'}"><a
-									href=""
-									ng-click="sortOrderChange('-productFilters.thc')">High
+									href="" ng-click="sortOrderChange('-productFilters.thc')">High
 										THC</a></li>
 								<li th:if="${page}=='product' or ${category}!='Gear'"
 									ng-class="{'disabled' : buildList.order == '-productFilters.cbd'}"><a
-									href=""
-									ng-click="sortOrderChange('-productFilters.cbd')">High
+									href="" ng-click="sortOrderChange('-productFilters.cbd')">High
 										CBD</a></li>
 							</ul>
 						</div>
 					</div>
 				</div>
 			</div>
-			
-			
+
+
 
 			<div class="products-listing"
 				th:with="sc=${session.SPRING_SECURITY_CONTEXT}">
@@ -309,8 +300,9 @@
 					</div>
 				</div>
 
+                
 				<ul id="thymeleaf-productlist" class="products-container row">
-					<li th:each="product : ${products}"
+				<li th:each="product : ${products}"
 						th:attr="data-pid=${product._id},
 					data-stockstat=${product.stockStat},
 					data-pname=${product.name},
@@ -324,14 +316,13 @@
 					data-review-count=${product.reviewCount},
 					data-price-range=${product.priceRange},
 					data-desc=${product.description},
-                                        data-minStockLimit=${product.minStockLimit},
-                                        data-total_remain_qty=${product.total_remain_qty},
+                    data-minStockLimit=${product.minStockLimit},
+                    data-total_remain_qty=${product.total_remain_qty},
 					data-newest=${product.newBatchArrival != null ? product.newBatchArrival.getTime() : '0'},
 					data-filter-price=${product.productFilters != null ? product.productFilters.price : ''},
 					data-filter-cbd=${product.productFilters != null ? product.productFilters.cbd : ''},
 					data-filter-thc=${product.productFilters != null ? product.productFilters.thc : ''}">
-
-
+                        
 						<div class="product-item-container" th:object="${product}">
 							<div class="product-item-card showItem">
 								<div class="pi-cards product-item">
@@ -343,13 +334,13 @@
 										<a th:href="@{'/product/' + *{url}}" th:title="*{name}"
 											th:text="*{name}"></a>
 									</h3>
-                                                                                  <!--ng-click="showBiggerImg($event) ADD THIS IN BELOW ANCHOR TO SEE BIGGER IMAGE ON CLICK-->
-									    
-                                                                                  <!--"@{${_lbGlobalCDNPath} + *{featuredImg}}"-->                                                                                  
-                                                                                  <div class="card-center">
+									<!--ng-click="showBiggerImg($event) ADD THIS IN BELOW ANCHOR TO SEE BIGGER IMAGE ON CLICK-->
+
+									<!--"@{${_lbGlobalCDNPath} + *{featuredImg}}"-->
+									<div class="card-center">
 										<a th:if="*{featuredImg}!=null"
-											th:href="@{'/product/' + *{url}}"
-											class="pc-img-holder" > <img
+											th:href="@{'/product/' + *{url}}" class="pc-img-holder">
+											<img
 											th:src="${_lbGlobalCDNPath} + ${#strings.replace(product.featuredImg,'.jpg','-300x266.jpg')}"
 											class="featured-img" /> <span
 											th:if="${(product.categories!=null) and (#lists.contains(product.categories, 'Specials'))}"
@@ -358,35 +349,37 @@
 											class="splribbon sspl"><span>super <br />special
 											</span></span><span
 											th:if="${(product.categories!=null) and (#lists.contains(product.categories, 'Exclusive'))}"
-											class="splribbon exclusive"><span>Exclusive!
-											</span></span><span
+											class="splribbon exclusive"><span>Exclusive! </span></span><span
 											th:if="${(product.categories!=null) and (#lists.contains(product.categories, 'Clearance'))}"
-											class="splribbon sspl"><span>Clearance!
-											</span></span><span
+											class="splribbon sspl"><span>Clearance! </span></span><span
 											th:if="${(product.categories!=null) and (#lists.contains(product.categories, '5g'))}"
 											class="stamp fivegram"><span>5g</span></span>
 										</a>
 									</div>
 
 									<div class="tocart">
-								<div class="vibes-wrapper">
-									<a href="/category/sativa"
-									th:if="${(product.categories!=null) and (#lists.contains(product.categories, 'Sativa'))}" class="vibe-sativa">Energize - Sativa</a>
-									<a href="/category/indica"
-									th:if="${(product.categories!=null) and (#lists.contains(product.categories, 'Indica'))}" class="vibe-indica">Rejuvenate - Indica</a>
-									<a href="/category/hybrid"
-									th:if="${(product.categories!=null) and (#lists.contains(product.categories, 'Hybrid'))}" class="vibe-hybrid">Balance - Hybrid</a>
-								</div>
+										<div class="vibes-wrapper">
+											<a href="/category/sativa"
+												th:if="${(product.categories!=null) and (#lists.contains(product.categories, 'Sativa'))}"
+												class="vibe-sativa">Energize - Sativa</a> <a
+												href="/category/indica"
+												th:if="${(product.categories!=null) and (#lists.contains(product.categories, 'Indica'))}"
+												class="vibe-indica">Rejuvenate - Indica</a> <a
+												href="/category/hybrid"
+												th:if="${(product.categories!=null) and (#lists.contains(product.categories, 'Hybrid'))}"
+												class="vibe-hybrid">Balance - Hybrid</a>
+										</div>
 
 										<div class="text-center size24 marg-b1">
 											<strong th:if="*{priceRange}"
 												th:text="${(product.categories!=null) and (#lists.contains(product.categories, 'Flowers'))} ? ${#strings.listSplit(product.priceRange,' - ').get(0)} : *{priceRange}"></strong><span
-												th:unless="*{priceRange}"><strong th:if="*{salePrice} != 0"
+												th:unless="*{priceRange}"><strong
+												th:if="*{salePrice} != 0"
 												th:text="${'$' + #numbers.formatDecimal(product.salePrice,0,2)}"></strong>
 												<strong th:unless="*{salePrice} != 0"
 												th:text="${'$' + #numbers.formatDecimal(product.price,0,2)}"></strong></span>
 										</div>
-                                                                                
+
 
 										<div class="row">
 											<div class="col-xs-6">
@@ -418,8 +411,8 @@
 									<div class="product-desc">
 										<div class="card-center">
 											<ul class="lb-scrollbar">
-												 <li ng-bind-html="description"></li>
 												<!-- <li th:utext="*{description}"></li> -->
+												<li ng-bind-html="description"></li>
 											</ul>
 										</div>
 
@@ -433,7 +426,7 @@
 						</div>
 					</li>
 				</ul>
-				
+
 				<div id="angular-productlist"></div>
 			</div>
 		</div>
@@ -448,7 +441,7 @@
 	<script type="text/ng-template" id="productListTemplate">
 		<div th:replace="fragments/layout::fragment-product-list"></div>
     </script>
-    <script th:inline="javascript" type="text/javascript">
+	<script th:inline="javascript" type="text/javascript">
 	/*<![CDATA[*/
 		var thisPage = /*[[${category} == null ? 'products' : ${#strings.toLowerCase(category)}]]*/; 
 		$(document).ready(function(){
@@ -480,14 +473,11 @@
 						ng-hide="!item.instock">
 						<div class="clearfix">
 							<div class="sci-qty">
-								<a href="" ng-click="updateCart(+1)"
-									ng-hide="item.notEditable"><i
+								<a href="" ng-click="updateCart(+1)" ng-hide="item.notEditable"><i
 									class="fa fa-caret-up" aria-hidden="true"></i></a>
 								<div>{{item.qty}}</div>
-								<a href=""
-									ng-hide="item.qty==1"
-									ng-click="updateCart(-1)"><i class="fa fa-caret-down"
-									aria-hidden="true"></i></a> <a href=""
+								<a href="" ng-hide="item.qty==1" ng-click="updateCart(-1)"><i
+									class="fa fa-caret-down" aria-hidden="true"></i></a> <a href=""
 									ng-show="item.qty==1 &amp;&amp; !item.notEditable"
 									ng-click="itemRemove()"><i class="fa fa-caret-down"
 									aria-hidden="true"></i></a>
