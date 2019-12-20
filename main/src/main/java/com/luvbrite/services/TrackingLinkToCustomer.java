@@ -68,7 +68,7 @@ public class TrackingLinkToCustomer {
             String emailSubject = "LuvbriteOrder#" + trackingLinkEmailInfo.getOrderNumber() + " Tracking Link";
 
         isTrackingLinkSent =  emailFunction.email(emailRecipentList, "", emailSubject, mailBody_html, "");
-
+    
         } catch (Exception e) {
              logger.error("$$Exception occured while sending mail to customer about tracking link : ",e);
              isTrackingLinkSent = false;

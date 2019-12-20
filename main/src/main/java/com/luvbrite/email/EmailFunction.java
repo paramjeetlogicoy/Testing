@@ -17,6 +17,8 @@ public class EmailFunction {
 	private final String MAILJET_API_SECRET = "97b64359e8556e4413a1d41f33a6dbbc";
    
 	
+
+	
 	public boolean email(ArrayList<String>lTo, String replyTo, String strSubject, String strMessage, String strXMailer) {
 		
 		try {
