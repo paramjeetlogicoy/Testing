@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import com.luvbrite.dao.CouponDAO;
 import com.luvbrite.dao.OrderDAO;
@@ -37,9 +38,14 @@ import com.luvbrite.web.models.UserDetailsExt;
 import com.luvbrite.web.models.UserIdentity;
 import com.luvbrite.web.models.ordermeta.OrderMain;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
+
 
 @Controller
 public class MainController {
+	
+	   private static Logger logger = Logger.getLogger(MainController.class);
 	
 	@Autowired
 	private EmailService emailService;
@@ -57,7 +63,10 @@ public class MainController {
 	public String homePage(
 			@AuthenticationPrincipal UserDetailsExt user, 
 			ModelMap model) {
-		
+		String sessionID =   RequestContextHolder.getRequestAttributes().getSessionId();
+		MDC.put("sessionId", sessionID);
+		System.out.println("$$$$$$$$$$$$$$$$$$$MDC Injection"+ sessionID);
+		logger.error("$$$$$$$$$$$$$$$$$$$MDC Injection logger"+ sessionID);
 		if(user!=null && user.isEnabled())
 			model.addAttribute("userId", user.getId());
 		

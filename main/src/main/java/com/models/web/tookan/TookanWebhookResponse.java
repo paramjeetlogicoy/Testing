@@ -22,9 +22,6 @@ public class TookanWebhookResponse {
 	private String order_id;
 	private long team_id;
 	private String job_hash;
-
-	
-
 	private String job_description;
 	private String customer_email;
 	private String customer_username;
@@ -33,7 +30,6 @@ public class TookanWebhookResponse {
 	private String creation_datetime;
 	private long fleet_id;
 	private int job_status;
-
 	private long customer_id;
 	private String fleet_name;
 	private String fleet_email;
@@ -56,7 +52,18 @@ public class TookanWebhookResponse {
 	private String template_key;
 	private String is_internal;
 	private String full_tracking_link;
-    
+    private List<Custom_field> custom_fields;
+	
+	
+	
+	public List<Custom_field> getCustom_fields() {
+		return custom_fields;
+	}
+
+	public void setCustom_fields(List<Custom_field> custom_fields) {
+		this.custom_fields = custom_fields;
+	}
+
 	public String getCustomer_username() {
 		return customer_username;
 	}

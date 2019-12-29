@@ -22,6 +22,7 @@ public class APIs {
 
 	/*** Eclipse ****/
 	
+	
 	/*
 	 * public final String POST_PRODLIST_URL =
 	 * "http://localhost:8081/inventory/apps/acceptproductlist?json"; public final
