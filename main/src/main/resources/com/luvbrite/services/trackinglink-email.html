@@ -5,7 +5,7 @@
 </head>
 <body>
 	<div
-		style="background-color: #dfdfdf; padding: 0; margin: 0 auto; width: 100%">
+		style="background-color: #dfdfdf; padding: 0; margin: 0 auto; width: 100%, height:100vh">
 		<span
 			style="display: none !important; font-size: 1px; color: transparent; min-height: 0; width: 0"
 			th:text="${emailObj.emailInfo}"></span>
@@ -26,7 +26,7 @@
 							width="100%" style="table-layout: fixed">
 							<tbody>
 								<tr>
-									<td align="center">
+									<td align="center" style="width:100%;height:100vh">
 										<table border="0" cellspacing="0" cellpadding="0"
 											style="font-family: Helvetica, Arial, sans-serif; min-width: 290px"
 											width="540">
@@ -106,8 +106,68 @@
 																		align="left">
 																		<div
 																			th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
-																		<div
-																			th:replace="${emailObj.emailTemplate}::main"></div>
+																			<table border="0" cellspacing="0" cellpadding="0"
+		style="font-family: Helvetica, Arial, sans-serif" width="100%"
+		bgcolor="#FFFFFF" th:fragment="main">
+		<tbody th:object="${emailObj.email}">
+			<tr>
+				<td style="padding-top:10px">Hi <span >${RECIPENTNAME}</span>,
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+				</td>
+			</tr>
+			<tr>
+				<td style="padding-top:4px">Below are the details in regards to your recent order with
+					Luvbrite Collective. If you have any questions or concerns
+					regarding your order please call us at 310-697-2611 and we
+					will respond promptly.</td>
+			</tr>
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+				</td>
+			</tr>
+			<tr>
+				<td><div style="font-size: 14px;">
+					<br>
+						<strong style="color: #557da1;">Order Number:</strong> <span>${ORDERNUMBER}</span><br /> <strong
+							style="color: #557da1;">Order Date:</strong> <span>${ORDERDATE}</span><br />
+						<!--<strong style="color: #557da1;">Order Total:</strong> $<span>${ORDERTOTAL}</span>  -->
+					</div></td>
+			</tr>
+
+
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+				</td>
+			</tr>
+<tr>
+			<td>
+					<div style="width:1px, padding:1px, size:20px">
+						<br>
+						<p>To track your order please use given tracking link <a href="${TRACKINGLINK}">${TRACKINGLINK}</a></p>
+
+
+					</div>
+				</td>
+			</tr>
+             <tr>      
+				<td>Thanks for using Luvbrite Collective.</td>
+			</tr>
+			<tr>
+				<td style="padding-bottom: 10px;">Luvbrite Team</td>
+			</tr>
+			<tr>
+				<td>
+					<div th:replace="fragments::spacer(width=1, padding=1, size=20)"></div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 
 																	</td>
 																	<td width="20">
@@ -139,7 +199,7 @@
 																<tr>
 																	<td align="left">
 																		<table border="0" cellspacing="0" cellpadding="0"
-																			style="font-family: Helvetica, Arial, sans-serif; font-size: 11px; font-family: Helvetica, Arial, sans-serif; color: #999999"
+																			style="margin-bottom: 10px;, margin-bottom: 10px;, font-family: Helvetica, Arial, sans-serif; font-size: 11px; font-family: Helvetica, Arial, sans-serif; color: #999999"
 																			width="100%">
 																			<tbody>
 																				<tr>
@@ -147,9 +207,7 @@
 																				</tr>
 																				<tr>
 																					<td><div style="padding-left: 5px;">
-																							This email was intended for <span
-																								th:text="${emailObj.recipientName}"></span> (<span
-																								th:text="${emailObj.recipientEmail}"></span>).
+																							This email was intended for <span>${RECIPENTNAME}</span> (<span>${RECIPENTEMAIL}</span>).
 																						</div></td>
 																				</tr>
 																				<tr>

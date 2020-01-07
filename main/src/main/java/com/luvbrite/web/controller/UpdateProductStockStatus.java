@@ -3,34 +3,27 @@ package com.luvbrite.web.controller;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Calendar;
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.WebRequest;
-
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luvbrite.apis.APIs;
 import com.luvbrite.dao.ProductDAO;
+import com.luvbrite.services.TrackingLinkToCustomer;
 import com.luvbrite.utils.CustomGenericConnection;
-import com.luvbrite.utils.Exceptions;
-import com.luvbrite.utils.GenericConnection;
-import com.luvbrite.web.controller.admin.ProductsController;
-import com.luvbrite.web.models.Log;
 import com.luvbrite.web.models.Product;
+import com.models.web.tookan.*;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 @Controller
 @RequestMapping(value = "/updateproductStockStatus")
@@ -41,7 +34,7 @@ public class UpdateProductStockStatus {
 	APIs apisContants = new APIs();
 	// private static final String postTookanNotification =
 	// "http://localhost:8080/inventory/apps/getTookanNotification?json";
-	private  final String postTookanNotification = apisContants.POST_TOOKAN_NOTICATION;
+	private final String postTookanNotification = apisContants.POST_TOOKAN_NOTICATION;
 
 	@Autowired
 	ProductDAO prdDao;
@@ -79,9 +72,25 @@ public class UpdateProductStockStatus {
 	@RequestMapping(value = "/test", method = RequestMethod.POST)
 	public ResponseEntity<String> getTookanNotification(@RequestBody String tookanNotification) {
 
-		String tookanNotification1 = "{\"job_id\":50880172,\"created_by\":5,\"order_id\":\"31615\",\"recurring_id\":\"0\",\"recurring_count\":0,\"partner_order_id\":null,\"team_id\":228977,\"vertical\":0,\"merchant_id\":0,\"geofence\":0,\"tags\":\"\",\"auto_assignment\":0,\"dispatcher_id\":null,\"job_hash\":\"71f3f76aeba984899f970db115685051\",\"has_pickup\":0,\"has_delivery\":1,\"is_routed\":0,\"pickup_delivery_relationship\":\"5088017215707856596958498\",\"job_description\":\"delivering cannabis\",\"job_pickup_datetime\":\"Invalid date\",\"job_pickup_name\":\"\",\"job_pickup_phone\":\"0\",\"job_delivery_datetime\":\"10/17/2019 02:50 pm\",\"job_pickup_latitude\":\"\",\"job_pickup_longitude\":\"\",\"job_pickup_address\":\"\",\"job_pickup_email\":null,\"job_latitude\":\"34.0348428\",\"job_longitude\":\"-118.4522523\",\"customer_username\":\"Day2Day Printing\",\"customer_email\":\"admin@day2dayprinting.com\",\"customer_phone\":\"+1 310-996-6789\",\"job_address\":\"2030 S Westgate Ave , Los Angeles - 90292\",\"creation_datetime\":\"2019-10-11T09:20:59.000Z\",\"fleet_id\":419408,\"user_id\":219320,\"fleet_rating\":5,\"customer_comment\":null,\"is_customer_rated\":0,\"customer_id\":14930727,\"arrived_datetime\":\"2019-10-11 14:57:35\",\"started_datetime\":\"2019-10-11 14:57:2\",\"completed_datetime\":\"2019-10-11 14:57:35\",\"acknowledged_datetime\":\"2019-10-11 14:55:41\",\"job_status\":2,\"is_active\":1,\"job_type\":1,\"completed_by_admin\":0,\"open_tracking_link\":0,\"timezone\":\"-330\",\"job_time\":\"2019-10-17 02:50:0\",\"job_date\":\"2019-10-17T00:00:00.000Z\",\"job_time_utc\":\"2019-10-17T09:20:00.000Z\",\"job_date_utc\":\"2019-10-17T00:00:00.000Z\",\"total_distance_travelled\":0,\"form_id\":null,\"customer_rating\":5,\"driver_comment\":null,\"remarks\":null,\"barcode\":null,\"ride_type\":0,\"matched_pickup_delivery_relationship\":null,\"job_vertical\":0,\"days_started\":\"0\",\"tookan_shared_secret\":\"ZraU2QLFxyZZ3YrG\",\"distance_in\":\"KM\",\"access_token\":\"13a76798c468b7571eb7d2a0c66267cc\",\"domain\":null,\"agent_workflow\":0,\"fleet_name\":\"Hemraj Shaqawal\",\"fleet_email\":\"hemraj.shaqawal@logicoy.com\",\"fleet_phone\":\"+91 89559 09361\",\"fleet_latitude\":\"13.0057533\",\"fleet_longitude\":\"77.650761\",\"transport_type\":2,\"license\":\"\",\"transport_desc\":\"\",\"fleet_image\":\"app/img/user.png\",\"job_details_by_fleet\":419408,\"external_fleet_id\":\"\",\"fleet_vehicle_type\":2,\"fleet_vehicle_color\":\"\",\"fleet_vehicle_description\":\"\",\"task_status\":2,\"promo_used\":\"\",\"custom_fields\":[{\"label\":\"Products\",\"display_name\":\"Products\",\"data_type\":\"Text\",\"app_side\":\"1\",\"required\":1,\"value\":1,\"data\":\"AD Moxie Shatter - Indica,Apex x Cali Kosher | Cannabis Cup Winner | 1g Live Resin Sauce| Papaya,Apex x SOG | Mendo Breath\",\"input\":\"\",\"before_start\":0,\"template_id\":\"Cannabis_Delivery\"},{\"label\":\"Quantity\",\"display_name\":\"Quantity\",\"data_type\":\"Text\",\"app_side\":\"1\",\"required\":1,\"value\":1,\"data\":\"'1','1','1'\",\"input\":\"\",\"before_start\":0,\"template_id\":\"Cannabis_Delivery\"},{\"label\":\"TotalTax\",\"display_name\":\"TotalTax\",\"data_type\":\"Text\",\"app_side\":\"1\",\"required\":1,\"value\":1,\"data\":\"30\",\"input\":\"\",\"before_start\":0,\"template_id\":\"Cannabis_Delivery\"},{\"label\":\"Total\",\"display_name\":\"Total\",\"data_type\":\"Text\",\"app_side\":\"1\",\"required\":0,\"value\":1,\"data\":\"145\",\"input\":\"\",\"before_start\":0,\"template_id\":\"Cannabis_Delivery\"}],\"ref_images\":[\"http://tookanapp.com/wp-content/uploads/2015/11/logo_dark.png\",\"http://tookanapp.com/wp-content/uploads/2015/11/logo_dark.png\"],\"tracking_link\":\"https://app.tookanapp.com/tracking/index.html?jobID=71f3f76aeba984899f970db115685051\",\"task_history\":[{\"id\":316685318,\"job_id\":50880172,\"fleet_id\":null,\"fleet_name\":null,\"latitude\":null,\"longitude\":null,\"type\":\"state_changed\",\"description\":\"Created By Ali-219320\",\"extra_fields\":null,\"creation_datetime\":\"2019-10-11T09:20:59.000Z\",\"creation_date\":\"2019-10-11T00:00:00.000Z\",\"label_description\":\"<span class='created'>CREATED</span>By Ali-219320\"},{\"id\":316687073,\"job_id\":50880172,\"fleet_id\":419408,\"fleet_name\":\"Hemraj Shaqawal\",\"latitude\":\"13.0056663\",\"longitude\":\"77.650999\",\"type\":\"state_changed\",\"description\":\"Assigned Hemraj Shaqawal to task - 219320\",\"extra_fields\":null,\"creation_datetime\":\"2019-10-11T09:22:41.000Z\",\"creation_date\":\"2019-10-11T00:00:00.000Z\",\"label_description\":\"<span class='assigned'>ASSIGNED</span>Hemraj Shaqawal to task - 219320\"},{\"id\":316690113,\"job_id\":50880172,\"fleet_id\":419408,\"fleet_name\":\"Hemraj Shaqawal\",\"latitude\":\"13.0057533\",\"longitude\":\"77.650761\",\"type\":\"state_changed\",\"description\":\"Accepted at\",\"extra_fields\":null,\"creation_datetime\":\"2019-10-11T09:25:41.000Z\",\"creation_date\":\"2019-10-11T00:00:00.000Z\",\"label_description\":\"<span class='accepted'>ACCEPTED</span>at\"},{\"id\":316691490,\"job_id\":50880172,\"fleet_id\":419408,\"fleet_name\":\"Hemraj Shaqawal\",\"latitude\":\"13.0057533\",\"longitude\":\"77.650761\",\"type\":\"state_changed\",\"description\":\"Started at\",\"extra_fields\":null,\"creation_datetime\":\"2019-10-11T09:27:02.000Z\",\"creation_date\":\"2019-10-11T00:00:00.000Z\",\"label_description\":\"<span class='started'>STARTED</span>at\"},{\"id\":316691857,\"job_id\":50880172,\"fleet_id\":419408,\"fleet_name\":\"Hemraj Shaqawal\",\"latitude\":\"13.0057533\",\"longitude\":\"77.650761\",\"type\":\"signature_image_added\",\"description\":\"https://tookan.s3.amazonaws.com/acknowledgement_images/WnVn1570786039075-tasksignature.png\",\"extra_fields\":\"\",\"creation_datetime\":\"2019-10-11T09:27:19.000Z\",\"creation_date\":\"2019-10-11T00:00:00.000Z\",\"label_description\":\"<span class='uploaded'>UPLOADED</span>by Hemraj Shaqawal\"},{\"id\":316692148,\"job_id\":50880172,\"fleet_id\":419408,\"fleet_name\":\"Hemraj Shaqawal\",\"latitude\":\"13.0057533\",\"longitude\":\"77.650761\",\"type\":\"state_changed\",\"description\":\"Successful at\",\"extra_fields\":null,\"creation_datetime\":\"2019-10-11T09:27:35.000Z\",\"creation_date\":\"2019-10-11T00:00:00.000Z\",\"label_description\":\"<span class='successful'>SUCCESSFUL</span>at\"}],\"job_state\":\"Successful\",\"task_state\":\"SUCCESSFUL\",\"completed_datetime_formatted\":\"11 Oct 2019 02:57 pm\",\"started_datetime_formatted\":\"11 Oct 2019 02:57 pm\",\"arrived_datetime_formatted\":\"11 Oct 2019 02:57 pm\",\"acknowledged_datetime_formatted\":\"11 Oct 2019 02:55 pm\",\"job_token\":\"5088017215707856596958498\",\"job_time_formatted\":\"17 Oct 2019 02:50 pm\",\"timestamp_diff\":33000,\"total_time_spent_at_task_till_completion\":\"33 seconds\",\"job_pickup_datetime_formatted\":\"Invalid date\",\"job_delivery_datetime_formatted\":\"17 Oct 2019 02:50 pm\",\"total_distance\":\"0.00 Km\",\"webhook_type\":0,\"format\":\"application/json\",\"template_key\":\"SUCCESSFUL\",\"is_internal\":0,\"full_tracking_link\":\"https://app.tookanapp.com/tracking/index.html?jobID=71f3f76aeba984899f970db115685051\"}";
+//		String tookanNotification1 = "{\"job_id\":50880172,\"created_by\":5,\"order_id\":\"31615\",\"recurring_id\":\"0\",\"recurring_count\":0,\"partner_order_id\":null,\"team_id\":228977,\"vertical\":0,\"merchant_id\":0,\"geofence\":0,\"tags\":\"\",\"auto_assignment\":0,\"dispatcher_id\":null,\"job_hash\":\"71f3f76aeba984899f970db115685051\",\"has_pickup\":0,\"has_delivery\":1,\"is_routed\":0,\"pickup_delivery_relationship\":\"5088017215707856596958498\",\"job_description\":\"delivering cannabis\",\"job_pickup_datetime\":\"Invalid date\",\"job_pickup_name\":\"\",\"job_pickup_phone\":\"0\",\"job_delivery_datetime\":\"10/17/2019 02:50 pm\",\"job_pickup_latitude\":\"\",\"job_pickup_longitude\":\"\",\"job_pickup_address\":\"\",\"job_pickup_email\":null,\"job_latitude\":\"34.0348428\",\"job_longitude\":\"-118.4522523\",\"customer_username\":\"Day2Day Printing\",\"customer_email\":\"admin@day2dayprinting.com\",\"customer_phone\":\"+1 310-996-6789\",\"job_address\":\"2030 S Westgate Ave , Los Angeles - 90292\",\"creation_datetime\":\"2019-10-11T09:20:59.000Z\",\"fleet_id\":419408,\"user_id\":219320,\"fleet_rating\":5,\"customer_comment\":null,\"is_customer_rated\":0,\"customer_id\":14930727,\"arrived_datetime\":\"2019-10-11 14:57:35\",\"started_datetime\":\"2019-10-11 14:57:2\",\"completed_datetime\":\"2019-10-11 14:57:35\",\"acknowledged_datetime\":\"2019-10-11 14:55:41\",\"job_status\":2,\"is_active\":1,\"job_type\":1,\"completed_by_admin\":0,\"open_tracking_link\":0,\"timezone\":\"-330\",\"job_time\":\"2019-10-17 02:50:0\",\"job_date\":\"2019-10-17T00:00:00.000Z\",\"job_time_utc\":\"2019-10-17T09:20:00.000Z\",\"job_date_utc\":\"2019-10-17T00:00:00.000Z\",\"total_distance_travelled\":0,\"form_id\":null,\"customer_rating\":5,\"driver_comment\":null,\"remarks\":null,\"barcode\":null,\"ride_type\":0,\"matched_pickup_delivery_relationship\":null,\"job_vertical\":0,\"days_started\":\"0\",\"tookan_shared_secret\":\"ZraU2QLFxyZZ3YrG\",\"distance_in\":\"KM\",\"access_token\":\"13a76798c468b7571eb7d2a0c66267cc\",\"domain\":null,\"agent_workflow\":0,\"fleet_name\":\"Hemraj Shaqawal\",\"fleet_email\":\"hemraj.shaqawal@logicoy.com\",\"fleet_phone\":\"+91 89559 09361\",\"fleet_latitude\":\"13.0057533\",\"fleet_longitude\":\"77.650761\",\"transport_type\":2,\"license\":\"\",\"transport_desc\":\"\",\"fleet_image\":\"app/img/user.png\",\"job_details_by_fleet\":419408,\"external_fleet_id\":\"\",\"fleet_vehicle_type\":2,\"fleet_vehicle_color\":\"\",\"fleet_vehicle_description\":\"\",\"task_status\":2,\"promo_used\":\"\",\"custom_fields\":[{\"label\":\"Products\",\"display_name\":\"Products\",\"data_type\":\"Text\",\"app_side\":\"1\",\"required\":1,\"value\":1,\"data\":\"AD Moxie Shatter - Indica,Apex x Cali Kosher | Cannabis Cup Winner | 1g Live Resin Sauce| Papaya,Apex x SOG | Mendo Breath\",\"input\":\"\",\"before_start\":0,\"template_id\":\"Cannabis_Delivery\"},{\"label\":\"Quantity\",\"display_name\":\"Quantity\",\"data_type\":\"Text\",\"app_side\":\"1\",\"required\":1,\"value\":1,\"data\":\"'1','1','1'\",\"input\":\"\",\"before_start\":0,\"template_id\":\"Cannabis_Delivery\"},{\"label\":\"TotalTax\",\"display_name\":\"TotalTax\",\"data_type\":\"Text\",\"app_side\":\"1\",\"required\":1,\"value\":1,\"data\":\"30\",\"input\":\"\",\"before_start\":0,\"template_id\":\"Cannabis_Delivery\"},{\"label\":\"Total\",\"display_name\":\"Total\",\"data_type\":\"Text\",\"app_side\":\"1\",\"required\":0,\"value\":1,\"data\":\"145\",\"input\":\"\",\"before_start\":0,\"template_id\":\"Cannabis_Delivery\"}],\"ref_images\":[\"http://tookanapp.com/wp-content/uploads/2015/11/logo_dark.png\",\"http://tookanapp.com/wp-content/uploads/2015/11/logo_dark.png\"],\"tracking_link\":\"https://app.tookanapp.com/tracking/index.html?jobID=71f3f76aeba984899f970db115685051\",\"task_history\":[{\"id\":316685318,\"job_id\":50880172,\"fleet_id\":null,\"fleet_name\":null,\"latitude\":null,\"longitude\":null,\"type\":\"state_changed\",\"description\":\"Created By Ali-219320\",\"extra_fields\":null,\"creation_datetime\":\"2019-10-11T09:20:59.000Z\",\"creation_date\":\"2019-10-11T00:00:00.000Z\",\"label_description\":\"<span class='created'>CREATED</span>By Ali-219320\"},{\"id\":316687073,\"job_id\":50880172,\"fleet_id\":419408,\"fleet_name\":\"Hemraj Shaqawal\",\"latitude\":\"13.0056663\",\"longitude\":\"77.650999\",\"type\":\"state_changed\",\"description\":\"Assigned Hemraj Shaqawal to task - 219320\",\"extra_fields\":null,\"creation_datetime\":\"2019-10-11T09:22:41.000Z\",\"creation_date\":\"2019-10-11T00:00:00.000Z\",\"label_description\":\"<span class='assigned'>ASSIGNED</span>Hemraj Shaqawal to task - 219320\"},{\"id\":316690113,\"job_id\":50880172,\"fleet_id\":419408,\"fleet_name\":\"Hemraj Shaqawal\",\"latitude\":\"13.0057533\",\"longitude\":\"77.650761\",\"type\":\"state_changed\",\"description\":\"Accepted at\",\"extra_fields\":null,\"creation_datetime\":\"2019-10-11T09:25:41.000Z\",\"creation_date\":\"2019-10-11T00:00:00.000Z\",\"label_description\":\"<span class='accepted'>ACCEPTED</span>at\"},{\"id\":316691490,\"job_id\":50880172,\"fleet_id\":419408,\"fleet_name\":\"Hemraj Shaqawal\",\"latitude\":\"13.0057533\",\"longitude\":\"77.650761\",\"type\":\"state_changed\",\"description\":\"Started at\",\"extra_fields\":null,\"creation_datetime\":\"2019-10-11T09:27:02.000Z\",\"creation_date\":\"2019-10-11T00:00:00.000Z\",\"label_description\":\"<span class='started'>STARTED</span>at\"},{\"id\":316691857,\"job_id\":50880172,\"fleet_id\":419408,\"fleet_name\":\"Hemraj Shaqawal\",\"latitude\":\"13.0057533\",\"longitude\":\"77.650761\",\"type\":\"signature_image_added\",\"description\":\"https://tookan.s3.amazonaws.com/acknowledgement_images/WnVn1570786039075-tasksignature.png\",\"extra_fields\":\"\",\"creation_datetime\":\"2019-10-11T09:27:19.000Z\",\"creation_date\":\"2019-10-11T00:00:00.000Z\",\"label_description\":\"<span class='uploaded'>UPLOADED</span>by Hemraj Shaqawal\"},{\"id\":316692148,\"job_id\":50880172,\"fleet_id\":419408,\"fleet_name\":\"Hemraj Shaqawal\",\"latitude\":\"13.0057533\",\"longitude\":\"77.650761\",\"type\":\"state_changed\",\"description\":\"Successful at\",\"extra_fields\":null,\"creation_datetime\":\"2019-10-11T09:27:35.000Z\",\"creation_date\":\"2019-10-11T00:00:00.000Z\",\"label_description\":\"<span class='successful'>SUCCESSFUL</span>at\"}],\"job_state\":\"Successful\",\"task_state\":\"SUCCESSFUL\",\"completed_datetime_formatted\":\"11 Oct 2019 02:57 pm\",\"started_datetime_formatted\":\"11 Oct 2019 02:57 pm\",\"arrived_datetime_formatted\":\"11 Oct 2019 02:57 pm\",\"acknowledged_datetime_formatted\":\"11 Oct 2019 02:55 pm\",\"job_token\":\"5088017215707856596958498\",\"job_time_formatted\":\"17 Oct 2019 02:50 pm\",\"timestamp_diff\":33000,\"total_time_spent_at_task_till_completion\":\"33 seconds\",\"job_pickup_datetime_formatted\":\"Invalid date\",\"job_delivery_datetime_formatted\":\"17 Oct 2019 02:50 pm\",\"total_distance\":\"0.00 Km\",\"webhook_type\":0,\"format\":\"application/json\",\"template_key\":\"SUCCESSFUL\",\"is_internal\":0,\"full_tracking_link\":\"https://app.tookanapp.com/tracking/index.html?jobID=71f3f76aeba984899f970db115685051\"}";
 
 		System.out.println("tookanNotification:--->" + tookanNotification);
+
+		TookanWebhookResponse tookanResponse = createTookanResponseObject(tookanNotification);
+
+		if ("STARTED".equals(tookanResponse.getTask_state().trim())) {
+
+			TrackingLinkEmailInfo trackLnkEmailInfoObj = new TrackingLinkEmailInfo();
+			trackLnkEmailInfoObj.setOrderDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+			trackLnkEmailInfoObj.setOrderNumber(tookanResponse.getOrder_id());
+			// trackLnkEmailInfoObj.setOrderTotal(getOrderTotal(tookanResponse) + " (inc. of
+			// all taxes)");
+			trackLnkEmailInfoObj.setTrackingLink(tookanResponse.getFull_tracking_link());
+			trackLnkEmailInfoObj.setRecipentEmail(tookanResponse.getCustomer_email());
+			trackLnkEmailInfoObj.setRecipentName(tookanResponse.getCustomer_username());
+			new TrackingLinkToCustomer().send(trackLnkEmailInfoObj, tookanResponse.getCustomer_email());
+
+		}
 
 		/* POST TO INVENTORY SERVER */
 		CustomGenericConnection conn = new CustomGenericConnection();
@@ -89,14 +98,71 @@ public class UpdateProductStockStatus {
 		headers.put("Content-Type", "text/plain");
 		String resp = "";
 		try {
-			// resp = conn.contactService(tookanNotification1, new
-			// URL(postTookanNotification), false, headers);
 			resp = conn.contactService(tookanNotification, new URL(postTookanNotification), false, headers);
 		} catch (Exception ex) {
 			logger.error("Exception occured while sending tookanNotification to  inventory", ex);
 		}
 
 		return new ResponseEntity<String>(resp, HttpStatus.OK);
+
 	}
+
+	private static TookanWebhookResponse createTookanResponseObject(String tookanResponse) {
+		ObjectMapper mapper = null;
+		TookanWebhookResponse responseobj = null;
+
+		try {
+			mapper = new ObjectMapper();
+			mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+			responseobj = mapper.readValue(tookanResponse, TookanWebhookResponse.class);
+
+		} catch (Exception e) {
+			logger.error("Exception occured while converting TookanResponse to Object", e);
+			return null;
+
+		}
+		return responseobj;
+	}
+
+	public static void main(String[] args) {
+		String tookanNotification1 = "{\"job_id\":63227753,\"created_by\":5,\"order_id\":\"34859\",\"recurring_id\":\"0\",\"recurring_count\":0,\"partner_order_id\":null,\"team_id\":228977,\"vertical\":0,\"merchant_id\":0,\"geofence\":0,\"tags\":\"\",\"auto_assignment\":0,\"dispatcher_id\":null,\"job_hash\":\"8335ff190f81e377eb933e8ca4448706\",\"ha                   s_pickup\":0,\"has_delivery\":1,\"is_routed\":0,\"pickup_delivery_relationship\":\"6322775315767652927002849\",\"job_description\":\"delivering cannabis\",\"job_pi                   ckup_datetime\":\"Invalid date\",\"job_pickup_name\":\"\",\"job_pickup_phone\":\"0\",\"job_delivery_datetime\":\"12/23/2019 07:51 pm\",\"job_pickup_latitude\":\"\",\"job                   _pickup_longitude\":\"\",\"job_pickup_address\":\"\",\"job_pickup_email\":null,\"job_latitude\":\"34.0348428\",\"job_longitude\":\"-118.4522523\",\"customer_username\":\"Hargun Singh Alhuwalia\",\"customer_email\":\"hargunsingh12@gmail.com\",\"customer_phone\":\"+1 234-567-8901\",\"job_address\":\"2030 S Westgate Ave , Los Angel                   es - 90025\",\"creation_datetime\":\"2019-12-19T14:21:32.000Z\",\"fleet_id\":419408,\"user_id\":219320,\"fleet_rating\":5,\"customer_comment\":null,\"is_customer_r                   ated\":0,\"customer_id\":18814104,\"arrived_datetime\":\"\",\"started_datetime\":\"2019-12-19 19:52:59\",\"completed_datetime\":\"\",\"acknowledged_datetime\":\"2019-1                   2-19 19:52:55\",\"job_status\":1,\"is_active\":1,\"job_type\":1,\"completed_by_admin\":0,\"open_tracking_link\":0,\"timezone\":\"-330\",\"job_time\":\"2019-12-23 07:51                   :0\",\"job_date\":\"2019-12-23T00:00:00.000Z\",\"job_time_utc\":\"2019-12-23T14:21:00.000Z\",\"job_date_utc\":\"2019-12-23T00:00:00.000Z\",\"total_distance_travell                   ed\":0,\"form_id\":null,\"customer_rating\":5,\"driver_comment\":null,\"remarks\":null,\"barcode\":null,\"ride_type\":0,\"matched_pickup_delivery_relationship\":null,\"job_vertical\":0,\"days_started\":\"0\",\"tookan_shared_secret\":\"ZraU2QLFxyZZ3YrG\",\"distance_in\":\"MILE\",\"access_token\":\"13a76798c468b7571eb7d2a0c66267cc                   \",\"domain\":\"https://delivery.luvbrite.com\",\"agent_workflow\":0,\"fleet_name\":\"Hemraj Shaqawal\",\"fleet_email\":\"hemraj.shaqawal@logicoy.com\",\"fleet_phone                   \":\"+91 89559 09361\",\"fleet_latitude\":\"13.0057339\",\"fleet_longitude\":\"77.6507492\",\"transport_type\":2,\"license\":\"\",\"transport_desc\":\"\",\"fleet_image\":\"a                   pp/img/user.png\",\"job_details_by_fleet\":419408,\"external_fleet_id\":\"\",\"fleet_vehicle_type\":2,\"fleet_vehicle_color\":\"\",\"fleet_vehicle_description\":\"\",\"task_status\":1,\"promo_used\":\"\",\"custom_fields\":[{\"label\":\"Products\",\"display_name\":\"Products\",\"data_type\":\"Text\",\"app_side\":\"0\",\"required\":0,\"value\":1,\"data\":\"Heavy Hitters | 2G Box Set\",\"input\":\"\",\"before_start\":0,\"template_id\":\"Cannabis_Delivery\"},{\"label\":\"Quantity\",\"display_name\":\"Quantity\",\"                   data_type\":\"Text\",\"app_side\":\"0\",\"required\":0,\"value\":1,\"data\":\"1\",\"input\":\"\",\"before_start\":0,\"template_id\":\"Cannabis_Delivery\"},{\"label\":\"SubTotal\",\"display_name\":\"SubTotal\",\"data_type\":\"Text\",\"app_side\":\"0\",\"required\":0,\"value\":1,\"data\":\"95$\",\"input\":\"\",\"before_start\":0,\"template_id\":\"Cannabis_                   Delivery\"},{\"label\":\"TotalTax\",\"display_name\":\"TotalTax\",\"data_type\":\"Text\",\"app_side\":\"0\",\"required\":0,\"value\":1,\"data\":\"9.02 $\",\"input\":\"\",\"before_                   start\":0,\"template_id\":\"Cannabis_Delivery\"},{\"label\":\"Total\",\"display_name\":\"Total\",\"data_type\":\"Text\",\"app_side\":\"0\",\"required\":0,\"value\":1,\"data\":\"                   104.02 $\",\"input\":\"\",\"before_start\":0,\"template_id\":\"Cannabis_Delivery\"}],\"ref_images\":[\"https://lbrit.co/static/imgs/luvbrite-header-logo-s.png\",\"ht                   tps://lbrit.co/static/imgs/luvbrite-header-logo-s.png\"],\"tracking_link\":\"https://jngl.ml/Be8ca44P4\",\"task_history\":[{\"id\":398760061,\"job_id\":63227753,\"fleet_id\":null,\"fleet_name\":null,\"latitude\":null,\"longitude\":null,\"type\":\"state_changed\",\"description\":\"Created By Ali G.-219320\",\"extra_fields\":null,\"creation_datetime\":\"2019-12-19T14:21:32.000Z\",\"creation_date\":\"2019-12-19T00:00:00.000Z\",\"label_description\":\"<span class='created'>CREATED</span                   >By Ali G.-219320\"},{\"id\":398760883,\"job_id\":63227753,\"fleet_id\":419408,\"fleet_name\":\"Hemraj Shaqawal\",\"latitude\":\"13.0057339\",\"longitude\":\"77.650749                   2\",\"type\":\"state_changed\",\"description\":\"Assigned Hemraj Shaqawal to task - 219320\",\"extra_fields\":null,\"creation_datetime\":\"2019-12-19T14:22:31.000Z                   \",\"creation_date\":\"2019-12-19T00:00:00.000Z\",\"label_description\":\"<span class='assigned'>ASSIGNED</span>Hemraj Shaqawal to task - 219320\"},{\"id\":398761293,\"job_id\":63227753,\"fleet_id\":419408,\"fleet_name\":\"Hemraj Shaqawal\",\"latitude\":\"13.0057339\",\"longitude\":\"77.6507492\",\"type\":\"state_changed\",\"des                   cription\":\"Accepted at\",\"extra_fields\":null,\"creation_datetime\":\"2019-12-19T14:22:55.000Z\",\"creation_date\":\"2019-12-19T00:00:00.000Z\",\"label_descript                   ion\":\"<span class='accepted'>ACCEPTED</span>at\"},{\"id\":398761338,\"job_id\":63227753,\"fleet_id\":419408,\"fleet_name\":\"Hemraj Shaqawal\",\"latitude\":\"13.00                   57339\",\"longitude\":\"77.6507492\",\"type\":\"state_changed\",\"description\":\"Started at\",\"extra_fields\":null,\"creation_datetime\":\"2019-12-19T14:22:59.000Z\",\"creation_date\":\"2019-12-19T00:00:00.000Z\",\"label_description\":\"<span class='started'>STARTED</span>at\"}],\"job_state\":\"Started\",\"task_state\":\"STARTED                   \",\"started_datetime_formatted\":\"19 Dec 2019 07:52 pm\",\"acknowledged_datetime_formatted\":\"19 Dec 2019 07:52 pm\",\"job_token\":\"6322775315767652927002849                   \",\"job_time_formatted\":\"23 Dec 2019 07:51 pm\",\"job_pickup_datetime_formatted\":\"Invalid date\",\"job_delivery_datetime_formatted\":\"23 Dec 2019 07:51 pm\",\"total_distance\":\"0.00 Mile\",\"webhook_type\":0,\"format\":\"application/json\",\"template_key\":\"AGENT_STARTED\",\"is_internal\":0,\"full_tracking_link\":\"https://delivery.luvbrite.com/tracking/index.html?jobID=8335ff190f81e377eb933e8ca4448706\"}";
+
+		// System.out.println(webhookresponse.replaceAll("\\", "").replaceAll("\\s*",
+		// ""));
+
+
+		System.out.println("tookanNotification:--->" + tookanNotification1);
+
+		TookanWebhookResponse tookanResponse = createTookanResponseObject(tookanNotification1);
+
+		if ("STARTED".equals(tookanResponse.getTask_state().trim())) {
+
+			TrackingLinkEmailInfo trackLnkEmailInfoObj = new TrackingLinkEmailInfo();
+			trackLnkEmailInfoObj.setOrderDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+			trackLnkEmailInfoObj.setOrderNumber(tookanResponse.getOrder_id());
+//             trackLnkEmailInfoObj.setOrderTotal(getOrderTotal(tookanResponse) + " (inc. of all taxes)");
+			trackLnkEmailInfoObj.setTrackingLink(tookanResponse.getFull_tracking_link());
+			trackLnkEmailInfoObj.setRecipentEmail(tookanResponse.getCustomer_email());
+			trackLnkEmailInfoObj.setRecipentName(tookanResponse.getCustomer_username());
+			new TrackingLinkToCustomer().send(trackLnkEmailInfoObj, tookanResponse.getCustomer_email());
+		}
+
+	}
+
+	
+//	  public static String getOrderTotal(TookanWebhookResponse tookanResponse) {
+//	  
+//	  DecimalFormat df = new DecimalFormat("#.##"); 
+//	  String total = "";
+//	  List<Custom_field> custom_fields = tookanResponse.getCustom_fields();
+//	  
+//	  double orderTotal = 0.00d; for (Custom_field cf : custom_fields) { if
+//	  ("Total".equals(cf.getLabel())) { orderTotal =
+//	  Double.parseDouble(cf.getData()); total = df.format(orderTotal); } }
+//	  
+//	  return total;
+//	  
+//	  }
+	 
 
 }
