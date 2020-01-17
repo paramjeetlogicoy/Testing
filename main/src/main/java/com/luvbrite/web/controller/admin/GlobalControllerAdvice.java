@@ -7,7 +7,6 @@ public class GlobalControllerAdvice {
 
 	public GlobalControllerAdvice() {
 		super();
-		System.out.println("test ------ advice");
 		// TODO Auto-generated constructor stub
 	}
 

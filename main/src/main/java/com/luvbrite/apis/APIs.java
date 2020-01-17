@@ -23,15 +23,15 @@ public class APIs {
 	/*** Eclipse ****/
 	
 	
-	/*
-	 * public final String POST_PRODLIST_URL =
-	 * "http://localhost:8081/inventory/apps/acceptproductlist?json"; public final
-	 * String NEW_ORDER_URL =
-	 * "http://localhost:8081/inventory/apps/a-ordermeta?json"; public final String
-	 * UPDATE_ORDER_URL = "http://localhost:8081/inventory/apps/a-c-ordermeta?json";
-	 * public final String POST_TOOKAN_NOTICATION =
-	 * "http://localhost:8081/inventory/apps/getTookanNotification?json";
-	 */
+	
+	  public final String POST_PRODLIST_URL =
+	  "http://localhost:8081/inventory/apps/acceptproductlist?json"; public final
+	  String NEW_ORDER_URL =
+	  "http://localhost:8081/inventory/apps/a-ordermeta?json"; public final String
+	  UPDATE_ORDER_URL = "http://localhost:8081/inventory/apps/a-c-ordermeta?json";
+	  public final String POST_TOOKAN_NOTICATION =
+	  "http://localhost:8081/inventory/apps/getTookanNotification?json";
+	 
 
 	/**
 	 * *PRODUCTION APIS** //
@@ -51,9 +51,13 @@ public class APIs {
 	/**
 	 * *TEST ENVIRONMENT**
 	 */
-    public  final String POST_PRODLIST_URL = "http://localhost:8080/inventory/apps/acceptproductlist?json";
-    public  final String NEW_ORDER_URL = "http://localhost:8080/inventory/apps/a-ordermeta?json";
-    public  final String UPDATE_ORDER_URL = "http://localhost:8080/inventory/apps/a-c-ordermeta?json";
-    public  final String POST_TOOKAN_NOTICATION = "http://localhost:8080/inventory/apps/getTookanNotification?json";
-
+	/*
+	 * public final String POST_PRODLIST_URL =
+	 * "http://localhost:8080/inventory/apps/acceptproductlist?json"; public final
+	 * String NEW_ORDER_URL =
+	 * "http://localhost:8080/inventory/apps/a-ordermeta?json"; public final String
+	 * UPDATE_ORDER_URL = "http://localhost:8080/inventory/apps/a-c-ordermeta?json";
+	 * public final String POST_TOOKAN_NOTICATION =
+	 * "http://localhost:8080/inventory/apps/getTookanNotification?json";
+	 */
 }

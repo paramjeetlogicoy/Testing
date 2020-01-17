@@ -1,4 +1,6 @@
-    <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
@@ -17,8 +19,8 @@
 		<jcl.slf4j.version>1.7.12</jcl.slf4j.version>
 		<jstl.version>1.2</jstl.version>
 		<servletapi.version>3.1.0</servletapi.version>
-                <maven.compiler.source>1.8</maven.compiler.source>
-                <maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 
 	<dependencies>
@@ -65,7 +67,7 @@
 			<version>3.0.7.RELEASE</version>
 		</dependency>
 
-    
+
 		<!-- Spring Context Support for Email -->
 		<!-- http://mvnrepository.com/artifact/org.springframework/spring-context-support -->
 		<dependency>
@@ -103,9 +105,9 @@
 
 		<!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
 		<dependency>
-		    <groupId>org.mongodb</groupId>
-		    <artifactId>mongo-java-driver</artifactId>
-		    <version>3.4.3</version>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongo-java-driver</artifactId>
+			<version>3.4.3</version>
 		</dependency>
 
 		<!-- Need this for json to/from object -->
@@ -220,27 +222,32 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.0.1</version>
 		</dependency>
-                <!-- Gson -->
-                <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
-                <dependency>
-                    <groupId>com.google.code.gson</groupId>
-                    <artifactId>gson</artifactId>
-                    <version>2.8.3</version>
-                </dependency>
+		<!-- Gson -->
+		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.3</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
+		<dependency>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jsch</artifactId>
+			<version>0.1.55</version>
+		</dependency>
 
-
-<!-- http://mvnrepository.com/artifact/com.itextpdf/itextpdf -->
+		<!-- http://mvnrepository.com/artifact/com.itextpdf/itextpdf -->
 		<dependency>
 			<groupId>com.itextpdf</groupId>
 			<artifactId>itextpdf</artifactId>
 			<version>5.5.9</version>
 		</dependency>
 
-	<dependency>
-	<groupId>com.itextpdf</groupId>
-	<artifactId>itext-xtra</artifactId>
-	<version>5.5.9</version>
-	</dependency>
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itext-xtra</artifactId>
+			<version>5.5.9</version>
+		</dependency>
 
 
 	</dependencies>
@@ -268,7 +275,8 @@
 								<configuration>
 									<tasks>
 										<echo>Copy env.prod.properties</echo>
-										<delete file="${project.build.outputDirectory}/env.properties" />
+										<delete
+											file="${project.build.outputDirectory}/env.properties" />
 										<copy file="src/main/resources/env.prod.properties"
 											tofile="${project.build.outputDirectory}/env.properties" />
 									</tasks>
@@ -283,7 +291,8 @@
 								<configuration>
 									<tasks>
 										<echo>Copy Prod log4j</echo>
-										<delete file="${project.build.outputDirectory}/log4j.properties" />
+										<delete
+											file="${project.build.outputDirectory}/log4j.properties" />
 										<copy file="src/main/resources/log4j.prod.properties"
 											tofile="${project.build.outputDirectory}/log4j.properties" />
 									</tasks>
@@ -300,7 +309,7 @@
 							<failOnMissingWebXml>false</failOnMissingWebXml>
 						</configuration>
 					</plugin>
-                                        
+
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-compiler-plugin</artifactId>
@@ -351,7 +360,8 @@
 								<configuration>
 									<tasks>
 										<echo>Copy env.local.properties</echo>
-										<delete file="${project.build.outputDirectory}/env.properties" />
+										<delete
+											file="${project.build.outputDirectory}/env.properties" />
 										<copy file="src/main/resources/env.local.properties"
 											tofile="${project.build.outputDirectory}/env.properties" />
 									</tasks>
@@ -366,7 +376,8 @@
 								<configuration>
 									<tasks>
 										<echo>Copy Local log4j</echo>
-										<delete file="${project.build.outputDirectory}/log4j.properties" />
+										<delete
+											file="${project.build.outputDirectory}/log4j.properties" />
 										<copy file="src/main/resources/log4j.local.properties"
 											tofile="${project.build.outputDirectory}/log4j.properties" />
 									</tasks>

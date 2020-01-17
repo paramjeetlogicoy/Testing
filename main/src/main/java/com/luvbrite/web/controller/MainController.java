@@ -63,10 +63,6 @@ public class MainController {
 	public String homePage(
 			@AuthenticationPrincipal UserDetailsExt user, 
 			ModelMap model) {
-		String sessionID =   RequestContextHolder.getRequestAttributes().getSessionId();
-		MDC.put("sessionId", sessionID);
-		System.out.println("$$$$$$$$$$$$$$$$$$$MDC Injection"+ sessionID);
-		logger.error("$$$$$$$$$$$$$$$$$$$MDC Injection logger"+ sessionID);
 		if(user!=null && user.isEnabled())
 			model.addAttribute("userId", user.getId());
 		
@@ -131,6 +127,8 @@ public class MainController {
 		try {
 			CsrfToken token = new HttpSessionCsrfTokenRepository().loadToken(req);
 			r.setMessage(token.getToken());
+			System.out.println("$$$XSRF TOKEN :::"+token.getToken());
+			
 			r.setSuccess(true);
 		} catch(Exception e){
 			r.setSuccess(false);
